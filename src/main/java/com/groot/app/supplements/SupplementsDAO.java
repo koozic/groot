@@ -15,7 +15,7 @@ import java.util.List;
 public class SupplementsDAO {
 
     // 영양성분 전체 리스트 조회 메서드 (Read)
-    public List<SupplementsDTO> getSupplementList() {
+    public static List<SupplementsDTO> getSupplementsList() {
         List<SupplementsDTO> list = new ArrayList<>();
 
         // 최신 등록된 영양성분이 먼저 나오도록 내림차순(DESC) 정렬
@@ -55,6 +55,9 @@ public class SupplementsDAO {
         }
 
         return list; // 완성된 리스트 반환
+
     }
 }
+
+
 
