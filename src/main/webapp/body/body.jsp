@@ -37,6 +37,9 @@
         function renderList(list) {
             const container = document.getElementById("result");
 
+            // ✅ 추가: 영양소 목록이 로드되면 정렬 버튼 표시
+            document.getElementById("sort-buttons").style.display = "block";
+
             if (list.length === 0) {
                 container.innerHTML = "<p>해당 부위에 등록된 영양소가 없습니다.</p>";
                 return;
@@ -80,7 +83,7 @@
 
 <hr>
 
-<div id="sort-buttons">
+<div id="sort-buttons" style="display: none">
     <button onclick="changeSort('view')">🔥 많이 본 순</button>
     <button onclick="changeSort('like')">❤️ 인기순</button>
 </div>
