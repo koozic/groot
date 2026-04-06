@@ -16,7 +16,8 @@
         <h2>💬 상품 리뷰</h2>
         <div class="star-stats-container">
             <div class="avg-score-box">
-                <div class="avg-score">${avgScore}</div> <div class="avg-stars">★★★★★</div>
+                <div class="avg-score">${avgScore}</div> <div class="avg-stars-container">
+                <div class="avg-stars-base">★★★★★</div> <div class="avg-stars-fill" style="width: ${avgScore * 20}%">★★★★★</div> </div>
                 <div class="total-review-count">구매후기 평점 ${reviews.size()}개 기준</div>
             </div>
 
@@ -52,7 +53,49 @@
         <%-- 🌟 여기가 리뷰 작성 폼으로 넘어가는 버튼! (임시로 101번 상품으로 세팅) --%>
         <a href="review/review_write.jsp?product_id=101" class="btn-write">✍️ 리뷰 작성하기</a>
     </div>
+    <%-- ========================================================= --%>
+    <%-- 📸 1. 포토 갤러리 구역 (아이허브 스타일) --%>
+    <div class="photo-gallery-container">
+        <div class="gallery-header">
+            <h2> 포토 리뷰 <span id="photo-count">(가데이터: 10,136)</span></h2>
+            <a href="javascript:void(0)" class="view-all-photos" onclick="openPhotoGalleryModal()">포토 리뷰만 모아보기 </a>
+        </div>
+        <div class="photo-slider-wrapper">
+            <button type="button" class="slider-btn prev-btn" onclick="slideGallery(-1)">&lt;</button>
+            <div class="photo-slider" id="photo-slider">
+                <c:forEach var="img" items="${allPhotoImages}">
+                    <%-- 🌟 여기가 핵심! 기존에 무영이가 만든 openDetailModal을 똑같이 쓴다! --%>
+                    <div class="photo-slide-item" onclick="openDetailModal('${img.r_title}', '${img.user_id}', '${img.r_score}', '${img.r_date}', '${img.r_content}', '${img.r_img}')">
+                        <img src="../upload/${img.r_img}" alt="포토리뷰 이미지">
+                    </div>
+                </c:forEach>
+            </div>
+            <button type="button" class="slider-btn next-btn" onclick="slideGallery(1)">&gt;</button>
+        </div>
+    </div>
 
+    <%-- 🎛️ 2. 리뷰 컨트롤 바 (정렬 & 필터) - 양쪽으로 쫙 벌어짐! --%>
+    <div class="review-control-bar">
+        <div class="sort-options">
+            <select id="sortType">
+                <option value="like">👍 베스트순(좋아요순)</option>
+                <option value="date" selected>🆕 최신순</option>
+                <option value="high_score">⭐ 평점 높은순</option>
+                <option value="low_score">📉 평점 낮은순</option>
+            </select>
+        </div>
+        <div class="filter-options">
+            <select id="starFilter">
+                <option value="0" selected>모든 별점 보기</option>
+                <option value="5">별점 5점만</option>
+                <option value="4">별점 4점만</option>
+                <option value="3">별점 3점만</option>
+                <option value="2">별점 2점만</option>
+                <option value="1">별점 1점만</option>
+            </select>
+        </div>
+    </div>
+    <%-- ========================================================= --%>
     <%-- 1. DAO에서 가져온 리뷰 리스트 쫙 뿌리기 (DTO 소문자로 맞춘 거 적용됨!) --%>
     <c:forEach var="r" items="${reviews}">
         <div class="review-card">
@@ -101,7 +144,17 @@
         </div>
     </div>
 </div>
+<div id="photoOnlyModal" onclick="closePhotoOnlyModal()" style="display:none; position:fixed; z-index:1100; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.85); cursor:pointer;">
+    <div onclick="event.stopPropagation()" style="background:#fff; width:800px; max-height:80%; margin:50px auto; border-radius:15px; cursor:default; overflow-y: auto; padding: 20px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #34495e; padding-bottom:10px; margin-bottom:20px;">
+            <h2 style="margin:0;">📸 포토 리뷰 모아보기</h2>
+            <span onclick="closePhotoOnlyModal()" style="cursor:pointer; font-size:24px; font-weight:bold;">&times;</span>
+        </div>
 
+        <div id="photo-only-list-container">
+        </div>
+    </div>
+</div>
 <script>
     // 이 함수가 버튼의 onclick이랑 연결되는 거야!
     function openDetailModal(title, user, score, date, content, img) {
@@ -130,6 +183,9 @@
     function closeDetailModal() {
         document.getElementById('detailModal').style.display = 'none';
     }
+
+
 </script>
+<script src="../js/review.js"></script>
 </body>
 </html>
