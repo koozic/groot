@@ -9,8 +9,8 @@ import java.sql.ResultSet;
 
 public class UserDAO {
     public static void Login(HttpServletRequest request) {
-        String id = request.getParameter("id");
-        String pw = request.getParameter("pw");
+        String id = request.getParameter("user_id");
+        String pw = request.getParameter("user_pw");
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -21,26 +21,27 @@ public class UserDAO {
           pstmt = con.prepareStatement(sql);
           pstmt.setString(1, request.getParameter("user_id"));
           rs = pstmt.executeQuery();
-          String Login = "";
+          String loginMsg = "";
           if (rs.next()) {
               if (rs.getString("user_pw").equals(pw)) {
                   // 로그인 성공
                   System.out.println("어서오세요. 당신의 건강을 챙기세요");
-                  Login = "어서오세요. 당신의 건강을 챙기세요";
+                  loginMsg = "어서오세요. 당신의 건강을 챙기세요";
 
               } else {
                   // 로그인 실패
                   System.out.println("다시 로그인 해주세요 (5회 이상 실패 시 본인인증) ");
-                  Login = "다시 로그인 해주세요 (5회 이상 실패 시 본인인증) ";
+                  loginMsg = "다시 로그인 해주세요 (5회 이상 실패 시 본인인증) ";
 
               }
 
           } else {
               // 신규 회원
-          } System.out.println("새로 오셨네요. 회원가입 해주세요");
-            Login = "새로 오셨네요. 회원가입 해주세요";
+              System.out.println("새로 오셨네요. 회원가입 해주세요");
+              loginMsg = "새로 오셨네요. 회원가입 해주세요";
+          }
 
-            request.setAttribute("Login", Login);
+            request.setAttribute("loginMsg", loginMsg);
 
 
 
