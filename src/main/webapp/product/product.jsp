@@ -11,27 +11,27 @@
 </head>
 <body>
 <div class="product-container">
-    <c:forEach items="${products}" var="product">
+    <c:forEach items="${products}" var="p">
 
         <div class="product-card">
-            <div class="product-image">${product.img}이미지 영역</div>
+            <div class="product-image">${p.product_img}이미지 영역</div>
             <div class="product-info">
-                <div class="product-name">${product.name}</div>
-                <div class="product-brand">${product.brand}</div>
-                <div class="product-nutrient">${product.nutrient}</div>
-                <div class="product-price">${product.price}원</div>
-                <div class="product-date">${product.date}</div>
+                <div class="product-name">${p.product_name}</div>
+                <div class="product-brand">${p.product_brand}</div>
+                <div class="product-nutrient">${p.product_nutrient}</div>
+                <div class="product-price">${p.product_price}원</div>
+                <div class="product-date">${p.product_date}</div>
             </div>
         </div>
 
         <div class="product-card">
             <div class="product-image">이미지 영역</div>
             <div class="product-info">
-                <div class="product-name">${product.name}</div>
-                <div class="product-brand">${product.brand}</div>
-                <div class="product-nutrient">${product.nutrient}</div>
-                <div class="product-price">${product.price}원</div>
-                <div class="product-date">${product.date}</div>
+                <div class="product-name">${p.product_name}</div>
+                <div class="product-brand">${p.product_brand}</div>
+                <div class="product-nutrient">${p.product_nutrient}</div>
+                <div class="product-price">${p.product_price}원</div>
+                <div class="product-date">${p.product_date}</div>
             </div>
         </div>
 
