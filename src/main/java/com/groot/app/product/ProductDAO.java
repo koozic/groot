@@ -19,6 +19,8 @@ public class ProductDAO {
         try {
             con = DBManager_new.connect();
 
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -60,7 +62,7 @@ public class ProductDAO {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            DBManager_new.close(null, pstmt, rs);
+            DBManager_new.close(con, pstmt, rs);
         }
 
         return null;
