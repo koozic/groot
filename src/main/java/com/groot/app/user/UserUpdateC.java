@@ -6,8 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "UserC", value = "/user")
-public class UserC extends HttpServlet {
+@WebServlet(name = "UserUpdateC", value = "/user-update")
+public class UserUpdateC extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     }

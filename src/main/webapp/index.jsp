@@ -18,13 +18,19 @@
     <div class="hdr-right">
         <c:choose>
             <c:when test="${not empty sessionScope.loginUser}">
-                <span class="hdr-link">${sessionScope.loginUser.nickname}님</span>
+                <span class="hdr-link">어서오세요. 당신의 건강을 챙기세요</span>
+                <img
+                        src="${sessionScope.loginUser.user_profile}"
+                        alt="프로필"
+                        style="width:40px; height:40px; border-radius:50%; object-fit:cover;"
+                >
+                <span class="hdr-link">${sessionScope.loginUser.name}님</span>
                 <a href="mypage" class="hdr-link">마이페이지</a>
                 <a href="logout" class="btn-login">로그아웃.</a>
             </c:when>
             <c:otherwise>
-                <a href="join"  class="hdr-link">회원가입</a>
-                <a href="login" class="btn-login">로그인</a>
+                <a href="user-join"  class="hdr-link">회원가입</a>
+                <a href="user-Login"  class="btn-login">로그인</a>
             </c:otherwise>
         </c:choose>
     </div>
