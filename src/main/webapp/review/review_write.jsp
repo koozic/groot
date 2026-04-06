@@ -4,16 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Groot - 리뷰 작성하기</title>
-    <style>
-        /* 깔끔하게 보이려고 넣은 간단한 디자인 */
-        .write-box { width: 500px; margin: 40px auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-weight: bold; margin-bottom: 8px; }
-        .form-group input[type="text"], .form-group textarea { width: 100%; padding: 10px; box-sizing: border-box; }
-        .star-radio { display: flex; gap: 15px; }
-        .btn-submit { width: 100%; padding: 12px; background-color: #2ecc71; color: white; border: none; font-size: 16px; border-radius: 5px; cursor: pointer; }
-        .btn-submit:hover { background-color: #27ae60; }
-    </style>
+    <%-- 💡 경로 확인! 만약 안 나오면 ../ 빼고 css/review.css 로도 해봐 --%>
+    <link rel="stylesheet" href="../css/review.css">
 </head>
 <body>
 
@@ -21,13 +13,7 @@
     <h2>✍️ 솔직한 리뷰를 작성해주세요!</h2>
     <hr>
 
-    <%-- 🌟 핵심 1: action="ReviewWriteC" (데이터를 받을 컨트롤러 이름) --%>
-    <%-- 🌟 핵심 2: method="post" (데이터가 많고 길 때는 무조건 post) --%>
-    <%-- 🌟 핵심 3: enctype="multipart/form-data" (사진 업로드할 때 이거 없으면 에러남!!!) --%>
-    <form action="review-write" method="post" enctype="multipart/form-data">
-
-        <%-- 몰래 숨겨서 보내는 데이터 (어떤 상품의 리뷰인지 알아야 하니까!) --%>
-        <%-- 일단 무영이가 테스트하기 쉽게 value="101" 로 고정해둘게. 나중에 합칠 때 바꿀 거야. --%>
+    <form action="../review-write" method="post" enctype="multipart/form-data">
         <input type="hidden" name="product_id" value="101">
 
         <div class="form-group">
@@ -37,22 +23,21 @@
 
         <div class="form-group">
             <label>별점 선택 (1~5점)</label>
-            <div class="star-radio">
-                <label><input type="radio" name="r_score" value="1"> 1점</label>
-                <label><input type="radio" name="r_score" value="2"> 2점</label>
-                <label><input type="radio" name="r_score" value="3"> 3점</label>
-                <label><input type="radio" name="r_score" value="4"> 4점</label>
-                <label><input type="radio" name="r_score" value="5" checked> 5점</label> </div>
-        </div>
-
-        <div class="form-group">
-            <label>리뷰 내용</label>
-            <textarea name="r_content" rows="6" required placeholder="상품을 사용해 본 솔직한 후기를 남겨주세요."></textarea>
-        </div>
+            <div class="star-rating" id="star-container">
+                <span class="star" data-value="1">★</span>
+                <span class="star" data-value="2">★</span>
+                <span class="star" data-value="3">★</span>
+                <span class="star" data-value="4">★</span>
+                <span class="star" data-value="5">★</span>
+            </div>
+            <input type="hidden" name="r_score" id="r_score" value="5">
+        </div> <div class="form-group">
+        <label>리뷰 내용</label>
+        <textarea name="r_content" rows="6" required placeholder="상품을 사용해 본 솔직한 후기를 남겨주세요."></textarea>
+    </div>
 
         <div class="form-group">
             <label>사진 첨부 (선택)</label>
-            <%-- type="file"을 쓰면 브라우저가 알아서 '파일 선택' 버튼을 만들어줘! --%>
             <input type="file" name="r_img" accept="image/*">
         </div>
 
@@ -60,5 +45,35 @@
     </form>
 </div>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const stars = document.querySelectorAll('.star');
+        const scoreInput = document.getElementById('r_score');
+
+        stars.forEach(star => {
+            star.addEventListener('mouseover', function() {
+                fillStars(this.getAttribute('data-value'));
+            });
+            star.addEventListener('mouseout', function() {
+                fillStars(scoreInput.value);
+            });
+            star.addEventListener('click', function() {
+                scoreInput.value = this.getAttribute('data-value');
+                fillStars(scoreInput.value);
+            });
+        });
+
+        function fillStars(value) {
+            stars.forEach(s => {
+                if (parseInt(s.getAttribute('data-value')) <= parseInt(value)) {
+                    s.classList.add('on');
+                } else {
+                    s.classList.remove('on');
+                }
+            });
+        }
+        fillStars(5); // 초기값 세팅
+    });
+</script>
 </body>
 </html>

@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import com.groot.app.main.DBManager_new;
 import com.oreilly.servlet.MultipartRequest;
@@ -126,8 +128,47 @@ public class ReviewDAO {
         } finally {
             DBManager_new.close(con, pstmt, null);
         }
-
-
-
     }
+    // 🌟 [추가] 상품별 별점 통계 가져오기
+    public static Map<Integer, Integer> getStarStats(int productId) {
+        // 별점(key)과 개수(value)를 담을 주머니
+        Map<Integer, Integer> stats = new HashMap<>();
+
+        // 기본값 0으로 세팅 (안 그러면 리뷰 없는 점수는 맵에 안 담겨서 JSP에서 에러 남 ㅋㅋㅋ)
+        for (int i = 1; i <= 5; i++) stats.put(i, 0);
+
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            con = DBManager_new.connect();
+            // SQL 포인트: r_score로 그룹 묶어서 개수(COUNT) 세기!
+            // ReviewDAO.java 약 147번 줄 근처
+            // 💡 이렇게 끝에 공백(Space)을 한 칸씩 꼭 넣어!
+            String sql = "SELECT r_score, COUNT(*) as cnt " + // 👈 cnt 뒤에 공백!
+                    "FROM REVIEWS " +                    // 👈 REVIEWS 뒤에 공백!
+                    "WHERE product_id = ? " +            // 👈 ? 뒤에 공백!
+                    "GROUP BY r_score";
+
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, productId);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                // DB에서 가져온 점수랑 개수를 맵에 업데이트!
+                System.out.println(">>> DB에서 꺼낸 별점: " + rs.getInt("r_score") + ", 개수: " + rs.getInt("cnt"));
+                stats.put(rs.getInt("r_score"), rs.getInt("cnt"));
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBManager_new.close(con, pstmt, rs);
+        }
+        return stats;
+    }
+
+
+
 } // ReviewDAO 클래스 끝
