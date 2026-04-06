@@ -1,6 +1,5 @@
 package com.groot.app.supplements;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -9,36 +8,26 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "SupplementsC", value = "/supplements")
-public class SupplementsC extends HttpServlet {
+@WebServlet(name = "DetailSupplementsC", value = "/detailSupplements")
+public class DetailSupplementsC extends HttpServlet {
 
     // 화면 조회 (리스트 보기)
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        // [비즈니스 로직] 클릭한 영양성분 '하나'만 조회하는 일 시키기
+        // (아직 DAO에 이 메서드가 없다면 바로 다음에 만들 것입니다!)
+        SupplementsDAO.SDAO.getSupplementDetail(request);
 
-        // 1. 싱글톤 객체(SDAO)를 통해 전체 리스트 조회 메서드 호출!
-        // SupplementsDAO.SDAO.getSupplementsList();
-        // DAO에게 일은 시켰지만, 결과물(List)을 받지 않음
-
-
-        // 1. 가져온 데이터를 list라는 변수(바구니)에 제대로 담아주고,
-        List<SupplementsDTO> list = SupplementsDAO.getSupplementsList();
-        // 2. 그 바구니를 화면(JSP)으로 보냅니다.
-        request.setAttribute("supplementsList", list);
-
-        // 👇 네비게이션 메뉴 활성화 처리
+        // 네비게이션 탭 활성화 (영양 메뉴에 불 들어오게 하기)
         request.setAttribute("activeTab", "nutrition");
 
-        // 2. 화면 포워딩
-        request.setAttribute("content", "supplements/supplements.jsp");
+        // [어디로?] 상세 페이지 JSP를 알맹이(content)로 설정하여 index.jsp로 보냄
+        request.setAttribute("content", "supplements/supplements_detail.jsp");
         request.getRequestDispatcher("/index.jsp").forward(request, response);
+
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        // DAO의 등록 메서드 실행
-        SupplementsDAO.SDAO.addSupplement(request);
 
-        // 등록이 끝나면 다시 리스트 화면(doGet)으로 새로고침
-        response.sendRedirect("supplements");
     }
 
     public void destroy() {

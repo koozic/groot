@@ -27,7 +27,7 @@
         <c:forEach var="supp" items="${supplementsList}">
         <div class="supp-wrap">
 
-            <div class="supp-img" onclick="location.href='detailSupp.do?id=${supp.supplementId}'">
+            <div class="supp-img" onclick="location.href='detailSupplements?id=${supp.supplementId}'">
                 <img src="/supplementImg/supplementImgFile/${supp.supplementImagePath}">
             </div>
             <div class="supp-name">${supp.supplementName}</div>
