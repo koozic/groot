@@ -14,7 +14,7 @@ import java.sql.Date;
 
 public class SupplementsDTO {
     // 1. 멤버 변수 (테이블 컬럼과 매칭)
-    private int supplementNo;
+    private int supplementId;
     private String supplementName;
     private String supplementEfficacy;
     private String supplementDosage;

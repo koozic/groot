@@ -22,7 +22,7 @@
 
 <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
     <div class="supplements-container">
-        <c:forEach var="supp" items="${sList}">
+        <c:forEach var="supp" items="${supplementsList}">
         <div class="supp-wrap">
 
             <div class="supp-img" onclick="location.href='detailSupp.do?id=${supp.supplementId}'">
