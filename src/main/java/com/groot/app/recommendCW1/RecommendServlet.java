@@ -21,7 +21,7 @@ import java.util.Map;
  * 회원:   분석 결과 보여줌 + 히스토리 저장 (추후 구현)
  */
 @WebServlet(urlPatterns = {"/reco", "/recommend/analyze"})
-public class RecommendServlet extends HttpServlet {
+public class RecommendServlet extends HttpServlet { 
 
     private final Gson gson = new Gson();
 
