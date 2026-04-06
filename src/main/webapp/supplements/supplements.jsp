@@ -28,7 +28,7 @@
         <div class="supp-wrap">
 
             <div class="supp-img" onclick="location.href='detailSupp.do?id=${supp.supplementId}'">
-                <img alt="${supp.supplementName}" src="/img/supp/${supp.supplementImagePath}">
+                <img src="/supplementImg/supplementImgFile/${supp.supplementImagePath}">
             </div>
             <div class="supp-name">${supp.supplementName}</div>
             <div class="supp-efficacy">${supp.supplementEfficacy}</div>

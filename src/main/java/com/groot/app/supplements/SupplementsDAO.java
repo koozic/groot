@@ -71,7 +71,9 @@ import java.util.List;
             SupplementsDTO dto = null;
 
             // 웹앱의 영양성분 파일 폴더
-            String path = "C:\\es\\dbws_intellij\\upload\\supplementFile";
+//            String path = "C:\\es\\dbws_intellij\\upload\\supplementFile";
+            // 내 프로젝트 폴더 안의 /img/supp 위치를 컴퓨터가 알아서 찾아냅니다.
+            String path = request.getServletContext().getRealPath("/supplementImg/supplementImgFile");
 
             try {
                 con = DBManager_new.connect();
