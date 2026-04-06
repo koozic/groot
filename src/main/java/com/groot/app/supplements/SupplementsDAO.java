@@ -129,6 +129,33 @@ import java.util.List;
 
         }
 
+        public void delSupplement(HttpServletRequest request) {
+            Connection con = null;
+            PreparedStatement pstmt = null;
+
+            try{
+                con = DBManager_new.connect();
+
+                String sql = "delete from supplements where supplement_id = ?";
+
+                pstmt = con.prepareStatement(sql);
+
+                // 값 세팅: JSP의 자바스크립트가 보낸 'id' 값을 가져옵니다.
+                // deleteSupp.do?id=123 이므로 getParameter("id")라고 적어야 합니다!
+                String id = request.getParameter("id");
+                pstmt.setString(1, id);
+
+                if(pstmt.executeUpdate() == 1) {
+                    System.out.println("delete success (ID: " + id + ")");
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("삭제 실패... 에러 발생!");
+            }finally {
+                DBManager_new.close(con, pstmt, null);
+            }
+        }
     }
 
 

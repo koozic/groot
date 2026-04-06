@@ -32,8 +32,27 @@
             </div>
             <div class="supp-name">${supp.supplementName}</div>
             <div class="supp-efficacy">${supp.supplementEfficacy}</div>
+
+            <div style="margin-top: 10px;">
+                <button class="supp-btn" onclick="delSupplement('${supp.supplementId}')">삭제</button>
+            </div>
+
         </div>
 
             </c:forEach>
 </body>
+
+<script>
+    // 삭제 전 확인 창을 띄우는 함수
+    function delSupplement(id) {
+        let ok = confirm('정말로 이 영양성분 정보를 삭제하시겠습니까?');
+        if(ok){
+            // 사용자가 '확인'을 누르면 삭제 서블릿으로 요청을 보냄
+            // 컨트롤러(서블릿)의 주소(@WebServlet)도 반드시 deleteSupplement여야 합니다.
+            location.href = 'deleteSupplement?id=' + id;
+        }
+
+    }
+
+</script>
 </html>
