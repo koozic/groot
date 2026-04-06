@@ -5,14 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title >약쟁이</title>
+    <title>약쟁이</title>
     <link rel="stylesheet" href="css/app.css">
-    <script>
-        const IS_LOGIN = ${ not empty sessionScope.loginUser };
-    </script>
-    <script src="js/app.js"></script>
-   <link rel="stylesheet" href="css/recommend.css">
-    <link rel="stylesheet" href="css/home.css">
 </head>
 <body>
 
