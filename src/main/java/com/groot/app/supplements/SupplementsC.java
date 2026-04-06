@@ -16,8 +16,14 @@ public class SupplementsC extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
         // 1. 싱글톤 객체(SDAO)를 통해 전체 리스트 조회 메서드 호출!
-        // (메서드 이름은 회원님이 DAO에 만드신 이름으로 적어주세요. 예: getSupplementsList 또는 selectAllSupplements)
-        SupplementsDAO.SDAO.getSupplementsList();
+        // SupplementsDAO.SDAO.getSupplementsList();
+        // DAO에게 일은 시켰지만, 결과물(List)을 받지 않음
+
+
+        // 1. 가져온 데이터를 list라는 변수(바구니)에 제대로 담아주고,
+        List<SupplementsDTO> list = SupplementsDAO.getSupplementsList();
+        // 2. 그 바구니를 화면(JSP)으로 보냅니다.
+        request.setAttribute("supplementsList", list);
 
         // 👇 네비게이션 메뉴 활성화 처리
         request.setAttribute("activeTab", "nutrition");

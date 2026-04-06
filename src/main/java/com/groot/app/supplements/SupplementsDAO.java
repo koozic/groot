@@ -70,9 +70,8 @@ import java.util.List;
                          "values(seq_supplements_id.nextval,?,?,?,?,?,?)";
             SupplementsDTO dto = null;
 
-            // String path = request.getServletContext().getRealPath("suppFile");
-            String path = "C:\\es\\dbws_intellij\\upload\\supplementFile";
             // 웹앱의 영양성분 파일 폴더
+            String path = "C:\\es\\dbws_intellij\\upload\\supplementFile";
 
             try {
                 con = DBManager_new.connect();
@@ -98,15 +97,6 @@ import java.util.List;
 
                 if (supplementEfficacy != null) {
                     supplementEfficacy = supplementEfficacy.replace("\r\n", "<br>");
-                } else {
-                    // 2. 사진을 업로드하지 않은 경우:
-                    // 빈 칸("")을 넣거나, 미리 준비해둔 '기본 이미지(No Image)' 경로를 넣어줍니다.
-
-                    // 추천 방식 (미리 /img/supp/ 폴더에 default.png 같은 이미지를 하나 넣어두세요!)
-                    pstmt.setString(6, "/img/supp/default.png");
-
-                    // 또는 그냥 빈 칸으로 둘 수도 있습니다.
-                    // pstmt.setString(6, "");
                 }
 
                 pstmt.setString(1, supplementName);
@@ -116,7 +106,13 @@ import java.util.List;
                 pstmt.setString(5, supplementCaution);
 
                 // 순수한 파일명만 DB에 저장합니다!
-                pstmt.setString(6, supplementFile);
+                if (supplementFile == null) {
+                    // 사진을 첨부하지 않은 경우 기본 이미지 파일명만 넣습니다.
+                    pstmt.setString(6, "default.png");
+                } else {
+                    // 사진을 첨부한 경우 순수 파일명 저장
+                    pstmt.setString(6, supplementFile);
+                }
 
                 if (pstmt.executeUpdate() == 1) {
                     System.out.println("add success");

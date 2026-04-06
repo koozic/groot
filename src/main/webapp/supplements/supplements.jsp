@@ -20,7 +20,7 @@
 <body>
 <h1 style="text-align: center;">영양성분 리스트</h1>
 
-<button onclick="location.href='suppReg'">새 영양성분 등록</button>
+<button onclick="location.href='supplementAdd'">새 영양성분 등록</button>
 
 <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
     <div class="supplements-container">
