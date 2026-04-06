@@ -1,26 +1,28 @@
 package com.groot.app.body;
 
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+
 public class BodyDTO {
+    // 신체 부위 정보
     private int bodyId;
     private String bodyName;
     private String bodyImage;
-    
-    public int getBodyId() {
-        return bodyId;
-    }
-    public void setBodyId(int bodyId) {
-        this.bodyId = bodyId;
-    }
-    public String getBodyName() {
-        return bodyName;
-    }
-    public void setBodyName(String bodyName) {
-        this.bodyName = bodyName;
-    }
-    public String getBodyImage() {
-        return bodyImage;
-    }
-    public void setBodyImage(String bodyImage) {
-        this.bodyImage = bodyImage;
-    }
+
+    // 영양소 정보 (body_supplement JOIN supplements)
+    private int supplementId;
+    private String supplementName;
+    private String supplementEfficacy;
+    private String supplementDosage;
+    private String supplementTiming;
+    private String supplementCaution;
+    private String supplementImagePath;
+    private int supplementViewCount;
+    private int likeCount; // supplements_like 집계용
 }
