@@ -1,4 +1,4 @@
-package com.groot.app.recommend;
+package com.groot.app.recommendCW;
 
 import lombok.*;
 

@@ -25,7 +25,7 @@
 영양제 체크 (간단 분석기)
 ============================================= -->
 <section style="margin-bottom: 36px;">
-    <form action="recommend" method="get">
+    <form action="reco" method="get">
     <div class="sec-header">
         <div class="sec-title">지금 먹는 영양제 체크하기</div>
     </div>
