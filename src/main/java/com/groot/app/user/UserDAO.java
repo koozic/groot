@@ -25,11 +25,22 @@ public class UserDAO {
           if (rs.next()) {
               if (rs.getString("user_pw").equals(pw)) {
                   // 로그인 성공
+                  UserDTO user = new UserDTO();
+                  user.setUser_id(rs.getString("user_id"));
+                  user.setName(rs.getString("user_name"));
+                  user.setEmail(rs.getString("user_email"));
+                  user.setAge(rs.getInt("user_age"));
+                  user.setGender(rs.getString("user_gender"));
+                  
                   System.out.println("어서오세요. 당신의 건강을 챙기세요");
                   loginMsg = "어서오세요. 당신의 건강을 챙기세요";
+                  request.getSession().setAttribute("loginUser", user);
+                  // 세션 초기화
+                  request.getSession().removeAttribute("loginFailCount");
 
               } else {
                   // 로그인 실패
+                  incrementFailCount(request, id);
                   System.out.println("다시 로그인 해주세요 (5회 이상 실패 시 본인인증) ");
                   loginMsg = "다시 로그인 해주세요 (5회 이상 실패 시 본인인증) ";
 
@@ -37,6 +48,7 @@ public class UserDAO {
 
           } else {
               // 신규 회원
+              incrementFailCount(request, id);
               System.out.println("새로 오셨네요. 회원가입 해주세요");
               loginMsg = "새로 오셨네요. 회원가입 해주세요";
           }
@@ -47,18 +59,39 @@ public class UserDAO {
 
 
 
-
-
-
-
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             DBManager_new.close(con, pstmt, rs);
-
         }
+    }
+    
+    private static void incrementFailCount(HttpServletRequest request, String id) {
+        Integer failCount = (Integer) request.getSession().getAttribute("loginFailCount");
+        if (failCount == null) {
+            failCount = 1;
+        } else {
+            failCount++;
+        }
+        
+        request.getSession().setAttribute("loginFailCount", failCount);
+        
+        // 5회 실패 시 리디렉션을 위한 플래그 설정
+        if (failCount >= 5) {
+            request.setAttribute("redirectJoin", true);
+        }
+    }
 
+    public static boolean LoginCheck(HttpServletRequest req) {
+        UserDTO check = (UserDTO) req.getSession().getAttribute("check");
 
+        if (check != null) {
+            req.setAttribute("loginPage", "user/loginOK.jsp");
+            return true;
+        } else {
+            req.setAttribute("loginPage", "user/login.jsp");
+            return false;
+        }
 
 
     }

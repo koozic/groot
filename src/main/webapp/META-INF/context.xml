@@ -1,14 +1,14 @@
-<<<<<<< HEAD
-<?xml version="1.0" encoding="UTF-8"?>
-<Context>
-    <Resources>
-        <PreResources
-                className="org.apache.catalina.webresources.DirResourceSet"
-                base="C:\dbworkspace\kd\upload/z"
-                webAppMount="/images"/>
-    </Resources>
-</Context>
-=======
+<!--<<<<<<< HEAD-->
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<Context>-->
+<!--    <Resources>-->
+<!--        <PreResources-->
+<!--                className="org.apache.catalina.webresources.DirResourceSet"-->
+<!--                base="C:\dbworkspace\kd\upload/z"-->
+<!--                webAppMount="/images"/>-->
+<!--    </Resources>-->
+<!--</Context>-->
+
 <!--<?xml version="1.0" encoding="UTF-8"?>-->
 <!--<Context>-->
 <!--    <Resources>-->
@@ -18,4 +18,3 @@
 <!--                webAppMount="/images"/>-->
 <!--    </Resources>-->
 <!--</Context>-->
->>>>>>> 32d661f518c27da87c0d5059c235a2ce94697838
