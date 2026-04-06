@@ -7,21 +7,21 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class ProductDTO {
-    private int product_id;
-    private String product_admin;
-    private String product_Name;
-    private String product_Brand;
-    private int product_price;
-    private int product_nutrient;
-    private String product_description;
-    private String product_img;
-    private int product_total;
-    private int product_serve;
-    private int product_per_day;
-    private String product_time_info;
-    private Date product_start_date;
-    private int product_current;
+    private int productId;
+    private String productAdmin;
+    private String productName;
+    private String productBrand;
+    private int productPrice;
+    private int productNutrient;
+    private String productDescription;
+    private String productImage;
+    private int productTotal;
+    private int productServe;
+    private int productPerDay;
+    private String productTimeInfo;
+    private Date productStartDate;
+    private int productCurrent;
 }

@@ -2,7 +2,7 @@ select *
 from products;
 
 
--- drop table products;
+drop table products;
 
 
 CREATE TABLE products
@@ -17,16 +17,16 @@ CREATE TABLE products
     product_image       VARCHAR2(255 char),          -- '제품 이미지 URL/경로'
     product_total       number(3),                   -- '1통당 총 알약 수'
     product_serve       number(2),                   -- '1회 섭취량'
-    product_per_day     number(2),                   -- '1일 섭취 횟수'
+    product_per_day     number(2),                      -- '1일 섭취 횟수'
     product_time_info   VARCHAR2(500),               -- '복용 시점 설명'
     product_date        DATE default sysdate,                        -- '복용 시작일'
     product_current     number(3),                   -- '현재 잔여량'
 
     -- 외래키 설정 (영양소 테이블 참조)
-    CONSTRAINT fk_nutrient FOREIGN KEY (product_nutrient) REFERENCES supplements (supplements_id)
+    CONSTRAINT fk_nutrient FOREIGN KEY (product_nutrient) REFERENCES supplements (supplement_id)
 
 );
-
+-- drop table calendar;
 create table calendar
 (
     user_id    varchar2(30 char) not null,
@@ -38,7 +38,7 @@ create table calendar
 
 );
 
-
+-- drop table calender;
 -- 1. 비타민 C (기본 영양제)
 INSERT INTO products (product_id, product_admin, product_name, product_brand, product_price, product_nutrient,
                       product_description, product_image, product_total, product_serve, product_per_day,

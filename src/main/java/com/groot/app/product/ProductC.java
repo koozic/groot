@@ -13,7 +13,7 @@ public class ProductC extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         //일
         ProductDAO.PDAO.showAllProducts(request);
-
+//        System.out.println(request.getAttribute("products"));
         request.getRequestDispatcher("product/product.jsp").forward(request, response);
 
     }
