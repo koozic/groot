@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.servlet.http.HttpSession;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -18,6 +20,13 @@ public class UserDTO {
    private String address;
    private boolean agree;
    private String path;
+
+
+
+
+
+
+
 
 
 }
