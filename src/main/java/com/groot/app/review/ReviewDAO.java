@@ -78,12 +78,12 @@ public class ReviewDAO {
 
         try {
             // 1. 사진 저장 경로 잡기
-            String path = request.getServletContext().getRealPath("img");
+            String path = request.getServletContext().getRealPath("upload");
             System.out.println("사진 저장 폴더: " + path);
 
             // 2. 🌟 언박싱 시작! (MultipartRequest 객체 생성)
             MultipartRequest mr = new MultipartRequest(request, path, 1024 * 1024 * 10, "UTF-8", new DefaultFileRenamePolicy());
-
+//
             // 3. 박스에서 내용물(파라미터) 하나씩 꺼내기
             String product_id = mr.getParameter("product_id");
             String r_title = mr.getParameter("r_title");
