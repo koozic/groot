@@ -37,10 +37,15 @@ public class BodyDAO {
     public List<BodyDTO> getSupplementsByBody(int bodyId, String sortType) throws Exception {
         List<BodyDTO> list = new ArrayList<>();
 
-        // 좋아요 수는 supplements_like 테이블에서 COUNT
-        String orderBy = "like".equals(sortType)
-                ? "like_cnt DESC, s.supplement_view_count DESC"
-                : "s.supplement_view_count DESC, like_cnt DESC";
+        String orderBy;
+        if ("like".equals(sortType)) {
+            orderBy = "like_cnt DESC, s.supplement_view_count DESC"; // 좋아요순
+        } else if ("view".equals(sortType)) {
+            orderBy = "s.supplement_view_count DESC, like_cnt DESC"; // 조회순
+        } else {
+            // 기본값(recent): 최신 등록일 순서 (ID가 클수록 최근 데이터라고 가정)
+            orderBy = "s.supplement_id DESC";
+        }
 
         String sql = "SELECT s.supplement_id, s.supplement_name, s.supplement_efficacy, " +
                 "       s.supplement_dosage, s.supplement_timing, s.supplement_caution, " +
