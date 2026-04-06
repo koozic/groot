@@ -4,6 +4,8 @@ package com.groot.app.supplements;
 // 여러 개의 SupplementDTO를 리스트(List)에 담아 반환하는 역할
 
 import com.groot.app.main.DBManager_new;
+import com.oreilly.servlet.MultipartRequest;
+import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Connection;
@@ -13,7 +15,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SupplementsDAO {
+    public class SupplementsDAO {
+        // 싱글톤 패턴: 오직 하나의 객체만 생성하여 SDAO라는 이름으로 공유합니다.
+        public static final SupplementsDAO SDAO = new SupplementsDAO();
+        public SupplementsDAO() {
+            // 기본 생성자
+        }
 
     // 영양성분 전체 리스트 조회 메서드 (Read)
     public static List<SupplementsDTO> getSupplementsList() {
@@ -53,7 +60,80 @@ public class SupplementsDAO {
         return SupplementList;
     }
 
-}
+        public void addSupplement(HttpServletRequest request) {
+            // 1. 값 받거나 DB 세팅
+            Connection con = null;
+            PreparedStatement pstmt = null;
+
+            // DB 컬럼보고 이름 적기!! (안전을 위해 추가할 컬럼명을 명시했습니다)
+            String sql = "insert into supplements (supplement_id, supplement_name, supplement_efficacy, supplement_dosage, supplement_timing, supplement_caution,  supplement_image_path) " +
+                         "values(seq_supplements_id.nextval,?,?,?,?,?,?)";
+            SupplementsDTO dto = null;
+
+            // String path = request.getServletContext().getRealPath("suppFile");
+            String path = "C:\\es\\dbws_intellij\\upload\\supplementFile";
+            // 웹앱의 영양성분 파일 폴더
+
+            try {
+                con = DBManager_new.connect();
+                pstmt = con.prepareStatement(sql);
+
+                MultipartRequest mr = new MultipartRequest(request, path,
+                        1024*1024*20, "UTF-8", new DefaultFileRenamePolicy());
+
+                // jsp 인풋 파라미터 이름!
+                String supplementName = mr.getParameter("supplementName");
+                String supplementEfficacy = mr.getParameter("supplementEfficacy");
+                String supplementDosage = mr.getParameter("supplementDosage");
+                String supplementTiming = mr.getParameter("supplementTiming");
+                String supplementCaution = mr.getParameter("supplementCaution");
+                String supplementFile = mr.getFilesystemName("supplementFile");
+
+                System.out.println(supplementName);
+                System.out.println(supplementEfficacy);
+                System.out.println(supplementDosage);
+                System.out.println(supplementTiming);
+                System.out.println(supplementCaution);
+                System.out.println(supplementFile);
+
+                if (supplementEfficacy != null) {
+                    supplementEfficacy = supplementEfficacy.replace("\r\n", "<br>");
+                } else {
+                    // 2. 사진을 업로드하지 않은 경우:
+                    // 빈 칸("")을 넣거나, 미리 준비해둔 '기본 이미지(No Image)' 경로를 넣어줍니다.
+
+                    // 추천 방식 (미리 /img/supp/ 폴더에 default.png 같은 이미지를 하나 넣어두세요!)
+                    pstmt.setString(6, "/img/supp/default.png");
+
+                    // 또는 그냥 빈 칸으로 둘 수도 있습니다.
+                    // pstmt.setString(6, "");
+                }
+
+                pstmt.setString(1, supplementName);
+                pstmt.setString(2, supplementEfficacy);
+                pstmt.setString(3, supplementDosage);
+                pstmt.setString(4, supplementTiming);
+                pstmt.setString(5, supplementCaution);
+
+                // 순수한 파일명만 DB에 저장합니다!
+                pstmt.setString(6, supplementFile);
+
+                if (pstmt.executeUpdate() == 1) {
+                    System.out.println("add success");
+                }
+
+            } catch(Exception e) {
+                e.printStackTrace();
+
+            } finally {
+                DBManager_new.close(con, pstmt, null);
+            }
+
+        }
+
+    }
+
+
 
 
 

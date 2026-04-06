@@ -20,15 +20,20 @@
 <body>
 <h1 style="text-align: center;">영양성분 리스트</h1>
 
+<button onclick="location.href='suppReg'">새 영양성분 등록</button>
+
 <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
     <div class="supplements-container">
         <c:forEach var="supp" items="${supplementsList}">
         <div class="supp-wrap">
 
             <div class="supp-img" onclick="location.href='detailSupp.do?id=${supp.supplementId}'">
-                <img alt="" src="${supp.supplementImagePath}">
+                <img alt="${supp.supplementName}" src="/img/supp/${supp.supplementImagePath}">
             </div>
             <div class="supp-name">${supp.supplementName}</div>
             <div class="supp-efficacy">${supp.supplementEfficacy}</div>
+        </div>
+
+            </c:forEach>
 </body>
 </html>
