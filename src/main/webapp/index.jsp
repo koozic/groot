@@ -43,7 +43,8 @@
     <div class="nav-left">
         <a href="product"   class="nav-item ${activeTab == 'product'   ? 'active' : ''}">제품</a>
         <a href="nutrition" class="nav-item ${activeTab == 'nutrition' ? 'active' : ''}">영양성분</a>
-        <a href="reco" class="nav-item ${activeTab == 'recommend' ? 'active' : ''}">영양추천</a>
+        <a href="recommend" class="nav-item ${activeTab == 'recommend' ? 'active' : ''}">영양추천</a>
+
     </div>
     <%-- nav 장바구니 버튼 --%>
     <div class="nav-cart" onclick="toggleCart()">
