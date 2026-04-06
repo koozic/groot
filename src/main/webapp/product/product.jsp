@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>제품 상세 페이지</title>
-
+    <link rel="stylesheet" href="css/product.css">
 </head>
 <body>
 <div class="product-container">
