@@ -169,6 +169,78 @@ public class ReviewDAO {
         return stats;
     }
 
+    // 🌟 [근본] 상품의 평균 별점 가져오기
+    public static double getAvgScore(int productId) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        double avg = 0.0;
 
+        try {
+            con = DBManager_new.connect();
+            // 🌟 쿼리 포인트: AVG(r_score) 쓰면 오라클이 알아서 다 더하고 나눠줌!
+            // NVL은 리뷰가 0개일 때 널(null) 에러 안 나게 0으로 바꿔주는 센스!
+            String sql = "SELECT NVL(AVG(r_score), 0) as avg_score FROM REVIEWS WHERE product_id = ?";
 
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, productId);
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                avg = rs.getDouble("avg_score");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBManager_new.close(con, pstmt, rs);
+        }
+        return avg;
+    }
+    // ReviewDAO.java 에 추가 (또는 기존 getStarStats 수정)
+    public static void getReviewStats(HttpServletRequest request, int productId) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        // 별점별 개수를 담을 맵 (기본값 0 세팅)
+        Map<Integer, Integer> stats = new HashMap<>();
+        for (int i = 1; i <= 5; i++) stats.put(i, 0);
+
+        try {
+            con = DBManager_new.connect();
+
+            // 🌟 쿼리 한 줄로 평균(AVG)과 별점별 그룹화 데이터를 다 가져올 순 없으니,
+            // 여기서는 통계 데이터를 정교하게 가져오는 게 포인트!
+            String sql = "SELECT r_score, COUNT(*) as cnt FROM REVIEWS WHERE product_id = ? GROUP BY r_score";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, productId);
+            rs = pstmt.executeQuery();
+
+            double totalScoreSum = 0;
+            int totalReviewCount = 0;
+
+            while (rs.next()) {
+                int score = rs.getInt("r_score");
+                int cnt = rs.getInt("cnt");
+                stats.put(score, cnt);
+
+                totalScoreSum += (score * cnt); // 점수 합계 계산
+                totalReviewCount += cnt;        // 전체 개수 계산
+            }
+
+            // 🌟 계산 로직을 DAO가 다 처리함!
+            double avg = (totalReviewCount > 0) ? (totalScoreSum / totalReviewCount) : 0.0;
+            String avgScore = String.format("%.1f", avg);
+
+            // 🌟 결과물을 바로 request 가방에 넣어버림 (컨트롤러 일거리 줄여주기)
+            request.setAttribute("starStats", stats);
+            request.setAttribute("avgScore", avgScore);
+            request.setAttribute("totalCount", totalReviewCount);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBManager_new.close(con, pstmt, rs);
+        }
+    }
 } // ReviewDAO 클래스 끝

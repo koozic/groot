@@ -15,14 +15,16 @@
     1. 전체 리뷰 개수(totalCount): [ ${totalCount} ] <br>
     2. 별점 5점 개수(starStats): [ ${starStats[5]} ] <br>
     3. 별점 맵 전체: [ ${starStats} ]
+    4. 평균 점수 데이터(avgScore): [ ${avgScore} ]
 </div>
+
 
 <div class="review-container">
     <div class="review-header">
         <h2>💬 상품 리뷰</h2>
         <div class="star-stats-container">
             <div class="avg-score-box">
-                <div class="avg-score">4.8</div> <div class="avg-stars">★★★★★</div>
+                <div class="avg-score">${avgScore}</div> <div class="avg-stars">★★★★★</div>
                 <div class="total-review-count">구매후기 평점 ${reviews.size()}개 기준</div>
             </div>
 
