@@ -22,7 +22,7 @@ import java.util.*;
  *  GET  /body?action=myLikes&sort=recent → 마이페이지 좋아요 목록
  */
 
-@WebServlet(name = "BodyC", value = {"/body", "/body_view"})
+@WebServlet(name = "BodyC", value = "/body")
 public class BodyC extends HttpServlet {
 
     private final BodyDAO dao = new BodyDAO();
@@ -31,13 +31,6 @@ public class BodyC extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-        String uri = request.getRequestURI();
-
-        // 페이지 요청인 경우 (AJAX가 아님)
-        if (uri.contains("body_view")) {
-            request.getRequestDispatcher("body/body.jsp").forward(request, response);
-            return;
-        }
             request.setCharacterEncoding("UTF-8");
             response.setContentType("application/json; charset=UTF-8");
 
@@ -61,11 +54,7 @@ public class BodyC extends HttpServlet {
                         // 특정 신체 부위의 영양소 목록
                         int bodyId = Integer.parseInt(request.getParameter("bodyId"));
                         String sort = request.getParameter("sort"); // "view" or "like"
-
-                        // 사용자가 버튼을 누르지 않은 초기 상태(null)라면 'recent'를 기본값으로 사용
-                        if (sort == null || sort.isEmpty()) {
-                            sort = "recent";
-                        }
+                        if (sort == null) sort = "view";
 
                         // 리턴 타입이 영양소 정보이므로 SupplementDTO(또는 명칭에 맞는 DTO) 사용 권장
                         // 여기서는 기존 흐름에 따라 작성하되, DAO에서 JOIN 쿼리가 필요함
