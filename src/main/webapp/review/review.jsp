@@ -10,14 +10,6 @@
 </head>
 <body>
 
-<div style="background: yellow; color: red; padding: 20px; font-weight: bold; z-index: 9999; position: relative;">
-    데이터 배달 점검:<br>
-    1. 전체 리뷰 개수(totalCount): [ ${totalCount} ] <br>
-    2. 별점 5점 개수(starStats): [ ${starStats[5]} ] <br>
-    3. 별점 맵 전체: [ ${starStats} ]
-    4. 평균 점수 데이터(avgScore): [ ${avgScore} ]
-</div>
-
 
 <div class="review-container">
     <div class="review-header">
