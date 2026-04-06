@@ -20,7 +20,7 @@
             <c:when test="${not empty sessionScope.loginUser}">
                 <span class="hdr-link">${sessionScope.loginUser.nickname}님</span>
                 <a href="mypage" class="hdr-link">마이페이지</a>
-                <a href="logout" class="btn-login">로그아웃</a>
+                <a href="logout" class="btn-login">로그아웃.</a>
             </c:when>
             <c:otherwise>
                 <a href="join"  class="hdr-link">회원가입</a>
