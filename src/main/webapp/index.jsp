@@ -143,7 +143,6 @@
         </c:otherwise>
     </c:choose>
 </nav>
-
 <!-- =============================================
      7. JavaScript
      ============================================= -->
@@ -184,6 +183,8 @@
             document.getElementById('siteBody').classList.remove('shifted');
         }
     });
+
+
 </script>
 
 </body>

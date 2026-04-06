@@ -3,7 +3,7 @@
     <Resources>
         <PreResources
                 className="org.apache.catalina.webresources.DirResourceSet"
-                base="C:\es\upload\movieFile"
+                base="/Users/a1111/dbws_intelij/movieFile"
                 webAppMount="/images"/>
     </Resources>
 </Context>
