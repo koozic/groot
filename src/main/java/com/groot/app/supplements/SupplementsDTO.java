@@ -14,13 +14,13 @@ import java.sql.Date;
 
 public class SupplementsDTO {
     // 1. 멤버 변수 (테이블 컬럼과 매칭)
-    private int sNo;
-    private String sName;
-    private String sEfficacy;
-    private String sDosage;
-    private String sTiming;
-    private String sCaution;
-    private String sImagePath;
-    private Date sRegDate;
-    private int sViewCount;
+    private int supplementNo;
+    private String supplementName;
+    private String supplementEfficacy;
+    private String supplementDosage;
+    private String supplementTiming;
+    private String supplementCaution;
+    private String supplementImagePath;
+    private Date supplementRegDate;
+    private int supplementViewCount;
 }

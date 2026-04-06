@@ -5,6 +5,7 @@ package com.groot.app.supplements;
 
 import com.groot.app.main.DBManager_new;
 
+import javax.servlet.http.HttpServletRequest;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -37,12 +38,12 @@ public class SupplementsDAO {
                 SupplementsDTO dto = new SupplementsDTO();
 
                 // ResultSet에서 데이터를 꺼내어 DTO 바구니에 담기
-                dto.setsNo(rs.getInt("s_no"));
-                dto.setsName(rs.getString("s_name"));
-                dto.setsEfficacy(rs.getString("s_efficacy"));
-                dto.setsImagePath(rs.getString("s_image_path"));
-                dto.setsRegDate(rs.getDate("s_reg_date"));
-                dto.setsViewCount(rs.getInt("s_view_count"));
+//                dto.setsNo(rs.getInt("s_no"));
+//                dto.setsName(rs.getString("s_name"));
+//                dto.setsEfficacy(rs.getString("s_efficacy"));
+//                dto.setsImagePath(rs.getString("s_image_path"));
+//                dto.setsRegDate(rs.getDate("s_reg_date"));
+//                dto.setsViewCount(rs.getInt("s_view_count"));
 
                 // 데이터가 담긴 DTO를 List에 추가
                 list.add(dto);
@@ -56,6 +57,9 @@ public class SupplementsDAO {
 
         return list; // 완성된 리스트 반환
 
+    }
+
+    public void getSupplementsList(HttpServletRequest request) {
     }
 }
 
