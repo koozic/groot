@@ -7,9 +7,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title >약쟁이</title>
     <link rel="stylesheet" href="css/app.css">
-    <link rel="stylesheet" href="css/login.css">
-
-
+    <script>
+        const IS_LOGIN = ${ not empty sessionScope.loginUser };
+    </script>
+    <script src="js/app.js"></script>
+    <link rel="stylesheet" href="css/recommend.css">
+    <link rel="stylesheet" href="css/home.css">
 </head>
 <body>
 
@@ -21,13 +24,7 @@
     <div class="hdr-right">
         <c:choose>
             <c:when test="${not empty sessionScope.loginUser}">
-                <span class="hdr-link">어서오세요. 당신의 건강을 챙기세요</span>
-                <img
-                        src="${sessionScope.loginUser.user_profile}"
-                        alt="프로필"
-                        style="width:40px; height:40px; border-radius:50%; object-fit:cover;"
-                >
-                <span class="hdr-link">${sessionScope.loginUser.name}님</span>
+                <span class="hdr-link">${sessionScope.loginUser.nickname}님</span>
                 <a href="mypage" class="hdr-link">마이페이지</a>
                 <a href="logout" class="btn-login">로그아웃.</a>
             </c:when>
