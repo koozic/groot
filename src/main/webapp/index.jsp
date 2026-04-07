@@ -5,8 +5,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>약쟁이</title>
+    <title >약쟁이</title>
     <link rel="stylesheet" href="css/app.css">
+    <script>
+        const IS_LOGIN = ${ not empty sessionScope.loginUser };
+    </script>
+    <script src="js/app.js"></script>
+    <link rel="stylesheet" href="css/recommend.css">
+    <link rel="stylesheet" href="css/home.css">
 </head>
 <body>
 
@@ -14,7 +20,7 @@
      1. 헤더
      ============================================= -->
 <header class="site-header">
-    <a href="home" class="logo">약<span>쟁</span>이</a>
+    <a href="hello-servlet" class="logo">약<span>쟁</span>이</a>
     <div class="hdr-right">
         <c:choose>
             <c:when test="${not empty sessionScope.loginUser}">
@@ -24,7 +30,7 @@
             </c:when>
             <c:otherwise>
                 <a href="join"  class="hdr-link">회원가입</a>
-                <a href="login" class="btn-login">로그인</a>
+                <a href="user-Login" class="btn-login">로그인</a>
             </c:otherwise>
         </c:choose>
     </div>
@@ -38,6 +44,7 @@
         <a href="product"   class="nav-item ${activeTab == 'product'   ? 'active' : ''}">제품</a>
         <a href="nutrition" class="nav-item ${activeTab == 'nutrition' ? 'active' : ''}">영양성분</a>
         <a href="recommend" class="nav-item ${activeTab == 'recommend' ? 'active' : ''}">영양추천</a>
+
     </div>
     <%-- nav 장바구니 버튼 --%>
     <div class="nav-cart" onclick="toggleCart()">
@@ -143,6 +150,7 @@
         </c:otherwise>
     </c:choose>
 </nav>
+
 <!-- =============================================
      7. JavaScript
      ============================================= -->
@@ -183,8 +191,6 @@
             document.getElementById('siteBody').classList.remove('shifted');
         }
     });
-
-
 </script>
 
 </body>

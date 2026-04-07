@@ -1,21 +1,9 @@
-<<<<<<< HEAD
-<?xml version="1.0" encoding="UTF-8"?>
-<Context>
-    <Resources>
-        <PreResources
-                className="org.apache.catalina.webresources.DirResourceSet"
-                base="/Users/a1111/dbws_intelij/movieFile"
-                webAppMount="/images"/>
-    </Resources>
-</Context>
-=======
 <!--<?xml version="1.0" encoding="UTF-8"?>-->
 <!--<Context>-->
 <!--    <Resources>-->
 <!--        <PreResources-->
 <!--                className="org.apache.catalina.webresources.DirResourceSet"-->
-<!--                base="C:\es\upload\movieFile"-->
+<!--                base="C:\dbworkspace\kd\upload"-->
 <!--                webAppMount="/images"/>-->
 <!--    </Resources>-->
 <!--</Context>-->
->>>>>>> 32d661f518c27da87c0d5059c235a2ce94697838
