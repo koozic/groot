@@ -51,7 +51,7 @@
             </div>
         </div>
         <%-- 🌟 여기가 리뷰 작성 폼으로 넘어가는 버튼! (임시로 101번 상품으로 세팅) --%>
-        <a href="review/review_write.jsp?product_id=101" class="btn-write">✍️ 리뷰 작성하기</a>
+        <a href="review/review_write.jsp?product_id=105" class="btn-write">✍️ 리뷰 작성하기</a>
     </div>
     <%-- ========================================================= --%>
     <%-- 📸 1. 포토 갤러리 구역 (아이허브 스타일) --%>
@@ -97,6 +97,9 @@
     </div>
     <%-- ========================================================= --%>
     <%-- 1. DAO에서 가져온 리뷰 리스트 쫙 뿌리기 (DTO 소문자로 맞춘 거 적용됨!) --%>
+
+
+    <div id="review-list-container">
     <c:forEach var="r" items="${reviews}">
         <div class="review-card">
             <div class="review-title">제목: ${r.r_title}</div>
@@ -104,13 +107,7 @@
                 작성자: ${r.user_id} | 별점: ${r.r_score}점 | 작성일: ${r.r_date}
             </div>
 
-            <div style="text-align: right; margin-bottom: 10px;">
-                <button type="button"
-                        onclick="openDetailModal('${r.r_title}', '${r.user_id}', '${r.r_score}', '${r.r_date}', '${r.r_content}', '${r.r_img}')"
-                        style="padding: 5px 12px; background: #34495e; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.85em;">
-                    🔍 리뷰 상세보기
-                </button>
-            </div>
+
                 <%-- 🌟 [사진 위치] 별점 밑, 구분선(hr) 위에 넣어야 예뻐! --%>
             <c:if test="${not empty r.r_img}">
                 <div class="review-img-box" style="margin: 15px 0;">
@@ -123,10 +120,23 @@
             <div class="review-content">
                     ${r.r_content}
             </div>
+            <div class="review-action-box">
+                <button type="button"
+                        id="like-btn-${r.review_id}"
+                        class="btn-like"
+                        onclick="toggleLike(${r.review_id}, 'kim124')">
+                    👍 도움돼요 <span id="like-count-${r.review_id}" class="like-count">${r.r_like}</span>
+                </button>
 
+                <button type="button"
+                        class="btn-detail"
+                        onclick="openDetailModal('${r.r_title}', '${r.user_id}', '${r.r_score}', '${r.r_date}', '${r.r_content}', '${r.r_img}')">
+                    🔍 리뷰 상세보기
+                </button>
+            </div>
         </div>
     </c:forEach>
-
+    </div>
 
     <%-- 2. 등록된 리뷰가 한 개도 없을 때 --%>
     <c:if test="${empty reviews}">

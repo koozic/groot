@@ -121,3 +121,63 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helv
     outline: none;
 }
 .sort-options select:focus, .filter-options select:focus { border-color: #34495e; }
+
+
+/* =========================================
+   👍 리뷰 액션 버튼 (좋아요, 상세보기)
+========================================= */
+
+/* 버튼들을 감싸는 박스 */
+.review-action-box {
+    margin-top: 15px;
+    display: flex;
+    justify-content: space-between; /* 양쪽으로 벌리기 (왼쪽: 좋아요, 오른쪽: 상세보기) */
+    align-items: center;
+}
+
+/* 1. 아이허브 감성 좋아요 버튼 */
+.btn-like {
+    padding: 6px 14px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    background-color: white;
+    cursor: pointer;
+    font-size: 0.9em;
+    color: #555;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+/* 마우스 올렸을 때 살짝 회색 */
+.btn-like:hover {
+    background-color: #f8f9fa;
+    border-color: #ccc;
+}
+
+/* 눌렀을 때 깜빡이는 애니메이션용 클래스! */
+.btn-like.clicked {
+    background-color: #e8f0fe !important;
+    border-color: #aebce8 !important;
+}
+
+/* 좋아요 숫자 부분 */
+.like-count {
+    font-weight: bold;
+    color: #34495e;
+    margin-left: 5px;
+}
+
+/* 2. 리뷰 상세보기 버튼 (아까 style 떡칠했던 거 정리) */
+.btn-detail {
+    padding: 6px 14px;
+    background-color: #34495e;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85em;
+    transition: background-color 0.2s ease;
+}
+
+.btn-detail:hover {
+    background-color: #2c3e50;
+}

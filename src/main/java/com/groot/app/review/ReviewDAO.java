@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.google.gson.Gson;
 import com.groot.app.main.DBManager_new;
 import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
@@ -15,7 +18,8 @@ public class ReviewDAO {
     // 1. 싱글톤 패턴
     public static final ReviewDAO RDAO = new ReviewDAO();
 
-    private ReviewDAO() {}
+    private ReviewDAO() {
+    }
 
     private ArrayList<ReviewDTO> reviews;
 
@@ -84,7 +88,6 @@ public class ReviewDAO {
     }
 
 
-
     public void insertReview(HttpServletRequest request) {
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -106,7 +109,7 @@ public class ReviewDAO {
             // 실제 올라간 사진 파일 이름 꺼내기
             String r_img = mr.getFilesystemName("r_img");
 
-            String user_id = "kim123"; // 임시 유저 아이디
+            String user_id = "kim124"; // 임시 유저 아이디
 
             // 줄바꿈 처리 (엔터 친 거 화면에서도 줄바꿈 되게!)
             r_content = r_content.replaceAll("\r\n", "<br>");
@@ -140,6 +143,7 @@ public class ReviewDAO {
             DBManager_new.close(con, pstmt, null);
         }
     }
+
     // 🌟 [추가] 상품별 별점 통계 가져오기
     public static Map<Integer, Integer> getStarStats(int productId) {
         // 별점(key)과 개수(value)를 담을 주머니
@@ -207,6 +211,7 @@ public class ReviewDAO {
         }
         return avg;
     }
+
     // ReviewDAO.java 에 추가 (또는 기존 getStarStats 수정)
     public static void getReviewStats(HttpServletRequest request, int productId) {
         Connection con = null;
@@ -254,6 +259,7 @@ public class ReviewDAO {
             DBManager_new.close(con, pstmt, rs);
         }
     }
+
     // 특정 상품의 '사진이 있는' 리뷰 이미지만 가져오기
     // 특정 상품의 '사진이 있는' 리뷰 가져오기 (모달 띄우기 위해 모든 정보 다 가져옴!)
     public ArrayList<ReviewDTO> getAllPhotoImages(int productId) {
@@ -294,4 +300,112 @@ public class ReviewDAO {
         return images;
     }
 
+    // ReviewDAO.java 맨 밑에 추가!
+    public void getSortedReviewsAjax(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            // 1. 응답 설정 (데이터 줄게! 한글 안 깨지게!)
+            response.setContentType("application/json; charset=UTF-8");
+
+            // 2. 파라미터 꺼내기 (컨테이너가 준 request에서 직접!)
+            int pId = Integer.parseInt(request.getParameter("PRODUCT_ID"));
+            String sortType = request.getParameter("sortType");
+            String starFilterStr = request.getParameter("starFilter");
+            int starFilter = (starFilterStr != null) ? Integer.parseInt(starFilterStr) : 0;
+
+            // 3. 🌟 기존에 무영이가 만든 'getAllReview' 로직 재활용!
+            // 이 메서드가 실행되면 가방(request)에 "reviews"라는 이름으로 리스트가 담겨!
+            getAllReview(request, pId, sortType, starFilter);
+
+            // 가방에서 다시 꺼내기
+            ArrayList<ReviewDTO> reviews = (ArrayList<ReviewDTO>) request.getAttribute("reviews");
+
+            // 4. 🌟 GSON으로 포장해서 바로 쏴버리기!
+            Gson gson = new Gson();
+            response.getWriter().write(gson.toJson(reviews));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // 🌟 [수정] 컨트롤러의 일(파라미터 빼기)까지 다 뺏어온 완벽한 DAO 메서드!
+    public int toggleReviewLike(HttpServletRequest request) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        int currentLikes = 0;
+
+        try {
+            // 1️⃣ 🌟 컨트롤러 대신 여기서 파라미터 언박싱!
+            int reviewId = Integer.parseInt(request.getParameter("review_id"));
+            String userId = request.getParameter("user_id"); // 나중엔 세션에서 꺼낼 예정!
+
+            con = DBManager_new.connect();
+            con.setAutoCommit(false); // 트랜잭션 시작
+
+            // 2️⃣ 이 사람이 이 리뷰에 좋아요를 누른 적이 있는지 장부 검사!
+            String checkSql = "SELECT COUNT(*) FROM review_likes WHERE review_id = ? AND user_id = ?";
+            pstmt = con.prepareStatement(checkSql);
+            pstmt.setInt(1, reviewId);
+            pstmt.setString(2, userId);
+            rs = pstmt.executeQuery();
+
+            boolean alreadyLiked = false;
+            if (rs.next() && rs.getInt(1) > 0) {
+                alreadyLiked = true;
+            }
+            pstmt.close();
+
+            // 3️⃣ 토글 분기 처리 (코드 동일)
+            if (alreadyLiked) {
+                // [좋아요 취소]
+                String delSql = "DELETE FROM review_likes WHERE review_id = ? AND user_id = ?";
+                pstmt = con.prepareStatement(delSql);
+                pstmt.setInt(1, reviewId);
+                pstmt.setString(2, userId);
+                pstmt.executeUpdate();
+                pstmt.close();
+
+                String updateSql = "UPDATE reviews SET r_like = r_like - 1 WHERE review_id = ?";
+                pstmt = con.prepareStatement(updateSql);
+                pstmt.setInt(1, reviewId);
+                pstmt.executeUpdate();
+            } else {
+                // [좋아요 추가]
+                String insSql = "INSERT INTO review_likes (reviewlike_id, review_id, user_id) VALUES (review_likes_seq.NEXTVAL, ?, ?)";
+                pstmt = con.prepareStatement(insSql);
+                pstmt.setInt(1, reviewId);
+                pstmt.setString(2, userId);
+                pstmt.executeUpdate();
+                pstmt.close();
+
+                String updateSql = "UPDATE reviews SET r_like = r_like + 1 WHERE review_id = ?";
+                pstmt = con.prepareStatement(updateSql);
+                pstmt.setInt(1, reviewId);
+                pstmt.executeUpdate();
+            }
+            pstmt.close();
+
+            // 4️⃣ 최종 좋아요 개수 조회
+            String countSql = "SELECT r_like FROM reviews WHERE review_id = ?";
+            pstmt = con.prepareStatement(countSql);
+            pstmt.setInt(1, reviewId);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                currentLikes = rs.getInt("r_like");
+            }
+
+            con.commit(); // DB 확정!
+
+        } catch (Exception e) {
+            try { if (con != null) con.rollback(); } catch (Exception ex) {}
+            e.printStackTrace();
+            System.out.println("❌ 좋아요 처리 중 에러 발생!");
+        } finally {
+            try { if (con != null) con.setAutoCommit(true); } catch (Exception ex) {}
+            DBManager_new.close(con, pstmt, rs);
+        }
+
+        return currentLikes; // 최종 개수 반환
+    }
 } // ReviewDAO 클래스 끝
