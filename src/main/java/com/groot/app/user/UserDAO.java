@@ -3,6 +3,7 @@ package com.groot.app.user;
 import com.groot.app.main.DBManager_new;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -59,6 +60,17 @@ public class UserDAO {
 
             request.setAttribute("loginMsg", loginMsg);
 
+
+            UserDTO u = new UserDTO();
+
+            u.setUser_id(rs.getString("user_id"));
+            u.setUser_pw(rs.getString("user_pw"));
+            u.setName(rs.getString("user_name"));
+            u.setUser_profile(rs.getString("user_profile"));
+
+
+            HttpSession session = request.getSession();
+            session.setAttribute("loginUser", u);
 
 
 
