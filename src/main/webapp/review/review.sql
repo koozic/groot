@@ -61,10 +61,10 @@ CREATE TABLE review_likes (
 -- 조원들이 넣은 데이터가 진짜 있는지 확인하고 실행해!
 -- (만약 1번 유저나 101번 상품이 없으면 에러 나니까 걔네 데이터 번호로 바꿔줘)
 INSERT INTO reviews (review_id, user_id, product_id, r_title, r_content, r_score)
-VALUES (reviews_seq.NEXTVAL, 'kim124', 105, '합체 대성공!', '진짜 테이블에 연결하니 마음이 편안하네요.', 1);
+VALUES (reviews_seq.NEXTVAL, 'kim124', 106, '합체 대성공!', '진짜 테이블에 연결하니 마음이 편안하네요.', 1);
 
 INSERT INTO review_likes (reviewLike_id, review_id, user_id)
-VALUES (review_likes_seq.NEXTVAL, 63, 'kim124');
+VALUES (review_likes_seq.NEXTVAL, 84, 'kim124');
 
 
 -- ==========================================

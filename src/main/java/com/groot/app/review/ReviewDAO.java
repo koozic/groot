@@ -1,5 +1,6 @@
 package com.groot.app.review;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -54,7 +55,9 @@ public class ReviewDAO {
             sql += " ORDER BY R_SCORE ASC, R_DATE DESC";  // 평점 낮은순
 
         } else {
-            sql += " ORDER BY R_DATE DESC"; // 기본값: 최신순
+            // ❌ 기존: sql += " ORDER BY R_DATE DESC"; (최신순)
+            // ✅ 수정: 베스트순(좋아요순)을 기본값으로 설정!
+            sql += " ORDER BY R_LIKE DESC, R_DATE DESC";
         }
 
         try {
@@ -407,5 +410,112 @@ public class ReviewDAO {
         }
 
         return currentLikes; // 최종 개수 반환
+    }
+
+    // ==========================================
+    // 🗑️ 리뷰 삭제 (관련 좋아요 데이터까지 싹 지우기)
+    // ==========================================
+    public boolean deleteReview(int reviewId) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        boolean success = false;
+
+        try {
+            con = DBManager_new.connect();
+            con.setAutoCommit(false); // 🌟 트랜잭션 시작 (부분 실패 방지!)
+
+            // 1. 좋아요 기록(자식) 먼저 삭제! (외래키 제약조건 때문)
+            String sql1 = "DELETE FROM review_likes WHERE review_id = ?";
+            pstmt = con.prepareStatement(sql1);
+            pstmt.setInt(1, reviewId);
+            pstmt.executeUpdate();
+            pstmt.close();
+
+            // 2. 진짜 리뷰(부모) 삭제!
+            String sql2 = "DELETE FROM reviews WHERE review_id = ?";
+            pstmt = con.prepareStatement(sql2);
+            pstmt.setInt(1, reviewId);
+
+            if (pstmt.executeUpdate() == 1) {
+                success = true;
+                con.commit(); // 🌟 둘 다 문제없이 지워졌으면 DB에 확정(도장 쾅)!
+            }
+        } catch (Exception e) {
+            try { if (con != null) con.rollback(); } catch (Exception ex) {} // 에러 나면 롤백!
+            e.printStackTrace();
+            System.out.println("❌ 리뷰 삭제 중 에러 발생!");
+        } finally {
+            try { if (con != null) con.setAutoCommit(true); } catch (Exception ex) {}
+            DBManager_new.close(con, pstmt, null);
+        }
+        return success;
+    }
+
+    // ==========================================
+    // 🪄 리뷰 수정 (모든 계산 로직은 여기서 처리!)
+    // ==========================================
+    public boolean updateReview(HttpServletRequest request) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            // 1. 사진 저장 경로 잡기 및 MultipartRequest 생성 (언박싱 시작)
+            String path = request.getServletContext().getRealPath("upload");
+            MultipartRequest mr = new MultipartRequest(request, path, 10 * 1024 * 1024, "utf-8", new DefaultFileRenamePolicy());
+
+            // 2. 파라미터 꺼내기
+            int r_id = Integer.parseInt(mr.getParameter("upd_review_id"));
+            String title = mr.getParameter("upd_title");
+            String content = mr.getParameter("upd_content");
+            int score = Integer.parseInt(mr.getParameter("upd_score"));
+
+            String newImg = mr.getFilesystemName("upd_file");   // 새로 올린 사진 이름
+            String oldImg = mr.getParameter("old_img_name");   // 기존 사진 이름
+            String isImgDeleted = mr.getParameter("isImgDeleted"); // 삭제 여부(true/false)
+
+            // 3. [계산 로직] 최종적으로 DB에 넣을 이미지 이름 결정하기
+            String finalImg = oldImg; // 기본은 기존 사진 유지
+
+            if (newImg != null) {
+                // 상황 A: 새 사진을 올린 경우 (기존 사진 있으면 서버에서 삭제)
+                finalImg = newImg;
+                if (oldImg != null && !oldImg.isEmpty()) {
+                    File f = new File(path + "/" + oldImg);
+                    if (f.exists()) f.delete();
+                }
+            } else if ("true".equals(isImgDeleted)) {
+                // 상황 B: 삭제 버튼(X)을 눌러서 이미지를 없앤 경우 (서버에서 파일도 삭제)
+                finalImg = null;
+                if (oldImg != null && !oldImg.isEmpty()) {
+                    File f = new File(path + "/" + oldImg);
+                    if (f.exists()) f.delete();
+                }
+            }
+
+            // 4. 줄바꿈 처리 (엔터 친 거 화면에서 인식되게)
+            content = content.replaceAll("\r\n", "<br>");
+
+            // 5. DB 업데이트 실행
+            con = DBManager_new.connect();
+            String sql = "UPDATE reviews SET r_title=?, r_content=?, r_score=?, r_img=? WHERE review_id=?";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, title);
+            pstmt.setString(2, content);
+            pstmt.setInt(3, score);
+            pstmt.setString(4, finalImg);
+            pstmt.setInt(5, r_id);
+
+            // 6. 🌟 컨트롤러가 redirect할 때 써야 하니까 상품 ID 가방(request)에 다시 담아주기!
+            request.setAttribute("PRODUCT_ID", mr.getParameter("PRODUCT_ID"));
+
+            return pstmt.executeUpdate() == 1;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("❌ 리뷰 수정 중 에러 발생!");
+            return false;
+        } finally {
+            DBManager_new.close(con, pstmt, null);
+        }
     }
 } // ReviewDAO 클래스 끝
