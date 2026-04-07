@@ -1,6 +1,7 @@
 package com.groot.app.user;
 
 import com.groot.app.main.DBManager_new;
+import com.oreilly.servlet.MultipartRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -111,4 +112,69 @@ public class UserDAO {
 
 
     }
+
+    public static void ProfileUpdate(HttpServletRequest request) {
+
+        UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
+        String newProfile = request.getParameter("user_profile");
+
+        Connection con = null;
+        PreparedStatement pstmt = null;
+
+        String sql = "update users set user_profile = ? where user_id = ?";
+
+        try {
+            con = DBManager_new.connect();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, loginUser.getUser_profile());
+            pstmt.setString(2, loginUser.getUser_id());
+
+            int result = pstmt.executeUpdate();
+
+            if (result == 1) {
+                loginUser.setUser_profile(newProfile);
+                request.getSession().setAttribute("loginUser", loginUser);
+                request.setAttribute("msg", "프로필 이미지가 수정되었습니다.");
+            } else {
+                request.setAttribute("msg", "프로필 이미지 수정 실패");
+            }
+
+            loginUser.setUser_profile(newProfile);
+            request.getSession().setAttribute("loginUser", loginUser);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("msg", "프로필 이미지 수정 중 오류가 발생했습니다.");
+        } finally {
+            DBManager_new.close(con, pstmt, null);
+        }
+    }
+
+
+    public static void join(HttpServletRequest request) {
+
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "insert into users values (users_seq.nextval,?,?,?,?,?,?,?,?,?,?,?,?)";
+        try {
+           con = DBManager_new.connect();
+           pstmt = con.prepareStatement(sql);
+
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }  finally {
+            DBManager_new.close(con, pstmt, rs);
+        }
+
+
+
+
+
+
+    }
 }
+

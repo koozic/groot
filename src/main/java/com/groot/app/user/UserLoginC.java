@@ -26,6 +26,19 @@ public class UserLoginC extends HttpServlet {
         } else {
             response.sendRedirect("index.jsp");
         }
+
+        UserDAO.ProfileUpdate(request);
+
+
+
+
+
+
+
+
+
+
+
     }
 
     public void destroy() {
