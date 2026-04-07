@@ -126,6 +126,9 @@ public class BodyDAO {
         return null;
     }
 
+
+
+
     // ─────────────────────────────────────────
     // 4. 영양소 좋아요 토글 (있으면 삭제, 없으면 추가)
     //    반환값: true = 좋아요 추가됨 / false = 좋아요 취소됨
@@ -208,3 +211,4 @@ public class BodyDAO {
         return list;
     }
 }
+
