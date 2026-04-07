@@ -10,13 +10,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class UserDAO {
-    public static void Login(HttpServletRequest request) {
+    public static boolean Login(HttpServletRequest request) {
         String id = request.getParameter("user_id");
         String pw = request.getParameter("user_pw");
 
         Connection con = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
+<<<<<<< HEAD
         String sql = "select user_id, user_pw from users where user_id=?";
         try {
           con = DBManager_new.connect();
@@ -43,27 +44,65 @@ public class UserDAO {
                   request.getSession().setAttribute("loginUser", user);
                   // 세션 초기화
                   request.getSession().removeAttribute("loginFailCount");
+=======
 
-              } else {
-                  // 로그인 실패
-                  incrementFailCount(request, id);
-                  System.out.println("다시 로그인 해주세요 (5회 이상 실패 시 본인인증) ");
-                  loginMsg = "다시 로그인 해주세요 (5회 이상 실패 시 본인인증) ";
+        // 수정 1: 필요한 모든 유저 정보를 가져오기 위해 SELECT * 사용
+        String sql = "SELECT * FROM users WHERE user_id=?";
+        boolean isLoginSuccess = false; // 로그인 성공 여부 저장 변수
 
+        try {
+            con = DBManager_new.connect();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, id); // request.getParameter 대신 변수 id 사용
+            rs = pstmt.executeQuery();
+>>>>>>> 7eb826f7e6d960133475f3008b130016d3af5898
+
+            String loginMsg = "";
+
+<<<<<<< HEAD
                }
               }
+=======
+            if (rs.next()) {
+                if (rs.getString("user_pw").equals(pw)) {
+                    // [로그인 성공]
+                    UserDTO user = new UserDTO();
+                    user.setUser_id(rs.getString("user_id"));
+                    user.setName(rs.getString("user_name"));
+                    user.setEmail(rs.getString("user_email"));
+                    user.setAge(rs.getInt("user_age"));
+                    user.setGender(rs.getString("user_gender"));
+                    user.setUser_profile(rs.getString("user_profile"));
+>>>>>>> 7eb826f7e6d960133475f3008b130016d3af5898
 
-          } else {
-              // 신규 회원
-              incrementFailCount(request, id);
-              System.out.println("새로 오셨네요. 회원가입 해주세요");
-              loginMsg = "새로 오셨네요. 회원가입 해주세요";
-              request.setAttribute("loginMsg", loginMsg);
-              request.setAttribute("needVerifyChoice", true);
-          }
+                    System.out.println("프로필 이미지: " + rs.getString("user_profile"));
+                    System.out.println("어서오세요. 당신의 건강을 챙기세요");
+                    loginMsg = "어서오세요. 당신의 건강을 챙기세요";
 
+                    request.getSession().setAttribute("loginUser", user);
+                    request.getSession().removeAttribute("loginFailCount"); // 실패 카운트 초기화
+
+                    isLoginSuccess = true; // 성공 상태로 변경
+
+                } else {
+                    // [로그인 실패 - 비밀번호 불일치]
+                    incrementFailCount(request, id);
+                    System.out.println("다시 로그인 해주세요 (5회 이상 실패 시 본인인증)");
+                    loginMsg = "아이디 또는 비밀번호가 일치하지 않습니다. (5회 이상 실패 시 본인인증)";
+                }
+
+            } else {
+                // [로그인 실패 - 신규 회원 (없는 아이디)]
+                incrementFailCount(request, id);
+                System.out.println("새로 오셨네요. 회원가입 해주세요");
+                loginMsg = "존재하지 않는 아이디입니다. 회원가입 해주세요";
+                request.setAttribute("needVerifyChoice", true);
+            }
+
+            // 성공이든 실패든 메시지는 request에 담아줌
             request.setAttribute("loginMsg", loginMsg);
 
+<<<<<<< HEAD
 
             UserDTO u = new UserDTO();
         while (rs.next()){
@@ -78,12 +117,18 @@ public class UserDAO {
 
 
 
+=======
+            // 수정 2: 무조건 세션을 생성해버리던 맨 아래의 중복 코드는 삭제했습니다!
+>>>>>>> 7eb826f7e6d960133475f3008b130016d3af5898
 
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             DBManager_new.close(con, pstmt, rs);
         }
+
+        // 컨트롤러에게 로그인 성공 여부를 반환
+        return isLoginSuccess;
     }
     
     private static void incrementFailCount(HttpServletRequest request, String id) {
