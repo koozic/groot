@@ -28,13 +28,25 @@
 
         <div style="margin-bottom:15px;">
             <label style="font-weight: bold;">내용</label>
-            <textarea name="upd_content" id="upd_content" rows="5" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:5px; resize:none;"></textarea>
+            <textarea name="upd_content" id="upd_content" rows="5" maxlength="500" oninput="updateCharCount()" style="width:100%; padding:8px; border:1px solid #ddd; border-radius:5px; resize:none;"></textarea>
+            <div style="text-align:right; font-size:0.85em; color:#888; margin-top:5px;">
+                <span id="charCount" style="font-weight:bold; color:#6a8d3a;">0</span> / 500자
+            </div>
         </div>
-
         <div style="margin-bottom:20px;">
             <label style="font-weight: bold;">사진 수정</label>
             <input type="file" name="upd_file" id="upd_file" accept="image/*" style="display: block; margin-top: 10px;">
             <p style="font-size: 0.8em; color: #999;">* 새로운 사진을 선택하면 기존 사진이 교체됩니다.</p>
+
+            <div id="existing_img_box" style="margin-top: 10px; display: none; padding: 10px; background: #f9f9f9; border-radius: 5px;">
+                <p style="margin: 0 0 5px 0; font-size: 0.9em; color: #555;">📸 현재 등록된 사진이 있습니다.</p>
+
+                <img id="preview_old_img" src="" style="width: 80px; height: 80px; object-fit: cover; border-radius: 5px; margin-bottom: 10px; display: block; border: 1px solid #ddd;">
+
+                <label style="cursor: pointer; color: #e74c3c; font-weight: bold; font-size: 0.9em;">
+                    <input type="checkbox" id="delete_img_check" onchange="toggleImgDelete()"> 이 사진을 완전히 삭제하고 글만 남기기
+                </label>
+            </div>
         </div>
 
         <div style="display:flex; gap:10px;">
