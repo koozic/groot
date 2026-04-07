@@ -13,6 +13,7 @@
     <script src="js/app.js"></script>
     <link rel="stylesheet" href="css/recommend.css">
     <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="css/home.css">
 </head>
 <body>
 
@@ -24,9 +25,15 @@
     <div class="hdr-right">
         <c:choose>
             <c:when test="${not empty sessionScope.loginUser}">
-                <span class="hdr-link">${sessionScope.loginUser.nickname}님</span>
+                <span class="hdr-link">${sessionScope.loginUser.name}님 어서오세요. 당신의 건강을 챙기세요</span>
+                <img
+                        src="${sessionScope.loginUser.user_profile}"
+                        alt="프로필"
+                        style="width:40px; height:40px; border-radius:50%; object-fit:cover;"
+                >
+
                 <a href="mypage" class="hdr-link">마이페이지</a>
-                <a href="logout" class="btn-login">로그아웃.</a>
+                <a href="logout" class="btn-login">로그아웃</a>
             </c:when>
             <c:otherwise>
                 <a href="join"  class="hdr-link">회원가입</a>
@@ -125,13 +132,13 @@
      6. 하단 탭바 (모바일 전용)
      ============================================= -->
 <nav class="bottom-tab">
-    <a href="home"      class="tab-item ${activeTab == 'home'      ? 'active' : ''}">
+    <a href="hello-servlet"      class="tab-item ${activeTab == 'home'      ? 'active' : ''}">
         <span class="tab-icon">🏠</span>홈
     </a>
     <a href="product"   class="tab-item ${activeTab == 'product'   ? 'active' : ''}">
         <span class="tab-icon">💊</span>제품
     </a>
-    <a href="nutrition" class="tab-item ${activeTab == 'nutrition' ? 'active' : ''}">
+    <a href="supplements" class="tab-item ${activeTab == 'nutrition' ? 'active' : ''}">
         <span class="tab-icon">🧪</span>영양
     </a>
     <a href="recommend" class="tab-item ${activeTab == 'recommend' ? 'active' : ''}">
@@ -144,7 +151,7 @@
             </a>
         </c:when>
         <c:otherwise>
-            <a href="login" class="tab-item ${activeTab == 'login' ? 'active' : ''}">
+            <a href="user-Login" class="tab-item ${activeTab == 'login' ? 'active' : ''}">
                 <span class="tab-icon">🔑</span>로그인
             </a>
         </c:otherwise>

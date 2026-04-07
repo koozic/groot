@@ -14,7 +14,7 @@
      1. 헤더
      ============================================= -->
 <header class="site-header">
-    <a href="home" class="logo">약<span>쟁</span>이</a>
+    <a href="hello-servlet" class="logo">약<span>쟁</span>이</a>
     <div class="hdr-right">
         <c:choose>
             <c:when test="${not empty sessionScope.loginUser}">
@@ -24,7 +24,7 @@
             </c:when>
             <c:otherwise>
                 <a href="join" class="hdr-link">회원가입</a>
-                <a href="login" class="btn-login">로그인</a>
+                <a href="user-Login" class="btn-login">로그인</a>
             </c:otherwise>
         </c:choose>
     </div>
@@ -36,7 +36,7 @@
 <nav class="site-nav">
     <div class="nav-left">
         <a href="product" class="nav-item ${activeTab == 'product'   ? 'active' : ''}">제품</a>
-        <a href="nutrition" class="nav-item ${activeTab == 'nutrition' ? 'active' : ''}">영양성분</a>
+        <a href="supplements" class="nav-item ${activeTab == 'nutrition' ? 'active' : ''}">영양성분</a>
         <a href="recommend" class="nav-item ${activeTab == 'recommend' ? 'active' : ''}">영양추천</a>
     </div>
     <%-- nav 장바구니 버튼 --%>
@@ -49,6 +49,95 @@
     </div>
 </nav>
 
+<div class="header-actions">
+    <button type="button" class="btn-add-item" onclick="openModal()">
+        <span class="icon">+</span> 영양제 등록
+    </button>
+</div>
+
+<div id="productModal" class="modal">
+    <div class="modal-content visual-enhanced">
+        <div class="modal-header">
+            <h2>신규 영양제 등록</h2>
+            <span class="close" onclick="closeModal()">&times;</span>
+        </div>
+
+        <form action="product-add" class="modal-form">
+            <input type="hidden" name="productAdmin" value="ky11">
+            <input type="hidden" id="product_current" name="productCurrent" value="0">
+            <div class="modal-body-visual">
+
+                <div class="image-preview-container">
+                    <div class="image-preview-frame">
+                        <img id="modal-img-preview" src="" alt="제품 이미지 미리보기" class="hidden">
+                        <div class="image-placeholder">
+                            <span class="icon">🖼️</span>
+                            <p>이미지 URL을 입력하면<br>여기에 표시됩니다.</p>
+                        </div>
+                    </div>
+                    <div class="input-group image-path-input">
+                        <label>이미지 경로 (URL)</label>
+                        <input type="text" id="product_image_url" name="product_image" placeholder="images/example.jpg"
+                               oninput="updateModalPreview(this.value)">
+                    </div>
+                </div>
+
+                <div class="form-inputs-container">
+                    <div class="form-grid single-col">
+                        <div class="input-group full">
+                            <label>제품명</label>
+                            <input type="text" name="productName" placeholder="제품명을 입력하세요" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>제조사(브랜드)</label>
+                            <input type="text" name="productBrand" placeholder="제조사" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>가격</label>
+                            <input type="number" name="productPrice" placeholder="판매가(원)" min="0" max="99999" required>
+                        </div>
+
+                        <div class="input-group">
+                            <label>영양소 식별번호 (FK)</label>
+                            <input type="number" name="productNutrient" placeholder="영양소 ID" required>
+                        </div>
+
+                        <div class="input-group-row">
+                            <div class="input-group">
+                                <label>총 알약 수</label>
+                                <input type="number" name="productTotal" placeholder="60" min="1">
+                            </div>
+                            <div class="input-group">
+                                <label>1회 섭취량</label>
+                                <input type="number" name="productServe" placeholder="2" min="1">
+                            </div>
+                            <div class="input-group">
+                                <label>1일 횟수</label>
+                                <input type="number" name="productPerDay" placeholder="3" min="1">
+                            </div>
+                        </div>
+
+                        <div class="input-group full">
+                            <label>제품 설명</label>
+                            <textarea name="productDescription" rows="5"
+                                      placeholder="제품에 대한 상세 설명을 입력하세요 (최대 1000자)"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" onclick="closeModal()">취소</button>
+                <button type="submit" class="btn-save">데이터 저장</button>
+
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<div id="toast" class="toast">등록 완료!</div>
 
 <div class="product-container">
     <c:forEach items="${products}" var="p">
@@ -57,7 +146,9 @@
 
 
             <div class="product-image">이미지 영역
-                <button class="btn-delete" onclick="event.stopPropagation(); location.href='product-del?id=${p.productId}'">&times;</button>
+                <button class="btn-delete"
+                        onclick="event.stopPropagation(); location.href='product-del?id=${p.productId}'">&times;
+                </button>
             </div>
             <div class="product-info">
                 <div class="product-name">${p.productName}</div>
@@ -70,8 +161,11 @@
 
     </c:forEach>
 </div>
+
+
 </body>
 
+<script src="js/product.js"></script>
 
 </html>
 
