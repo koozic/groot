@@ -64,6 +64,7 @@
             <div class="product-basic-info">
                 <span class="brand-name">${product.productBrand}</span>
                 <h2 class="product-title">${product.productName}</h2>
+                <span class="supplement-name">${nutrient.nutrientName}</span>
                 <p class="product-price"><strong>${product.productPrice}</strong>원</p>
             </div>
         </section>
