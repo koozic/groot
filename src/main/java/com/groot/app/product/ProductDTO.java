@@ -1,17 +1,27 @@
 package com.groot.app.product;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.Date;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProductDTO {
-    private int p_pk;
-    private String p_id;
-    private String p_tName;
-    private String p_Brand;
-    private int p_nutrient;
-    private String p_description;
-    private String p_img;
-    private int p_total;
-    private int p_serve;
-    private int p_per_day;
-    private String p_time_info;
-//    private Date p_start_date;
-    private int p_current;
+    private int productId;
+    private String productAdmin;
+    private String productName;
+    private String productBrand;
+    private int productPrice;
+    private int productNutrient;
+    private String productDescription;
+    private String productImage;
+    private int productTotal;
+    private int productServe;
+    private int productPerDay;
+    private String productTimeInfo;
+    private Date productStartDate;
+    private int productCurrent;
 }

@@ -8,7 +8,7 @@
     <div class="hero-text">
         <h1>내 몸에 맞는<br>영양제 조합은?</h1>
         <p>지금 먹는 영양제를 선택하면<br>부족한 영양소와 최적 복용법을 알려드려요</p>
-        <a href="recommend" class="btn btn-accent">지금 분석하기 →</a>
+        <a href="reco" class="btn btn-accent">지금 분석하기 →</a>
     </div>
     <div class="hero-pills" aria-hidden="true">
         <div class="pill p1"></div>
@@ -88,10 +88,11 @@
                 </div>
             </label>
         </div>
-        <a href="recommend" class="btn btn-primary btn-full" style="margin-top: 16px;">
+        <button type="submit" class="btn btn-primary btn-full" style="margin-top: 16px; width: 100%; border: none;">
             선택한 영양제 분석하기 →
-        </a>
+        </button>
     </div>
+    </form>
 </section>
 
 <!-- =============================================
