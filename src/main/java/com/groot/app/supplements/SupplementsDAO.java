@@ -46,11 +46,14 @@ import java.util.List;
                 dto.setSupplementId(rs.getInt("supplement_id"));
                 dto.setSupplementName(rs.getString("supplement_name"));
                 dto.setSupplementEfficacy(rs.getString("supplement_efficacy"));
+                dto.setSupplementDosage(rs.getString("SUPPLEMENT_DOSAGE"));
+                dto.setSupplementTiming(rs.getString("SUPPLEMENT_TIMING"));
+                dto.setSupplementCaution(rs.getString("SUPPLEMENT_CAUTION"));
                 dto.setSupplementImagePath(rs.getString("supplement_image_path"));
-
                 // 데이터가 담긴 DTO를 List에 추가
                 SupplementList.add(dto);
             }
+            System.out.println(SupplementList);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -217,11 +220,43 @@ import java.util.List;
             String path = request.getServletContext().getRealPath("/supplementImg/supplementImgFile");
 
 
-            String sql = "update supplements (supplement_id, supplement_name, supplement_efficacy, supplement_dosage, supplement_timing, supplement_caution,  supplement_image_path) " +
-                    "values(seq_supplements_id.nextval,?,?,?,?,?,?)";
-
             try{
+                con = DBManager_new.connect();
 
+                // 폼에 첨부파일(enctype="multipart/form-data")이 있으니 무조건 MultipartRequest를 씁니다.
+                MultipartRequest mr = new MultipartRequest(request, path,
+                                1024 * 1024 * 20, "UTF-8", new DefaultFileRenamePolicy());
+
+                // JSP에서 보낸 텍스트 데이터들 낚아채기
+                String id = mr.getParameter("supplementId"); // 🚨 hidden으로 숨겨왔던 고유번호!
+                String name = mr.getParameter("supplementName");
+                String efficacy = mr.getParameter("supplementEfficacy");
+                String dosage = mr.getParameter("supplementDosage");
+                String timing = mr.getParameter("supplementTiming");
+                String caution = mr.getParameter("supplementCaution");
+
+                // 줄바꿈(<br>) 처리
+                if (efficacy != null) {
+                    efficacy = efficacy.replace("\r\n", "<br>");
+                }
+
+                // 4. [핵심] 사진 처리 로직
+                String oldFile = mr.getParameter("oldSupplementFile");   // 🚨 hidden으로 숨겨왔던 기존 사진
+                String newFile = mr.getFilesystemName("supplementFile"); // 이번에 새로 선택한 사진
+
+                String updateFile; // 최종적으로 DB에 업데이트될 사진 이름
+
+                if (newFile == null) {
+                    // 사용자가 [파일 선택]을 안 누르고 그냥 글씨만 고쳤다면? -> 기존 사진 유지!
+                    updateFile = oldFile;
+                } else {
+                    // 새로운 사진을 올렸다면? -> 새로 올린 사진 이름으로 덮어쓰기!
+                    updateFile = newFile;
+                }
+
+                // 5. UPDATE SQL문 작성
+                String sql = "update supplements (supplement_id, supplement_name, supplement_efficacy, supplement_dosage, supplement_timing, supplement_caution,  supplement_image_path) " +
+                        "values(seq_supplements_id.nextval,?,?,?,?,?,?)";
             }catch (Exception e){
 
             }finally {
