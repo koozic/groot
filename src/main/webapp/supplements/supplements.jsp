@@ -35,11 +35,14 @@
 
             <div style="margin-top: 10px;">
                 <button class="supp-btn" onclick="delSupplement('${supp.supplementId}')">삭제</button>
+                <button class="supp-btn" onclick="updateSupplement('${supp.supplementId}')">수정</button>
             </div>
-
         </div>
-
             </c:forEach>
+
+    </div>
+</div>
+
 </body>
 
 <script>
