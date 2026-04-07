@@ -20,7 +20,7 @@ import java.util.Map;
  * 비회원: 분석 결과만 보여줌 (저장 X)
  * 회원:   분석 결과 보여줌 + 히스토리 저장 (추후 구현)
  */
-@WebServlet(urlPatterns = {"/reco", "/recommend/analyze"})
+@WebServlet(urlPatterns = {"/reco", "/recommend/analyze2"})
 public class RecommendServlet extends HttpServlet { 
 
     private final Gson gson = new Gson();

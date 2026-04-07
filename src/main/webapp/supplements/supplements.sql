@@ -42,6 +42,8 @@ CREATE TABLE supplements_like (
         ON DELETE CASCADE
 );
 
+CREATE SEQUENCE seq_supplements_like_id START WITH 1 INCREMENT BY 1;
+
 -- 가데이터
 -- 1. 비타민 C
 INSERT INTO supplements (supplement_id, supplement_name, supplement_efficacy, supplement_dosage, supplement_timing, supplement_caution, supplement_image_path)
