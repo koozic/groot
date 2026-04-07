@@ -12,7 +12,7 @@ public class UserLoginC extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        UserDAO.Login(req);
+
 
         resp.sendRedirect("user/login.jsp");
     }

@@ -17,7 +17,7 @@ public class UserDAO {
         Connection con = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String sql = "select user_id, user_pw, user_name, user_email, user_age, user_gender, user_profile from users where user_id=?";
+        String sql = "select user_id, user_pw from users where user_id=?";
         try {
           con = DBManager_new.connect();
           pstmt = con.prepareStatement(sql);
@@ -25,6 +25,8 @@ public class UserDAO {
           rs = pstmt.executeQuery();
           String loginMsg = "";
           if (rs.next()) {
+              if (rs.getString("user_id").equals(id)) {
+
               if (rs.getString("user_pw").equals(pw)) {
                   // 로그인 성공
                   UserDTO user = new UserDTO();
@@ -35,7 +37,7 @@ public class UserDAO {
                   user.setGender(rs.getString("user_gender"));
                   user.setUser_profile(rs.getString("user_profile"));
                   System.out.println("프로필 이미지: " + rs.getString("user_profile"));
-                  
+
                   System.out.println("어서오세요. 당신의 건강을 챙기세요");
                   loginMsg = "어서오세요. 당신의 건강을 챙기세요";
                   request.getSession().setAttribute("loginUser", user);
@@ -48,6 +50,7 @@ public class UserDAO {
                   System.out.println("다시 로그인 해주세요 (5회 이상 실패 시 본인인증) ");
                   loginMsg = "다시 로그인 해주세요 (5회 이상 실패 시 본인인증) ";
 
+               }
               }
 
           } else {
@@ -63,13 +66,13 @@ public class UserDAO {
 
 
             UserDTO u = new UserDTO();
-
+        while (rs.next()){
             u.setUser_id(rs.getString("user_id"));
             u.setUser_pw(rs.getString("user_pw"));
             u.setName(rs.getString("user_name"));
             u.setUser_profile(rs.getString("user_profile"));
 
-
+}
             HttpSession session = request.getSession();
             session.setAttribute("loginUser", u);
 
