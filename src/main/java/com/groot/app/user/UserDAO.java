@@ -3,6 +3,7 @@ package com.groot.app.user;
 import com.groot.app.main.DBManager_new;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,7 +16,7 @@ public class UserDAO {
         Connection con = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String sql = "select * from users where user_id=?";
+        String sql = "select user_id, user_pw, user_name, user_email, user_age, user_gender, user_profile from users where user_id=?";
         try {
           con = DBManager_new.connect();
           pstmt = con.prepareStatement(sql);
@@ -31,6 +32,8 @@ public class UserDAO {
                   user.setEmail(rs.getString("user_email"));
                   user.setAge(rs.getInt("user_age"));
                   user.setGender(rs.getString("user_gender"));
+                  user.setUser_profile(rs.getString("user_profile"));
+                  System.out.println("프로필 이미지: " + rs.getString("user_profile"));
                   
                   System.out.println("어서오세요. 당신의 건강을 챙기세요");
                   loginMsg = "어서오세요. 당신의 건강을 챙기세요";
@@ -51,10 +54,23 @@ public class UserDAO {
               incrementFailCount(request, id);
               System.out.println("새로 오셨네요. 회원가입 해주세요");
               loginMsg = "새로 오셨네요. 회원가입 해주세요";
+              request.setAttribute("loginMsg", loginMsg);
+              request.setAttribute("needVerifyChoice", true);
           }
 
             request.setAttribute("loginMsg", loginMsg);
 
+
+            UserDTO u = new UserDTO();
+
+            u.setUser_id(rs.getString("user_id"));
+            u.setUser_pw(rs.getString("user_pw"));
+            u.setName(rs.getString("user_name"));
+            u.setUser_profile(rs.getString("user_profile"));
+
+
+            HttpSession session = request.getSession();
+            session.setAttribute("loginUser", u);
 
 
 

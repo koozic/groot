@@ -85,7 +85,6 @@ public class RecommendServlet extends HttpServlet {
             }
 
             out.print(gson.toJson(result));
-            System.out.println(1212);
 
         } catch (Exception e) {
             out.print(gson.toJson(Map.of("success", false, "message", "서버 오류가 발생했어요")));

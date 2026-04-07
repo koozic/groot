@@ -3,9 +3,9 @@
 <html>
 <head>
     <title>약쟁이 로그인</title>
-    <link rel="stylesheet" href="css/app.css">
-    <link rel="stylesheet" href="css/product.css">
-    <link rel="stylesheet" href="css/test.css">
+    
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/login.css">
+
 </head>
 <body>
 

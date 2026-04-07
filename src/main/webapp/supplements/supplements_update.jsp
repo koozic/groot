@@ -36,12 +36,12 @@
         </div>
 
 
-        <div class="detail-row">
+        <div class="form-group">
             <div class="col-1">🆔 No.</div>
             <div class="col-2">${detailSupp.supplementId}</div>
         </div>
 
-        <div class="detail-row">
+        <div class="form-group">
             <div class="col-1">🏷️ Name.</div>
             <div class="col-2" style="font-size: 1.3em; font-weight: bold; color: #4CAF50;">${detailSupp.supplementName}</div>
         </div>
