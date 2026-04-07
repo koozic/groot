@@ -71,7 +71,9 @@ import java.util.List;
             SupplementsDTO dto = null;
 
             // 웹앱의 영양성분 파일 폴더
-            String path = "C:\\es\\dbws_intellij\\upload\\supplementFile";
+//            String path = "C:\\es\\dbws_intellij\\upload\\supplementFile";
+            // 내 프로젝트 폴더 안의 /img/supp 위치를 컴퓨터가 알아서 찾아냅니다.
+            String path = request.getServletContext().getRealPath("/supplementImg/supplementImgFile");
 
             try {
                 con = DBManager_new.connect();
@@ -127,6 +129,82 @@ import java.util.List;
 
         }
 
+        public void delSupplement(HttpServletRequest request) {
+            Connection con = null;
+            PreparedStatement pstmt = null;
+
+            try{
+                con = DBManager_new.connect();
+
+                String sql = "delete from supplements where supplement_id = ?";
+
+                pstmt = con.prepareStatement(sql);
+
+                // 값 세팅: JSP의 자바스크립트가 보낸 'id' 값을 가져옵니다.
+                // deleteSupp.do?id=123 이므로 getParameter("id")라고 적어야 합니다!
+                String id = request.getParameter("id");
+                pstmt.setString(1, id);
+
+                if(pstmt.executeUpdate() == 1) {
+                    System.out.println("delete success (ID: " + id + ")");
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("삭제 실패... 에러 발생!");
+            }finally {
+                DBManager_new.close(con, pstmt, null);
+            }
+        }
+
+        // 영양성분 상세 조회
+        public void getSupplementDetail(HttpServletRequest request) {
+//            핵심은 request.getParameter("id")로 전달된 고유 번호를 읽어서,
+//            DB의 **supplement_id**와 매칭해 데이터를 한 줄 긁어오는 것
+
+            Connection con = null;
+            PreparedStatement pstmt = null;
+            ResultSet rs = null;
+
+            // 1. SQL 작성: ID 하나만 콕 집어서 가져옵니다.
+            String sql = "SELECT * FROM supplements WHERE supplement_id = ?";
+
+            try {
+                con = DBManager_new.connect();
+                pstmt = con.prepareStatement(sql);
+
+                // 2. 값 세팅: JSP에서 ?id=... 로 보낸 값을 읽어옵니다.
+                String id = request.getParameter("id");
+                pstmt.setString(1, id);
+
+                rs = pstmt.executeQuery();
+
+                if (rs.next()) {
+                    // 3. 데이터를 담을 DTO 객체 생성
+                    SupplementsDTO dto = new SupplementsDTO();
+
+                    dto.setSupplementId(rs.getInt("supplement_id"));
+                    dto.setSupplementName(rs.getString("supplement_name"));
+                    dto.setSupplementEfficacy(rs.getString("supplement_efficacy"));
+                    dto.setSupplementDosage(rs.getString("supplement_dosage"));
+                    dto.setSupplementTiming(rs.getString("supplement_timing"));
+                    dto.setSupplementCaution(rs.getString("supplement_caution"));
+                    dto.setSupplementImagePath(rs.getString("supplement_image_path"));
+
+                    // 4. [중요] JSP에서 쓸 수 있도록 "detailSupp"라는 이름으로 담아줍니다.
+                    request.setAttribute("detailSupp", dto);
+
+                    // 확인용 출력
+                    System.out.println("상세 조회 성공: " + dto.getSupplementName());
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("상세 조회 중 에러 발생!");
+            } finally {
+                DBManager_new.close(con, pstmt, rs);
+            }
+        }
     }
 
 
