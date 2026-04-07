@@ -14,7 +14,8 @@
     <hr>
 
     <form action="../review-write" method="post" enctype="multipart/form-data">
-        <input type="hidden" name="product_id" value="101">
+        <%-- 🌟 주소창에 있는 번호(?product_id=105)를 그대로 훔쳐오는 마법의 코드! --%>
+        <input type="hidden" name="product_id" value="${param.product_id}">
 
         <div class="form-group">
             <label>리뷰 제목</label>

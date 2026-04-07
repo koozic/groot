@@ -24,5 +24,9 @@ public class BodyDTO {
     private String supplementCaution;
     private String supplementImagePath;
     private int supplementViewCount;
+
+    // ✅ DB에 실제로 있는 컬럼 추가
+    private String supplementRegDate;
+
     private int likeCount; // supplements_like 집계용
 }

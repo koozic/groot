@@ -13,6 +13,7 @@
     <script src="js/app.js"></script>
     <link rel="stylesheet" href="css/recommend.css">
     <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="css/home.css">
 </head>
 <body>
 
@@ -48,7 +49,7 @@
 <nav class="site-nav">
     <div class="nav-left">
         <a href="product"   class="nav-item ${activeTab == 'product'   ? 'active' : ''}">제품</a>
-        <a href="nutrition" class="nav-item ${activeTab == 'nutrition' ? 'active' : ''}">영양성분</a>
+        <a href="supplements" class="nav-item ${activeTab == 'nutrition' ? 'active' : ''}">영양성분</a>
         <a href="recommend" class="nav-item ${activeTab == 'recommend' ? 'active' : ''}">영양추천</a>
 
     </div>
@@ -131,13 +132,13 @@
      6. 하단 탭바 (모바일 전용)
      ============================================= -->
 <nav class="bottom-tab">
-    <a href="home"      class="tab-item ${activeTab == 'home'      ? 'active' : ''}">
+    <a href="hello-servlet"      class="tab-item ${activeTab == 'home'      ? 'active' : ''}">
         <span class="tab-icon">🏠</span>홈
     </a>
     <a href="product"   class="tab-item ${activeTab == 'product'   ? 'active' : ''}">
         <span class="tab-icon">💊</span>제품
     </a>
-    <a href="nutrition" class="tab-item ${activeTab == 'nutrition' ? 'active' : ''}">
+    <a href="supplements" class="tab-item ${activeTab == 'nutrition' ? 'active' : ''}">
         <span class="tab-icon">🧪</span>영양
     </a>
     <a href="recommend" class="tab-item ${activeTab == 'recommend' ? 'active' : ''}">
@@ -150,7 +151,7 @@
             </a>
         </c:when>
         <c:otherwise>
-            <a href="login" class="tab-item ${activeTab == 'login' ? 'active' : ''}">
+            <a href="user-Login" class="tab-item ${activeTab == 'login' ? 'active' : ''}">
                 <span class="tab-icon">🔑</span>로그인
             </a>
         </c:otherwise>
