@@ -88,10 +88,11 @@
                 </div>
             </label>
         </div>
-        <a href="recommend" class="btn btn-primary btn-full" style="margin-top: 16px;">
+        <button type="submit" class="btn btn-primary btn-full" style="margin-top: 16px; width: 100%; border: none;">
             선택한 영양제 분석하기 →
-        </a>
+        </button>
     </div>
+    </form>
 </section>
 
 <!-- =============================================
