@@ -1,4 +1,4 @@
-package com.groot.app.recommendCW1;
+package com.groot.app.recommendCW;
 
 import com.google.gson.Gson;
 import com.groot.app.user.UserDTO;
