@@ -1,6 +1,7 @@
 package com.groot.app.user;
 
 import com.groot.app.main.DBManager_new;
+import com.oreilly.servlet.MultipartRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -125,7 +126,7 @@ public class UserDAO {
         try {
             con = DBManager_new.connect();
             pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, newProfile);
+            pstmt.setString(1, loginUser.getUser_profile());
             pstmt.setString(2, loginUser.getUser_id());
 
             int result = pstmt.executeUpdate();
@@ -151,6 +152,29 @@ public class UserDAO {
     }
 
 
+    public static void join(HttpServletRequest request) {
+
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "insert into users values (users_seq.nextval,?,?,?,?,?,?,?,?,?,?,?,?)";
+        try {
+           con = DBManager_new.connect();
+           pstmt = con.prepareStatement(sql);
+
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }  finally {
+            DBManager_new.close(con, pstmt, rs);
+        }
+
+
+
+
+
 
     }
+}
 
