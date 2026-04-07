@@ -26,6 +26,8 @@ CREATE TABLE products
     CONSTRAINT fk_nutrient FOREIGN KEY (product_nutrient) REFERENCES supplements (supplement_id)
 
 );
+create sequence products_seq;
+
 -- drop table calendar;
 create table calendar
 (
@@ -43,7 +45,7 @@ create table calendar
 INSERT INTO products (product_id, product_admin, product_name, product_brand, product_price, product_nutrient,
                       product_description, product_image, product_total, product_serve, product_per_day,
                       product_time_info, product_start_date, product_current)
-VALUES (101, 'admin_kyy', '메가도스 비타민C 3000', '고려은단', 25000, 1, '영국산 비타민C 원료 사용', '/images/vitamin_c.jpg', 100, 1, 1,
+VALUES (products_seq.nextval, 'admin_kyy', '메가도스 비타민C 3000', '고려은단', 25000, 1, '영국산 비타민C 원료 사용', '/images/vitamin_c.jpg', 100, 1, 1,
         '식사 직후 또는 식사 중 복용', TO_DATE('2026-03-01', 'YYYY-MM-DD'), 85);
 
 -- 2. 루테인 (눈 건강)

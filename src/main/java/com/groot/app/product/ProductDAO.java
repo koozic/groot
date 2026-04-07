@@ -172,5 +172,46 @@ public class ProductDAO {
 
 
     }
+
+    public void productAdd(HttpServletRequest request) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        String sql = "INSERT INTO products VALUES (products_seq.nextval,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+        try {
+            con = DBManager_new.connect();
+            pstmt = con.prepareStatement(sql);
+
+            //?체우기
+            pstmt.setString(1, request.getParameter("productAdmin"));
+            pstmt.setString(2,request.getParameter("productName"));
+            pstmt.setString(3,request.getParameter("productBrand"));
+            pstmt.setInt(4, Integer.parseInt(request.getParameter("productPrice")));
+            pstmt.setInt(5, Integer.parseInt(request.getParameter("productNutrient")));
+            pstmt.setString(6, request.getParameter("productDescription"));
+            pstmt.setString(7, request.getParameter("productImage"));
+            pstmt.setInt(8, Integer.parseInt(request.getParameter("productTotal")));
+            pstmt.setInt(9, Integer.parseInt(request.getParameter("productServe")));
+            pstmt.setInt(10, Integer.parseInt(request.getParameter("productPerDay")));
+            pstmt.setString(11, request.getParameter("productTimeInfo"));
+            pstmt.setDate(12, new java.sql.Date(new java.util.Date().getTime()));
+            pstmt.setInt(13, 0);
+
+
+
+            if (pstmt.executeUpdate() == 1) {
+                System.out.println("insert success");
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBManager_new.close(con, pstmt, null);
+        }
+
+
+
+    }
 }
 
