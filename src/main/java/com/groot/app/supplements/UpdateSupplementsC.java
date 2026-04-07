@@ -22,7 +22,11 @@ public class UpdateSupplementsC extends HttpServlet {
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        // 1. DAO에게 "사용자가 보낸 정보(request)로 DB 내용 고쳐줘!" 라고 명령합니다.
+        SupplementsDAO.SDAO.updateSupplement(request);
 
+        // 2. 수정이 끝났으면 바뀐 결과를 확인할 수 있게 영양성분 리스트 페이지로 새로고침(이동) 시킵니다.
+        response.sendRedirect("supplements");
     }
 
     public void destroy() {

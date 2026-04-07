@@ -205,6 +205,29 @@ import java.util.List;
                 DBManager_new.close(con, pstmt, rs);
             }
         }
+
+        // ==========================================================
+        // 영양성분 수정하기 (Update)
+        // ==========================================================
+        public void updateSupplement(HttpServletRequest request) {
+            Connection con = null;
+            PreparedStatement pstmt = null;
+
+            // 1. 사진이 저장될 내 프로젝트 안의 진짜 폴더 경로 찾기
+            String path = request.getServletContext().getRealPath("/supplementImg/supplementImgFile");
+
+
+            String sql = "update supplements (supplement_id, supplement_name, supplement_efficacy, supplement_dosage, supplement_timing, supplement_caution,  supplement_image_path) " +
+                    "values(seq_supplements_id.nextval,?,?,?,?,?,?)";
+
+            try{
+
+            }catch (Exception e){
+
+            }finally {
+
+            }
+        }
     }
 
 
