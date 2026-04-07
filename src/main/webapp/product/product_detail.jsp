@@ -1,83 +1,106 @@
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 <html>
 <head>
     <title>Title</title>
-
-    <link rel="stylesheet" href="css/product.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" href="css/product_detail.css">
 </head>
 <body>
 
-<header class="top-nav">
-    <button class="back-btn">이전</button>
-    <div class="header-title">제품 정보</div>
+<!-- =============================================
+     1. 헤더
+     ============================================= -->
+<header class="site-header">
+    <a href="home" class="logo">약<span>쟁</span>이</a>
+    <div class="hdr-right">
+        <c:choose>
+            <c:when test="${not empty sessionScope.loginUser}">
+                <span class="hdr-link">${sessionScope.loginUser.nickname}님</span>
+                <a href="mypage" class="hdr-link">마이페이지</a>
+                <a href="logout" class="btn-login">로그아웃.</a>
+            </c:when>
+            <c:otherwise>
+                <a href="join" class="hdr-link">회원가입</a>
+                <a href="login" class="btn-login">로그인</a>
+            </c:otherwise>
+        </c:choose>
+    </div>
 </header>
 
-<main class="container">
-    <section class="image-section">
-        <img src="https://via.placeholder.com/400x400" alt="제품 이미지" class="product-img">
-    </section>
+<!-- =============================================
+     2. 네비게이션 (PC용 상단 nav)
+     ============================================= -->
+<nav class="site-nav">
+    <div class="nav-left">
+        <a href="product" class="nav-item ${activeTab == 'product'   ? 'active' : ''}">제품</a>
+        <a href="nutrition" class="nav-item ${activeTab == 'nutrition' ? 'active' : ''}">영양성분</a>
+        <a href="recommend" class="nav-item ${activeTab == 'recommend' ? 'active' : ''}">영양추천</a>
+    </div>
+    <%-- nav 장바구니 버튼 --%>
+    <div class="nav-cart" onclick="toggleCart()">
+        <span class="nav-cart-icon">🛒</span>
+        <span>장바구니</span>
+        <c:if test="${not empty sessionScope.cartCount and sessionScope.cartCount > 0}">
+            <div class="nav-badge">${sessionScope.cartCount}</div>
+        </c:if>
+    </div>
+</nav>
 
-    <section class="info-section">
-        <p class="brand-name">제조사: [product_brand]</p>
-        <h1 class="product-title">[product_name]</h1>
-        <div class="price-container">
-            <span class="price">[product_price]</span><span class="unit">원</span>
-        </div>
-    </section>
 
-    <hr class="divider">
+<div class="app-container">
+    <header class="app-header">
+        <button class="back-btn" onclick="history.back()">이전</button>
+        <h1 class="header-title">제품 정보</h1>
+        <button class="back-btn" onclick="location.href='product-edit?id=${product.productId}'">수정</button>
+    </header>
 
-    <section class="dosage-section">
-        <h3>복용 가이드</h3>
-        <div class="dosage-grid">
-            <div class="dosage-item">
-                <span class="label">총 용량</span>
-                <span class="value">[product_total]정</span>
+    <main class="content-wrapper">
+        <section class="product-hero">
+            <div class="product-img-box">
+                <img src="placeholder.png" class="product-img">
             </div>
-            <div class="dosage-item">
-                <span class="label">1회 섭취</span>
-                <span class="value">[product_serve]정</span>
+            <div class="product-basic-info">
+                <span class="brand-name">${product.productBrand}</span>
+                <h2 class="product-title">${product.productName}</h2>
+                <p class="product-price"><strong>${product.productPrice}</strong>원</p>
             </div>
-            <div class="dosage-item">
-                <span class="label">1일 횟수</span>
-                <span class="value">[product_per_day]회</span>
+        </section>
+
+        <hr class="divider">
+
+        <section class="info-section">
+            <h3 class="section-title">복용 가이드</h3>
+            <ul class="guide-list">
+                <li>총 용량 <span class="val">${product.productTotal}</span>정</li>
+                <li>1회 섭취 <span class="val">${product.productServe}</span>정</li>
+                <li>1일 횟수 <span class="val">${product.productPerDay}</span>회</li>
+            </ul>
+            <div class="timing-box">
+                <strong>복용 시점:</strong> <span>${product.productTimeInfo}</span>
             </div>
-        </div>
-        <p class="time-info"><strong>복용 시점:</strong> [product_time_info]</p>
-    </section>
+        </section>
 
-    <hr class="divider">
+        <hr class="divider">
 
-    <section class="description-section">
-        <h3>제품 설명</h3>
-        <p class="description-text">
-            [product_description] <br>
-            영양소 식별 번호: [product_nutrient]
-        </p>
-    </section>
+        <section class="info-section">
+            <h3 class="section-title">제품 설명</h3>
+            <p class="description-text">${product.productDescription}</p>
 
-    <section class="status-section">
-        <div class="status-box">
-            <p>복용 시작일: [product_start_date]</p>
-            <p>현재 잔여량: <strong>[product_current]</strong> / [product_total]정</p>
-        </div>
-    </section>
-</main>
-
-
-
-
+            <div class="detail-meta">
+                <p>영양소 식별 번호: <span>${product.productNutrient}</span></p>
+                <p>복용 시작일: <span>${product.productStartDate}</span></p>
+                <p class="current-stock">
+                    현재 잔여량: <strong>${product.productCurrent}</strong> / ${product.productTotal}정
+                </p>
+            </div>
+        </section>
+    </main>
+</div>
 
 
 <div>review 부분</div>
-
-
-
-
-
-
 
 
 </body>
