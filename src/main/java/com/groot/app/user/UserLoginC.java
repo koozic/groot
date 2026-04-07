@@ -12,10 +12,6 @@ public class UserLoginC extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-<<<<<<< HEAD
-
-=======
->>>>>>> 7eb826f7e6d960133475f3008b130016d3af5898
 
         resp.sendRedirect("user/login.jsp");
     }
