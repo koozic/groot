@@ -24,7 +24,7 @@
     <div class="hdr-right">
         <c:choose>
             <c:when test="${not empty sessionScope.loginUser}">
-                <span class="hdr-link">${sessionScope.loginUser.name}님</span>
+                <span class="hdr-link">${sessionScope.loginUser.name}님 어서오세요. 당신의 건강을 챙기세요</span>
                 <img
                         src="${sessionScope.loginUser.user_profile}"
                         alt="프로필"
