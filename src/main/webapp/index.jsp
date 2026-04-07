@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="css/app.css">
     <link rel="stylesheet" href="css/login.css">
 
+
 </head>
 <body>
 
@@ -32,7 +33,7 @@
             </c:when>
             <c:otherwise>
                 <a href="join"  class="hdr-link">회원가입</a>
-                <a href="login" class="btn-login">로그인</a>
+                <a href="user-Login" class="btn-login">로그인</a>
             </c:otherwise>
         </c:choose>
     </div>
