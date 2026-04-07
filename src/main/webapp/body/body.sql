@@ -64,3 +64,7 @@ CREATE TABLE curation_likes (
 CREATE SEQUENCE seq_body START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE seq_curation START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE seq_curation_likes START WITH 1 INCREMENT BY 1;
+
+INSERT INTO body (body_id, body_name)
+VALUES (1, '눈');
+INSERT INTO body_supplement (body_id, supplement_id) VALUES (1, 10);
