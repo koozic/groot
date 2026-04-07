@@ -78,10 +78,12 @@ public class BodyC extends HttpServlet {
                     case "detail": {
                         // 영양소 상세 보기 (이때 DAO에서 view_count +1 로직이 실행되어야 함)
                         int suppId = Integer.parseInt(request.getParameter("suppId"));
+
+                        // 2. DAO를 통해 상세 정보 및 조회수 증가 처리
                         BodyDTO detail = dao.getSupplementDetail(suppId);
 
                         if (detail == null) {
-                            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                            response.setStatus(HttpServletResponse.SC_NOT_FOUND, "해당 영양소 정보를 찾을 수 없습니다.");
                             out.print("{\"error\":\"not found\"}");
                         } else {
                             out.print(gson.toJson(detail));
