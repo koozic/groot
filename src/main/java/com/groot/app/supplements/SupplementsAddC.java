@@ -13,6 +13,7 @@ public class SupplementsAddC extends HttpServlet {
 
     // 화면 조회 (리스트 보기)
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
         // 메뉴바 불 들어오게 설정
         request.setAttribute("activeTab", "nutrition");
 
@@ -22,7 +23,6 @@ public class SupplementsAddC extends HttpServlet {
         // 메인 페이지(index.jsp)로 보냅니다.
         request.getRequestDispatcher("/index.jsp").forward(request, response);
     }
-
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
     }
