@@ -81,7 +81,7 @@
     <button onclick="loadSupplements(4)">🦴 뼈/관절</button>
 </div>
 
-<hr>
+<%--<hr>--%>
 
 <div id="sort-buttons" style="display: none">
     <button onclick="changeSort('view')">🔥 많이 본 순</button>
