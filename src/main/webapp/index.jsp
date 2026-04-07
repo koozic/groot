@@ -7,6 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>약쟁이</title>
     <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" href="css/login.css">
+
+
 </head>
 <body>
 
@@ -23,7 +26,9 @@
                         src="${sessionScope.loginUser.user_profile}"
                         alt="프로필"
                         style="width:40px; height:40px; border-radius:50%; object-fit:cover;"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
                 >
+                <div style="display:none; width:40px; height:40px; border-radius:50%; background:#f0f0f0; align-items:center; justify-content:center; font-size:20px;">👤</div>
                 <span class="hdr-link">${sessionScope.loginUser.name}님</span>
                 <a href="mypage" class="hdr-link">마이페이지</a>
                 <a href="logout" class="btn-login">로그아웃.</a>
