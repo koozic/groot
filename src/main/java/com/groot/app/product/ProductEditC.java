@@ -25,7 +25,12 @@ public class ProductEditC extends HttpServlet {
 
         ProductDAO.PDAO.productEdit(request);
 
-        response.sendRedirect("product-detail");
+
+        String id = ProductDAO.PDAO.productEdit(request);
+        request.setCharacterEncoding("UTF-8");
+        // 3. Redirect 사용하여 GET 방식으로 상세 페이지 호출
+        // 이렇게 하면 ProductDetailC의 doGet이 실행되므로 405 에러가 발생하지 않습니다.
+        response.sendRedirect("product-detail?id=" + id);
 
     }
 

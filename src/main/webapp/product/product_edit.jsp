@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Title</title>
-    <link rel="stylesheet" href="css/product_detail.css">
+    <link rel="stylesheet" href="css/app.css">
     <link rel="stylesheet" href="css/product_edit.css">
 </head>
 <body>
@@ -47,10 +47,11 @@
 </nav>
 
 
-<form action="product-edit" method="post" enctype="multipart/form-data">
+<form action="product-edit" method="post" >
     <div class="app-container">
         <header class="app-header">
-            <button class="back-btn" onclick="history.back()">이전</button>
+            <input type="hidden" name="productId" value="${product.productId}">
+            <button type="button" class="back-btn" onclick="history.back()">이전</button>
             <h1 class="header-title">제품 편집</h1>
             <button class="back-btn" >저장</button>
         </header>
@@ -58,7 +59,7 @@
         <main class="content-wrapper">
             <section class="product-hero">
                 <div class="product-img-box">
-                    <img src="placeholder.png" class="product-img">
+                    <img src="placeholder.png" name="productImage" class="product-img">
                 </div>
                 <div class="product-basic-info">
                     <span>제조사 명</span>
@@ -93,7 +94,7 @@
             <hr class="divider">
 
             <section class="info-section">
-                <h3 class="section-title"><textarea name="description" rows="10" cols="50">${product.productDescription}</textarea></h3>
+                <h3 class="section-title"><textarea name="productDescription" rows="10" cols="50">${product.productDescription}</textarea></h3>
 
                 <div class="detail-meta">
                     <p>영양소 식별 번호: <span><input type="number" name="productNutrient" value="${product.productNutrient}"></span>
