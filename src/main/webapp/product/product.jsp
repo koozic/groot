@@ -1,5 +1,5 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -100,9 +100,15 @@
                         </div>
 
                         <div class="input-group">
-                            <label>영양소 식별번호 (FK)</label>
-                            <input type="number" name="productNutrient" placeholder="영양소 ID" required>
+                            <label>영양소</label>
+                            <select name="productNutrient">
+                                <c:forEach items="${nutrients}" var="n">
+                                    <option value="${n.nutrientId}">${n.nutrientName}</option>
+                                </c:forEach>
+                            </select>
                         </div>
+
+
 
                         <div class="input-group-row">
                             <div class="input-group">
@@ -147,7 +153,7 @@
 
             <div class="product-image">이미지 영역
                 <button class="btn-delete"
-                        onclick="event.stopPropagation(); location.href='product-del?id=${p.productId}'">&times;
+                        onclick="event.stopPropagation(); confirmDelete('${p.productId}')">&times;
                 </button>
             </div>
             <div class="product-info">
@@ -162,6 +168,22 @@
     </c:forEach>
 </div>
 
+<div id="deleteConfirmModal" class="modal">
+    <div class="modal-content confirm-mini">
+        <div class="modal-header">
+            <h2>⚠️ 삭제 확인</h2>
+            <span class="close" onclick="closeDeleteModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>정말로 이 제품을 삭제하시겠습니까?</p>
+            <p class="sub-text">삭제된 데이터는 복구할 수 없습니다.</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-cancel" onclick="closeDeleteModal()">취소</button>
+            <button type="button" id="btn-confirm-delete" class="btn-danger">삭제하기</button>
+        </div>
+    </div>
+</div>
 
 </body>
 

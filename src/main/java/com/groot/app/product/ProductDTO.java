@@ -24,4 +24,5 @@ public class ProductDTO {
     private String productTimeInfo;
     private Date productStartDate;
     private int productCurrent;
+
 }

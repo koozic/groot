@@ -14,8 +14,10 @@ public class ProductDelC extends HttpServlet {
         //일
         ProductDAO.PDAO.productDelete(request);
 
+
         //어디로?
-        response.sendRedirect("product");
+        response.sendRedirect("product?delete=success");
+
 
     }
 
