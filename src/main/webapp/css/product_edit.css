@@ -1,0 +1,179 @@
+/* 폼 컨테이너 및 기본 설정 */
+.app-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: #ffffff;
+    padding: 20px;
+}
+
+/* 헤더 영역 정렬 */
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #f0f0f0;
+    margin-bottom: 30px;
+}
+
+.header-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #333;
+}
+
+/* 히어로 섹션 (이미지 + 기본정보) 정렬 */
+.product-hero {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    margin-bottom: 30px;
+}
+
+.product-img-box {
+    flex: 0 0 200px;
+    height: 200px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #eee;
+}
+
+.product-img {
+    max-width: 100%;
+    object-fit: cover;
+}
+
+/* 기본 정보 입력 필드 그룹 */
+.product-basic-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.product-basic-info span {
+    font-size: 0.85rem;
+    color: #888;
+    margin-bottom: -8px;
+    font-weight: 600;
+}
+
+/* 입력 필드 공통 스타일 */
+.product-basic-info input,
+.info-section input,
+.info-section textarea {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 1rem;
+    transition: all 0.2s ease-in-out;
+    background-color: #fff;
+    width: 100%;
+}
+
+.product-basic-info input:focus,
+.info-section textarea:focus {
+    border-color: #4A90E2;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+    outline: none;
+}
+
+/* 제목 및 가격 강조 입력창 */
+.product-title input {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #222;
+}
+
+.product-price input {
+    width: 120px;
+    display: inline-block;
+    font-weight: 700;
+    color: #4A90E2;
+    text-align: right;
+    margin-right: 5px;
+}
+
+/* 복용 가이드 리스트 정렬 */
+.guide-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.guide-list li {
+    background: #fdfdfd;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.guide-list .val input {
+    width: 100%;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* 복용 시점 섹션 */
+.timing-box {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8faff;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.timing-box input {
+    flex: 1;
+}
+
+/* 제품 설명 Textarea */
+.section-title textarea {
+    width: 100%;
+    min-height: 180px;
+    line-height: 1.6;
+    resize: none;
+    margin-top: 10px;
+}
+
+/* 저장 버튼 스타일 */
+.back-btn {
+    padding: 8px 18px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    background: #fff;
+    cursor: pointer;
+    font-weight: 500;
+    transition: 0.2s;
+}
+
+.back-btn:last-child { /* 저장 버튼 전용 */
+    background: #333;
+    color: #fff;
+    border-color: #333;
+}
+
+.back-btn:hover {
+    opacity: 0.8;
+}
+
+.divider {
+    border: 0;
+    height: 1px;
+    background: #eee;
+    margin: 30px 0;
+}

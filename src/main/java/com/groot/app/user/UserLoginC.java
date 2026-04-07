@@ -10,14 +10,22 @@ import java.io.IOException;
 @WebServlet(name = "UserLoginC", value = "/user-Login")
 public class UserLoginC extends HttpServlet {
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        UserDAO.Login(request);
-        response.sendRedirect("user/login.jsp");
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        UserDAO.Login(req);
 
+        resp.sendRedirect("user/login.jsp");
     }
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        UserDAO.Login(request);
+        
+        Boolean redirectJoin = (Boolean) request.getAttribute("redirectJoin");
+        if (redirectJoin != null && redirectJoin) {
+            response.sendRedirect("user/join.jsp");
+        } else {
+            response.sendRedirect("index.jsp");
+        }
     }
 
     public void destroy() {

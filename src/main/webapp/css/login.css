@@ -1,0 +1,333 @@
+/* ================================================
+   약쟁이 - login.css
+   app.css 테마 연동
+   ================================================ */
+
+.login-page {
+    min-height: calc(100vh - var(--header-h));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+    background:
+            radial-gradient(circle at top left, rgba(37, 99, 235, 0.10), transparent 30%),
+            radial-gradient(circle at bottom right, rgba(249, 115, 22, 0.10), transparent 28%),
+            linear-gradient(180deg, #f8fbff 0%, var(--bg) 100%);
+}
+
+.login-wrap {
+    width: 100%;
+    max-width: 1080px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08);
+}
+
+.login-left {
+    padding: 48px 42px;
+    background:
+            linear-gradient(135deg, rgba(37, 99, 235, 0.08), rgba(249, 115, 22, 0.06)),
+            #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 620px;
+    position: relative;
+}
+
+.login-left::after {
+    content: '';
+    position: absolute;
+    right: -60px;
+    bottom: -60px;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: rgba(37, 99, 235, 0.08);
+}
+
+.login-title-box {
+    position: relative;
+    z-index: 1;
+}
+
+.login-title {
+    font-family: 'Black Han Sans', cursive;
+    font-size: 52px;
+    line-height: 1.1;
+    color: var(--primary);
+    letter-spacing: -1px;
+    margin-bottom: 14px;
+}
+
+.login-title::after {
+    content: ' 💊';
+    font-size: 34px;
+    vertical-align: middle;
+}
+
+.login-subtitle {
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--text-sub);
+    max-width: 360px;
+    word-break: keep-all;
+}
+
+.login-img-box {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    gap: 18px;
+    padding-top: 30px;
+}
+
+.login-pill-img {
+    width: 110px;
+    max-width: 26%;
+    object-fit: contain;
+    transform: rotate(-12deg);
+    filter: drop-shadow(0 8px 16px rgba(0,0,0,0.10));
+}
+
+.login-bottle-img {
+    width: 220px;
+    max-width: 48%;
+    object-fit: contain;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.12));
+}
+
+.login-right {
+    background: #fff;
+    padding: 48px 42px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 620px;
+}
+
+.login-form-box {
+    width: 100%;
+    max-width: 390px;
+}
+
+.login-form-title {
+    font-size: 34px;
+    font-weight: 900;
+    color: var(--text);
+    letter-spacing: -0.8px;
+    margin-bottom: 10px;
+}
+
+.login-form-title + .login-msg {
+    margin-top: 6px;
+}
+
+.login-msg {
+    min-height: 24px;
+    margin-bottom: 18px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.login-input-group {
+    margin-bottom: 18px;
+}
+
+.login-input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-sub);
+}
+
+.login-input-group input {
+    width: 100%;
+    height: 50px;
+    padding: 0 15px;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    background: #fff;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s, transform .12s;
+}
+
+.login-input-group input::placeholder {
+    color: #9ca3af;
+}
+
+.login-input-group input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.10);
+}
+
+.login-btn {
+    width: 100%;
+    height: 52px;
+    margin-top: 8px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dk));
+    color: #2563eb;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: -0.2px;
+    cursor: pointer;
+    box-shadow: 0 10px 20px rgba(37, 99, 235, 0.20);
+    transition: transform .12s, box-shadow .2s, filter .2s;
+}
+
+.login-btn:hover {
+    filter: brightness(1.03);
+    box-shadow: 0 14px 24px rgba(37, 99, 235, 0.24);
+}
+
+.login-btn:active {
+    transform: scale(0.98);
+}
+
+.login-bottom {
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-sub);
+}
+
+.join-link {
+    display: inline-block;
+    margin-left: 8px;
+    color: var(--accent);
+    font-weight: 800;
+    transition: color .2s;
+}
+
+.join-link:hover {
+    color: #ea580c;
+    text-decoration: underline;
+}
+
+/* 상태 메시지 타입별로 쓰고 싶으면 */
+.login-msg.error {
+    color: #dc2626;
+}
+
+.login-msg.success {
+    color: #16a34a;
+}
+
+.login-msg.info {
+    color: var(--primary);
+}
+
+/* 프로필 미리보기 등에 재사용 가능 */
+.hdr-profile,
+.login-profile-preview {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* ================================================
+   반응형
+   ================================================ */
+
+@media (max-width: 1024px) {
+    .login-wrap {
+        max-width: 860px;
+    }
+
+    .login-left,
+    .login-right {
+        padding: 40px 30px;
+    }
+
+    .login-title {
+        font-size: 44px;
+    }
+
+    .login-bottle-img {
+        width: 180px;
+    }
+}
+
+@media (max-width: 768px) {
+    .login-page {
+        padding: 20px 12px 84px;
+    }
+
+    .login-wrap {
+        grid-template-columns: 1fr;
+        border-radius: 18px;
+    }
+
+    .login-left {
+        min-height: auto;
+        padding: 28px 22px 22px;
+    }
+
+    .login-right {
+        min-height: auto;
+        padding: 28px 22px 32px;
+    }
+
+    .login-title {
+        font-size: 36px;
+    }
+
+    .login-subtitle {
+        font-size: 15px;
+    }
+
+    .login-img-box {
+        margin-top: 18px;
+        padding-top: 8px;
+    }
+
+    .login-pill-img {
+        width: 84px;
+    }
+
+    .login-bottle-img {
+        width: 150px;
+    }
+
+    .login-form-title {
+        font-size: 28px;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-left,
+    .login-right {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .login-title {
+        font-size: 30px;
+    }
+
+    .login-form-title {
+        font-size: 24px;
+    }
+
+    .login-input-group input,
+    .login-btn {
+        height: 48px;
+    }
+}

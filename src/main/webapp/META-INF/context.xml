@@ -3,7 +3,7 @@
 <!--    <Resources>-->
 <!--        <PreResources-->
 <!--                className="org.apache.catalina.webresources.DirResourceSet"-->
-<!--                base="C:\es\upload\movieFile"-->
+<!--                base="C:\dbworkspace\kd\upload"-->
 <!--                webAppMount="/images"/>-->
 <!--    </Resources>-->
 <!--</Context>-->
