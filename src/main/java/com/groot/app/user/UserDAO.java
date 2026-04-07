@@ -18,17 +18,21 @@ public class UserDAO {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
 
+
+
+
         // 수정 1: 필요한 모든 유저 정보를 가져오기 위해 SELECT * 사용
         String sql = "SELECT * FROM users WHERE user_id=?";
         boolean isLoginSuccess = false; // 로그인 성공 여부 저장 변수
+
 
         try {
             con = DBManager_new.connect();
             pstmt = con.prepareStatement(sql);
             pstmt.setString(1, id); // request.getParameter 대신 변수 id 사용
             rs = pstmt.executeQuery();
-
             String loginMsg = "";
+
 
             if (rs.next()) {
                 if (rs.getString("user_pw").equals(pw)) {
@@ -40,6 +44,7 @@ public class UserDAO {
                     user.setAge(rs.getInt("user_age"));
                     user.setGender(rs.getString("user_gender"));
                     user.setUser_profile(rs.getString("user_profile"));
+
 
                     System.out.println("프로필 이미지: " + rs.getString("user_profile"));
                     System.out.println("어서오세요. 당신의 건강을 챙기세요");
@@ -68,7 +73,9 @@ public class UserDAO {
             // 성공이든 실패든 메시지는 request에 담아줌
             request.setAttribute("loginMsg", loginMsg);
 
-            // 수정 2: 무조건 세션을 생성해버리던 맨 아래의 중복 코드는 삭제했습니다!
+
+
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -79,7 +86,7 @@ public class UserDAO {
         // 컨트롤러에게 로그인 성공 여부를 반환
         return isLoginSuccess;
     }
-    
+
     private static void incrementFailCount(HttpServletRequest request, String id) {
         Integer failCount = (Integer) request.getSession().getAttribute("loginFailCount");
         if (failCount == null) {
@@ -87,9 +94,9 @@ public class UserDAO {
         } else {
             failCount++;
         }
-        
+
         request.getSession().setAttribute("loginFailCount", failCount);
-        
+
         // 5회 실패 시 리디렉션을 위한 플래그 설정
         if (failCount >= 5) {
             request.setAttribute("redirectJoin", true);
@@ -156,20 +163,15 @@ public class UserDAO {
         ResultSet rs = null;
         String sql = "insert into users values (users_seq.nextval,?,?,?,?,?,?,?,?,?,?,?,?)";
         try {
-           con = DBManager_new.connect();
-           pstmt = con.prepareStatement(sql);
-
+            con = DBManager_new.connect();
+            pstmt = con.prepareStatement(sql);
 
 
         } catch (Exception e) {
             e.printStackTrace();
-        }  finally {
+        } finally {
             DBManager_new.close(con, pstmt, rs);
         }
-
-
-
-
 
 
     }
