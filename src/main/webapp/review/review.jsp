@@ -10,7 +10,10 @@
 </head>
 <body>
 
+<%-- 🌟 전체를 감싸는 메인 컨테이너 시작 --%>
 <div class="review-container">
+
+    <%-- 📊 1. 리뷰 헤더 및 통계 그래프 구역 --%>
     <div class="review-header">
         <h2>💬 상품 리뷰</h2>
         <div class="star-stats-container">
@@ -45,11 +48,18 @@
                     </div>
                 </c:forEach>
             </div>
-        </div>
-        <a href="review/review_write.jsp?product_id=106" class="btn-write">✍️ 리뷰 작성하기</a>
-    </div>
+        </div> <%-- star-stats-container 닫기 --%>
 
-    <%-- 📸 1. 포토 갤러리 구역 --%>
+        <%-- ✍️ 리뷰 작성하기 버튼 (위치 조정) --%>
+        <div style="text-align: right; margin-bottom: 20px;">
+            <button type="button" onclick="openWriteModal()" style="padding: 10px 20px; background: #6a8d3a; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 1.1em;">
+                ✍️ 리뷰 작성하기
+            </button>
+        </div>
+    </div> <%-- review-header 닫기 --%>
+
+    <%-- ========================================================= --%>
+    <%-- 📸 2. 포토 갤러리 구역 --%>
     <div class="photo-gallery-container">
         <div class="gallery-header">
             <h2>📸 포토 리뷰 <span id="photo-count">(${allPhotoImages.size()})</span></h2>
@@ -68,95 +78,65 @@
         </div>
     </div>
 
-    <%-- 🎛️ 2. 리뷰 컨트롤 바 (정렬 & 필터) --%>
-    <div class="review-control-bar">
-        <div class="sort-options">
-            <select id="sortType">
-                <option value="like">👍 베스트순(좋아요순)</option>
-                <option value="date" selected>🆕 최신순</option>
-                <option value="high_score">⭐ 평점 높은순</option>
-                <option value="low_score">📉 평점 낮은순</option>
-            </select>
-        </div>
-        <div class="filter-options">
-            <select id="starFilter">
-                <option value="0" selected>모든 별점 보기</option>
-                <option value="5">별점 5점만</option>
-                <option value="4">별점 4점만</option>
-                <option value="3">별점 3점만</option>
-                <option value="2">별점 2점만</option>
-                <option value="1">별점 1점만</option>
-            </select>
-        </div>
-    </div>
+        <%-- ========================================================= --%>
+        <%-- 🎛️ 3. 리뷰 컨트롤 바 (정렬 & 필터 & 내 글 보기) --%>
+        <%-- ========================================================= --%>
+        <div class="review-control-bar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #222;">
 
-    <%-- 1. 리뷰 리스트 쫙 뿌리기 --%>
-    <div id="review-list-container">
-        <c:forEach var="r" items="${reviews}">
-            <div class="review-card" style="position: relative;">
-                    <%-- 🛡️ 로그인 유저 방어막 --%>
-                <c:if test="${sessionScope.loginUser.user_id == r.user_id || r.user_id == 'kim124'}">
-                    <div class="review-more-menu">
-                        <button type="button" class="btn-more" onclick="toggleMenu(${r.review_id})">⋮</button>
-                        <div id="menu-content-${r.review_id}" class="menu-content" style="display:none;">
-                            <a href="javascript:void(0)" onclick="openUpdateForm(${r.review_id})">수정하기</a>
-                            <a href="javascript:void(0)" onclick="deleteReview(${r.review_id})" style="color:red;">삭제하기</a>
-                        </div>
-                    </div>
-                </c:if>
-                <div class="review-title">제목: ${r.r_title}</div>
-                <div class="review-meta">
-                    작성자: ${r.user_id} | 별점: ${r.r_score}점 | 작성일: ${r.r_date}
-                </div>
+            <div class="sort-options" style="display: flex; align-items: center; gap: 20px;">
+                <select id="sortType" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; outline: none; cursor: pointer;">
+                    <option value="like">👍 베스트순(좋아요순)</option>
+                    <option value="date" selected>🆕 최신순</option>
+                    <option value="high_score">⭐ 별점 높은순</option>
+                    <option value="low_score">📉 별점 낮은순</option>
+                </select>
 
-                <c:if test="${not empty r.r_img}">
-                    <div class="review-img-box" style="margin: 15px 0;">
-                        <img src="../upload/${r.r_img}" alt="리뷰이미지" style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px; border: 1px solid #eee; display: block;">
-                    </div>
-                </c:if>
-                <hr style="border: 0; border-top: 1px solid #eee;">
-                <div class="review-content">${r.r_content}</div>
-
-                <div class="review-action-box">
-                    <button type="button" id="like-btn-${r.review_id}" class="btn-like" onclick="toggleLike(${r.review_id}, 'kim124')">
-                        👍 도움돼요 <span id="like-count-${r.review_id}" class="like-count">${r.r_like}</span>
-                    </button>
-                    <button type="button" class="btn-detail" onclick="openDetailModal('${r.r_title}', '${r.user_id}', '${r.r_score}', '${r.r_date}', '${r.r_content}', '${r.r_img}')">
-                        🔍 리뷰 상세보기
-                    </button>
-                </div>
+                <%-- 🌟 [새로 추가됨] 내가 쓴 글만 보기 체크박스 --%>
+                <label style="cursor: pointer; display: flex; align-items: center; font-weight: bold; font-size: 0.95em; color: #34495e; user-select: none;">
+                    <input type="checkbox" id="myReviewCheck" style="margin-right: 8px; transform: scale(1.3); cursor: pointer;">
+                    내가 쓴 글만 보기 🙋‍♂️
+                </label>
             </div>
-        </c:forEach>
-    </div>
 
-    <%-- 2. 등록된 리뷰가 한 개도 없을 때 --%>
-    <c:if test="${empty reviews}">
-        <div class="empty-msg">
-            <p>아직 작성된 리뷰가 없습니다.</p>
-            <p>99년생 무영이가 1등으로 리뷰를 남겨주세요! 👊</p>
+            <div class="filter-options">
+                <select id="starFilter" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; outline: none; cursor: pointer;">
+                    <option value="0" selected>모든 별점 보기</option>
+                    <option value="5">별점 5점만</option>
+                    <option value="4">별점 4점만</option>
+                    <option value="3">별점 3점만</option>
+                    <option value="2">별점 2점만</option>
+                    <option value="1">별점 1점만</option>
+                </select>
+            </div>
         </div>
-    </c:if>
 
     <%-- ========================================================= --%>
-    <%-- 🔍 1. 기존에 있던 상세보기 모달 --%>
-    <div id="detailModal" onclick="closeDetailModal()" style="display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.8); cursor:pointer;">
-        <div onclick="event.stopPropagation()" style="background:#fff; width:600px; margin:50px auto; border-radius:15px; cursor:default; overflow: hidden;">
-            <jsp:include page="review_detail.jsp" />
-        </div>
+    <%-- 📝 4. 리뷰 리스트 뿌려지는 구역 (비동기로 채워짐) --%>
+    <div id="review-list-container">
     </div>
 
-    <%-- ========================================================= --%>
-    <%-- 🛠️ 2. 새로 추가한 '수정 전용 모달' --%>
-    <div id="updateModal" onclick="closeUpdateModal()" style="display:none; position:fixed; z-index:2000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.8); cursor:pointer;">
-        <div onclick="event.stopPropagation()">
-            <jsp:include page="review_update.jsp" />
-        </div>
-    </div>
+</div> <%-- 🌟 review-container (메인 박스) 닫기 --%>
 
-</div> <%-- 🌟 review-container 닫히는 태그 --%>
 
 <%-- ========================================================= --%>
-<%-- 📸 3. 포토 리뷰만 모아보기 모달 (화면 밖으로 뺀 것) --%>
+<%-- 🚧 모달(Modal) 창들 모음 (화면 위로 뜨는 애들) --%>
+<%-- ========================================================= --%>
+
+<%-- 🔍 1. 기존 상세보기 모달 --%>
+<div id="detailModal" onclick="closeDetailModal()" style="display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.8); cursor:pointer;">
+    <div onclick="event.stopPropagation()" style="background:#fff; width:600px; margin:50px auto; border-radius:15px; cursor:default; overflow: hidden;">
+        <jsp:include page="review_detail.jsp" />
+    </div>
+</div>
+
+<%-- 🛠️ 2. 수정 전용 모달 --%>
+<div id="updateModal" onclick="closeUpdateModal()" style="display:none; position:fixed; z-index:2000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.8); cursor:pointer;">
+    <div onclick="event.stopPropagation()">
+        <jsp:include page="review_update.jsp" />
+    </div>
+</div>
+
+<%-- 📸 3. 포토 리뷰 모아보기 모달 --%>
 <div id="photoOnlyModal" onclick="closePhotoOnlyModal()" style="display:none; position:fixed; z-index:1100; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.85); cursor:pointer;">
     <div onclick="event.stopPropagation()" style="background:#fff; width:800px; max-height:80%; margin:50px auto; border-radius:15px; cursor:default; overflow-y: auto; padding: 20px;">
         <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #34495e; padding-bottom:10px; margin-bottom:20px;">
@@ -167,31 +147,56 @@
     </div>
 </div>
 
+<%-- ✍️ 4. 리뷰 작성하기 모달 (새로 추가됨!) --%>
+<div id="writeModal" class="modal" style="display:none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5);">
+    <div class="modal-content" style="background: white; margin: 5% auto; padding: 30px; width: 500px; border-radius: 15px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="margin: 0;">✍️ 리뷰 작성하기</h2>
+            <span onclick="closeWriteModal()" style="cursor: pointer; font-size: 24px;">&times;</span>
+        </div>
+
+        <form id="writeForm" enctype="multipart/form-data">
+            <input type="hidden" name="product_id" value="106">
+
+            <div style="margin-bottom:15px;">
+                <label style="font-weight: bold;">제목</label>
+                <input type="text" name="r_title" required style="width:100%; padding:8px; margin-top:5px; border:1px solid #ddd; border-radius:5px;">
+            </div>
+
+            <div style="margin-bottom:15px;">
+                <label style="font-weight: bold;">별점</label>
+                <div class="star-rating" style="margin-top:5px;">
+                    <span class="write-star" data-value="1">★</span>
+                    <span class="write-star" data-value="2">★</span>
+                    <span class="write-star" data-value="3">★</span>
+                    <span class="write-star" data-value="4">★</span>
+                    <span class="write-star" data-value="5">★</span>
+                </div>
+                <input type="hidden" name="r_score" id="write_score" value="5">
+            </div>
+
+            <div style="margin-bottom:15px;">
+                <label style="font-weight: bold;">내용</label>
+                <textarea name="r_content" rows="5" maxlength="500" required style="width:100%; padding:8px; margin-top:5px; border:1px solid #ddd; border-radius:5px; resize:none;"></textarea>
+            </div>
+
+            <div style="margin-bottom:20px;">
+                <label style="font-weight: bold;">사진 첨부</label>
+                <input type="file" name="r_img" accept="image/*" style="display: block; margin-top: 10px;">
+            </div>
+
+            <div style="text-align: center;">
+                <button type="button" onclick="submitReview()" style="width: 100%; padding: 12px; background: #6a8d3a; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1.1em;">리뷰 등록하기</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <%-- ========================================================= --%>
 <%-- ⚙️ 자바스크립트 구역 --%>
 <script>
-    function openDetailModal(title, user, score, date, content, img) {
-        document.getElementById('detailModal').style.display = 'block';
-        document.getElementById('detail_title').innerText = title;
-        document.getElementById('detail_user').innerText = user;
-        document.getElementById('detail_score').innerText = score;
-        document.getElementById('detail_date').innerText = date;
-        document.getElementById('detail_text').innerText = content;
-
-        const imgBox = document.getElementById('detail_img_box');
-        const imgTag = document.getElementById('detail_img');
-
-        if(img && img !== 'null' && img !== '') {
-            imgTag.src = '../upload/' + img;
-            imgBox.style.display = 'block';
-        } else {
-            imgBox.style.display = 'none';
-        }
-    }
-
-    function closeDetailModal() {
-        document.getElementById('detailModal').style.display = 'none';
-    }
+    // JSP 파일 내부에 있던 모달 스크립트도 review.js로 다 옮겼으므로 여기는 비워둬도 됩니다!
+    // (만약 에러나면 다시 알려주세요)
 </script>
 
 <%-- 🌟 외부 JS 파일 연결은 무조건 맨 마지막에! --%>
