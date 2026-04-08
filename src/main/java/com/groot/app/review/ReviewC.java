@@ -21,9 +21,18 @@ public class ReviewC extends HttpServlet {
         // 🚦 2. 일반 손님이면? "DAO야, 가방에 짐(데이터) 싸라!"
         int pId = Integer.parseInt(request.getParameter("PRODUCT_ID"));
 
-        // 가방에 사진, 리뷰, 통계 다 채워넣기 (일은 DAO가 다 함!)
+        // 1. 정렬 조건 파라미터 받기 (처음 들어오면 null일 거야)
+        String sortType = request.getParameter("sortType");
+        if (sortType == null || sortType.equals("")) {
+            sortType = "like"; // 🌟 여기서 "like"로 기본값을 딱!
+        }
+
+        // 2. 가방 채우기
         request.setAttribute("allPhotoImages", ReviewDAO.RDAO.getAllPhotoImages(pId));
-        ReviewDAO.RDAO.getAllReview(request, pId, "date", 0);
+
+        // 🌟 "date" 대신 우리가 정한 sortType 변수를 넣어줘!
+        ReviewDAO.RDAO.getAllReview(request, pId, sortType, 0);
+
         ReviewDAO.getReviewStats(request, pId);
 
         // 🚦 3. 자, 이제 JSP 화면으로 안내해!
