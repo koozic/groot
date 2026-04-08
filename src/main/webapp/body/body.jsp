@@ -1,6 +1,18 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
+
+    <script>
+        /* 세션에 저장된 user 객체에서 아이디를 가져와 'admin'인지 확인합니다.
+           이전 질문에서 getId() 오류가 났으므로, 실제 UserDTO의 필드명인 getUser_id()
+           또는 getUserId() 중 맞는 것을 사용하세요. (여기선 일반적인 getUserId로 예시)
+        */
+        const isAdmin = ${not empty sessionScope.user and sessionScope.user.userId == 'admin' ? true : false};
+
+        // 만약 UserDTO 필드명이 user_id라면 아래처럼 쓰세요:
+        // const isAdmin = ${not empty sessionScope.user and sessionScope.user.user_id == 'admin' ? true : false};
+    </script>
+
     <title>Groot - 신체별 영양소 추천</title>
     <script src="js/body.js" defer></script>
 </head>

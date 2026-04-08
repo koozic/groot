@@ -166,5 +166,9 @@ SELECT sequence_name, last_number
 FROM user_sequences
 WHERE sequence_name LIKE 'SEQ_SUPPLEMENTS%';
 
+SELECT *
+FROM admin
+WHERE admin_id = 'admin1';
+
 
 
