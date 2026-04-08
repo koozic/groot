@@ -14,10 +14,7 @@ public class CloudinaryUtil {
     static {
         try {
             Properties props = new Properties();
-            InputStream input = CloudinaryUtil.class.getClassLoader().getResourceAsStream("WEB-INF/config.properties");
-            if (input == null) {
-                input = CloudinaryUtil.class.getClassLoader().getResourceAsStream("config.properties");
-            }
+            InputStream input = CloudinaryUtil.class.getClassLoader().getResourceAsStream("config.properties");
             if (input != null) {
                 props.load(input);
                 cloudinary = new Cloudinary(ObjectUtils.asMap(
