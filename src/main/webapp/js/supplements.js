@@ -3,6 +3,14 @@ console.log('connected..')
 const modal = document.getElementById('commonModal');
 const content = document.getElementById('modalContent');
 
+// ESC key event handler to close modal
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape' && modal.open) {
+        modal.close();
+        content.innerHTML = '';
+    }
+});
+
 // 1. 등록 모달 열기
 function openAddModal() {
     fetch('/supplementAdd') // 등록용 JSP를 반환하는 서블릿 경로
@@ -13,6 +21,7 @@ function openAddModal() {
             modal.showModal();
         });
 }
+
 
 // 2. 상세 모달 열기
 async function openDetailModal(div) {

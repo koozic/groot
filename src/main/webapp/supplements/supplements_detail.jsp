@@ -100,6 +100,8 @@
 
     <div class="btn-group">
         <button class="btn-list" onclick="location.href='supplements'">목록으로 돌아가기</button>
+        <button class="supp-btn" onclick="updateSupplement('${supp.supplementId}')">수정</button>
+
     </div>
 </div>
 
@@ -107,4 +109,15 @@
 </html>
 
 </body>
+
+<script>
+    function updateSupplement(id) {
+        let ok = confirm('정말로 이 영양성분 정보를 수정하시겠습니까?');
+        if (ok) {
+            // 사용자가 '확인'을 누르면 수정 서블릿으로 요청을 보냄
+            location.href = 'updateSupplement?id=' + id;
+        }
+    }
+</script>
+
 </html>

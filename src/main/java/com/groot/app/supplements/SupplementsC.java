@@ -15,13 +15,8 @@ public class SupplementsC extends HttpServlet {
     // 화면 조회 (리스트 보기)
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
-        // 1. 싱글톤 객체(SDAO)를 통해 전체 리스트 조회 메서드 호출!
-        // SupplementsDAO.SDAO.getSupplementsList();
-        // DAO에게 일은 시켰지만, 결과물(List)을 받지 않음
-
-
         // 1. 가져온 데이터를 list라는 변수(바구니)에 제대로 담아주고,
-        List<SupplementsDTO> list = SupplementsDAO.getSupplementsList();
+        List<SupplementsDTO> list = SupplementsDAO.SDAO.getSupplementsList();
         // 2. 그 바구니를 화면(JSP)으로 보냅니다.
         request.setAttribute("supplementsList", list);
 
@@ -33,6 +28,7 @@ public class SupplementsC extends HttpServlet {
         request.getRequestDispatcher("/index.jsp").forward(request, response);
     }
 
+
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         // DAO의 등록 메서드 실행
         SupplementsDAO.SDAO.addSupplement(request);
@@ -41,6 +37,6 @@ public class SupplementsC extends HttpServlet {
         response.sendRedirect("supplements");
     }
 
-    public void destroy() {
-    }
+    public void destroy() { }
+
 }

@@ -20,8 +20,9 @@
             <div class="supp-wrap">
                 <div class="supp-img" onclick="openDetailModal(this)"
                 data-id="${supp.supplementId}" data-name="${supp.supplementName}" data-efficacy="${supp.supplementEfficacy}" data-dosage="${supp.supplementDosage}" data-timing="${supp.supplementTiming}" data-caution="${supp.supplementCaution}" data-imgPath="${supp.supplementImagePath}">
-                    <img src="/supplementImg/supplementImgFile/${supp.supplementImagePath}">
+                <img src="/supplementImg/supplementImgFile/${supp.supplementImagePath}">
                 </div>
+
                 <div class="supp-name">${supp.supplementName}</div>
                 <div class="supp-efficacy">${supp.supplementEfficacy}</div>
 
@@ -31,17 +32,13 @@
                 </div>
             </div>
         </c:forEach>
-
     </div>
 </div>
-<div class="modal-wrap">
 
-    <dialog id="commonModal">
-        <div id="modalContent">
-        </div>
-    </dialog>
-</div>
-
+        <dialog id="commonModal"> <button id="closeBtn">x</button>
+            <div id="modalContent">
+            </div>
+        </dialog>
 
 </body>
 
@@ -54,9 +51,17 @@
             // 컨트롤러(서블릿)의 주소(@WebServlet)도 반드시 deleteSupplement여야 합니다.
             location.href = 'deleteSupplement?id=' + id;
         }
-
     }
 
+    function updateSupplement(id) {
+        let ok = confirm('정말로 이 영양성분 정보를 수정하시겠습니까?');
+        if (ok) {
+            // 사용자가 '확인'을 누르면 수정 서블릿으로 요청을 보냄
+            location.href = 'updateSupplement?id=' + id;
+        }
+    }
 </script>
+
 <script src="js/supplements.js"></script>
+
 </html>
