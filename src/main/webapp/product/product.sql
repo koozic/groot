@@ -40,6 +40,12 @@ create table calendar
 
 );
 
+-- 최근 복용일 (오늘 복용 여부 판단 기준)
+ALTER TABLE CALENDAR ADD LAST_TAKEN_DATE DATE;
+
+-- 누적 복용 일수 (과거 이력 대체용 데이터)
+ALTER TABLE CALENDAR ADD TOTAL_TAKEN_COUNT NUMBER(5) DEFAULT 0 NOT NULL;
+
 -- drop table calender;
 -- 1. 비타민 C (기본 영양제)
 INSERT INTO products (product_id, product_admin, product_name, product_brand, product_price, product_nutrient,
