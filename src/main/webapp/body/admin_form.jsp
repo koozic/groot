@@ -66,7 +66,7 @@
            value="${empty supp ? 'insert' : 'update'}">
 
     <%-- 수정 시 suppId 전달 --%>
-    <c:if test="${supp != null}">
+    <c:if test="${not empty supp}">
         <input type="hidden" name="suppId" value="${supp.supplementId}">
     </c:if>
 

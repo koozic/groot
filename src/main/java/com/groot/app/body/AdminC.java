@@ -30,15 +30,26 @@ public class AdminC extends HttpServlet {
     private final Gson gson = new Gson();
 
     // ── 관리자 권한 체크 공통 메서드 ──
+//    private boolean isAdmin(HttpServletRequest request) {
+//        HttpSession session = request.getSession(false);
+//        if (session == null) return false;
+//
+//        // 세션에 저장한 userId가 "admin"인지 확인
+//        // 실제 프로젝트에서는 users 테이블에 role 컬럼을 두고 체크하는 것을 권장
+//        String userId = (String) session.getAttribute("userId");
+//        return "admin".equals(userId);
+//    }
+
+    // ✅ 수정: admin 테이블 기준으로 세션 키 변경
     private boolean isAdmin(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session == null) return false;
 
-        // 세션에 저장한 userId가 "admin"인지 확인
-        // 실제 프로젝트에서는 users 테이블에 role 컬럼을 두고 체크하는 것을 권장
-        String userId = (String) session.getAttribute("userId");
-        return "admin".equals(userId);
+        // 로그인 서블릿에서 admin 로그인 시
+        // session.setAttribute("adminId", ...) 로 저장했다고 가정
+        return session.getAttribute("adminId") != null;
     }
+
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -77,7 +88,7 @@ public class AdminC extends HttpServlet {
                     request.setAttribute("supp", dto);   // 폼에서 ${supp.xxx} 로 사용
                 }
                 // 등록: supp=null → 폼에서 빈 칸으로 표시됨
-                request.getRequestDispatcher("admin/admin_form.jsp")
+                request.getRequestDispatcher("body/admin_form.jsp")
                         .forward(request, response);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -173,3 +184,4 @@ public class AdminC extends HttpServlet {
         return dto;
     }
 }
+
