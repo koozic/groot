@@ -45,7 +45,11 @@ public class UserDAO {
                     user.setUser_profile(rs.getString("user_profile"));
 
 
-                    System.out.println("프로필 이미지: " + rs.getString("user_profile"));
+                    String profileImg = rs.getString("user_profile");
+                    System.out.println("=== Login Debug ===");
+                    System.out.println("프로필 이미지: " + profileImg);
+                    System.out.println("UserDTO profile: " + user.getUser_profile());
+                    System.out.println("==================");
                     System.out.println("어서오세요. 당신의 건강을 챙기세요");
                     loginMsg = "어서오세요. 당신의 건강을 챙기세요";
 
@@ -160,7 +164,7 @@ public class UserDAO {
         String sql = "insert into users values (?,?,?,?,?,?,?,?,?,?,?,?)";
 
         try {
-            String path = request.getServletContext().getRealPath("user_profile");
+            String path = request.getServletContext().getRealPath("user/userImg");
             
             // 디렉토리가 없으면 생성
             java.io.File uploadDir = new java.io.File(path);
@@ -187,12 +191,36 @@ public class UserDAO {
             pstmt.setInt(4, Integer.parseInt(mr.getParameter("user_age")));
             pstmt.setString(5, mr.getParameter("user_gender"));
             String profileFileName = mr.getFilesystemName("user_profile");
-            if (profileFileName == null) {
-                profileFileName = "Ayanokoji.jfif"; // 기본 프로필 이미지
+            String selectedProfile = mr.getParameter("user_profile");
+            
+            // 파일 업로드가 있으면 업로드 파일 사용, 없으면 선택한 기본 프로필 사용
+            if (profileFileName != null) {
+                // 직접 업로드한 파일
+                System.out.println("Uploaded profile: " + profileFileName);
+            } else if (selectedProfile != null && !selectedProfile.trim().isEmpty()) {
+                // 라디오 버튼으로 선택한 기본 프로필
+                profileFileName = selectedProfile;
+                System.out.println("Selected profile: " + profileFileName);
+            } else {
+                // 아무것도 선택하지 않으면 기본 프로필
+                profileFileName = "Ayanokoji.jfif";
+                System.out.println("Default profile: " + profileFileName);
             }
             pstmt.setString(6, profileFileName);   // 파일명
             pstmt.setString(7, mr.getParameter("user_email"));
-            pstmt.setString(8, mr.getParameter("user_address"));
+            
+            // address fields combination
+            String zipcode = mr.getParameter("user_zipcode");
+            String roadAddr = mr.getParameter("user_road_address");
+            String detailAddr = mr.getParameter("user_detail_address");
+            String extraAddr = mr.getParameter("user_extra_address");
+            String fullAddress = "";
+            if (zipcode != null) fullAddress += "[" + zipcode + "] ";
+            if (roadAddr != null) fullAddress += roadAddr + " ";
+            if (detailAddr != null) fullAddress += detailAddr;
+            if (extraAddr != null && !extraAddr.trim().isEmpty()) fullAddress += " (" + extraAddr + ")";
+            
+            pstmt.setString(8, fullAddress.trim());
             pstmt.setString(9, mr.getParameter("user_agree"));
             pstmt.setString(10, mr.getParameter("user_join_path"));
             pstmt.setString(11, "0");
@@ -213,42 +241,52 @@ public class UserDAO {
 
         Connection con = null;
         PreparedStatement pstmt = null;
-        ResultSet rs = null;
         String sql = "update users set user_name=?, user_pw=? where user_id=?";
 
         try {
             con = DBManager_new.connect();
             pstmt = con.prepareStatement(sql);
 
-            String name = req.getParameter("user_name");
-            String pw = req.getParameter("user_pw");
-            String id = req.getParameter("user_id");
-
+            String name = req.getParameter("name");
+            String newPw = req.getParameter("newPw");
+            String currentPw = req.getParameter("currentPw");
+            String id = ((com.groot.app.user.UserDTO) req.getSession().getAttribute("loginUser")).getUser_id();
+            
+            System.out.println("=== UserUpdate Debug ===");
             System.out.println("name: " + name);
-            System.out.println("pw: " + pw);
+            System.out.println("newPw: " + newPw);
+            System.out.println("currentPw: " + currentPw);
             System.out.println("id: " + id);
+            System.out.println("Update completed successfully!");
+            System.out.println("========================");
 
-            pstmt.setString(1, name);
-            pstmt.setString(2, pw);
-            pstmt.setString(3, id);
-
-            int result = pstmt.executeUpdate();
-            System.out.println("수정된 행 수: " + result);
-
-            if (result == 1) {
-                System.out.println("수정 완료 되었습니다.");
+            // 새 비밀번호가 입력된 경우에만 비밀번호 업데이트
+            if (newPw != null && !newPw.trim().isEmpty()) {
+                sql = "update users set user_name=?, user_pw=? where user_id=?";
+                pstmt = con.prepareStatement(sql); // recreate PreparedStatement
+                pstmt.setString(1, name);
+                pstmt.setString(2, newPw);
+                pstmt.setString(3, id);
             } else {
-                System.out.println("수정 실패");
+                sql = "update users set user_name=? where user_id=?";
+                pstmt = con.prepareStatement(sql); // recreate PreparedStatement
+                pstmt.setString(1, name);
+                pstmt.setString(2, id);
             }
+
+           if (pstmt.executeUpdate() == 1){
+               System.out.println("수정 완료");
+           }
 
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            DBManager_new.close(con, pstmt, rs);
+            DBManager_new.close(con, pstmt, null);
         }
     }
 
 
-
+    public static void UserDelete(HttpServletRequest req) {
     }
+}
 
