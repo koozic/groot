@@ -65,6 +65,83 @@ CREATE SEQUENCE seq_body START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE seq_curation START WITH 1 INCREMENT BY 1;
 CREATE SEQUENCE seq_curation_likes START WITH 1 INCREMENT BY 1;
 
-INSERT INTO body (body_id, body_name)
-VALUES (1, '눈');
-INSERT INTO body_supplement (body_id, supplement_id) VALUES (1, 10);
+INSERT INTO body
+VALUES (2, '눈', null);
+INSERT INTO body_supplement (body_id, supplement_id) VALUES (1, 1);
+INSERT INTO body_supplement (body_id, supplement_id) VALUES (1, 2);
+
+-- ① 현재 데이터 확인
+SELECT * FROM body;
+SELECT * FROM supplements;
+SELECT * FROM body_supplement;
+
+select user from dual;
+
+SELECT owner, table_name
+FROM all_tables
+WHERE table_name = 'SUPPLEMENTS';
+
+SELECT constraint_type
+FROM user_constraints
+WHERE table_name = 'SUPPLEMENTS';
+
+-- ② body 테이블에 신체 부위 데이터가 없으면 INSERT
+-- (이미 있으면 생략)
+
+INSERT INTO body (body_id, body_name, body_image)
+VALUES (seq_body.NEXTVAL, '눈', 'images/body/eye.png');
+
+INSERT INTO body (body_id, body_name, body_image)
+VALUES (seq_body.NEXTVAL, '간', 'images/body/liver.png');
+
+INSERT INTO body (body_id, body_name, body_image)
+VALUES (seq_body.NEXTVAL, '피로개선', 'images/body/tired.png');
+
+INSERT INTO body (body_id, body_name, body_image)
+VALUES (seq_body.NEXTVAL, '뼈/관절', 'images/body/bone.png');
+
+-- ③ supplements 테이블에 영양소 데이터가 없으면 INSERT
+-- supplement_id는 실제 DB에 맞는 시퀀스명으로 변경하세요
+INSERT INTO supplements
+(supplement_id, supplement_name, supplement_efficacy,
+ supplement_dosage, supplement_timing, supplement_caution,
+ supplement_image_path, supplement_view_count, supplement_reg_date)
+VALUES (1, '루테인', '눈 건강 및 황반 보호',
+        '하루 1정 (20mg)', '식후 복용 권장', '과다복용 시 피부 황변 가능',
+        'images/supp/lutein.png', 0, SYSDATE);
+
+INSERT INTO supplements
+(supplement_id, supplement_name, supplement_efficacy,
+ supplement_dosage, supplement_timing, supplement_caution,
+ supplement_image_path, supplement_view_count, supplement_reg_date)
+VALUES (2, '비타민A', '시력 유지 및 야맹증 예방',
+        '하루 1정', '아침 식후', '임산부 과다복용 주의',
+        'images/supp/vitaminA.png', 0, SYSDATE);
+
+INSERT INTO supplements
+(supplement_id, supplement_name, supplement_efficacy,
+ supplement_dosage, supplement_timing, supplement_caution,
+ supplement_image_path, supplement_view_count, supplement_reg_date)
+VALUES (3, '밀크씨슬', '간 기능 개선 및 해독',
+        '하루 1~2정 (150mg)', '식전 30분', '담도 폐색 환자 주의',
+        'images/supp/milk_thistle.png', 0, SYSDATE);
+
+-- ④ body_supplement 연결 테이블 (가장 중요!)
+-- 눈(body_id=1) ↔ 루테인(1), 비타민A(2)
+INSERT INTO body_supplement (body_id, supplement_id) VALUES (1, 1);
+INSERT INTO body_supplement (body_id, supplement_id) VALUES (1, 2);
+
+-- 간(body_id=2) ↔ 밀크씨슬(3)
+INSERT INTO body_supplement (body_id, supplement_id) VALUES (2, 3);
+
+COMMIT;
+
+-- ⑤ 연결 확인 쿼리 (이게 데이터 나와야 화면에 표시됨)
+SELECT s.supplement_name, b.body_name
+FROM body_supplement bs
+         JOIN body b ON bs.body_id = b.body_id
+         JOIN supplements s ON bs.supplement_id = s.supplement_id;
+
+-- supplements 테이블 PK 시퀀스
+CREATE SEQUENCE seq_supplements
+    START WITH 1 INCREMENT BY 1 NOCACHE;

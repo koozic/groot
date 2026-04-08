@@ -582,234 +582,331 @@ a { text-decoration: none; color: inherit; }
     .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
 }
 
+/*--------------------------------------------------------------------------------------------------------------------*/
 
-
-
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
-    margin: 0;
-    padding: 20px;
+/* =============================================
+   1. Root Variables & Reset
+   ============================================= */
+:root {
+    --primary-color: #4A90E2;
+    --primary-hover: #357ABD;
+    --danger-color: #ff4d4f;
+    --danger-hover: #d32f2f;
+    --bg-color: #f8f9fa;
+    --card-bg: #ffffff;
+    --border-color: #e9ecef;
+    --text-main: #212529;
+    --text-muted: #6c757d;
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 10px 20px rgba(0, 0, 0, 0.08);
+    --shadow-modal: 0 20px 60px rgba(0, 0, 0, 0.15);
 }
 
-.product-container {
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* =============================================
+   2. Header Actions & Buttons
+   ============================================= */
+.header-actions {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
     display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
+    justify-content: flex-end;
+}
+
+.btn-add-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #6e8efb, #a777e3);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(110, 142, 251, 0.4);
+    transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
+}
+
+.btn-add-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(110, 142, 251, 0.6);
+    filter: brightness(1.05);
+}
+
+.btn-add-item:active {
+    transform: scale(0.98);
+}
+
+/* =============================================
+   3. Product Grid & Card
+   ============================================= */
+.product-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px 40px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 24px;
 }
 
 .product-card {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    width: 200px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
     overflow: hidden;
-    transition: transform 0.2s;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
 }
 
 .product-card:hover {
     transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
 }
 
 .product-image {
-    height: 150px;
-    background-color: #e0e0e0;
+    position: relative;
+    height: 180px;
+    background-color: #f1f3f5;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
-    color: #555;
-}
-
-.product-info {
-    padding: 10px;
-}
-
-.product-name {
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-.product-brand, .product-nutrient, .product-price, .product-date {
-    font-size: 14px;
-    margin-bottom: 3px;
-    color: #333;
-}
-/* 이미지 컨테이너: 버튼 배치의 기준점 */
-.product-image {
-    position: relative;
-    width: 100%;
+    color: var(--text-muted);
+    font-size: 0.9rem;
     overflow: hidden;
 }
 
-/* 삭제 버튼 스타일: 이미지 우측 상단에 고정 */
 .btn-delete {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 10; /* 이미지보다 위에 출력 */
-
-    width: 28px;
-    height: 28px;
-    background-color: rgba(0, 0, 0, 0.5); /* 반투명 검정 */
+    top: 12px;
+    right: 12px;
+    width: 30px;
+    height: 30px;
+    background-color: rgba(0, 0, 0, 0.4);
     color: #fff;
     border: none;
     border-radius: 50%;
-    font-size: 20px;
+    font-size: 18px;
     cursor: pointer;
-
     display: flex;
     align-items: center;
     justify-content: center;
     transition: background-color 0.2s;
+    z-index: 10;
 }
 
 .btn-delete:hover {
-    background-color: rgba(255, 0, 0, 0.8); /* 호버 시 붉은색 */
+    background-color: var(--danger-color);
 }
 
-/* 영양제 등록 버튼 컨테이너 (정렬용) */
-.header-actions {
+.product-info {
+    padding: 16px;
     display: flex;
-    justify-content: flex-end;
-    padding: 20px;
+    flex-direction: column;
+    gap: 6px;
 }
 
-/* 메인 등록 버튼 스타일 */
-.btn-add-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 24px;
-    background: linear-gradient(135deg, #6e8efb, #a777e3); /* 트렌디한 그라데이션 */
-    color: white;
-    border: none;
-    border-radius: 50px; /* 알약 형태의 라운드 처리 */
-    font-size: 16px;
+.product-brand {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.product-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 4px;
+}
+
+/* 영양성분 뱃지 통일 */
+.product-nutrient {
+    align-self: flex-start;
+    display: inline-block;
+    padding: 4px 10px;
+    font-size: 0.8rem;
     font-weight: 600;
-    cursor: pointer;
-    box-shadow: 0 4px 15px rgba(110, 142, 251, 0.4);
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    color: #2b6cb0;
+    background-color: #ebf8ff;
+    border: 1px solid #bee3f8;
+    border-radius: var(--radius-sm);
 }
 
-/* 버튼 내 플러스 아이콘 */
-.btn-add-item .icon {
-    font-size: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.product-price {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-top: 8px;
 }
 
-/* 호버(마우스 올렸을 때) 효과 */
-.btn-add-item:hover {
-    transform: scale(1.05) translateY(-2px); /* 살짝 커지며 위로 들림 */
-    box-shadow: 0 8px 20px rgba(110, 142, 251, 0.6);
-    filter: brightness(1.1);
+.product-date {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-align: right;
+    margin-top: auto;
 }
 
-/* 클릭 시 효과 */
-.btn-add-item:active {
-    transform: scale(0.98);
-    box-shadow: 0 2px 10px rgba(110, 142, 251, 0.3);
-}
-
-/* 1. 모달 배경 (Overlay) */
-.modal {
-    display: none; /* 초기 상태 숨김 */
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.4); /* 배경 어둡게 */
-    backdrop-filter: blur(5px); /* 배경 블러 처리 (트렌디한 효과) */
-    z-index: 9999;
-    justify-content: center;
-    align-items: center;
-    transition: all 0.3s ease-in-out;
-}
-
-
-/* --- 모달 기본 구조 (기존 유지) --- */
+/* =============================================
+   4. Modals (Common & Visual)
+   ============================================= */
 .modal {
     display: none;
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(5px);
-    z-index: 1000;
-    justify-content: center;
+    backdrop-filter: blur(4px);
+    z-index: 9999;
     align-items: center;
-    transition: all 0.3s;
+    justify-content: center;
+    animation: fadeIn 0.2s ease-out;
 }
 
-/* --- 이미지 강조형 모달 컨텐츠 --- */
-.modal-content.visual-enhanced {
-    background-color: #fff;
-    width: 90%;
-    max-width: 900px; /* 좌우 분할을 위해 너비를 넓힘 */
-    border-radius: 24px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-    padding: 40px;
-    max-height: 90vh; /* 화면 높이의 90%로 제한 */
-    overflow: hidden; /* 내부 스크롤 제어 */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background-color: var(--card-bg);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-modal);
+    animation: modalSlideUp 0.3s ease-out;
+    overflow: hidden;
+    max-height: 90vh;
     display: flex;
     flex-direction: column;
-    animation: modalSlideUp 0.4s ease-out;
 }
 
 @keyframes modalSlideUp {
-    from { opacity: 0; transform: translateY(30px); }
+    from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* 헤더 */
+/* Visual Enhanced Modal (신규 등록) */
+.modal-content.visual-enhanced {
+    width: 90%;
+    max-width: 900px;
+}
+
+/* Confirm Mini Modal (삭제 확인) */
+.modal-content.confirm-mini {
+    width: 90%;
+    max-width: 400px;
+    border-radius: var(--radius-md);
+}
+
 .modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border-color);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #eee;
-    margin-bottom: 30px;
 }
 
-.modal-header h2 { font-size: 1.6rem; font-weight: 700; color: #222; }
-.close { font-size: 2rem; color: #aaa; cursor: pointer; transition: 0.2s; }
-.close:hover { color: #ff4d4d; }
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
 
-/* 폼 영역 */
+.close {
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    line-height: 1;
+}
+
+.close:hover {
+    color: var(--danger-color);
+}
+
+/* =============================================
+   5. Modal Form & Layout
+   ============================================= */
 .modal-form {
     display: flex;
     flex-direction: column;
-    height: 100%;
     overflow: hidden;
 }
 
-/* --- 시각적 분할 레이아웃의 핵심 --- */
 .modal-body-visual {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* 1:1 비율로 좌우 분할 */
-    gap: 40px;
-    overflow-y: auto; /* 내용이 많으면 이 영역만 스크롤 */
-    padding-right: 15px; /* 스크롤바 공간 */
+    grid-template-columns: 1fr 1.2fr;
+    gap: 30px;
+    padding: 24px;
+    overflow-y: auto;
 }
 
-/* 왼쪽: 이미지 미리보기 영역 */
+/* =============================================
+   Select 박스 커스텀 스타일 (모달 내 영양소 선택)
+   ============================================= */
+.input-group select {
+    width: 100%;
+    padding: 10px 36px 10px 14px; /* 우측 화살표 아이콘이 들어갈 여백 확보 */
+    border: 1px solid #ced4da;
+    border-radius: var(--radius-sm);
+    font-size: 0.95rem;
+    font-family: inherit;
+    color: var(--text-main);
+    background-color: #fff;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+
+    /* 기본 브라우저 스타일(화살표 등) 강제 제거 */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    /* 커스텀 SVG 화살표 삽입 (Data URI 방식) */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236c757d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 16px;
+}
+
+.input-group select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15); /* 기존 input focus와 동일한 링 이펙트 */
+}
+
+/* Option 항목 스타일 (OS 네이티브 렌더링에 의존하므로 제한적 적용) */
+.input-group select option {
+    color: var(--text-main);
+    background-color: #fff;
+    padding: 10px;
+}
+
+/* Image Preview */
 .image-preview-container {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
 }
 
 .image-preview-frame {
     width: 100%;
-    aspect-ratio: 1 / 1; /* 정사각형 프레임 */
-    background-color: #f5f6f8;
-    border-radius: 20px;
-    border: 2px dashed #e0e6ed; /* 대시 보더로 이미지 영역 강조 */
+    aspect-ratio: 1;
+    background-color: #f1f3f5;
+    border: 2px dashed #ced4da;
+    border-radius: var(--radius-md);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -817,150 +914,177 @@ body {
     position: relative;
 }
 
-/* 실제 이미지 스타일 */
 #modal-img-preview {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* 프레임에 꽉 차게 */
-    transition: 0.3s;
+    object-fit: cover;
 }
 
-#modal-img-preview.hidden { display: none; }
-
-/* 플레이스홀더 (이미지 없을 때) */
 .image-placeholder {
     text-align: center;
-    color: #99aab5;
+    color: var(--text-muted);
 }
 
-.image-placeholder .icon { font-size: 4rem; margin-bottom: 15px; display: block; }
-.image-placeholder p { font-size: 1rem; line-height: 1.5; }
-
-/* 이미지 경로 입력 칸 */
-.image-path-input {
-    margin-top: auto; /* 프레임 아래쪽에 고정 */
-}
-
-/* 오른쪽: 입력 폼 영역 */
-.form-inputs-container {
-    display: flex;
-    flex-direction: column;
-}
-
-/* 입력 그리드 (1열 배치) */
-.form-grid.single-col {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-/* 섭취 정보 한 줄 배치 */
-.input-group-row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-}
-
-/* 입력 칸 스타일 */
-.input-group label {
-    display: block;
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: #444;
+.image-placeholder .icon {
+    font-size: 2.5rem;
     margin-bottom: 8px;
+    display: block;
 }
 
-.input-group input,
-.input-group textarea {
+/* Form Inputs */
+.form-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.input-group, .input-group-row {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group-row {
+    flex-direction: row;
+    gap: 12px;
+}
+
+.input-group-row .input-group {
+    flex: 1;
+}
+
+.input-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 6px;
+}
+
+.input-group input, .input-group textarea {
     width: 100%;
-    padding: 14px 18px;
-    border: 1.5px solid #eee;
-    border-radius: 12px;
-    font-size: 15px;
-    background-color: #fff;
-    transition: 0.2s;
+    padding: 10px 14px;
+    border: 1px solid #ced4da;
+    border-radius: var(--radius-sm);
+    font-size: 0.95rem;
+    font-family: inherit;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.input-group input:focus,
-.input-group textarea:focus {
+.input-group input:focus, .input-group textarea:focus {
     outline: none;
-    border-color: #4A90E2;
-    background-color: #fbfdff;
-    box-shadow: 0 0 0 4px rgba(74, 144, 226, 0.1);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
 }
 
-/* 푸터 및 버튼 (기존 스타일 유지하되 간격 조정) */
+textarea {
+    resize: vertical;
+}
+
+/* Modal Footer & Action Buttons */
 .modal-footer {
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px solid #eee;
+    padding: 16px 24px;
+    border-top: 1px solid var(--border-color);
+    background-color: var(--bg-color);
     display: flex;
     justify-content: flex-end;
     gap: 12px;
 }
 
-.btn-cancel, .btn-save {
-    padding: 14px 30px;
-    border-radius: 12px;
-    font-size: 16px;
+.btn-cancel, .btn-save, .btn-danger {
+    padding: 10px 20px;
+    border-radius: var(--radius-sm);
+    font-size: 0.95rem;
     font-weight: 600;
     cursor: pointer;
     border: none;
-    transition: 0.2s;
+    transition: background-color 0.2s;
 }
 
-.btn-cancel { background-color: #f5f5f5; color: #666; }
-.btn-save { background-color: #4A90E2; color: white; box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3); }
+.btn-cancel {
+    background-color: #e2e8f0;
+    color: var(--text-main);
+}
 
-.btn-cancel:hover { background-color: #e0e0e0; }
-.btn-save:hover { background-color: #357ABD; transform: translateY(-2px); }
+.btn-cancel:hover {
+    background-color: #cbd5e1;
+}
 
-/* 스크롤바 커스텀 */
-.modal-body-visual::-webkit-scrollbar { width: 6px; }
-.modal-body-visual::-webkit-scrollbar-thumb { background-color: #e0e0e0; border-radius: 10px; }
+.btn-save {
+    background-color: var(--primary-color);
+    color: #fff;
+}
 
-/* 1. 토스트 알림: 화면 정중앙 배치 및 세련된 디자인 */
+.btn-save:hover {
+    background-color: var(--primary-hover);
+}
+
+.btn-danger {
+    background-color: var(--danger-color);
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background-color: var(--danger-hover);
+}
+
+/* Confirm Mini Body */
+.confirm-mini .modal-body {
+    padding: 30px 24px;
+    text-align: center;
+}
+
+.confirm-mini .modal-body p {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 8px;
+}
+
+.confirm-mini .sub-text {
+    font-size: 0.9rem;
+    color: var(--danger-color);
+    font-weight: normal;
+}
+
+/* 토스트 기본 스타일 */
+/* =============================================
+   토스트 (Toast) 알림 스타일
+   ============================================= */
+/* 공통 기본 스타일 */
 .toast {
-    /* 초기 상태: 숨김 */
     visibility: hidden;
     opacity: 0;
-
-    /* 위치: 화면 정중앙 */
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) scale(0.9); /* 살짝 작은 상태로 대기 */
-
-    /* 스타일: 모던한 다크 테마 */
-    background-color: rgba(33, 37, 41, 0.9); /* 깊은 차콜색 반투명 */
-    color: #ffffff;
-    padding: 24px 48px;
-    border-radius: 16px;
-    font-size: 1.25rem;
+    transform: translate(-50%, -50%) scale(0.9);
+    padding: 16px 32px;
+    border-radius: 12px;
+    font-size: 1.1rem;
     font-weight: 600;
-    text-align: center;
-    white-space: nowrap;
-
-    /* 레이어 최상단 및 그림자 */
-    z-index: 9999;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
-
-    /* 애니메이션 속도 제어 */
+    z-index: 10000;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+    /* 기본 테마 (Fallback) */
+    background-color: rgba(33, 37, 41, 0.9);
+    color: #fff;
 }
 
-/* 2. JS에서 'show' 클래스가 붙었을 때의 스타일 */
+/* 활성화 상태 */
 .toast.show {
     visibility: visible;
     opacity: 1;
-    transform: translate(-50%, -50%) scale(1.05); /* 살짝 커지며 강조 효과 */
+    transform: translate(-50%, -50%) scale(1);
 }
 
-/* 3. 모바일 대응 (화면이 작아져도 글자가 깨지지 않게) */
-@media (max-width: 480px) {
-    .toast {
-        min-width: 80%;
-        padding: 18px 24px;
-        font-size: 1rem;
-    }
+/* 상태별 컬러 베리에이션 (등록 성공) */
+.toast.success {
+    background-color: rgba(22, 163, 74, 0.95); /* Green 톤 */
+    color: #ffffff;
+}
+
+/* 상태별 컬러 베리에이션 (삭제 성공) */
+.toast.delete {
+    background-color: rgba(220, 38, 38, 0.95); /* Red 톤 */
+    color: #ffffff;
 }

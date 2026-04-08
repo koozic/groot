@@ -108,6 +108,38 @@ public class ProductDAO {
 
     }
 
+    public void getNutrientInfo(HttpServletRequest request) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        // 제품 정보에서 가져온 product_nutrient ID 사용
+        ProductDTO pDto = (ProductDTO) request.getAttribute("product");
+        if (pDto == null) return;
+
+        String sql = "SELECT * FROM supplements WHERE supplement_id = ?";
+
+        try {
+            con = DBManager_new.connect();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, pDto.getProductNutrient());
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                NutrientDTO nutrientData = new NutrientDTO(
+                        rs.getInt("supplement_id"),
+                        rs.getString("supplement_name")
+                );
+                // 별도의 attribute로 저장
+                request.setAttribute("nutrient", nutrientData);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBManager_new.close(con, pstmt, rs);
+        }
+    }
+
     public void productDelete(HttpServletRequest request) {
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -171,6 +203,29 @@ public class ProductDAO {
         return id;
 
 
+    }
+
+    public ArrayList<NutrientDTO> getAllNutrients(HttpServletRequest request) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        ArrayList<NutrientDTO> list = new ArrayList<>();
+        String sql = "SELECT supplement_id, supplement_name FROM supplements"; // 실제 테이블명에 맞게 수정
+
+        try {
+            con = DBManager_new.connect();
+            pstmt = con.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                // ID와 이름을 담은 DTO 객체 생성 (SupplementsDTO가 별도로 있어야 함)
+                list.add(new NutrientDTO(rs.getInt("supplement_id"), rs.getString("supplement_name")));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBManager_new.close(con, pstmt, rs);
+        }
+        return list;
     }
 
     public void productAdd(HttpServletRequest request) {

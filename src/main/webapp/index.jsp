@@ -32,7 +32,7 @@
                         style="width:40px; height:40px; border-radius:50%; object-fit:cover;"
                 >
 
-                <a href="mypage" class="hdr-link">마이페이지</a>
+                <a href="mypage" methods="post" class="hdr-link">마이페이지</a>
                 <a href="logout" class="btn-login">로그아웃</a>
             </c:when>
             <c:otherwise>
@@ -50,7 +50,7 @@
     <div class="nav-left">
         <a href="product"   class="nav-item ${activeTab == 'product'   ? 'active' : ''}">제품</a>
         <a href="supplements" class="nav-item ${activeTab == 'nutrition' ? 'active' : ''}">영양성분</a>
-        <a href="recommend" class="nav-item ${activeTab == 'recommend' ? 'active' : ''}">영양추천</a>
+        <a href="recommend" class="nav-item ${Tab == 'recommend' ? 'active' : ''}">영양추천</a>
 
     </div>
     <%-- nav 장바구니 버튼 --%>

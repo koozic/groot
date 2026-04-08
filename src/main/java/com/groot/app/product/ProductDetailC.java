@@ -13,6 +13,7 @@ public class ProductDetailC extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         //일
         ProductDAO.PDAO.showProductDetail(request);
+        ProductDAO.PDAO.getNutrientInfo(request);
 
         request.getRequestDispatcher("product/product_detail.jsp").forward(request, response);
 

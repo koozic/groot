@@ -14,6 +14,7 @@ public class ProductAddC extends HttpServlet {
         //일
         ProductDAO.PDAO.productAdd(request);
 
+
         //어디로?
         response.sendRedirect("product?insert=success");
 
