@@ -23,6 +23,7 @@ public class CloudinaryUtil {
 
         // 파일을 바이트 배열로 변환해서 업로드
         byte[] fileBytes = filePart.getInputStream().readAllBytes();
+
         Cloudinary cloudinary = CloudinaryUtil.getCloudinary();
         // Cloudinary에 업로드 실행
         Map uploadResult = cloudinary.uploader().upload(fileBytes, ObjectUtils.asMap(
