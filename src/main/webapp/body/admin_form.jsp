@@ -3,26 +3,54 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
-    <title>${supp == null ? '영양소 등록' : '영양소 수정'}</title>
+    <title>${empty supp ? '영양소 등록' : '영양소 수정'}</title>
     <style>
-        body { font-family: sans-serif; padding: 30px; max-width: 600px; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-weight: bold; margin-bottom: 5px; }
+        body {
+            font-family: sans-serif;
+            padding: 30px;
+            max-width: 600px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
         input, textarea, select {
-            width: 100%; padding: 8px;
-            border: 1px solid #ddd; border-radius: 5px;
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
             box-sizing: border-box;
         }
-        textarea { height: 80px; resize: vertical; }
-        .btn-submit {
-            background: #4CAF50; color: white;
-            padding: 10px 30px; border: none;
-            border-radius: 5px; cursor: pointer; font-size: 1em;
+
+        textarea {
+            height: 80px;
+            resize: vertical;
         }
+
+        .btn-submit {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
         .btn-cancel {
-            background: #9e9e9e; color: white;
-            padding: 10px 20px; border: none;
-            border-radius: 5px; cursor: pointer;
+            background: #9e9e9e;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
             margin-left: 10px;
         }
     </style>
@@ -30,12 +58,12 @@
 <body>
 
 <%-- supp가 null이면 등록, 있으면 수정 --%>
-<h2>${supp == null ? '➕ 영양소 등록' : '✏️ 영양소 수정'}</h2>
+<h2>${empty supp ? '➕ 영양소 등록' : '✏️ 영양소 수정'}</h2>
 
 <form action="admin" method="post">
     <%-- action 구분 --%>
     <input type="hidden" name="action"
-           value="${supp == null ? 'insert' : 'update'}">
+           value="${empty supp ? 'insert' : 'update'}">
 
     <%-- 수정 시 suppId 전달 --%>
     <c:if test="${supp != null}">
@@ -84,7 +112,7 @@
     </div>
 
     <%-- 등록 시에만 신체 부위 선택 표시 --%>
-    <c:if test="${supp == null}">
+    <c:if test="${empty supp}">
         <div class="form-group">
             <label>연결할 신체 부위</label>
             <select name="bodyId">
@@ -98,10 +126,11 @@
     </c:if>
 
     <button type="submit" class="btn-submit">
-        ${supp == null ? '등록하기' : '수정하기'}
+        ${empty supp ? '등록하기' : '수정하기'}
     </button>
     <button type="button" class="btn-cancel"
-            onclick="location.href='admin'">취소</button>
+            onclick="location.href='admin'">취소
+    </button>
 </form>
 
 </body>

@@ -70,7 +70,7 @@ function renderList(list) {
                     <p style="color:#999; font-size:0.85em;">
                         👁️ ${s.supplementViewCount} &nbsp; ❤️ ${s.likeCount}
                     </p>
-                    <p style="color:#bbb; font-size:0.8em;">등록일: ${s.supplementRegDate}</p>
+<!--                    <p style="color:#bbb; font-size:0.8em;">등록일: ${s.supplementRegDate}</p>-->
                     <button onclick="goDetail(${s.supplementId})"
                             style="cursor:pointer; padding:5px 10px;">
                         상세보기
