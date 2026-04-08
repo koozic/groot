@@ -109,9 +109,8 @@ public class ReviewDAO {
             String r_score = mr.getParameter("r_score");
             String r_content = mr.getParameter("r_content");
             String r_img = mr.getFilesystemName("r_img");
-            String user_id = "kim124"; // 💡 나중에 도혁씨 로그인 세션으로 바꿀 자리!
-
-            // ==========================================
+            com.groot.app.user.UserDTO loginUser = (com.groot.app.user.UserDTO) request.getSession().getAttribute("loginUser");
+            String user_id = loginUser.getUser_id(); // 찐 아이디 추출!
             // 🌟 [보안 및 필터링 구간] - 여기서부터가 핵심!
             // ==========================================
 

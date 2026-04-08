@@ -17,7 +17,7 @@
     <div class="hdr-right">
         <c:choose>
             <c:when test="${not empty sessionScope.loginUser}">
-                <span class="hdr-link">${sessionScope.loginUser.nickname}님</span>
+                <span class="hdr-link">${sessionScope.loginUser.nameㅌ}님</span>
                 <a href="mypage" class="hdr-link">마이페이지</a>
                 <a href="logout" class="btn-login">로그아웃.</a>
             </c:when>
@@ -97,7 +97,17 @@
 </div>
 <div id="toast" class="toast"></div>
 
-<div>review 부분</div>
+<%-- ========================================================= --%>
+<%-- 🌟 3. 상품 리뷰 구역 (무영님 코드 합체!) --%>
+<%-- ========================================================= --%>
+<div class="review-section-wrapper" style="max-width: 800px; margin: 40px auto; padding: 0 20px;">
+
+    <%-- ../review/review.jsp 로 경로를 맞춰서 다른 폴더에 있는 파일을 정확히 불러옵니다! --%>
+    <jsp:include page="../review/review.jsp">
+        <jsp:param name="PRODUCT_ID" value="${product.productId}" />
+    </jsp:include>
+
+</div>
 
 
 </body>
