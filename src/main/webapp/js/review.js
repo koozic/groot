@@ -177,7 +177,6 @@ function renderPaginatedReviews(isAppend = false) {
 function renderPaginationButtons() {
     let pageArea = document.getElementById('pagination-area');
     if(!pageArea) {
-        // html에 구역이 없으면 자바스크립트가 알아서 html 뼈대까지 만들어줍니다!
         pageArea = document.createElement('div');
         pageArea.id = 'pagination-area';
         pageArea.style.textAlign = 'center';
@@ -188,7 +187,7 @@ function renderPaginationButtons() {
     pageArea.innerHTML = '';
     const totalPages = Math.ceil(filteredReviewsData.length / itemsPerPage);
 
-    if (totalPages <= 1) return; // 1페이지만 있으면 버튼 숨김
+    if (totalPages <= 1) return; // 1페이지만 있으면 숨김
 
     if (isMobile) {
         // 📱 모바일 화면일 때: [올리브영 스타일 더보기]
@@ -199,17 +198,50 @@ function renderPaginationButtons() {
                 </button>`;
         }
     } else {
-        // 💻 PC 화면일 때: [쿠팡 스타일 1, 2, 3 번호판]
+        // 💻 PC 화면일 때: [아이허브 스타일 고급 번호판]
         let html = '';
-        for (let i = 1; i <= totalPages; i++) {
+
+        // 1. 이전(<) 버튼 (1페이지가 아닐 때만 보임)
+        if (currentPage > 1) {
+            html += `<a href="javascript:void(0)" onclick="goToPage(${currentPage - 1})" style="display:inline-block; margin:0 8px; font-weight:bold; font-size:1.2em; color:#555; text-decoration:none;">&lt;</a>`;
+        }
+
+        // 🌟 복잡한 페이징 번호 계산 (최대 5개 번호만 보여주기)
+        let start = Math.max(1, currentPage - 2);
+        let end = Math.min(totalPages, currentPage + 2);
+
+        if (currentPage <= 3) {
+            start = 1;
+            end = Math.min(5, totalPages);
+        } else if (currentPage + 2 >= totalPages) {
+            start = Math.max(1, totalPages - 4);
+            end = totalPages;
+        }
+
+        // 2. 번호 찍기
+        for (let i = start; i <= end; i++) {
             if (i === currentPage) {
-                // 현재 페이지는 굵은 초록색
-                html += `<span style="display:inline-block; margin:0 10px; font-weight:bold; color:#6a8d3a; font-size:1.3em; cursor:default;">${i}</span>`;
+                // 현재 페이지 (아이허브처럼 초록색 박스 칠하기)
+                html += `<span style="display:inline-block; margin:0 5px; padding: 6px 14px; background-color:#6a8d3a; color:white; font-weight:bold; border-radius:4px; font-size:1.1em; cursor:default;">${i}</span>`;
             } else {
-                // 다른 페이지는 누를 수 있는 링크
-                html += `<a href="javascript:void(0)" onclick="goToPage(${i})" style="display:inline-block; margin:0 10px; color:#777; text-decoration:none; font-size:1.1em;">${i}</a>`;
+                // 다른 페이지
+                html += `<a href="javascript:void(0)" onclick="goToPage(${i})" style="display:inline-block; margin:0 5px; padding: 6px 14px; color:#555; text-decoration:none; font-size:1.1em; border-radius:4px;">${i}</a>`;
             }
         }
+
+        // 3. 말줄임표(...) 와 마지막 페이지
+        if (end < totalPages) {
+            if (end < totalPages - 1) {
+                html += `<span style="display:inline-block; margin:0 5px; color:#777; font-size:1.1em;">...</span>`;
+            }
+            html += `<a href="javascript:void(0)" onclick="goToPage(${totalPages})" style="display:inline-block; margin:0 5px; padding: 6px 14px; color:#555; text-decoration:none; font-size:1.1em; border-radius:4px;">${totalPages}</a>`;
+        }
+
+        // 4. 다음(>) 버튼 (마지막 페이지가 아닐 때만 보임)
+        if (currentPage < totalPages) {
+            html += `<a href="javascript:void(0)" onclick="goToPage(${currentPage + 1})" style="display:inline-block; margin:0 8px; font-weight:bold; font-size:1.2em; color:#555; text-decoration:none;">&gt;</a>`;
+        }
+
         pageArea.innerHTML = html;
     }
 }
@@ -223,10 +255,16 @@ function loadMoreReviews() {
 // 💻 PC 전용: 번호 누를 때
 function goToPage(page) {
     currentPage = page;
-    renderPaginatedReviews(false); // false = 리스트 싹 지우고 새로 쓰기!
+    renderPaginatedReviews(false);
 
-    // 번호 누르면 화면 살짝 위로 올려주는 센스
-    document.getElementById('review-list-container').scrollIntoView({ behavior: 'smooth' });
+    // 🌟 상단 파란색 고정 메뉴바에 가려지지 않게 여백을 넉넉하게(-150) 뺍니다!
+    const controlBar = document.querySelector('.review-control-bar');
+    if (controlBar) {
+        const targetY = controlBar.getBoundingClientRect().top + window.scrollY - 110;
+        window.scrollTo({ top: targetY, behavior: 'smooth' });
+    } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 }
 // ==========================================
 // 🔍 4. 리뷰 상세보기
@@ -261,7 +299,7 @@ function deleteReview(reviewId) {
         .then(res => res.text())
         .then(data => {
             if (data.trim() === "1") {
-                alert("삭제완료!");
+                showToast("리뷰를 삭제했습니다. 🗑️");
                 const card = document.getElementById(`menu-content-${reviewId}`).closest('.review-card');
                 if(card) {
                     card.style.opacity = '0';
@@ -358,7 +396,7 @@ function submitUpdate() {
         .then(res => res.text())
         .then(data => {
             if (data.trim() === "1") {
-                alert("수정완료! ✨");
+                showToast("리뷰 수정을 완료했습니다! 🪄");
                 closeUpdateModal();
                 location.reload(); // 🌟 수정 후 페이지 전체 새로고침! (그래프/사진 동기화)
             } else {
@@ -441,7 +479,7 @@ function submitReview() {
         .then(data => {
             // 서블릿에서 성공 시 "1"을 응답하도록 수정할 예정입니다.
             if (data.trim() === "1") {
-                alert("리뷰가 등록되었습니다! ✨");
+                showToast("리뷰가 등록되었습니다! ✨");
                 closeWriteModal();
 
                 // 🌟 fetchReviews() 대신 location.reload()를 씁니다!
@@ -455,4 +493,27 @@ function submitReview() {
             }
         })
         .catch(err => console.error("등록 에러:", err));
+}
+
+// =========================================================
+// 🍞 토스트 알림 띄우기 함수
+// =========================================================
+function showToast(message) {
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    toast.className = 'toast-message';
+    toast.innerText = message;
+
+    container.appendChild(toast);
+
+    // 3초 뒤에 태그 자체를 삭제 (메모리 관리)
+    setTimeout(() => {
+        toast.remove();
+    }, 3000);
 }

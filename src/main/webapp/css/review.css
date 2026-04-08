@@ -263,3 +263,37 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helv
     color: #eeeeee !important; /* 연한 회색 */
     font-size: 1.1em;
 }
+/* =========================================
+   🍞 토스트 알림 (경용씨 스타일 맞춤형)
+========================================= */
+#toast-container {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+}
+
+.toast-message {
+    min-width: 250px;
+    background-color: rgba(52, 73, 94, 0.9); /* 다크한 네이비 */
+    color: #fff;
+    padding: 12px 25px;
+    border-radius: 30px;
+    margin-top: 10px;
+    font-size: 0.95em;
+    font-weight: bold;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    animation: fadeInUp 0.5s, fadeOut 0.5s 2.5s forwards; /* 3초 후 사라짐 */
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(-20px); }
+}
