@@ -33,7 +33,7 @@
                     ${msg}
                 </div>
 
-                <form action="${pageContext.request.contextPath}/user-join" method="post">
+                <form action="${pageContext.request.contextPath}/join" method="post">
 
                     <div class="login-input-group">
                         <label for="user_id">아이디</label>
@@ -65,6 +65,23 @@
                             <label><input type="radio" name="user_gender" value="여"> 여</label>
                         </div>
                     </div>
+
+                    <div class="login-input-group">
+                        <label for="user_age">나이</label>
+                        <input
+                                type="number"
+                                id="user_age"
+                                name="user_age"
+                                placeholder="나이를 입력하세요"
+                                min="1"
+                                max="120"
+                                required
+                        >
+                    </div>
+
+
+
+
 
                     <div class="login-input-group">
                         <label for="user_join_path">이 사이트를 알게 된 경로</label>
