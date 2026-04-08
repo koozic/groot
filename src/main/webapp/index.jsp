@@ -27,9 +27,10 @@
             <c:when test="${not empty sessionScope.loginUser}">
                 <span class="hdr-link">${sessionScope.loginUser.name}님 어서오세요. 당신의 건강을 챙기세요</span>
                 <img
-                        src="${sessionScope.loginUser.user_profile}"
+                        src="${pageContext.request.contextPath}/user/userImg/${sessionScope.loginUser.user_profile}"
                         alt="프로필"
                         style="width:40px; height:40px; border-radius:50%; object-fit:cover;"
+                        onerror="this.src='${pageContext.request.contextPath}/user/userImg/${sessionScope.loginUser.user_profile}'"
                 >
 
                 <a href="mypage" methods="post" class="hdr-link">마이페이지</a>

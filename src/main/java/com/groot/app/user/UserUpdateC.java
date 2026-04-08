@@ -15,7 +15,16 @@ public class UserUpdateC extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setCharacterEncoding("UTF-8");
+        resp.setContentType("text/html; charset=UTF-8");
+
         UserDAO.UserUpdate(req);
+        Boolean redirectJoin = (Boolean) req.getAttribute("redirectJoin");
+        if (redirectJoin != null && redirectJoin) {
+            resp.sendRedirect("user/login.jsp");
+        } else {
+            resp.sendRedirect("index.jsp");
+        }
 
 
 

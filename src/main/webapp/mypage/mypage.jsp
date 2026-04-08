@@ -44,7 +44,7 @@
       </c:if>
 
       <%-- TODO: action="userUpdate" 로 연결 --%>
-      <form id="infoForm" action="#" method="post">
+      <form id="infoForm"  action="user-update" method="post">
         <div class="mp-grid2">
           <div class="mp-form-group">
             <label class="mp-label">닉네임</label>

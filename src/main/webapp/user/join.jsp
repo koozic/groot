@@ -96,28 +96,28 @@
                         <label>기본 프로필 선택</label>
                         <div class="profile-grid">
                             <label class="profile-item">
-                                <input type="radio" name="user_profile" value="webapp\user\userImg\Ryuen.jfif">
-                                <img src="${pageContext.request.contextPath}/img/profile/Ryuen.jfif" alt="기본프로필1">
+                                <input type="radio" name="user_profile" value="Ryuen.jfif">
+                                <img src="${pageContext.request.contextPath}/user/userImg/Ryuen.jfif" alt="기본프로필1">
                             </label>
 
                             <label class="profile-item">
-                                <input type="radio" name="user_profile" value="webapp\user\userImg\Sudou.jfif">
-                                <img src="${pageContext.request.contextPath}/img/profile/Sudou.jfif" alt="기본프로필2">
+                                <input type="radio" name="user_profile" value="Sudou.jfif">
+                                <img src="${pageContext.request.contextPath}/user/userImg/Sudou.jfif" alt="기본프로필2">
                             </label>
 
                             <label class="profile-item">
-                                <input type="radio" name="user_profile" value="webapp\user\userImg\Ayanokoji.jfif">
-                                <img src="${pageContext.request.contextPath}/img/profile/Ayanokoji.jfif" alt="기본프로필3">
+                                <input type="radio" name="user_profile" value="Ayanokoji.jfif">
+                                <img src="${pageContext.request.contextPath}/user/userImg/Ayanokoji.jfif" alt="기본프로필3">
                             </label>
 
                             <label class="profile-item">
-                                <input type="radio" name="user_profile" value="webapp\user\userImg\B.jfif">
-                                <img src="${pageContext.request.contextPath}/img/profile/B.jfif" alt="기본프로필4">
+                                <input type="radio" name="user_profile" value="B.jfif">
+                                <img src="${pageContext.request.contextPath}/user/userImg/B.jfif" alt="기본프로필4">
                             </label>
 
                             <label class="profile-item">
-                                <input type="radio" name="user_profile" value="webapp\user\userImg\Horikita.jfif">
-                                <img src="${pageContext.request.contextPath}/img/profile/Horikita.jfif" alt="기본프로필5">
+                                <input type="radio" name="user_profile" value="Horikita.jfif">
+                                <img src="${pageContext.request.contextPath}/user/userImg/Horikita.jfif" alt="기본프로필5">
                             </label>
                         </div>
                     </div>
@@ -125,7 +125,7 @@
                     <!-- 직접 업로드 -->
                     <div class="login-input-group">
                         <label for="user_profile_file">직접 사진 업로드</label>
-                        <input type="file" id="user_profile_file" name="user_profile_file" accept="image/*">
+                        <input type="file" id="user_profile_file" name="user_profile" accept="image/*">
                         <small style="color:#777;">파일을 올리면 기본 프로필 대신 이 사진을 사용합니다.</small>
                     </div>
 
