@@ -35,7 +35,16 @@
         /* 버튼 디자인 */
         .btn-submit { padding: 12px 30px; background-color: #4CAF50; color: white; border: none; cursor: pointer; border-radius: 5px; font-weight: bold; font-size: 1em; }
         .btn-cancel, .btn-list { padding: 12px 30px; background-color: #95a5a6; color: white; border: none; cursor: pointer; border-radius: 5px; font-weight: bold; font-size: 1em; }
+
+    /* 🪄 모바일 화면(768px 이하)일 때 여백 살짝 줄여주기 */
+    @media (max-width: 768px) {
+    .reg-container {
+    margin: 20px auto; /* 위아래 여백을 살짝 줄여서 화면을 넓게 씁니다 */
+    padding: 15px;
+    }
+    }
     </style>
+
 
 </head>
 

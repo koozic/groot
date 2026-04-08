@@ -19,7 +19,10 @@
 
         /* 상세 박스: Movie 스타일의 테두리와 그림자 */
         .supp-detail-box {
-            width: 700px;
+            /*width: 700px;*/
+            width: 90%;          /* 기본적으로 부모 넓이의 90%만 차지하게 (양옆 여백) */
+            max-width: 700px;    /* 하지만 아무리 화면이 커져도 700px 이상은 안 커지게! */
+
             border: 1px solid #ddd;
             padding: 30px;
             border-radius: 15px;
@@ -52,7 +55,17 @@
         .btn-group { margin-top: 30px; text-align: center; }
         .btn-list { padding: 12px 30px; background-color: #4CAF50; color: white; border: none; cursor: pointer; border-radius: 5px; font-weight: bold; font-size: 1em; transition: background 0.3s; }
         .btn-list:hover { background-color: #45a049; }
+
+        /* 🪄 모바일 화면(768px 이하)일 때 여백 살짝 줄여주기 */
+        @media (max-width: 768px) {
+            .reg-container {
+                margin: 20px auto; /* 위아래 여백을 살짝 줄여서 화면을 넓게 씁니다 */
+                padding: 15px;
+            }
+        }
     </style>
+
+
 </head>
 
 <body>
@@ -100,7 +113,7 @@
 
     <div class="btn-group">
         <button class="btn-list" onclick="location.href='supplements'">목록으로 돌아가기</button>
-        <button class="supp-btn" onclick="updateSupplement('${supp.supplementId}')">수정</button>
+        <button class="btn-list" onclick="updateSupplement('${detailSupp.supplementId}')">수정</button>
 
     </div>
 </div>

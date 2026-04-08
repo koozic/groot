@@ -53,4 +53,10 @@ async function openDetailModal(div) {
     rows[4].children[1].innerText = timing;
     rows[5].children[1].innerText = caution;
 
+    // 모달의 수정 버튼에게 고유번호(id) 쥐어주기!
+    const btns = document.querySelectorAll(".btn-group .btn-list");
+    // btns[0]은 목록으로 버튼, btns[1]이 수정 버튼입니다.
+    btns[1].setAttribute("onclick", `updateSupplement('${id}')`);
+
+
 }

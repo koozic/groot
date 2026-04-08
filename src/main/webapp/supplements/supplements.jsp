@@ -5,14 +5,26 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+<%--    모바일 환경--%>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>영양성분 리스트</title>
     <link rel="stylesheet" href="css/supplements.css">
+
+    <style>
+        /* 🪄 모바일 화면(768px 이하)일 때 여백 살짝 줄여주기 */
+        @media (max-width: 768px) {
+            .reg-container {
+                margin: 20px auto; /* 위아래 여백을 살짝 줄여서 화면을 넓게 씁니다 */
+                padding: 15px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 <h1 style="text-align: center;">영양성분 리스트</h1>
 
-<button onclick="openAddModal()">새 영양성분 등록</button>
+<button class="supp-btn" onclick="openAddModal()">새 영양성분 등록</button>
 
 <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
     <div class="supplements-container">
@@ -35,7 +47,8 @@
     </div>
 </div>
 
-        <dialog id="commonModal"> <button id="closeBtn">x</button>
+        <dialog id="commonModal">
+<%--            <button id="closeBtn">x</button>--%>
             <div id="modalContent">
             </div>
         </dialog>
