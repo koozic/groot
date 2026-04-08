@@ -12,7 +12,7 @@
 <body>
 <h1 style="text-align: center;">영양성분 리스트</h1>
 
-<button onclick="openAddModal()">새 영양성분 등록</button>
+<button class="supp-btn" onclick="openAddModal()">새 영양성분 등록</button>
 
 <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
     <div class="supplements-container">
@@ -35,7 +35,8 @@
     </div>
 </div>
 
-        <dialog id="commonModal"> <button id="closeBtn">x</button>
+        <dialog id="commonModal">
+<%--            <button id="closeBtn">x</button>--%>
             <div id="modalContent">
             </div>
         </dialog>

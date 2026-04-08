@@ -81,6 +81,7 @@
         </div>
 
         <button type="submit" class="submit-btn">등록하기</button>
+        <button class="submit-btn" onclick="location.href='supplements'">목록으로 돌아가기</button>
     </form>
 </div>
 
