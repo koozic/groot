@@ -58,24 +58,37 @@ function renderList(list) {
     list.forEach(s => {
         html += `
                 <div style="border:1px solid #eee; margin:10px; padding:15px;
-                            border-radius:10px; display:inline-block;
-                            width:200px; text-align:center; vertical-align:top;">
-                    <img src="${s.supplementImagePath}"
-                         width="120"
-                         style="border-radius:5px;"
-                         >
-                    <br>
-                    <strong>${s.supplementName}</strong>
-                    <p style="color:#666; font-size:0.9em;">${s.supplementEfficacy}</p>
-                    <p style="color:#999; font-size:0.85em;">
-                        👁️ ${s.supplementViewCount} &nbsp; ❤️ ${s.likeCount}
-                    </p>
-<!--                    <p style="color:#bbb; font-size:0.8em;">등록일: ${s.supplementRegDate}</p>-->
-                    <button onclick="goDetail(${s.supplementId})"
-                            style="cursor:pointer; padding:5px 10px;">
-                        상세보기
-                    </button>
-                </div>
+                        border-radius:10px; display:inline-block;
+                        width:200px; text-align:center; vertical-align:top; position:relative;">
+                
+                
+                <img src="${s.supplementImagePath}"  width="120" style="border-radius:5px;"
+                 onerror="this.onerror=null; this.src='images/default.png';">
+                <br>
+                <strong>${s.supplementName}</strong>
+                <p style="color:#666; font-size:0.9em;">${s.supplementEfficacy}</p>
+                <p style="color:#999; font-size:0.85em;">
+                    👁️ ${s.supplementViewCount} &nbsp; ❤️ ${s.likeCount}
+                </p>
+
+                <button onclick="goDetail(${s.supplementId})"
+                        style="cursor:pointer; padding:5px 10px; margin-bottom:5px;">
+                    상세보기
+                </button>
+
+                ${isAdmin ? `
+                    <div style="margin-top:10px; border-top:1px dashed #ccc; padding-top:10px;">
+                        <button onclick="location.href='admin?action=form&suppId=${s.supplementId}'" 
+                                style="background:#2196F3; color:white; border:none; padding:5px 10px; border-radius:3px; cursor:pointer; font-size:0.8em;">
+                            수정
+                        </button>
+                        <button onclick="adminDelete(${s.supplementId}, '${s.supplementName}')" 
+                                style="background:#f44336; color:white; border:none; padding:5px 10px; border-radius:3px; cursor:pointer; font-size:0.8em; margin-left:5px;">
+                            삭제
+                        </button>
+                    </div>
+                ` : ''}
+            </div>
             `;
     });
 
@@ -94,4 +107,32 @@ function changeSort(sort) {
 // 4. 상세 페이지 이동 함수
 function goDetail(id) {
     location.href = `body?action=detail&suppId=${id}`;
+}
+
+// 관리자 전용 삭제 함수
+function adminDelete(id, name) {
+    if (confirm(`[관리자 권한] '${name}' 영양제를 정말 삭제하시겠습니까?\n삭제 후에는 복구가 불가능합니다.`)) {
+        // 자바스크립트로 가상의 form을 만들어 POST 요청을 보냅니다.
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = 'admin'; // AdminC 서블릿으로 전송
+
+        // action 파라미터 (delete)
+        const actionInput = document.createElement('input');
+        actionInput.type = 'hidden';
+        actionInput.name = 'action';
+        actionInput.value = 'delete';
+
+        // 삭제할 영양소 ID
+        const idInput = document.createElement('input');
+        idInput.type = 'hidden';
+        idInput.name = 'suppId';
+        idInput.value = id;
+
+        form.appendChild(actionInput);
+        form.appendChild(idInput);
+        document.body.appendChild(form);
+
+        form.submit();
+    }
 }

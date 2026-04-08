@@ -29,25 +29,25 @@ public class AdminC extends HttpServlet {
     private final AdminDAO dao = new AdminDAO();
     private final Gson gson = new Gson();
 
-    // ── 관리자 권한 체크 공통 메서드 ──
-//    private boolean isAdmin(HttpServletRequest request) {
-//        HttpSession session = request.getSession(false);
-//        if (session == null) return false;
-//
-//        // 세션에 저장한 userId가 "admin"인지 확인
-//        // 실제 프로젝트에서는 users 테이블에 role 컬럼을 두고 체크하는 것을 권장
-//        String userId = (String) session.getAttribute("userId");
-//        return "admin".equals(userId);
-//    }
 
     // ✅ 수정: admin 테이블 기준으로 세션 키 변경
     private boolean isAdmin(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session == null) return false;
 
-        // 로그인 서블릿에서 admin 로그인 시
-        // session.setAttribute("adminId", ...) 로 저장했다고 가정
-        return session.getAttribute("adminId") != null;
+        // 통합 세션 체크: "user"라는 키로 저장된 객체를 가져옴
+        Object userObj = session.getAttribute("user");
+
+        if (userObj != null && userObj instanceof com.groot.app.user.UserDTO) {
+            com.groot.app.user.UserDTO user = (com.groot.app.user.UserDTO) userObj;
+
+            // UserDTO의 아이디 필드명이 user_id라면 getUser_id(), userId라면 getUserId() 사용
+            // 앞서 발생한 에러를 고려하여 본인의 DTO 필드명에 맞게 호출하세요.
+            String userId = user.getUser_id(); // 예시: 실제 필드명에 맞출 것
+
+            return "admin".equals(userId); // 아이디가 admin이면 관리자로 인정
+        }
+        return false;
     }
 
 
@@ -158,7 +158,9 @@ public class AdminC extends HttpServlet {
                     // 영양소 본체 삭제
                     dao.deleteSupplement(suppId);
 
-                    response.sendRedirect("admin");
+                    // 삭제 후 원래 있던 곳으로 돌아가기 위해 referer(이전 페이지)를 확인하거나
+                    // 추천 화면 주소로 직접 보냅니다.
+                    response.sendRedirect("body_view");
                     break;
                 }
 
