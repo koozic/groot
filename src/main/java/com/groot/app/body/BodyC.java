@@ -32,16 +32,24 @@ public class BodyC extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
         String uri = request.getRequestURI();
+        String action = request.getParameter("action"); // action 파라미터를 먼저 받습니다.
 
-        // 페이지 요청인 경우 (AJAX가 아님)
-        if (uri.contains("body_view")) {
+        // 페이지 요청인 경우 (AJAX가 아님) 단순 페이지 이동 (action이 없을 때만 실행)
+        if (uri.contains("body_view") && action == null) {
             request.getRequestDispatcher("body/body.jsp").forward(request, response);
             return;
         }
+        // 2. 여기서부터는 AJAX 또는 상세페이지 이동 처리
             request.setCharacterEncoding("UTF-8");
+        // action에 따라 컨텐츠 타입을 결정 (detail은 HTML, 나머지는 JSON)
             response.setContentType("application/json; charset=UTF-8");
 
-            String action = request.getParameter("action");
+        if ("detail".equals(action)) {
+            response.setContentType("text/html; charset=UTF-8");
+        } else {
+            response.setContentType("application/json; charset=UTF-8");
+        }
+
             PrintWriter out = response.getWriter();
 
             try {
@@ -56,39 +64,47 @@ public class BodyC extends HttpServlet {
                         break;
                     }
 
-                    // ── 신체 부위별 영양소 리스트 ──
+                    // ── 신체 부위별 영양소 리스트(AJAX용) ──
                     case "supps": {
-                        // 특정 신체 부위의 영양소 목록
-                        int bodyId = Integer.parseInt(request.getParameter("bodyId"));
-                        String sort = request.getParameter("sort"); // "view" or "like"
+                        String bodyIdParam = request.getParameter("bodyId");
 
-                        // 사용자가 버튼을 누르지 않은 초기 상태(null)라면 'recent'를 기본값으로 사용
-                        if (sort == null || sort.isEmpty()) {
-                            sort = "recent";
+                        // ✅ bodyId가 null이거나 빈 문자열인 경우 방어 처리
+                        if (bodyIdParam == null || bodyIdParam.trim().isEmpty()) {
+                            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                            out.print("{\"error\":\"bodyId가 필요합니다.\"}");
+                            break;
                         }
 
-                        // 리턴 타입이 영양소 정보이므로 SupplementDTO(또는 명칭에 맞는 DTO) 사용 권장
-                        // 여기서는 기존 흐름에 따라 작성하되, DAO에서 JOIN 쿼리가 필요함
+                        int bodyId = Integer.parseInt(bodyIdParam); // 이제 안전하게 파싱 가능
+                        String sort = request.getParameter("sort");
+                        if (sort == null || sort.isEmpty()) sort = "recent";
+
                         List<BodyDTO> supps = dao.getSupplementsByBody(bodyId, sort);
+                        System.out.println("조회된 개수: " + supps.size()); // 0보다 커야 합니다!
                         out.print(gson.toJson(supps));
                         break;
                     }
 
-                    // ── 영양소 상세 조회 + 조회수 증가 ──
+                    // ── 영양소 상세 조회(페이지 이동용) + 조회수 증가 ──
                     case "detail": {
                         // 영양소 상세 보기 (이때 DAO에서 view_count +1 로직이 실행되어야 함)
                         int suppId = Integer.parseInt(request.getParameter("suppId"));
 
                         // 2. DAO를 통해 상세 정보 및 조회수 증가 처리
+                        // ✅ DAO의 3번 메서드 호출 (상세정보 + 조회수 증가)
                         BodyDTO detail = dao.getSupplementDetail(suppId);
 
                         if (detail == null) {
-                            response.setStatus(HttpServletResponse.SC_NOT_FOUND, "해당 영양소 정보를 찾을 수 없습니다.");
+                            // 데이터가 없을 경우 404 에러 페이지나 메시지 처리
+                            response.sendError(HttpServletResponse.SC_NOT_FOUND, "해당 영양소 정보를 찾을 수 없습니다.");
                             out.print("{\"error\":\"not found\"}");
                         } else {
-                            out.print(gson.toJson(detail));
+                            // ⚠️ 중요: JSON 응답이 아니라 JSP로 포워딩합니다.
+                            request.setAttribute("d", detail);
+                            request.getRequestDispatcher("body/supplement_detail.jsp").forward(request, response);
                         }
                         break;
+
                     }
 
                     // ── 마이페이지 좋아요 목록 ──
