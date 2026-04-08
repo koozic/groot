@@ -200,13 +200,13 @@ insert into users values (
                          );
 
 insert into users values (
-            'lim12',
-            '0321',
+            '123',
+            '123',
             '임서연',
             23,
             '여',
             'https://cdn.myanimelist.net/images/characters/6/166001.jpg',
-            'lim103@gmail.com',
+            'lim103@gmail.com1',
             '서울시 강서구',
             'Y',
             'SEARCH',
