@@ -281,6 +281,40 @@ public class SupplementsDAO {
                 DBManager_new.close(con, pstmt, null);
             }
         }
+
+    // ==========================================================
+    // 페이징 처리 로직
+    // ==========================================================
+    public void paging(int pageNum, HttpServletRequest request, List<SupplementsDTO> allList) {
+
+        request.setAttribute("currentPage", pageNum);
+
+        int total = allList.size(); // DB에서 가져온 전체 영양성분 개수
+        int cnt = 6; // 💡 한 페이지당 보여줄 영양성분 개수 (원하는 대로 수정하세요! 예: 6개, 8개 등)
+
+        // 1. 총 페이지 수 계산
+        int totalPage = (int) Math.ceil((double) total / cnt);
+        request.setAttribute("totalPage", totalPage);
+
+        // 2. 역순 출력을 위한 인덱스 계산 (최신 등록된 것이 먼저 나오도록)
+        int start = total - (cnt * (pageNum - 1));
+        int end = (pageNum == totalPage) ? -1 : start - (cnt + 1);
+
+        // 3. 계산된 인덱스만큼 전체 리스트에서 잘라내어 새 바구니(items)에 담기
+        List<SupplementsDTO> items = new ArrayList<>();
+
+        for (int i = start - 1; i > end; i--) {
+            // IndexOutOfBounds 에러 방지를 위한 안전 장치
+            if (i >= 0 && i < total) {
+                items.add(allList.get(i));
+            }
+        }
+
+        // 4. 잘라낸 리스트를 화면에 보내기 위해 세팅
+        // (원래 Controller에서 하던 request.setAttribute를 덮어씁니다!)
+        request.setAttribute("supplementsList", items);
+    }
+
     }
 
 
