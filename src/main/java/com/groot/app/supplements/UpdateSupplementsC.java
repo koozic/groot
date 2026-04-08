@@ -1,14 +1,21 @@
 package com.groot.app.supplements;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 import java.io.IOException;
 import java.util.List;
 
 @WebServlet(name = "UpdateSupplementsC", value = "/updateSupplement")
+@MultipartConfig(
+        maxFileSize = 1024 * 1024 * 5,
+        maxRequestSize = 1024 * 1024 * 10
+
+)
 public class UpdateSupplementsC extends HttpServlet {
 
     // 화면 조회 (리스트 보기)
@@ -22,11 +29,40 @@ public class UpdateSupplementsC extends HttpServlet {
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        // 1. DAO에게 "사용자가 보낸 정보(request)로 DB 내용 고쳐줘!" 라고 명령합니다.
+//        // 1. DAO에게 "사용자가 보낸 정보(request)로 DB 내용 고쳐줘!" 라고 명령합니다.
+//        SupplementsDAO.SDAO.updateSupplement(request);
+//
+//        // 2. 수정이 끝났으면 바뀐 결과를 확인할 수 있게 영양성분 리스트 페이지로 새로고침(이동) 시킵니다.
+//
+//        response.sendRedirect("supplements");
+
+    //이찬우 이미지 테스용======================
+
+// 1. 한글 깨짐 방지
+        request.setCharacterEncoding("UTF-8");
+
+        // 2. JSP의 <input type="file" name="s_img"> 에서 파일을 꺼냅니다.
+        // (JSP의 input name이 "s_img"라고 가정했습니다. 다르면 수정하세요!)
+        Part filePart = request.getPart("supplementFile");
+
+        // 3. CloudinaryUtil을 사용하여 업로드 후 URL 받기
+        // 파일이 선택되지 않았을 수도 있으니 유틸리티에서 처리한 값을 받습니다.
+        String imageUrl = com.groot.app.common.CloudinaryUtil.uploadFile(filePart, "supplements");
+
+        // 4. 업로드된 URL을 DAO가 알 수 있도록 request에 담아줍니다.
+        // 이렇게 담아두면 DAO에서 request.getAttribute("newImageUrl")로 꺼낼 수 있습니다.
+        if (imageUrl != null) {
+            request.setAttribute("newImageUrl", imageUrl);
+        }
+
+        // 5. 이제 DAO 실행 (이 안에서 DB 업데이트를 처리하겠죠?)
         SupplementsDAO.SDAO.updateSupplement(request);
 
-        // 2. 수정이 끝났으면 바뀐 결과를 확인할 수 있게 영양성분 리스트 페이지로 새로고침(이동) 시킵니다.
+        // 6. 완료 후 리스트로 이동
         response.sendRedirect("supplements");
+
+
+    //===================================================
     }
 
     public void destroy() {
