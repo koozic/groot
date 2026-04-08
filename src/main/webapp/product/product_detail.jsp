@@ -95,10 +95,12 @@
         </section>
     </main>
 </div>
-
+<div id="toast" class="toast"></div>
 
 <div>review 부분</div>
 
 
 </body>
+<script src="js/product.js?v=3"></script>
+
 </html>

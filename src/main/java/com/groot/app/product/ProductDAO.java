@@ -254,7 +254,7 @@ public class ProductDAO {
             pstmt.setInt(4, Integer.parseInt(mr.getParameter("productPrice")));
             pstmt.setInt(5, Integer.parseInt(mr.getParameter("productNutrient")));
             pstmt.setString(6, mr.getParameter("productDescription"));
-            pstmt.setString(7, mr.getParameter("productImage"));
+            pstmt.setString(7, mr.getFilesystemName("productImage"));
             pstmt.setInt(8, Integer.parseInt(mr.getParameter("productTotal")));
             pstmt.setInt(9, Integer.parseInt(mr.getParameter("productServe")));
             pstmt.setInt(10, Integer.parseInt(mr.getParameter("productPerDay")));
