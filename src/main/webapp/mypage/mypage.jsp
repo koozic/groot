@@ -88,90 +88,39 @@
     </div>
   </div>
 
-  <%-- ============================================
-       탭 2. 오늘의 영양제 체크
-       TODO: 체크 상태 → DailyCheckServlet AJAX 연결
-       ============================================ --%>
-  <div id="tab-check" class="mp-tab-content">
-    <div class="mp-card">
-      <div class="mp-sec-title">
-        오늘의 영양제 체크
-        <span class="today-badge" id="todayDate"></span>
-      </div>
-
-      <div class="vit-list" id="vitaminList">
-        <c:choose>
-          <c:when test="${not empty mySupplements}">
-            <c:forEach var="supp" items="${mySupplements}">
-              <%-- TODO: checkedToday 값은 DailyCheckDAO에서 오늘 체크 여부 조회 --%>
-              <div class="vit-item ${supp.checkedToday ? 'checked' : ''}"
-                   data-supp-id="${supp.suppId}"
-                   onclick="toggleCheck(this, ${supp.suppId})">
-                <span class="vit-icon">${supp.icon}</span>
-                <div class="vit-info">
-                  <div class="vit-name">${supp.name}</div>
-                  <div class="vit-dose">${supp.timing} · ${supp.dose}</div>
-                </div>
-                <div class="vit-check-box">
-                  <c:if test="${supp.checkedToday}">✓</c:if>
-                </div>
-              </div>
-            </c:forEach>
-          </c:when>
-          <c:otherwise>
-            <%-- 더미 데이터 (DB 연결 전 확인용) --%>
-            <div class="vit-item checked" data-supp-id="1" onclick="toggleCheck(this, 1)">
-              <span class="vit-icon">🍊</span>
-              <div class="vit-info">
-                <div class="vit-name">비타민C 1000mg</div>
-                <div class="vit-dose">아침 식후 · 1정</div>
-              </div>
-              <div class="vit-check-box">✓</div>
-            </div>
-            <div class="vit-item checked" data-supp-id="2" onclick="toggleCheck(this, 2)">
-              <span class="vit-icon">🐟</span>
-              <div class="vit-info">
-                <div class="vit-name">오메가3</div>
-                <div class="vit-dose">점심 식중 · 2정</div>
-              </div>
-              <div class="vit-check-box">✓</div>
-            </div>
-            <div class="vit-item" data-supp-id="3" onclick="toggleCheck(this, 3)">
-              <span class="vit-icon">☀️</span>
-              <div class="vit-info">
-                <div class="vit-name">비타민D 2000IU</div>
-                <div class="vit-dose">저녁 식후 · 1정</div>
-              </div>
-              <div class="vit-check-box"></div>
-            </div>
-            <div class="vit-item" data-supp-id="4" onclick="toggleCheck(this, 4)">
-              <span class="vit-icon">🌿</span>
-              <div class="vit-info">
-                <div class="vit-name">마그네슘</div>
-                <div class="vit-dose">취침 전 · 1정</div>
-              </div>
-              <div class="vit-check-box"></div>
-            </div>
-          </c:otherwise>
-        </c:choose>
-      </div>
-
-      <%-- 오늘 복용 진행률 --%>
-      <div class="progress-wrap">
-        <div class="progress-label">
-          <span>오늘 복용 현황</span>
-          <span id="progressText">2 / 4</span>
+    <%-- ============================================
+        탭 2. 오늘의 영양제 체크
+        ============================================ --%>
+    <div id="tab-check" class="mp-tab-content">
+      <div class="mp-card">
+        <div class="mp-sec-title">
+          오늘의 복용 현황
+          <span class="today-badge" id="todayDate"></span>
         </div>
-        <div class="progress-bar">
-          <div class="progress-fill" id="progressFill" style="width:50%"></div>
-        </div>
-      </div>
 
-      <%-- TODO: 영양제 추가 버튼 → supplement 페이지 연결 --%>
-      <a href="supplement" class="mp-add-btn">+ 복용 영양제 추가하기</a>
+        <%-- 1. 진행률 바 (상단 고정 배치로 직관성 확보) --%>
+        <div class="progress-wrap top-progress">
+          <div class="progress-label">
+            <span>달성률</span>
+            <span id="progressText">2 / 4</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width:50%"></div>
+          </div>
+        </div>
+
+        <%-- 2. 시간대별 필터링 버튼 (데이터 과부하 방지 및 탐색 용이성) --%>
+        <div class="vit-filter-group">
+          <button type="button" class="filter-btn active" onclick="filterSupplements('all')">전체</button>
+          <button type="button" class="filter-btn" onclick="filterSupplements('아침')">아침</button>
+          <button type="button" class="filter-btn" onclick="filterSupplements('점심')">점심</button>
+          <button type="button" class="filter-btn" onclick="filterSupplements('저녁')">저녁</button>
+        </div>
+
+        
+
+      </div>
     </div>
-  </div>
-
   <%-- ============================================
        탭 3. 복용 캘린더 & 구매 알림
        TODO: 캘린더 데이터 → CalendarServlet에서 JSON으로 받아 JS 렌더링
