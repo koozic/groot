@@ -45,6 +45,22 @@
                         <input type="password" id="user_pw" name="user_pw" placeholder="비밀번호를 입력하세요" required>
                     </div>
 
+
+                    <div class="login-input-group">
+                        <label for="user_age">나이</label>
+                        <input
+                                type="number"
+                                id="user_age"
+                                name="user_age"
+                                placeholder="나이를 입력하세요"
+                                min="1"
+                                max="120"
+                                required
+                        >
+                    </div>
+
+
+
                     <div class="login-input-group">
                         <label for="user_email">이메일</label>
                         <input type="email" id="user_email" name="user_email" placeholder="이메일을 입력하세요" required>
@@ -66,18 +82,10 @@
                         </div>
                     </div>
 
-                    <div class="login-input-group">
-                        <label for="user_age">나이</label>
-                        <input
-                                type="number"
-                                id="user_age"
-                                name="user_age"
-                                placeholder="나이를 입력하세요"
-                                min="1"
-                                max="120"
-                                required
-                        >
-                    </div>
+
+
+
+
 
 
 

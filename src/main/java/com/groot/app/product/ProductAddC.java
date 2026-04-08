@@ -11,17 +11,18 @@ import java.io.IOException;
 public class ProductAddC extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //일
         ProductDAO.PDAO.productAdd(request);
 
 
         //어디로?
         response.sendRedirect("product?insert=success");
-
     }
-
-
-
 
     public void destroy() {
     }

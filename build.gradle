@@ -47,6 +47,8 @@ dependencies {
         implementation 'com.cloudinary:cloudinary-http5:2.0.0'
 
 
+    // SLF4J 경고 해결을 위한 단순 로거 추가
+    implementation 'org.slf4j:slf4j-simple:1.7.36'
 }
 
 test {
