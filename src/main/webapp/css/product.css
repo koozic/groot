@@ -851,8 +851,11 @@ body {
     gap: 30px;
     padding: 24px;
     overflow-y: auto;
+    align-items: start; /* [수정] 자식 요소들이 상단에 정렬되도록 설정 */
 }
-
+.hidden {
+    display: none !important;
+}
 /* =============================================
    Select 박스 커스텀 스타일 (모달 내 영양소 선택)
    ============================================= */
@@ -903,7 +906,7 @@ body {
 
 .image-preview-frame {
     width: 100%;
-    aspect-ratio: 1;
+    aspect-ratio: 1 / 1.2; /* [수정] 1:1 보다는 폼 높이에 맞춰 약간 세로로 긴 비율 권장 */
     background-color: #f1f3f5;
     border: 2px dashed #ced4da;
     border-radius: var(--radius-md);
@@ -912,23 +915,40 @@ body {
     justify-content: center;
     overflow: hidden;
     position: relative;
+    cursor: pointer; /* [추가] 클릭 가능함을 시각적으로 표시 */
 }
 
 #modal-img-preview {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: cover; /* [수정] 프레임에 꽉 차게 표시 (이미지 왜곡 방지) */
+    position: absolute; /* [추가] 프레임 내 절대 위치 */
+    top: 0;
+    left: 0;
 }
 
 .image-placeholder {
     text-align: center;
     color: var(--text-muted);
+    z-index: 1; /* [추가] 이미지 아래에 깔리지 않도록 설정 */
 }
 
 .image-placeholder .icon {
     font-size: 2.5rem;
     margin-bottom: 8px;
     display: block;
+}
+
+/* [추가] 모바일 환경에서 이미지와 폼이 겹치지 않게 수직 정렬 처리 */
+@media (max-width: 768px) {
+    .modal-body-visual {
+        grid-template-columns: 1fr; /* 1단으로 변경 */
+        gap: 20px;
+    }
+
+    .image-preview-frame {
+        aspect-ratio: 16 / 9; /* 모바일에서는 가로로 긴 형태가 안정적 */
+    }
 }
 
 /* Form Inputs */

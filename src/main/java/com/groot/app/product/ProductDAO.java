@@ -167,30 +167,41 @@ public class ProductDAO {
 
     }
 
-    public String productEdit(HttpServletRequest request) {
+    public String productEdit(HttpServletRequest request) throws IOException {
         Connection con = null;
         PreparedStatement pstmt = null;
-        String id = request.getParameter("productId");
+        String id = null;
         String sql = "update products set product_name = ?, product_brand = ?, product_price = ?, " +
                 "product_nutrient = ?, product_description = ?, product_image = ?, product_total = ?," +
                 "product_serve = ?, product_per_day = ?, product_time_info = ? where product_id = ?";
 
+        // 1. 파일 저장 경로 설정 및 MR 생성
+//        String path = "C:\\kky\\groot\\src\\main\\webapp\\img";
+        String path = request.getServletContext().getRealPath("img");
+        MultipartRequest mr = new MultipartRequest(
+                request, path, 1024 * 1024 * 20, "UTF-8", new DefaultFileRenamePolicy()
+        );
+
         try {
+            id = mr.getParameter("productId");
             con = DBManager_new.connect();
             pstmt = con.prepareStatement(sql);
-            pstmt.setInt(11, Integer.parseInt(request.getParameter("productId")));
-            pstmt.setString(1, request.getParameter("productName"));
-            pstmt.setString(2, request.getParameter("productBrand"));
-            pstmt.setInt(3, Integer.parseInt(request.getParameter("productPrice")));
-            pstmt.setInt(4, Integer.parseInt(request.getParameter("productNutrient")));
-            pstmt.setString(5, request.getParameter("productDescription"));
-            pstmt.setString(6, request.getParameter("productImage"));
-            pstmt.setInt(7, Integer.parseInt(request.getParameter("productTotal")));
-            pstmt.setInt(8, Integer.parseInt(request.getParameter("productServe")));
-            pstmt.setInt(9, Integer.parseInt(request.getParameter("productPerDay")));
-            pstmt.setString(10, request.getParameter("productTimeInfo"));
+            pstmt.setInt(11, Integer.parseInt(mr.getParameter("productId")));
+            pstmt.setString(1, mr.getParameter("productName"));
+            pstmt.setString(2, mr.getParameter("productBrand"));
+            pstmt.setInt(3, Integer.parseInt(mr.getParameter("productPrice")));
+            pstmt.setInt(4, Integer.parseInt(mr.getParameter("productNutrient")));
+            pstmt.setString(5, mr.getParameter("productDescription"));
+
+            // [수정 포인트] 새 파일이 없으면(null) hidden으로 넘겨받은 기존 파일명(oldProductImage) 사용
+            String img = mr.getFilesystemName("productImage");
+            pstmt.setString(6, img != null ? img : mr.getParameter("oldProductImage"));
 
 
+            pstmt.setInt(7, Integer.parseInt(mr.getParameter("productTotal")));
+            pstmt.setInt(8, Integer.parseInt(mr.getParameter("productServe")));
+            pstmt.setInt(9, Integer.parseInt(mr.getParameter("productPerDay")));
+            pstmt.setString(10, mr.getParameter("productTimeInfo"));
 
 
             if (pstmt.executeUpdate() == 1) {
@@ -204,7 +215,6 @@ public class ProductDAO {
             DBManager_new.close(con, pstmt, null);
         }
         return id;
-
 
     }
 
@@ -233,6 +243,7 @@ public class ProductDAO {
 
     public void productAdd(HttpServletRequest request) throws IOException {
         // 1. 파일 저장 경로 설정 및 MR 생성
+//        String path = "C:\\kky\\groot\\src\\main\\webapp\\img";
         String path = request.getServletContext().getRealPath("img");
         MultipartRequest mr = new MultipartRequest(
                 request, path, 1024 * 1024 * 20, "UTF-8", new DefaultFileRenamePolicy()
@@ -249,8 +260,8 @@ public class ProductDAO {
 
             //?체우기
             pstmt.setString(1, mr.getParameter("productAdmin"));
-            pstmt.setString(2,mr.getParameter("productName"));
-            pstmt.setString(3,mr.getParameter("productBrand"));
+            pstmt.setString(2, mr.getParameter("productName"));
+            pstmt.setString(3, mr.getParameter("productBrand"));
             pstmt.setInt(4, Integer.parseInt(mr.getParameter("productPrice")));
             pstmt.setInt(5, Integer.parseInt(mr.getParameter("productNutrient")));
             pstmt.setString(6, mr.getParameter("productDescription"));
@@ -263,7 +274,6 @@ public class ProductDAO {
             pstmt.setInt(13, 0);
 
 
-
             if (pstmt.executeUpdate() == 1) {
                 System.out.println("insert success");
             }
@@ -274,7 +284,6 @@ public class ProductDAO {
         } finally {
             DBManager_new.close(con, pstmt, null);
         }
-
 
 
     }

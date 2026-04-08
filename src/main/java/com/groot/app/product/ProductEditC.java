@@ -1,6 +1,7 @@
     package com.groot.app.product;
 
     import javax.servlet.ServletException;
+    import javax.servlet.annotation.MultipartConfig;
     import javax.servlet.annotation.WebServlet;
     import javax.servlet.http.HttpServlet;
     import javax.servlet.http.HttpServletRequest;
@@ -9,6 +10,7 @@
     import java.util.ArrayList;
 
     @WebServlet(name = "ProductEditC", value = "/product-edit")
+    @MultipartConfig // <--- 이게 없으면 500 에러가 터집니다!
     public class ProductEditC extends HttpServlet {
 
         public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {

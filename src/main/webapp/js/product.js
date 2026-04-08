@@ -134,3 +134,29 @@ function validateProductForm() {
     console.log("검증 완료, 데이터 전송");
     return true; // 전송 승인
 }
+
+
+//edit 영역
+
+function handleImagePreview(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            document.getElementById('previewImg').src = e.target.result;
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+
+// edit 부분 js
+function handleImagePreview(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            // 변경된 사진 데이터를 img 태그의 src에 즉시 반영
+            document.getElementById('previewImg').src = e.target.result;
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}

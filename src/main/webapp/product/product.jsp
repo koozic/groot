@@ -163,7 +163,9 @@
         <div class="product-card" onclick="location.href='product-detail?id=${p.productId}'">
 
 
-            <div class="product-image">이미지 영역
+            <div class="product-image">
+                <img src="${pageContext.request.contextPath}/img/${p.productImage}"
+                     alt="상품 이미지" style="width:100%; height:100%; object-fit:cover;">
                 <button class="btn-delete"
                         onclick="event.stopPropagation(); confirmDelete('${p.productId}')">&times;
                 </button>
