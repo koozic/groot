@@ -177,9 +177,10 @@
     </div>
 </div>
 
-<%-- ✍️ 4. 리뷰 작성하기 모달 (새로 추가됨!) --%>
-<div id="writeModal" class="modal" style="display:none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5);">
-    <div class="modal-content" style="background: white; margin: 5% auto; padding: 30px; width: 500px; border-radius: 15px;">
+<%-- ✍️ 4. 리뷰 작성하기 모달 --%>
+<div id="writeModal" class="modal" style="display:none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6);">
+    <%-- 🌟 마진(margin)을 5%에서 15vh(화면 높이의 15%)로 늘려서 파란 헤더 밑으로 쏙 내렸습니다 --%>
+    <div class="modal-content" style="background: white; margin: 15vh auto 50px auto; padding: 30px; width: 500px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <h2 style="margin: 0;">✍️ 리뷰 작성하기</h2>
             <span onclick="closeWriteModal()" style="cursor: pointer; font-size: 24px;">&times;</span>
@@ -221,7 +222,6 @@
         </form>
     </div>
 </div>
-
 <%-- ========================================================= --%>
 <%-- ⚙️ 자바스크립트 구역 --%>
 <script>

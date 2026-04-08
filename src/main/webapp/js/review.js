@@ -75,7 +75,7 @@ function fetchModalPhotoReviews() {
                     <div style="flex-grow:1;">
                         <div style="font-weight:bold; font-size:1.15em; margin-bottom:5px;">${r.r_title}</div>
                         <div style="color:#777; font-size:0.9em; margin-bottom:10px;">
-                            작성자: ${r.user_id} | ${makeStarHtml(r.r_score)} | ${r.r_date}
+                           작성자: ${r.user_id} | ${makeStarHtml(r.r_score)} | ${formatKoreanDate(r.r_date)}
                         </div>
                         <div style="font-size:0.95em; line-height:1.5; margin-bottom: 15px;">${r.r_content}</div>
                         
@@ -195,7 +195,7 @@ function renderPaginatedReviews(isAppend = false) {
             <div class="review-card" style="position: relative;">
                 ${menuHtml}
                 <div class="review-title">제목: ${r.r_title}</div>
-                <div class="review-meta">작성자: ${r.user_id} | ${makeStarHtml(r.r_score)} | 작성일: ${r.r_date}</div>
+             <div class="review-meta">작성자: ${r.user_id} | ${makeStarHtml(r.r_score)} | 작성일: ${formatKoreanDate(r.r_date)}</div>
                 ${imgHtml}
                 <hr style="border:0; border-top:1px solid #eee;">
                 <div class="review-content">${r.r_content}</div>
@@ -552,4 +552,22 @@ function showToast(message) {
     setTimeout(() => {
         toast.remove();
     }, 3000);
+}
+// ==========================================
+// 📅 9. 날짜 예쁘게 바꾸는 함수 (Gson 포맷 교정)
+// ==========================================
+function formatKoreanDate(dateStr) {
+    if (!dateStr) return "";
+
+    // "4월 8, 2026" 같은 요상한 패턴을 찾아서 "2026년 4월 8일"로 변환
+    const regex = /(\d+)\s*월\s+(\d+),\s+(\d+)/;
+    const match = dateStr.match(regex);
+
+    if (match) {
+        // match[3] = 연도, match[1] = 월, match[2] = 일
+        return `${match[3]}년 ${match[1]}월 ${match[2]}일`;
+    }
+
+    // 만약 다른 형식이면 그냥 원래대로 출력 (에러 방지)
+    return dateStr;
 }
