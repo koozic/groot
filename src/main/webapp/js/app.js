@@ -154,7 +154,7 @@ function analyzeSupplements(type = 'my') {
     const checked = Array.from(document.querySelectorAll('input[name="supp"]:checked')).map(e => e.value);
     if (checked.length === 0) { showAnalysisError('영양제를 하나 이상 선택해주세요 💊'); return; }
     showAnalysisLoading();
-    fetch('recommend/analyze', { method:'POST',
+    fetch('recommend/analyze', { method:'post',
         headers:{'Content-Type':'application/json'},
         body: JSON.stringify({supplements: checked, type}) })
         .then(r => r.json())
