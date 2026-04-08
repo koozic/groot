@@ -1,0 +1,56 @@
+plugins {
+    id 'java'
+    id 'war'
+}
+
+group 'com.groot'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    junitVersion = '5.10.2'
+} 
+
+sourceCompatibility = '17'
+targetCompatibility = '17'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+dependencies {
+    compileOnly('javax.servlet:javax.servlet-api:4.0.1')
+
+    // 롬복 (Lombok) 관련 코드 2줄
+    compileOnly 'org.projectlombok:lombok:1.18.32'
+    annotationProcessor 'org.projectlombok:lombok:1.18.32'
+    // 개발자가 매번 작성해야 하는 Getter, Setter, 생성자 등의 코드를
+    // 애노테이션(예: @Getter, @Setter) 하나로 자동 생성해 주는 라이브러리
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+
+    compileOnly 'org.projectlombok:lombok:1.18.32'
+    annotationProcessor 'org.projectlombok:lombok:1.18.32'
+    // Source: https://mvnrepository.com/artifact/javax.servlet/jstl
+    implementation 'javax.servlet:jstl:1.2'
+    // Source: https://mvnrepository.com/artifact/com.servlets/cos
+    implementation 'com.servlets:cos:09May2002'
+    implementation 'org.apache.commons:commons-dbcp2:2.10.0'
+// Source: https://mvnrepository.com/artifact/com.google.code.gson/gson
+    implementation 'com.google.code.gson:gson:2.11.0'
+
+        // Cloudinary 라이브러리 추가
+        implementation 'com.cloudinary:cloudinary-http5:2.0.0'
+
+
+    // SLF4J 경고 해결을 위한 단순 로거 추가
+    implementation 'org.slf4j:slf4j-simple:1.7.36'
+}
+
+test {
+    useJUnitPlatform()
+}
