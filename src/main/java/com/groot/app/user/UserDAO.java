@@ -160,7 +160,6 @@ public class UserDAO {
 
         Connection con = null;
         PreparedStatement pstmt = null;
-        ResultSet rs = null;
         String sql = "insert into users values (?,?,?,?,?,?,?,?,?,?,?,?)";
         try {
             con = DBManager_new.connect();
@@ -177,13 +176,14 @@ public class UserDAO {
             pstmt.setString(10,request.getParameter("user_join_path"));
             pstmt.setString(11,request.getParameter("fail_count"));
             pstmt.setString(12,request.getParameter("email_verified"));
+            pstmt.executeQuery();
 
 
 
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            DBManager_new.close(con, pstmt, rs);
+            DBManager_new.close(con, pstmt, null);
         }
 
 
