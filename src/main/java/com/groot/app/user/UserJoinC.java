@@ -11,7 +11,7 @@ import java.io.IOException;
 public class UserJoinC extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-      UserDAO.join(request);
+
 
 
        response.sendRedirect("user/join.jsp");
