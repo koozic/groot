@@ -161,10 +161,23 @@ public class UserDAO {
         Connection con = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String sql = "insert into users values (users_seq.nextval,?,?,?,?,?,?,?,?,?,?,?,?)";
+        String sql = "insert into users values (?,?,?,?,?,?,?,?,?,?,?,?)";
         try {
             con = DBManager_new.connect();
             pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, request.getParameter("user_id"));
+            pstmt.setString(2, request.getParameter("user_pw"));
+            pstmt.setString(3, request.getParameter("user_name"));
+            pstmt.setInt(4, Integer.parseInt(request.getParameter("user_age")));
+            pstmt.setString(5, request.getParameter("user_gender"));
+            pstmt.setString(6, request.getParameter("user_profile"));
+            pstmt.setString(7, request.getParameter("user_email"));
+            pstmt.setString(8,request.getParameter("user_address"));
+            pstmt.setString(9,request.getParameter("user_agree"));
+            pstmt.setString(10,request.getParameter("user_join_path"));
+            pstmt.setString(11,request.getParameter("fail_count"));
+            pstmt.setString(12,request.getParameter("email_verified"));
+
 
 
         } catch (Exception e) {
