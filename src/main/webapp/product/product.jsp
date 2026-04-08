@@ -62,24 +62,23 @@
             <span class="close" onclick="closeModal()">&times;</span>
         </div>
 
-        <form action="product-add" class="modal-form">
+        <form action="product-add" class="modal-form" method="post" enctype="multipart/form-data">
             <input type="hidden" name="productAdmin" value="ky11">
             <input type="hidden" id="product_current" name="productCurrent" value="0">
             <div class="modal-body-visual">
 
                 <div class="image-preview-container">
-                    <div class="image-preview-frame">
+                    <label for="product_image_file" class="image-preview-frame" style="cursor: pointer;">
                         <img id="modal-img-preview" src="" alt="제품 이미지 미리보기" class="hidden">
                         <div class="image-placeholder">
                             <span class="icon">🖼️</span>
-                            <p>이미지 URL을 입력하면<br>여기에 표시됩니다.</p>
+                            <p>클릭하여 사진을 첨부하세요</p>
                         </div>
-                    </div>
-                    <div class="input-group image-path-input">
-                        <label>이미지 경로 (URL)</label>
-                        <input type="text" id="product_image_url" name="product_image" placeholder="images/example.jpg"
-                               oninput="updateModalPreview(this.value)">
-                    </div>
+                    </label>
+
+                    <input type="file" id="product_image_file" name="productImage"
+                           accept="image/*" onchange="previewImage(this)"
+                           style="display: none;" required>
                 </div>
 
                 <div class="form-inputs-container">
@@ -107,7 +106,6 @@
                                 </c:forEach>
                             </select>
                         </div>
-
 
 
                         <div class="input-group-row">
