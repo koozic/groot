@@ -88,39 +88,7 @@
     </div>
   </div>
 
-    <%-- ============================================
-        탭 2. 오늘의 영양제 체크
-        ============================================ --%>
-    <div id="tab-check" class="mp-tab-content">
-      <div class="mp-card">
-        <div class="mp-sec-title">
-          오늘의 복용 현황
-          <span class="today-badge" id="todayDate"></span>
-        </div>
 
-        <%-- 1. 진행률 바 (상단 고정 배치로 직관성 확보) --%>
-        <div class="progress-wrap top-progress">
-          <div class="progress-label">
-            <span>달성률</span>
-            <span id="progressText">2 / 4</span>
-          </div>
-          <div class="progress-bar">
-            <div class="progress-fill" id="progressFill" style="width:50%"></div>
-          </div>
-        </div>
-
-        <%-- 2. 시간대별 필터링 버튼 (데이터 과부하 방지 및 탐색 용이성) --%>
-        <div class="vit-filter-group">
-          <button type="button" class="filter-btn active" onclick="filterSupplements('all')">전체</button>
-          <button type="button" class="filter-btn" onclick="filterSupplements('아침')">아침</button>
-          <button type="button" class="filter-btn" onclick="filterSupplements('점심')">점심</button>
-          <button type="button" class="filter-btn" onclick="filterSupplements('저녁')">저녁</button>
-        </div>
-
-        
-
-      </div>
-    </div>
   <%-- ============================================
        탭 3. 복용 캘린더 & 구매 알림
        TODO: 캘린더 데이터 → CalendarServlet에서 JSON으로 받아 JS 렌더링
