@@ -1,8 +1,11 @@
 package com.groot.app.product;
 
 import com.groot.app.main.DBManager_new;
+import com.oreilly.servlet.MultipartRequest;
+import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -228,7 +231,14 @@ public class ProductDAO {
         return list;
     }
 
-    public void productAdd(HttpServletRequest request) {
+    public void productAdd(HttpServletRequest request) throws IOException {
+        // 1. 파일 저장 경로 설정 및 MR 생성
+        String path = request.getServletContext().getRealPath("img");
+        MultipartRequest mr = new MultipartRequest(
+                request, path, 1024 * 1024 * 20, "UTF-8", new DefaultFileRenamePolicy()
+        );
+
+
         Connection con = null;
         PreparedStatement pstmt = null;
         String sql = "INSERT INTO products VALUES (products_seq.nextval,?,?,?,?,?,?,?,?,?,?,?,?,?)";
@@ -238,17 +248,17 @@ public class ProductDAO {
             pstmt = con.prepareStatement(sql);
 
             //?체우기
-            pstmt.setString(1, request.getParameter("productAdmin"));
-            pstmt.setString(2,request.getParameter("productName"));
-            pstmt.setString(3,request.getParameter("productBrand"));
-            pstmt.setInt(4, Integer.parseInt(request.getParameter("productPrice")));
-            pstmt.setInt(5, Integer.parseInt(request.getParameter("productNutrient")));
-            pstmt.setString(6, request.getParameter("productDescription"));
-            pstmt.setString(7, request.getParameter("productImage"));
-            pstmt.setInt(8, Integer.parseInt(request.getParameter("productTotal")));
-            pstmt.setInt(9, Integer.parseInt(request.getParameter("productServe")));
-            pstmt.setInt(10, Integer.parseInt(request.getParameter("productPerDay")));
-            pstmt.setString(11, request.getParameter("productTimeInfo"));
+            pstmt.setString(1, mr.getParameter("productAdmin"));
+            pstmt.setString(2,mr.getParameter("productName"));
+            pstmt.setString(3,mr.getParameter("productBrand"));
+            pstmt.setInt(4, Integer.parseInt(mr.getParameter("productPrice")));
+            pstmt.setInt(5, Integer.parseInt(mr.getParameter("productNutrient")));
+            pstmt.setString(6, mr.getParameter("productDescription"));
+            pstmt.setString(7, mr.getFilesystemName("productImage"));
+            pstmt.setInt(8, Integer.parseInt(mr.getParameter("productTotal")));
+            pstmt.setInt(9, Integer.parseInt(mr.getParameter("productServe")));
+            pstmt.setInt(10, Integer.parseInt(mr.getParameter("productPerDay")));
+            pstmt.setString(11, mr.getParameter("productTimeInfo"));
             pstmt.setDate(12, new java.sql.Date(new java.util.Date().getTime()));
             pstmt.setInt(13, 0);
 
