@@ -23,7 +23,7 @@
                     <div class="avg-stars-base">★★★★★</div>
                     <div class="avg-stars-fill" style="width: ${avgScore * 20}%">★★★★★</div>
                 </div>
-                <div class="total-review-count">구매후기 평점 ${reviews.size()}개 기준</div>
+                <div class="total-review-count">구매후기 평점 ${totalCount}개 기준</div>
             </div>
 
             <div class="stat-rows">
@@ -187,7 +187,8 @@
         </div>
 
         <form id="writeForm" enctype="multipart/form-data">
-            <input type="hidden" name="product_id" value="106">
+            <%-- 🌟 하드코딩 106을 지우고, 메인 페이지에서 넘겨받은 진짜 ID로 바꿉니다! --%>
+            <input type="hidden" name="product_id" value="${param.PRODUCT_ID}">
 
             <div style="margin-bottom:15px;">
                 <label style="font-weight: bold;">제목</label>
@@ -223,14 +224,19 @@
     </div>
 </div>
 <%-- ========================================================= --%>
-<%-- ⚙️ 자바스크립트 구역 --%>
+<%-- ⚙️ 자바스크립트 전역 변수 세팅 (가데이터 탈출!) --%>
 <script>
-    // JSP 파일 내부에 있던 모달 스크립트도 review.js로 다 옮겼으므로 여기는 비워둬도 됩니다!
-    // (만약 에러나면 다시 알려주세요)
+    // 1. 도혁씨의 로그인 세션 연동 (UserDTO의 user_id 사용)
+    const currentLoginId = "${empty sessionScope.loginUser ? '' : sessionScope.loginUser.user_id}";
+
+    // 2. 경용씨의 제품 ID 연동 (product_detail.jsp에서 넘겨준 값)
+    const currentProductId = "${param.PRODUCT_ID != null ? param.PRODUCT_ID : '106'}";
 </script>
 
 <%-- 🌟 외부 JS 파일 연결은 무조건 맨 마지막에! --%>
 <script src="../js/review.js"></script>
 
+</body>
+</html>
 </body>
 </html>

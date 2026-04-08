@@ -1,7 +1,7 @@
 // ==========================================
 // 🌟 0. 전역 변수 & 초기화
 // ==========================================
-const currentLoginId = 'kim124';
+
 
 document.addEventListener('DOMContentLoaded', function() {
     const sortSelect = document.getElementById('sortType');
@@ -41,7 +41,7 @@ function closePhotoOnlyModal() {
 // 🌟 모달 전용 비동기 호출 함수
 function fetchModalPhotoReviews() {
     const urlParams = new URLSearchParams(window.location.search);
-    let pId = urlParams.get('PRODUCT_ID') || 106;
+    let pId = currentProductId;
 
     // 모달 안에 있는 select, checkbox 값 가져오기
     const sortType = document.getElementById('modalSortType').value;
@@ -131,7 +131,7 @@ window.addEventListener('resize', () => {
 
 function fetchReviews() {
     const urlParams = new URLSearchParams(window.location.search);
-    let pId = urlParams.get('PRODUCT_ID') || 106;
+    let pId = currentProductId;
     const sortType = document.getElementById('sortType').value;
     const starFilter = document.getElementById('starFilter').value;
 
@@ -180,7 +180,10 @@ function renderPaginatedReviews(isAppend = false) {
         const rUser = r.user_id ? r.user_id.trim() : "";
         let menuHtml = '';
 
-        if (rUser === currentLoginId || rUser === 'kim124') {
+        // 🌟 'kim124' 하드코딩 완벽 삭제!
+        // 조건: 1. 로그인을 한 상태여야 함 (currentLoginId !== "")
+        // 조건: 2. 현재 로그인한 아이디와 글 작성자의 아이디가 완벽히 똑같아야 함!
+        if (currentLoginId !== "" && rUser === currentLoginId) {
             menuHtml = `
             <div class="review-more-menu">
                 <button type="button" class="btn-more" onclick="toggleMenu(${r.review_id})">⋮</button>
@@ -375,9 +378,8 @@ function openUpdateForm(reviewId) {
 
         if(document.getElementById('old_img_name')) document.getElementById('old_img_name').value = imgSrc;
 
-        const urlParams = new URLSearchParams(window.location.search);
-        if(document.getElementById('upd_p_id')) document.getElementById('upd_p_id').value = urlParams.get('PRODUCT_ID') || 106;
-
+        // 🌟 주소창 찾을 필요 없이 우리가 전역으로 세팅해둔 currentProductId를 씁니다!
+        if(document.getElementById('upd_p_id')) document.getElementById('upd_p_id').value = currentProductId;
         // 사진 삭제 UI & 미리보기 셋팅
         const existImgBox = document.getElementById('existing_img_box');
         const delCheck = document.getElementById('delete_img_check');
@@ -477,6 +479,11 @@ function makeStarHtml(score) {
 // ✍️ 8. 리뷰 작성 모달 제어
 // ==========================================
 function openWriteModal() {
+    // 🌟 문지기 출동: 로그인이 안 되어 있다면?
+    if (!currentLoginId || currentLoginId === "") {
+        showToast("로그인이 필요한 기능입니다! 🔒", "error");
+        return; // 여기서 함수를 끝내버려서 모달창이 안 뜨게 막음!
+    }
     document.getElementById('writeForm').reset(); // 폼 초기화
     setWriteStars(5); // 기본 별점 5점 세팅
     document.getElementById('writeModal').style.display = 'block';
@@ -532,26 +539,24 @@ function submitReview() {
 }
 
 // =========================================================
-// 🍞 토스트 알림 띄우기 함수
+// 🍞 토스트 알림 띄우기 함수 (경용씨 '가운데 빵!' UI 완벽 동기화)
 // =========================================================
-function showToast(message) {
-    let container = document.getElementById('toast-container');
-    if (!container) {
-        container = document.createElement('div');
-        container.id = 'toast-container';
-        document.body.appendChild(container);
+function showToast(message, type = "success") {
+    // 경용씨의 product_detail.jsp에 있는 toast 태그를 가져옵니다!
+    const toast = document.getElementById("toast");
+
+    if (toast) {
+        toast.innerText = message;
+        toast.className = "toast";
+        toast.classList.add("show", type);
+
+        // 3초 뒤에 사라짐
+        setTimeout(() => {
+            toast.classList.remove("show", type);
+        }, 3000);
+    } else {
+        alert(message);
     }
-
-    const toast = document.createElement('div');
-    toast.className = 'toast-message';
-    toast.innerText = message;
-
-    container.appendChild(toast);
-
-    // 3초 뒤에 태그 자체를 삭제 (메모리 관리)
-    setTimeout(() => {
-        toast.remove();
-    }, 3000);
 }
 // ==========================================
 // 📅 9. 날짜 예쁘게 바꾸는 함수 (Gson 포맷 교정)

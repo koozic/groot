@@ -17,7 +17,7 @@
     <div class="hdr-right">
         <c:choose>
             <c:when test="${not empty sessionScope.loginUser}">
-                <span class="hdr-link">${sessionScope.loginUser.nickname}님</span>
+                <span class="hdr-link">${sessionScope.loginUser.nameㅌ}님</span>
                 <a href="mypage" class="hdr-link">마이페이지</a>
                 <a href="logout" class="btn-login">로그아웃.</a>
             </c:when>
@@ -59,9 +59,7 @@
     <main class="content-wrapper">
         <section class="product-hero">
             <div class="product-img-box">
-                <img src="${pageContext.request.contextPath}/img/${product.productImage}"
-                     class="product-img"
-                     alt="${product.productName} 이미지">
+                <img src="placeholder.png" class="product-img">
             </div>
             <div class="product-basic-info">
                 <span class="brand-name">${product.productBrand}</span>
@@ -99,17 +97,17 @@
 </div>
 <div id="toast" class="toast"></div>
 
+<%-- ========================================================= --%>
+<%-- 🌟 3. 상품 리뷰 구역 (무영님 코드 합체!) --%>
+<%-- ========================================================= --%>
+<div class="review-section-wrapper" style="max-width: 800px; margin: 40px auto; padding: 0 20px;">
 
+    <%-- ../review/review.jsp 로 경로를 맞춰서 다른 폴더에 있는 파일을 정확히 불러옵니다! --%>
+    <jsp:include page="../review/review.jsp">
+        <jsp:param name="PRODUCT_ID" value="${product.productId}" />
+    </jsp:include>
 
-
-
-<div>review 부분</div>
-
-
-
-
-
-
+</div>
 
 
 </body>
