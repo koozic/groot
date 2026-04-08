@@ -33,7 +33,7 @@
                     ${msg}
                 </div>
 
-                <form action="${pageContext.request.contextPath}/join" method="post">
+                <form action="${pageContext.request.contextPath}/join" method="post" enctype="multipart/form-data">
 
                     <div class="login-input-group">
                         <label for="user_id">아이디</label>
@@ -45,16 +45,13 @@
                         <input type="password" id="user_pw" name="user_pw" placeholder="비밀번호를 입력하세요" required>
                     </div>
 
-
                     <div class="login-input-group">
-                        <label for="user_age">나이</label>
+                        <label for="user_name">이름</label>
                         <input
-                                type="number"
-                                id="user_age"
-                                name="user_age"
-                                placeholder="나이를 입력하세요"
-                                min="1"
-                                max="120"
+                                type="text"
+                                id="user_name"
+                                name="user_name"
+                                placeholder="이름을 입력하세요"
                                 required
                         >
                     </div>
@@ -83,13 +80,78 @@
                     </div>
 
 
+                    <div class="login-input-group">
+                        <label for="user_age">나이</label>
+                        <input
+                                type="number"
+                                id="user_age"
+                                name="user_age"
+                                placeholder="나이를 입력하세요"
+                                min="1"
+                                max="120"
+                                required
+                        >
+                    </div>
+                    <div class="login-input-group">
+                        <label>기본 프로필 선택</label>
+                        <div class="profile-grid">
+                            <label class="profile-item">
+                                <input type="radio" name="user_profile" value="webapp\user\userImg\Ryuen.jfif">
+                                <img src="${pageContext.request.contextPath}/img/profile/Ryuen.jfif" alt="기본프로필1">
+                            </label>
 
+                            <label class="profile-item">
+                                <input type="radio" name="user_profile" value="webapp\user\userImg\Sudou.jfif">
+                                <img src="${pageContext.request.contextPath}/img/profile/Sudou.jfif" alt="기본프로필2">
+                            </label>
 
+                            <label class="profile-item">
+                                <input type="radio" name="user_profile" value="webapp\user\userImg\Ayanokoji.jfif">
+                                <img src="${pageContext.request.contextPath}/img/profile/Ayanokoji.jfif" alt="기본프로필3">
+                            </label>
 
+                            <label class="profile-item">
+                                <input type="radio" name="user_profile" value="webapp\user\userImg\B.jfif">
+                                <img src="${pageContext.request.contextPath}/img/profile/B.jfif" alt="기본프로필4">
+                            </label>
 
+                            <label class="profile-item">
+                                <input type="radio" name="user_profile" value="webapp\user\userImg\Horikita.jfif">
+                                <img src="${pageContext.request.contextPath}/img/profile/Horikita.jfif" alt="기본프로필5">
+                            </label>
+                        </div>
+                    </div>
 
+                    <!-- 직접 업로드 -->
+                    <div class="login-input-group">
+                        <label for="user_profile_file">직접 사진 업로드</label>
+                        <input type="file" id="user_profile_file" name="user_profile_file" accept="image/*">
+                        <small style="color:#777;">파일을 올리면 기본 프로필 대신 이 사진을 사용합니다.</small>
+                    </div>
 
+                    <!-- 주소 -->
+                    <div class="login-input-group">
+                        <label for="user_zipcode">우편번호</label>
+                        <div style="display:flex; gap:8px;">
+                            <input type="text" id="user_zipcode" name="user_zipcode" placeholder="우편번호" readonly style="width:60%;">
+                            <input type="button" value="주소찾기" class="login-btn" style="width:40%; height:46px;" onclick="execDaumPostcode()">
+                        </div>
+                    </div>
 
+                    <div class="login-input-group">
+                        <label for="user_road_address">도로명주소</label>
+                        <input type="text" id="user_road_address" name="user_road_address" placeholder="도로명주소" readonly>
+                    </div>
+
+                    <div class="login-input-group">
+                        <label for="user_detail_address">상세주소</label>
+                        <input type="text" id="user_detail_address" name="user_detail_address" placeholder="상세주소를 입력하세요">
+                    </div>
+
+                    <div class="login-input-group">
+                        <label for="user_extra_address">참고항목</label>
+                        <input type="text" id="user_extra_address" name="user_extra_address" placeholder="참고항목" readonly>
+                    </div>
 
                     <div class="login-input-group">
                         <label for="user_join_path">이 사이트를 알게 된 경로</label>
