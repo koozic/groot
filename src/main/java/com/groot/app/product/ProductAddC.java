@@ -7,17 +7,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet(name = "ProductDelC", value = "/product-del")
-public class ProductDelC extends HttpServlet {
+@WebServlet(name = "ProductAddC", value = "/product-add")
+public class ProductAddC extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         //일
-        ProductDAO.PDAO.productDelete(request);
+        ProductDAO.PDAO.productAdd(request);
 
 
         //어디로?
-        response.sendRedirect("product?delete=success");
-
+        response.sendRedirect("product?insert=success");
 
     }
 
