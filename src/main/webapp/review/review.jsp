@@ -136,13 +136,43 @@
     </div>
 </div>
 
-<%-- 📸 3. 포토 리뷰 모아보기 모달 --%>
+<%-- ========================================================= --%>
+<%-- 📸 3. 포토 리뷰만 모아보기 모달 (정렬/필터 추가 풀버전!) --%>
+<%-- ========================================================= --%>
 <div id="photoOnlyModal" onclick="closePhotoOnlyModal()" style="display:none; position:fixed; z-index:1100; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.85); cursor:pointer;">
-    <div onclick="event.stopPropagation()" style="background:#fff; width:800px; max-height:80%; margin:50px auto; border-radius:15px; cursor:default; overflow-y: auto; padding: 20px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #34495e; padding-bottom:10px; margin-bottom:20px;">
+    <div onclick="event.stopPropagation()" style="background:#fff; width:800px; max-height:80%; margin:50px auto; border-radius:15px; cursor:default; overflow-y: auto; padding: 25px;">
+
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #34495e; padding-bottom:10px; margin-bottom:15px;">
             <h2 style="margin:0;">📸 포토 리뷰 모아보기</h2>
             <span onclick="closePhotoOnlyModal()" style="cursor:pointer; font-size:24px; font-weight:bold;">&times;</span>
         </div>
+
+        <%-- 🌟 모달 전용 컨트롤 바 (비동기 트리거 onchange 탑재) --%>
+        <div class="review-control-bar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #eee;">
+            <div class="sort-options" style="display: flex; align-items: center; gap: 15px;">
+                <select id="modalSortType" onchange="fetchModalPhotoReviews()" style="padding: 6px 10px; border: 1px solid #ddd; border-radius: 4px; outline: none; cursor: pointer;">
+                    <option value="date" selected>🆕 최신순</option>
+                    <option value="like">👍 베스트순(좋아요순)</option>
+                    <option value="high_score">⭐ 평점 높은순</option>
+                    <option value="low_score">📉 평점 낮은순</option>
+                </select>
+                <label style="cursor: pointer; display: flex; align-items: center; font-weight: bold; font-size: 0.9em; color: #34495e; user-select: none;">
+                    <input type="checkbox" id="modalMyReviewCheck" onchange="fetchModalPhotoReviews()" style="margin-right: 5px; transform: scale(1.2); cursor: pointer;">
+                    내가 쓴 글만 보기 🙋‍♂️
+                </label>
+            </div>
+            <div class="filter-options">
+                <select id="modalStarFilter" onchange="fetchModalPhotoReviews()" style="padding: 6px 10px; border: 1px solid #ddd; border-radius: 4px; outline: none; cursor: pointer;">
+                    <option value="0" selected>모든 별점 보기</option>
+                    <option value="5">별점 5점만</option>
+                    <option value="4">별점 4점만</option>
+                    <option value="3">별점 3점만</option>
+                    <option value="2">별점 2점만</option>
+                    <option value="1">별점 1점만</option>
+                </select>
+            </div>
+        </div>
+
         <div id="photo-only-list-container"></div>
     </div>
 </div>

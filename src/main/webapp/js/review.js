@@ -22,7 +22,7 @@ window.onclick = function(event) {
 }
 
 // ==========================================
-// 📸 1. 포토 갤러리 슬라이드 & 모달
+// 📸 1. 포토 갤러리 슬라이드 & 모달 (정렬/필터 기능 완벽 이식!)
 // ==========================================
 function slideGallery(direction) {
     const slider = document.getElementById('photo-slider');
@@ -31,49 +31,85 @@ function slideGallery(direction) {
 
 function openPhotoGalleryModal() {
     document.getElementById('photoOnlyModal').style.display = 'block';
-    const pId = new URLSearchParams(window.location.search).get('PRODUCT_ID') || 106;
+    fetchModalPhotoReviews(); // 모달 열자마자 비동기로 데이터 한번 땡겨오기!
+}
 
-    fetch(`review?PRODUCT_ID=${pId}&sortType=photo`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+function closePhotoOnlyModal() {
+    document.getElementById('photoOnlyModal').style.display = 'none';
+}
+
+// 🌟 모달 전용 비동기 호출 함수
+function fetchModalPhotoReviews() {
+    const urlParams = new URLSearchParams(window.location.search);
+    let pId = urlParams.get('PRODUCT_ID') || 106;
+
+    // 모달 안에 있는 select, checkbox 값 가져오기
+    const sortType = document.getElementById('modalSortType').value;
+    const starFilter = document.getElementById('modalStarFilter').value;
+    const isMyReview = document.getElementById('modalMyReviewCheck').checked;
+
+    fetch(`review?PRODUCT_ID=${pId}&sortType=${sortType}&starFilter=${starFilter}`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
         .then(res => res.json())
         .then(data => {
             const container = document.getElementById('photo-only-list-container');
             container.innerHTML = '';
-            const photoReviews = data.filter(r => r.r_img && r.r_img !== 'null');
+
+            // 1. 사진이 있는 리뷰만 1차 필터링
+            let photoReviews = data.filter(r => r.r_img && r.r_img !== 'null' && r.r_img !== '');
+
+            // 2. 내가 쓴 글 체크박스 2차 필터링
+            if (isMyReview) {
+                photoReviews = photoReviews.filter(r => r.user_id && r.user_id.trim() === currentLoginId);
+            }
 
             if (photoReviews.length === 0) {
-                container.innerHTML = '<p style="text-align:center; padding:30px;">등록된 포토 리뷰가 없습니다.</p>';
+                container.innerHTML = '<p style="text-align:center; padding:50px; font-weight:bold; color:#777;">조건에 맞는 포토 리뷰가 없습니다.</p>';
                 return;
             }
+
+            // 3. 화면에 그리기
             photoReviews.forEach(r => {
                 container.innerHTML += `
-            <div class="photo-item" style="display:flex; gap:20px; padding:15px; border-bottom:1px solid #eee; align-items:center;">
-                <img src="../upload/${r.r_img}" style="width:120px; height:120px; object-fit:cover; border-radius:8px;">
-                <div style="flex-grow:1;">
-                    <div style="font-weight:bold;">${r.r_title}</div>
-                   <div style="color:#777; font-size:0.9em;">작성자: ${r.user_id} | ${makeStarHtml(r.r_score)}</div>
-                    <div style="font-size:0.95em;">${r.r_content}</div>
-                </div>
-            </div>`;
+                <div class="photo-item" style="display:flex; gap:20px; padding:20px 10px; border-bottom:1px solid #eee; align-items:center;">
+                    <img src="../upload/${r.r_img}" style="width:130px; height:130px; object-fit:cover; border-radius:10px; border:1px solid #ddd;">
+                    <div style="flex-grow:1;">
+                        <div style="font-weight:bold; font-size:1.15em; margin-bottom:5px;">${r.r_title}</div>
+                        <div style="color:#777; font-size:0.9em; margin-bottom:10px;">
+                            작성자: ${r.user_id} | ${makeStarHtml(r.r_score)} | ${r.r_date}
+                        </div>
+                        <div style="font-size:0.95em; line-height:1.5; margin-bottom: 15px;">${r.r_content}</div>
+                        
+                        <button type="button" class="btn-like" onclick="toggleLike(${r.review_id}, '${currentLoginId}')" style="padding: 6px 12px; font-size: 0.85em;">
+                            👍 도움돼요 <span id="like-count-modal-${r.review_id}">${r.r_like}</span>
+                        </button>
+                    </div>
+                </div>`;
             });
         });
 }
 
-function closePhotoOnlyModal() { document.getElementById('photoOnlyModal').style.display = 'none'; }
-
 // ==========================================
-// 🚀 2. 좋아요 비동기 처리
+// 🚀 2. 좋아요 비동기 처리 (메인/모달 동시 적용)
 // ==========================================
 function toggleLike(reviewId, userId) {
     if (!userId || userId === 'null') { alert('로그인이 필요합니다.'); return; }
+
     const params = new URLSearchParams();
     params.append('review_id', reviewId);
     params.append('user_id', userId);
 
     fetch('review-like', { method: 'POST', headers: { 'X-Requested-With': 'XMLHttpRequest' }, body: params })
         .then(res => res.text())
-        .then(data => { document.getElementById(`like-count-${reviewId}`).innerText = data; });
-}
+        .then(data => {
+            // 메인 화면 좋아요 숫자 업데이트
+            const mainLike = document.getElementById(`like-count-${reviewId}`);
+            if (mainLike) mainLike.innerText = data;
 
+            // 모달 화면 좋아요 숫자 업데이트
+            const modalLike = document.getElementById(`like-count-modal-${reviewId}`);
+            if (modalLike) modalLike.innerText = data;
+        });
+}
 // =========================================================
 // 🎛️ 3. 비동기 정렬 리스트 & 하이브리드 페이징 (PC/모바일)
 // =========================================================
