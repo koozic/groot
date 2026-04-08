@@ -2,6 +2,7 @@ package com.groot.app.user;
 
 import com.groot.app.main.DBManager_new;
 import com.oreilly.servlet.MultipartRequest;
+import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -17,8 +18,6 @@ public class UserDAO {
         Connection con = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-
-
 
 
         // 수정 1: 필요한 모든 유저 정보를 가져오기 위해 SELECT * 사용
@@ -72,9 +71,6 @@ public class UserDAO {
 
             // 성공이든 실패든 메시지는 request에 담아줌
             request.setAttribute("loginMsg", loginMsg);
-
-
-
 
 
         } catch (Exception e) {
@@ -160,33 +156,99 @@ public class UserDAO {
 
         Connection con = null;
         PreparedStatement pstmt = null;
+
         String sql = "insert into users values (?,?,?,?,?,?,?,?,?,?,?,?)";
+
         try {
+            String path = request.getServletContext().getRealPath("user_profile");
+            
+            // 디렉토리가 없으면 생성
+            java.io.File uploadDir = new java.io.File(path);
+            if (!uploadDir.exists()) {
+                uploadDir.mkdirs();
+            }
+            
+            int size = 10 * 1024 * 1024;
+
+            MultipartRequest mr = new MultipartRequest(
+                    request,
+                    path,
+                    size,
+                    "UTF-8",
+                    new DefaultFileRenamePolicy()
+            );
+
             con = DBManager_new.connect();
             pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, request.getParameter("user_id"));
-            pstmt.setString(2, request.getParameter("user_pw"));
-            pstmt.setString(3, request.getParameter("user_name"));
-            pstmt.setInt(4, Integer.parseInt(request.getParameter("user_age")));
-            pstmt.setString(5, request.getParameter("user_gender"));
-            pstmt.setString(6, request.getParameter("user_profile"));
-            pstmt.setString(7, request.getParameter("user_email"));
-            pstmt.setString(8,request.getParameter("user_address"));
-            pstmt.setString(9,request.getParameter("user_agree"));
-            pstmt.setString(10,request.getParameter("user_join_path"));
-            pstmt.setString(11,request.getParameter("fail_count"));
-            pstmt.setString(12,request.getParameter("email_verified"));
-            pstmt.executeQuery();
 
+            pstmt.setString(1, mr.getParameter("user_id"));
+            pstmt.setString(2, mr.getParameter("user_pw"));
+            pstmt.setString(3, mr.getParameter("user_name"));
+            pstmt.setInt(4, Integer.parseInt(mr.getParameter("user_age")));
+            pstmt.setString(5, mr.getParameter("user_gender"));
+            String profileFileName = mr.getFilesystemName("user_profile");
+            if (profileFileName == null) {
+                profileFileName = "Ayanokoji.jfif"; // 기본 프로필 이미지
+            }
+            pstmt.setString(6, profileFileName);   // 파일명
+            pstmt.setString(7, mr.getParameter("user_email"));
+            pstmt.setString(8, mr.getParameter("user_address"));
+            pstmt.setString(9, mr.getParameter("user_agree"));
+            pstmt.setString(10, mr.getParameter("user_join_path"));
+            pstmt.setString(11, "0");
+            pstmt.setString(12, "N");
 
-
+            pstmt.executeUpdate();
+                if (pstmt.getUpdateCount() == 1) {
+                    System.out.println("good");
+                }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             DBManager_new.close(con, pstmt, null);
         }
+    }
+
+    public static void UserUpdate(HttpServletRequest req) {
+
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "update users set user_name=?, user_pw=? where user_id=?";
+
+        try {
+            con = DBManager_new.connect();
+            pstmt = con.prepareStatement(sql);
+
+            String name = req.getParameter("user_name");
+            String pw = req.getParameter("user_pw");
+            String id = req.getParameter("user_id");
+
+            System.out.println("name: " + name);
+            System.out.println("pw: " + pw);
+            System.out.println("id: " + id);
+
+            pstmt.setString(1, name);
+            pstmt.setString(2, pw);
+            pstmt.setString(3, id);
+
+            int result = pstmt.executeUpdate();
+            System.out.println("수정된 행 수: " + result);
+
+            if (result == 1) {
+                System.out.println("수정 완료 되었습니다.");
+            } else {
+                System.out.println("수정 실패");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBManager_new.close(con, pstmt, rs);
+        }
+    }
+
 
 
     }
-}
 

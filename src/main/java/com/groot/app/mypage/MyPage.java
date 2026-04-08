@@ -1,5 +1,7 @@
 package com.groot.app.mypage;
 
+import com.groot.app.user.UserDAO;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -20,7 +22,10 @@ public class MyPage extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        MyPageDAO.myPage(request);
+        request.setAttribute("content", "mypage/mypage.jsp");
+        request.setAttribute("activeTab", "home");
+        request.getRequestDispatcher("index.jsp").forward(request, response);
 
     }
     public void destroy() {
