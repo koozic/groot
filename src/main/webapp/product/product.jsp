@@ -62,24 +62,24 @@
             <span class="close" onclick="closeModal()">&times;</span>
         </div>
 
-        <form action="product-add" class="modal-form">
+        <%--ADD 부분 모달--%>
+        <form action="product-add" class="modal-form" method="post" enctype="multipart/form-data" onsubmit="return validateProductForm()">
             <input type="hidden" name="productAdmin" value="ky11">
             <input type="hidden" id="product_current" name="productCurrent" value="0">
             <div class="modal-body-visual">
 
                 <div class="image-preview-container">
-                    <div class="image-preview-frame">
+                    <label for="product_image_file" class="image-preview-frame" style="cursor: pointer;">
                         <img id="modal-img-preview" src="" alt="제품 이미지 미리보기" class="hidden">
                         <div class="image-placeholder">
                             <span class="icon">🖼️</span>
-                            <p>이미지 URL을 입력하면<br>여기에 표시됩니다.</p>
+                            <p>클릭하여 사진을 첨부하세요</p>
                         </div>
-                    </div>
-                    <div class="input-group image-path-input">
-                        <label>이미지 경로 (URL)</label>
-                        <input type="text" id="product_image_url" name="product_image" placeholder="images/example.jpg"
-                               oninput="updateModalPreview(this.value)">
-                    </div>
+                    </label>
+
+                    <input type="file" id="product_image_file" name="productImage"
+                           accept="image/*" onchange="previewImage(this)"
+                           style="display: none;" >
                 </div>
 
                 <div class="form-inputs-container">
@@ -109,26 +109,38 @@
                         </div>
 
 
-
                         <div class="input-group-row">
                             <div class="input-group">
                                 <label>총 알약 수</label>
-                                <input type="number" name="productTotal" placeholder="60" min="1">
+                                <input type="number" name="productTotal" placeholder="60" min="1" required>
                             </div>
                             <div class="input-group">
                                 <label>1회 섭취량</label>
-                                <input type="number" name="productServe" placeholder="2" min="1">
+                                <input type="number" name="productServe" placeholder="2" min="1" required>
                             </div>
                             <div class="input-group">
                                 <label>1일 횟수</label>
-                                <input type="number" name="productPerDay" placeholder="3" min="1">
+                                <input type="number" name="productPerDay" placeholder="3" min="1" required>
+                            </div>
+
+                            <div class="input-group full">
+                                <label>섭취 시간 상세</label>
+                                <select name="productTimeInfo" required>
+                                    <option value="" disabled selected>섭취 타이밍을 선택하세요</option>
+                                    <option value="식전">식전 (식사 30분 전)</option>
+                                    <option value="식후">식후 (식사 30분 후)</option>
+                                    <option value="식사 직후">식사 직후</option>
+                                    <option value="공복">공복</option>
+                                    <option value="취침 전">취침 전</option>
+                                    <option value="상관없음">시간 상관없음</option>
+                                </select>
                             </div>
                         </div>
 
                         <div class="input-group full">
                             <label>제품 설명</label>
                             <textarea name="productDescription" rows="5"
-                                      placeholder="제품에 대한 상세 설명을 입력하세요 (최대 1000자)"></textarea>
+                                      placeholder="제품에 대한 상세 설명을 입력하세요 (최대 1000자)" required></textarea>
                         </div>
                     </div>
                 </div>
@@ -187,8 +199,8 @@
 
 </body>
 
-<script src="js/product.js"></script>
-
+<%--<script src="js/product.js"></script>--%>
+<script src="js/product.js?v=20260408"></script>
 </html>
 
 

@@ -51,7 +51,7 @@
 
     <div class="supp-update-box">
         <div class="detail-img-area">
-            <img src="/supplementImg/supplementImgFile/${detailSupp.supplementImagePath}" alt="${detailSupp.supplementName}">
+            <img src="${detailSupp.supplementImagePath}" alt="${detailSupp.supplementName}">
             <br>
             <span style="font-weight: bold; color: #e74c3c;">사진 변경 (선택): </span>
             <input type="file" name="supplementFile" style="margin-top: 10px;">

@@ -230,16 +230,17 @@ public class SupplementsDAO {
                 pstmt = con.prepareStatement(sql);
 
                 // 폼에 첨부파일(enctype="multipart/form-data")이 있으니 무조건 MultipartRequest를 씁니다.
-                MultipartRequest mr = new MultipartRequest(request, path,
-                        1024 * 1024 * 20, "UTF-8", new DefaultFileRenamePolicy());
+                //이제는 바로 가져오는것이 가능하니 mr필요없음 여기서는
+                //  MultipartRequest mr = new MultipartRequest(request, path,
+                //        1024 * 1024 * 20, "UTF-8", new DefaultFileRenamePolicy());
 
                 // JSP에서 보낸 텍스트 데이터들 낚아채기
-                String supplementId = mr.getParameter("supplementId"); // 🚨 hidden으로 숨겨왔던 고유번호!
-                String supplementName = mr.getParameter("supplementName");
-                String supplementEfficacy = mr.getParameter("supplementEfficacy");
-                String supplementDosage = mr.getParameter("supplementDosage");
-                String supplementTiming = mr.getParameter("supplementTiming");
-                String supplementCaution = mr.getParameter("supplementCaution");
+                String supplementId = request.getParameter("supplementId"); // 🚨 hidden으로 숨겨왔던 고유번호!
+                String supplementName = request.getParameter("supplementName");
+                String supplementEfficacy =request.getParameter("supplementEfficacy");
+                String supplementDosage = request.getParameter("supplementDosage");
+                String supplementTiming = request.getParameter("supplementTiming");
+                String supplementCaution = request.getParameter("supplementCaution");
 
                 // 줄바꿈(<br>) 처리
                 if (supplementEfficacy != null) {
@@ -247,17 +248,17 @@ public class SupplementsDAO {
                 }
 
                 // 4. [핵심] 사진 처리 로직
-                String oldFile = mr.getParameter("oldSupplementFile");   // 🚨 hidden으로 숨겨왔던 기존 사진
-                String newFile = mr.getFilesystemName("supplementFile"); // 이번에 새로 선택한 사진
+                String oldFile = request.getParameter("oldSupplementFile");   // 🚨 hidden으로 숨겨왔던 기존 사진
+                String newImageUrl = (String) request.getAttribute("newImageUrl"); // 이번에 새로 선택한 사진
 
                 String updateFile; // 최종적으로 DB에 업데이트될 사진 이름
 
-                if (newFile == null) {
+                if (newImageUrl == null) {
                     // 사용자가 [파일 선택]을 안 누르고 그냥 글씨만 고쳤다면? -> 기존 사진 유지!
                     updateFile = oldFile;
                 } else {
                     // 새로운 사진을 올렸다면? -> 새로 올린 사진 이름으로 덮어쓰기!
-                    updateFile = newFile;
+                    updateFile = newImageUrl;
                 }
 
                 // 쿼리 준비 및 물음표(?) 세팅

@@ -90,19 +90,17 @@
             <p class="description-text">${product.productDescription}</p>
 
             <div class="detail-meta">
-                <p>영양소 식별 번호: <span>${product.productNutrient}</span></p>
-                <p>복용 시작일: <span>${product.productStartDate}</span></p>
-                <p class="current-stock">
-                    현재 잔여량: <strong>${product.productCurrent}</strong> / ${product.productTotal}정
-                </p>
+                <p>등록일: <span>${product.productStartDate}</span></p>
             </div>
         </section>
     </main>
 </div>
-
+<div id="toast" class="toast"></div>
 
 <div>review 부분</div>
 
 
 </body>
+<script src="js/product.js?v=3"></script>
+
 </html>
