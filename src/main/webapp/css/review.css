@@ -253,3 +253,13 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helv
     white-space: pre-wrap;
     margin-top: 15px;
 }
+
+/* 별점 색상 정의 */
+.star-gold {
+    color: #f1c40f !important; /* 황금색 */
+    font-size: 1.1em;
+}
+.star-gray {
+    color: #eeeeee !important; /* 연한 회색 */
+    font-size: 1.1em;
+}

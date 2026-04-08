@@ -8,6 +8,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const starSelect = document.getElementById('starFilter');
     if(sortSelect) sortSelect.addEventListener('change', fetchReviews);
     if(starSelect) starSelect.addEventListener('change', fetchReviews);
+
+    // 🌟 [여기 추가!] 페이지 로딩 끝나자마자 비동기로 리스트 한번 쫙 불러오기!
+    fetchReviews();
 });
 
 window.onclick = function(event) {
@@ -45,7 +48,7 @@ function openPhotoGalleryModal() {
                 <img src="../upload/${r.r_img}" style="width:120px; height:120px; object-fit:cover; border-radius:8px;">
                 <div style="flex-grow:1;">
                     <div style="font-weight:bold;">${r.r_title}</div>
-                    <div style="color:#777; font-size:0.9em;">작성자: ${r.user_id} | 별점: ${r.r_score}점</div>
+                   <div style="color:#777; font-size:0.9em;">작성자: ${r.user_id} | ${makeStarHtml(r.r_score)}</div>
                     <div style="font-size:0.95em;">${r.r_content}</div>
                 </div>
             </div>`;
@@ -111,7 +114,7 @@ function renderReviews(reviews) {
             <div class="review-card" style="position: relative;">
                 ${menuHtml}
                 <div class="review-title">제목: ${r.r_title}</div>
-                <div class="review-meta">작성자: ${r.user_id} | 별점: ${r.r_score}점 | 작성일: ${r.r_date}</div>
+                <div class="review-meta">작성자: ${r.user_id} | ${makeStarHtml(r.r_score)} | 작성일: ${r.r_date}</div>
                 ${imgHtml}
                 <hr style="border:0; border-top:1px solid #eee;">
                 <div class="review-content">${r.r_content}</div>
@@ -130,7 +133,7 @@ function openDetailModal(title, user, score, date, content, img) {
     document.getElementById('detailModal').style.display = 'block';
     document.getElementById('detail_title').innerText = title;
     document.getElementById('detail_user').innerText = user;
-    document.getElementById('detail_score').innerText = score;
+    document.getElementById('detail_score').innerHTML = makeStarHtml(score);
     document.getElementById('detail_date').innerText = date;
     document.getElementById('detail_text').innerText = content;
 
@@ -278,4 +281,20 @@ function updateCharCount() {
     if (charCount) {
         charCount.innerText = content.length;
     }
+}
+// ==========================================
+//8.숫자 점수를 별 모양 HTML로 바꿔주는 함수
+// ==========================================
+
+function makeStarHtml(score) {
+    let stars = '';
+    for (let i = 1; i <= 5; i++) {
+        // 현재 번호가 점수보다 작거나 같으면 꽉 찬 별, 아니면 빈 별
+        if (i <= score) {
+            stars += '<span class="star-gold">★</span>';
+        } else {
+            stars += '<span class="star-gray">☆</span>';
+        }
+    }
+    return stars;
 }
