@@ -15,13 +15,13 @@ public class SupplementsAddC extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         // 메뉴바 불 들어오게 설정
-        request.setAttribute("activeTab", "nutrition");
+//        request.setAttribute("activeTab", "nutrition");
 
         // "알맹이 페이지로 supplements_reg.jsp를 써라!"라고 지정
-        request.setAttribute("content", "supplements/supplements_reg.jsp");
+//        request.setAttribute("content", "supplements/supplements_reg.jsp");
 
         // 메인 페이지(index.jsp)로 보냅니다.
-        request.getRequestDispatcher("/index.jsp").forward(request, response);
+        request.getRequestDispatcher("supplements/supplements_reg.jsp").forward(request, response);
     }
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
