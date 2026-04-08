@@ -4,19 +4,35 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import java.io.IOException;
 import java.util.Map;
+import java.io.InputStream;
+import java.util.Properties;
 import javax.servlet.http.Part; // 서블릿 사용 시
 
 public class CloudinaryUtil {
     private static Cloudinary cloudinary;
 
     static {
-        // 아까 메모장에 적어둔 정보를 여기에 넣으세요!
-        cloudinary = new Cloudinary(ObjectUtils.asMap(
-                "cloud_name", "doodfgsav",
-                "api_key", "897682294648863",
-                "api_secret", "1luj7MXmHGGa2qQiWaFgKS7um-A",
-                "secure", true
-        ));
+        try {
+            Properties props = new Properties();
+            InputStream input = CloudinaryUtil.class.getClassLoader().getResourceAsStream("WEB-INF/config.properties");
+            if (input == null) {
+                input = CloudinaryUtil.class.getClassLoader().getResourceAsStream("config.properties");
+            }
+            if (input != null) {
+                props.load(input);
+                cloudinary = new Cloudinary(ObjectUtils.asMap(
+                    "cloud_name", props.getProperty("cloud_name"),
+                    "api_key", props.getProperty("api_key"),
+                    "api_secret", props.getProperty("api_secret"),
+                    "secure", Boolean.parseBoolean(props.getProperty("secure", "true"))
+                ));
+                input.close();
+            } else {
+                throw new RuntimeException("config.properties file not found");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load Cloudinary configuration", e);
+        }
     }
 
     public static String uploadFile(Part filePart, String supplements) throws IOException {
