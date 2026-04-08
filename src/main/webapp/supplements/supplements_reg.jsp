@@ -8,7 +8,8 @@
             padding: 20px;
             border: 2px solid #eee;
             border-radius: 8px;
-            width: 500px;
+            width: 90%;
+            max-width: 500px;
             background-color: #fafafa;
         }
         .form-group {
@@ -41,6 +42,15 @@
         .submit-btn:hover {
             background-color: #45a049;
         }
+
+        /* 🪄 모바일 화면(768px 이하)일 때 여백 살짝 줄여주기 */
+        @media (max-width: 768px) {
+            .reg-container {
+                margin: 20px auto; /* 위아래 여백을 살짝 줄여서 화면을 넓게 씁니다 */
+                padding: 15px;
+            }
+        }
+
     </style>
 </head>
 <body>
