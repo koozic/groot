@@ -95,64 +95,37 @@
     </form>
 </section>
 
-<!-- =============================================
-베스트 리뷰
-============================================= -->
-<section style="margin-bottom: 36px;">
-    <div class="sec-header">
-        <div class="sec-title">베스트 리뷰</div>
-        <a href="review" class="sec-more">전체보기 ›</a>
-    </div>
-    <div class="grid-4">
-        <c:choose>
-            <c:when test="${not empty reviewList}">
-                <c:forEach var="review" items="${reviewList}">
-                    <div class="card review-card">
-                        <span class="badge badge-blue">${review.category}</span>
-                        <div class="review-title">${review.title}</div>
-                        <div class="review-body">${review.content}</div>
-                        <div class="review-stars">
-                            <c:forEach begin="1" end="${review.rating}" var="i">★</c:forEach>
-                            <c:forEach begin="${review.rating + 1}" end="5" var="i">☆</c:forEach>
-                        </div>
-                        <div class="review-author">${review.author}</div>
-                    </div>
-                </c:forEach>
-            </c:when>
-            <c:otherwise>
-                <%-- 더미 데이터 (DB 연결 전 확인용) --%>
-                <div class="card review-card">
-                    <span class="badge badge-blue">비타민C</span>
-                    <div class="review-title">오메가3 + 마그네슘</div>
-                    <div class="review-body">잠이 훨씬 잘 와요! 이 조합 강추합니다</div>
-                    <div class="review-stars">★★★★★</div>
-                    <div class="review-author">건강맨</div>
-                </div>
-                <div class="card review-card">
-                    <span class="badge badge-yellow">비타민D</span>
-                    <div class="review-title">비타민D + 칼슘</div>
-                    <div class="review-body">뼈 건강에 확실히 효과 봤어요</div>
-                    <div class="review-stars">★★★★☆</div>
-                    <div class="review-author">뼈튼튼</div>
-                </div>
-                <div class="card review-card">
-                    <span class="badge badge-green">종합비타민</span>
-                    <div class="review-title">아연 + 비타민C</div>
-                    <div class="review-body">환절기 면역력에 진짜 좋아요</div>
-                    <div class="review-stars">★★★★★</div>
-                    <div class="review-author">면역왕</div>
-                </div>
-                <div class="card review-card">
-                    <span class="badge badge-orange">비타민B</span>
-                    <div class="review-title">비타민B군 복합체</div>
-                    <div class="review-body">피로회복이 눈에 띄게 달라짐</div>
-                    <div class="review-stars">★★★★☆</div>
-                    <div class="review-author">직장인A</div>
-                </div>
-            </c:otherwise>
-        </c:choose>
-    </div>
-</section>
+<div class="grid-4">
+    <%-- 🌟 컨트롤러가 넘겨준 무영표 베스트 리뷰 4개 반복문 시작! --%>
+    <c:forEach var="best" items="${bestReviews}" varStatus="status">
+
+        <%-- 🎨 배지 색상 로테이션 (파, 노, 초, 주 순서대로 돌려 입히기) --%>
+        <c:set var="badgeColor" value="${status.index % 4 == 0 ? 'badge-blue' : (status.index % 4 == 1 ? 'badge-yellow' : (status.index % 4 == 2 ? 'badge-green' : 'badge-orange'))}" />
+
+        <div class="card review-card" onclick="location.href='product-detail?id=${best.product_id}'" style="cursor: pointer;">
+
+                <%-- 🚨 수정된 부분: 에러 안 나게 '베스트'로 텍스트 고정! --%>
+            <span class="badge ${badgeColor}">베스트</span>
+
+                <%-- 2. 리뷰 제목 --%>
+            <div class="review-title">${best.r_title}</div>
+
+                <%-- 3. 리뷰 내용 --%>
+            <div class="review-body">${best.r_content}</div>
+
+                <%-- 4. 별점 --%>
+            <div class="review-stars">
+                <c:forEach begin="1" end="${best.r_score}">★</c:forEach>
+                <c:forEach begin="${best.r_score + 1}" end="5">☆</c:forEach>
+            </div>
+
+                <%-- 5. 작성자 --%>
+            <div class="review-author">${best.user_id} &nbsp;|&nbsp; 👍 ${best.r_like}</div>
+
+        </div>
+
+    </c:forEach>
+</div>
 
 <!-- =============================================
 home.jsp 전용 스타일

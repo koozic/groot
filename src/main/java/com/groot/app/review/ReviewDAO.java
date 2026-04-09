@@ -547,4 +547,45 @@ public class ReviewDAO {
             DBManager_new.close(con, pstmt, null);
         }
     }
+    // =========================================================
+    // 🏆 메인 페이지용 베스트 리뷰 4개 가져오기 (싱글톤 전용)
+    // =========================================================
+    public ArrayList<ReviewDTO> getBestReviews() { // 🌟 static 뺐습니다!
+        ArrayList<ReviewDTO> bestList = new ArrayList<>();
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            con = DBManager_new.connect();
+
+            // 🌟 좋아요 높은 순으로 딱 4개만! (테이블명 REVIEWS)
+            String sql = "SELECT * FROM (" +
+                    "    SELECT * FROM REVIEWS ORDER BY r_like DESC, r_date DESC" +
+                    ") WHERE ROWNUM <= 4";
+
+            pstmt = con.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                ReviewDTO r = new ReviewDTO();
+                r.setReview_id(rs.getInt("REVIEW_ID"));
+                r.setProduct_id(rs.getInt("PRODUCT_ID"));
+                r.setUser_id(rs.getString("USER_ID"));
+                r.setR_title(rs.getString("R_TITLE"));
+                r.setR_content(rs.getString("R_CONTENT"));
+                r.setR_score(rs.getInt("R_SCORE"));
+                r.setR_img(rs.getString("R_IMG"));
+                r.setR_date(rs.getDate("R_DATE"));
+                r.setR_like(rs.getInt("R_LIKE"));
+                bestList.add(r);
+            }
+        } catch (Exception e) {
+            System.out.println("베스트 리뷰 4개 가져오기 에러!");
+            e.printStackTrace();
+        } finally {
+            DBManager_new.close(con, pstmt, rs);
+        }
+        return bestList;
+    }
 } // ReviewDAO 클래스 끝
