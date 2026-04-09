@@ -32,7 +32,7 @@
             <div class="supp-wrap">
                 <div class="supp-img" onclick="openDetailModal(this)"
                 data-id="${supp.supplementId}" data-name="${supp.supplementName}" data-efficacy="${supp.supplementEfficacy}" data-dosage="${supp.supplementDosage}" data-timing="${supp.supplementTiming}" data-caution="${supp.supplementCaution}" data-imgPath="${supp.supplementImagePath}">
-                <img src="/supplementImg/supplementImgFile/${supp.supplementImagePath}">
+                <img  src="${supp.supplementImagePath}" alt="${supp.supplementName}">
                 </div>
 
                 <div class="supp-name">${supp.supplementName}</div>

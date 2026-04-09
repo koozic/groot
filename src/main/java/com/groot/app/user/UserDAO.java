@@ -1,11 +1,13 @@
 package com.groot.app.user;
 
+import com.groot.app.common.CloudinaryUtil;
 import com.groot.app.main.DBManager_new;
 import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -164,72 +166,85 @@ public class UserDAO {
         String sql = "insert into users values (?,?,?,?,?,?,?,?,?,?,?,?)";
 
         try {
-            String path = request.getServletContext().getRealPath("user/userImg");
-            
-            // 디렉토리가 없으면 생성
-            java.io.File uploadDir = new java.io.File(path);
-            if (!uploadDir.exists()) {
-                uploadDir.mkdirs();
-            }
-            
-            int size = 10 * 1024 * 1024;
-
-            MultipartRequest mr = new MultipartRequest(
-                    request,
-                    path,
-                    size,
-                    "UTF-8",
-                    new DefaultFileRenamePolicy()
-            );
-
-            con = DBManager_new.connect();
+            con=DBManager_new.connect();
             pstmt = con.prepareStatement(sql);
 
-            pstmt.setString(1, mr.getParameter("user_id"));
-            pstmt.setString(2, mr.getParameter("user_pw"));
-            pstmt.setString(3, mr.getParameter("user_name"));
-            pstmt.setInt(4, Integer.parseInt(mr.getParameter("user_age")));
-            pstmt.setString(5, mr.getParameter("user_gender"));
-            String profileFileName = mr.getFilesystemName("user_profile");
-            String selectedProfile = mr.getParameter("user_profile");
-            
-            // 파일 업로드가 있으면 업로드 파일 사용, 없으면 선택한 기본 프로필 사용
-            if (profileFileName != null) {
-                // 직접 업로드한 파일
-                System.out.println("Uploaded profile: " + profileFileName);
-            } else if (selectedProfile != null && !selectedProfile.trim().isEmpty()) {
-                // 라디오 버튼으로 선택한 기본 프로필
-                profileFileName = selectedProfile;
-                System.out.println("Selected profile: " + profileFileName);
-            } else {
-                // 아무것도 선택하지 않으면 기본 프로필
-                profileFileName = "Ayanokoji.jfif";
-                System.out.println("Default profile: " + profileFileName);
+            pstmt.setString(1, request.getParameter("user_id"));
+            pstmt.setString(2, request.getParameter("user_pw"));
+            pstmt.setString(3, request.getParameter("user_name"));
+            pstmt.setInt(4, Integer.parseInt(request.getParameter("user_age")));
+            pstmt.setString(5, request.getParameter("user_gender"));
+
+            // =========================
+            // 프로필 이미지 처리
+            // =========================
+            String selectedProfile = request.getParameter("default_profile");   // 라디오 선택값
+            Part profileFile = request.getPart("user_profile_file");            // 파일 업로드
+            String finalProfilePath = null;
+
+            // 직접 업로드가 있으면 Cloudinary 우선
+            if (profileFile != null && profileFile.getSize() > 0) {
+                finalProfilePath = CloudinaryUtil.uploadFile(profileFile, "users");
+                System.out.println("직접 업로드 이미지 URL: " + finalProfilePath);
             }
-            pstmt.setString(6, profileFileName);   // 파일명
-            pstmt.setString(7, mr.getParameter("user_email"));
-            
-            // address fields combination
-            String zipcode = mr.getParameter("user_zipcode");
-            String roadAddr = mr.getParameter("user_road_address");
-            String detailAddr = mr.getParameter("user_detail_address");
-            String extraAddr = mr.getParameter("user_extra_address");
+            // 업로드 없으면 기본 프로필 사용
+            else if (selectedProfile != null && !selectedProfile.trim().isEmpty()) {
+                finalProfilePath = "user/userimg/" + selectedProfile;
+                System.out.println("기본 프로필 선택: " + finalProfilePath);
+            }
+            // 혹시 모를 예외 대비
+            else {
+                finalProfilePath = "user/userimg/Ayanokoji.jfif";
+                System.out.println("기본값 적용: " + finalProfilePath);
+            }
+
+            // DB에는 문자열 경로 저장
+            pstmt.setString(6, finalProfilePath);
+
+            pstmt.setString(7, request.getParameter("user_email"));
+
+            // =========================
+            // 주소 합치기
+            // =========================
+            String zipcode = request.getParameter("user_zipcode");
+            String roadAddr = request.getParameter("user_road_address");
+            String detailAddr = request.getParameter("user_detail_address");
+            String extraAddr = request.getParameter("user_extra_address");
+
             String fullAddress = "";
-            if (zipcode != null) fullAddress += "[" + zipcode + "] ";
-            if (roadAddr != null) fullAddress += roadAddr + " ";
-            if (detailAddr != null) fullAddress += detailAddr;
-            if (extraAddr != null && !extraAddr.trim().isEmpty()) fullAddress += " (" + extraAddr + ")";
-            
+
+            if (zipcode != null && !zipcode.trim().isEmpty()) {
+                fullAddress += "[" + zipcode + "] ";
+            }
+            if (roadAddr != null && !roadAddr.trim().isEmpty()) {
+                fullAddress += roadAddr + " ";
+            }
+            if (detailAddr != null && !detailAddr.trim().isEmpty()) {
+                fullAddress += detailAddr;
+            }
+            if (extraAddr != null && !extraAddr.trim().isEmpty()) {
+                fullAddress += " (" + extraAddr + ")";
+            }
+
             pstmt.setString(8, fullAddress.trim());
-            pstmt.setString(9, mr.getParameter("user_agree"));
-            pstmt.setString(10, mr.getParameter("user_join_path"));
+
+            // 체크박스는 미체크 시 null일 수 있음
+            String agree = request.getParameter("user_agree");
+            if (agree == null) {
+                agree = "N";
+            }
+            pstmt.setString(9, agree);
+
+            pstmt.setString(10, request.getParameter("user_join_path"));
             pstmt.setString(11, "0");
             pstmt.setString(12, "N");
 
-            pstmt.executeUpdate();
-                if (pstmt.getUpdateCount() == 1) {
-                    System.out.println("good");
-                }
+            int result = pstmt.executeUpdate();
+
+            if (result == 1) {
+                System.out.println("회원가입 성공");
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
