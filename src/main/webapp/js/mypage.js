@@ -1,80 +1,196 @@
-/* ── 탭 전환 ── */
+/* ── 탭 전환 로직 ── */
 function switchTab(id, btn) {
     document.querySelectorAll('.mp-tab-content').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.mp-tab').forEach(el => el.classList.remove('active'));
 
-    var targetTab = document.getElementById('tab-' + id);
+    const targetTab = document.getElementById('tab-' + id);
     if (targetTab) targetTab.classList.add('active');
 
     if (btn) {
         btn.classList.add('active');
     } else {
-        var targetBtn = document.querySelector(".mp-tab[onclick*=\"'" + id + "'\"]");
+        const targetBtn = document.querySelector(".mp-tab[onclick*=\"'" + id + "'\"]");
         if (targetBtn) targetBtn.classList.add('active');
     }
-
-    // 영구 저장소(localStorage) 대신 임시 저장소(sessionStorage) 사용
     sessionStorage.setItem('activeTab', id);
 }
-/* ── 페이지 로드 시 마지막 활성 탭 복구 ── */
-(function () {
-// 1. 현재 페이지 진입 방식 확인 (새로고침인지, 메뉴 클릭해서 온 건지)
-    var isReload = false;
-    if (window.performance && window.performance.getEntriesByType) {
-        var navEntries = window.performance.getEntriesByType("navigation");
-        if (navEntries.length > 0 && navEntries[0].type === "reload") {
-            isReload = true; // location.reload() 로 인한 진입
-        }
-    }
 
+/* ── 초기화 및 이벤트 바인딩 ── */
+document.addEventListener('DOMContentLoaded', function () {
+    const isReload = window.performance && window.performance.getEntriesByType("navigation")[0]?.type === "reload";
     if (isReload) {
-        // 2. 추가/삭제 등으로 새로고침 된 경우: 방금 보던 탭 유지
-        var savedTab = sessionStorage.getItem('activeTab');
-        if (savedTab) {
-            switchTab(savedTab);
-        }
+        const savedTab = sessionStorage.getItem('activeTab');
+        if (savedTab) switchTab(savedTab);
     } else {
-        // 3. 네비게이션 메뉴 등으로 처음 진입한 경우: 무조건 'info(회원정보)' 탭
         sessionStorage.setItem('activeTab', 'info');
         switchTab('info');
     }
-})();
 
+    const now = new Date();
+    const dateStr = now.getFullYear() + '.' + String(now.getMonth() + 1).padStart(2, '0') + '.' + String(now.getDate()).padStart(2, '0');
+    const dateEl = document.getElementById('todayDate');
+    if (dateEl) dateEl.textContent = dateStr;
 
-/* ── 오늘 날짜 표시 ── */
-(function () {
-    var now = new Date();
-    var y = now.getFullYear();
-    var m = String(now.getMonth() + 1).padStart(2, '0');
-    var d = String(now.getDate()).padStart(2, '0');
-    var el = document.getElementById('todayDate');
-    if (el) el.textContent = y + '.' + m + '.' + d;
-})();
+    updateProgress();
+    if (typeof renderCalendar === 'function') renderCalendar();
 
+    const confirmBtn = document.getElementById('confirmBtn');
+    if (confirmBtn) {
+        confirmBtn.onclick = function () {
+            if (typeof confirmCallback === 'function') confirmCallback();
+            closeConfirm();
+        };
+    }
+});
 
-
-/* ── 진행률 업데이트 ── */
+/* ── 기능 로직 ── */
 function updateProgress() {
-    var total = document.querySelectorAll('.vit-item').length;
-    var checked = document.querySelectorAll('.vit-item.checked').length;
-    var pct = total > 0 ? Math.round((checked / total) * 100) : 0;
-    var fill = document.getElementById('progressFill');
-    var text = document.getElementById('progressText');
+    const items = document.querySelectorAll('.vit-item');
+    const visibleItems = Array.from(items).filter(el => el.style.display !== 'none');
+    const total = visibleItems.length;
+    const checked = visibleItems.filter(el => el.classList.contains('checked')).length;
+
+    const pct = total > 0 ? Math.round((checked / total) * 100) : 0;
+    const fill = document.getElementById('progressFill');
+    const text = document.getElementById('progressText');
+
     if (fill) fill.style.width = pct + '%';
     if (text) text.textContent = checked + ' / ' + total;
 }
 
-/* 페이지 로드 시 진행률 초기화 */
-updateProgress();
+function addSupplement(productId, element) {
+    fetch('mypage/add-product', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'productId=' + productId
+    }).then(response => {
+        if (response.ok) {
+            showToast("리스트에 추가되었습니다.");
+            element.style.opacity = '0';
+            element.style.transition = '0.3s';
+            setTimeout(() => {
+                element.remove();
+                const list = document.getElementById('modalProductList');
+                if (list && list.children.length === 0) {
+                    list.innerHTML = '<p style="text-align:center; padding:20px; color:#9ca3af;">모든 제품을 추가했습니다.</p>';
+                }
+            }, 300);
+            window.isDataChanged = true;
+        }
+    });
+}
 
-/* ── 캘린더 ── */
+function toggleCheck(element, productId) {
+    let isChecked = element.classList.toggle('checked');
+    element.querySelector('.vit-check-box').textContent = isChecked ? '✓' : '';
+    updateProgress();
+
+    fetch('mypage/check-intake', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'productId=' + productId + '&isTaken=' + isChecked
+    })
+        .then(response => response.text())
+        .then(text => {
+            if (text === 'success') {
+                if (typeof renderCalendar === 'function') {
+                    renderCalendar();
+                }
+            }
+        })
+        .catch(err => console.error("체크 상태 업데이트 실패", err));
+}
+
+let deleteTimeout = null;
+
+function removeSupplement(productId, btnElement) {
+    const item = btnElement.closest('.vit-item');
+    if (!item) return;
+
+    item.style.display = 'none';
+    updateProgress();
+
+    showUndoToast("영양제가 삭제되었습니다.", () => {
+        clearTimeout(deleteTimeout);
+        item.style.display = 'flex';
+        updateProgress();
+    });
+
+    deleteTimeout = setTimeout(() => {
+        fetch('mypage/remove-product', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: 'productId=' + productId
+        }).catch(() => {
+            item.style.display = 'flex';
+            updateProgress();
+            showToast("삭제 실패", "error");
+        });
+    }, 3000);
+}
+
+/* ── UI 유틸리티 ── */
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toast-container') || createToastContainer();
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `<span>${type === 'success' ? '✅' : '❌'}</span> ${message}`;
+    container.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+
+function showUndoToast(message, undoAction) {
+    const container = document.getElementById('toast-container') || createToastContainer();
+    const toast = document.createElement('div');
+    toast.className = 'toast success';
+    toast.innerHTML = `<span>${message}</span><button id="undoBtn" style="margin-left:15px; background:none; border:none; color:#93c5fd; font-weight:800; cursor:pointer; text-decoration:underline;">실행 취소</button>`;
+    container.appendChild(toast);
+    toast.querySelector('#undoBtn').onclick = () => {
+        undoAction();
+        toast.remove();
+    };
+    setTimeout(() => {
+        if (toast) toast.remove();
+    }, 3000);
+}
+
+function createToastContainer() {
+    const c = document.createElement('div');
+    c.id = 'toast-container';
+    document.body.appendChild(c);
+    return c;
+}
+
+function openProductModal() {
+    document.getElementById('productModal').style.display = 'block';
+}
+
+function closeProductModal() {
+    document.getElementById('productModal').style.display = 'none';
+}
+
+function closeConfirm() {
+    const m = document.getElementById('confirmModal');
+    if (m) m.style.display = 'none';
+}
+
+function closeAndRefresh() {
+    if (window.isDataChanged) {
+        sessionStorage.setItem('activeTab', 'check');
+        location.reload();
+    } else {
+        closeProductModal();
+    }
+}
+
+/* ── 캘린더 및 통계 ── */
 var calYear, calMonth;
 
 (function () {
     var now = new Date();
     calYear = now.getFullYear();
     calMonth = now.getMonth();
-    renderCalendar();
+    // DOMContentLoaded에서 호출하므로 여기서는 생략해도 무방합니다.
 })();
 
 function changeMonth(dir) {
@@ -91,9 +207,9 @@ function changeMonth(dir) {
 }
 
 function renderCalendar() {
-    var grid = document.getElementById('calGrid');
     var title = document.getElementById('calTitle');
-    if (!grid || !title) return;
+    var grid = document.getElementById('calGrid');
+    if (!title || !grid) return;
 
     var today = new Date();
     var firstDay = new Date(calYear, calMonth, 1).getDay();
@@ -101,29 +217,34 @@ function renderCalendar() {
 
     title.textContent = calYear + '년 ' + (calMonth + 1) + '월';
 
-    /* TODO: 서버에서 이 달의 소진일/구매권장일/체크기록 받아오기
-    fetch('mypage/calData?year=' + calYear + '&month=' + (calMonth+1))
-      .then(r => r.json())
-      .then(data => buildCal(data.warnDates, data.buyDates, data.checkedDates));
-    지금은 더미 데이터로 렌더링 */
+    fetch(`mypage/calData?year=${calYear}&month=${calMonth + 1}`)
+        .then(response => response.json())
+        .then(data => {
+            // renderStatistics(data.statistics);
+            renderAlerts(data.alerts);
 
-    /* 더미 데이터 */
-    var warnDates = [24, 25];      // 소진 예정일
-    var buyDates = [17, 19];      // 구매 권장일 (5일 전)
-    var checkedDates = [1, 2, 3, 4, 5, 6, 7, 8]; // 복용 기록 있는 날
+            let mappedAlerts = {};
+            if (data.alerts) {
+                data.alerts.forEach(alert => {
+                    let targetDate = new Date();
+                    targetDate.setDate(today.getDate() + alert.remainDays);
 
-    buildCal(warnDates, buyDates, checkedDates, firstDay, lastDate, today);
+                    if (targetDate.getFullYear() === calYear && targetDate.getMonth() === calMonth) {
+                        let d = targetDate.getDate();
+                        if (!mappedAlerts[d]) mappedAlerts[d] = [];
+                        mappedAlerts[d].push(alert);
+                    }
+                });
+            }
+
+            buildCal(mappedAlerts, data.checkedDates, firstDay, lastDate, today);
+        })
+        .catch(err => console.error("캘린더 데이터 로드 실패", err));
 }
 
-function buildCal(warnDates, buyDates, checkedDates, firstDay, lastDate, today) {
+function buildCal(mappedAlerts, checkedDates, firstDay, lastDate, today) {
     var grid = document.getElementById('calGrid');
-    var html = '<div class="cal-day-name">일</div>'
-        + '<div class="cal-day-name">월</div>'
-        + '<div class="cal-day-name">화</div>'
-        + '<div class="cal-day-name">수</div>'
-        + '<div class="cal-day-name">목</div>'
-        + '<div class="cal-day-name">금</div>'
-        + '<div class="cal-day-name">토</div>';
+    var html = '<div class="cal-day-name">일</div><div class="cal-day-name">월</div><div class="cal-day-name">화</div><div class="cal-day-name">수</div><div class="cal-day-name">목</div><div class="cal-day-name">금</div><div class="cal-day-name">토</div>';
 
     for (var i = 0; i < firstDay; i++) {
         html += '<div class="cal-day empty"></div>';
@@ -131,86 +252,56 @@ function buildCal(warnDates, buyDates, checkedDates, firstDay, lastDate, today) 
 
     for (var d = 1; d <= lastDate; d++) {
         var cls = 'cal-day';
-        var isToday = (today.getFullYear() === calYear &&
-            today.getMonth() === calMonth &&
-            today.getDate() === d);
+        var isToday = (today.getFullYear() === calYear && today.getMonth() === calMonth && today.getDate() === d);
 
         if (isToday) cls += ' today';
-        else if (warnDates.indexOf(d) > -1) cls += ' warn';
-        else if (buyDates.indexOf(d) > -1) cls += ' buy-day';
-        else if (checkedDates.indexOf(d) > -1) cls += ' checked';
 
-        html += '<div class="' + cls + '">' + d + '</div>';
+        html += `<div class="${cls}">`;
+        html += `<span class="day-num">${d}</span>`;
+
+        if (checkedDates && checkedDates.indexOf(d) > -1) {
+            html += `<div class="day-status status-ok">✅ 완료</div>`;
+        } else if (d < today.getDate() && calMonth <= today.getMonth() || calYear < today.getFullYear()) {
+            html += `<div class="day-status status-miss">⚠️ 미복용</div>`;
+        }
+
+        if (mappedAlerts && mappedAlerts[d]) {
+            html += `<div class="day-alerts">`;
+            mappedAlerts[d].forEach(alert => {
+                let badgeClass = alert.status === 'warn' ? 'badge-warn' : 'badge-buy';
+                let icon = alert.status === 'warn' ? '소진임박' : '재구매';
+                html += `<div class="alert-item ${badgeClass}">🛒 ${alert.productName} ${icon}</div>`;
+            });
+            html += `</div>`;
+        }
+
+        html += `</div>`;
     }
     grid.innerHTML = html;
 }
 
 
-// 모달 열기/닫기
-function openProductModal() {
-    document.getElementById('productModal').style.display = 'block';
-}
-function closeProductModal() {
-    document.getElementById('productModal').style.display = 'none';
-}
 
-// 1. 내 리스트에 영양제 추가
-function addSupplement(productId) {
-    if(!confirm("이 영양제를 내 리스트에 추가할까요?")) return;
+function renderAlerts(alerts) {
+    const alertList = document.getElementById('alertList');
+    if (!alertList) return;
+    alertList.innerHTML = '';
 
-    fetch('mypage/add-product', { // TODO: 매핑할 서블릿 URL
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: 'productId=' + productId
-    })
-        .then(response => {
-            if(response.ok) {
-                alert("추가되었습니다.");
-                location.reload(); // 가장 쉬운 방법: 성공 시 페이지 새로고침하여 내 리스트 갱신
-            } else {
-                alert("추가 실패. 다시 시도해주세요.");
-            }
-        });
-}
+    if (!alerts || alerts.length === 0) {
+        alertList.innerHTML = '<p style="text-align:center; color:#9ca3af; padding:10px;">등록된 영양제가 없거나 데이터가 없습니다.</p>';
+        return;
+    }
 
-// 2. 복용 여부 체크 토글
-function toggleCheck(element, productId) {
-    // 1. 화면 UI 먼저 변경 (체크 표시 토글)
-    let isChecked = element.classList.toggle('checked');
-    let checkBox = element.querySelector('.vit-check-box');
-    checkBox.textContent = isChecked ? '✓' : '';
+    alerts.forEach(alert => {
+        let icon = alert.status === 'warn' ? '⚠️' : (alert.status === 'buy' ? '🛒' : '✅');
+        let msg = alert.status === 'warn' ? `${alert.remainDays}일 후 소진! 미리 구매하세요`
+            : (alert.status === 'buy' ? `잔여 ${alert.remainDays}일 · 구매 권장` : `잔여 ${alert.remainDays}일 · 여유 있어요`);
 
-    // 2. 진행률 바 실시간 업데이트 (추가된 부분)
-    updateProgress();
-
-    // 3. 서버에 복용 기록 저장 (비동기)
-    fetch('mypage/check-intake', { // TODO: 매핑할 서블릿 URL
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: 'productId=' + productId + '&isTaken=' + isChecked
-    }).catch(err => {
-        console.error("복용 체크 업데이트 실패", err);
-        // 실패 시 UI 원상복구 로직 추가 가능
-    });
-}
-
-/* ── 내 영양제 삭제 ── */
-function removeSupplement(productId) {
-    if(!confirm("이 영양제를 내 리스트에서 삭제하시겠습니까?")) return;
-
-    fetch('mypage/remove-product', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: 'productId=' + productId
-    })
-        .then(response => {
-            if(response.ok) {
-                alert("삭제되었습니다.");
-                location.reload(); // 새로고침 시 localStorage에 의해 현재 탭 유지됨
-            } else {
-                alert("삭제 실패. 서버 오류가 발생했습니다.");
-            }
-        }).catch(err => {
-        console.error("삭제 요청 에러:", err);
+        alertList.innerHTML += `
+            <div class="mp-alert-card mp-alert-${alert.status}">
+                <span class="alert-icon">${icon}</span>
+                <div><strong>${alert.productName}</strong> ${msg}</div>
+            </div>
+        `;
     });
 }

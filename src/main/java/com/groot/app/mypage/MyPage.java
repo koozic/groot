@@ -10,7 +10,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Map;
 
 @WebServlet(name = "MyPage", value = "/mypage")
 public class MyPage extends HttpServlet {
@@ -36,9 +38,19 @@ public class MyPage extends HttpServlet {
         ArrayList<ProductDTO> myProducts = MyPageDAO.MDAO.getUserProducts(userId);
         ArrayList<Integer> intakeList = MyPageDAO.MDAO.getTodayIntakeList(userId);
 
+        // 3. 당월 복용 통계 데이터 로드 (JSP의 c:forEach용)
+        LocalDate now = LocalDate.now();
+        int currentYear = now.getYear();
+        int currentMonth = now.getMonthValue();
 
+        ArrayList<Map<String, Object>> monthlyStats =
+                MyPageDAO.MDAO.getMonthlyIntakeStatistics(userId, currentYear, currentMonth);
+
+        //데이터 바인딩
         request.setAttribute("myProducts", myProducts);
         request.setAttribute("intakeList", intakeList); // JSP에서 체크 여부 판단용
+        request.setAttribute("monthlyStats", monthlyStats); // 통계 데이터 전달
+
         // HomeServlet.java 예시
         request.setAttribute("content", "mypage/mypage.jsp");
         request.setAttribute("activeTab", "home");
