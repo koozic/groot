@@ -31,7 +31,7 @@
         <c:choose>
             <%-- [1] 로그인 했을 때 --%>
             <c:when test="${not empty sessionScope.loginUser}">
-                <<<<<<< HEAD
+                <%--                <<<<<<< HEAD--%>
                 <span class="hdr-link">${sessionScope.loginUser.name}님 어서오세요. 당신의 건강을 챙기세요</span>
                 <img
                         src="${pageContext.request.contextPath}/user/userImg/${sessionScope.loginUser.user_profile}"
@@ -39,17 +39,14 @@
                         style="width:40px; height:40px; border-radius:50%; object-fit:cover;"
                         onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/user/userImg/Ayanokoji.jfif';"
                 >
-                =======
-                <span class="hdr-link">${sessionScope.loginUser.name}님 어서오세요.</span>
-                >>>>>>> 8cde72fb9f6eb00552226cec1f572dc8e16dc2c7
 
                 <%-- 삼항 연산자 로직은 그대로 유지 --%>
-                <img src="${sessionScope.loginUser.user_profile.startsWith('http')
-                           ? sessionScope.loginUser.user_profile
-                           : pageContext.request.contextPath.concat('/user/userImg/').concat(sessionScope.loginUser.user_profile)}"
-                     alt="프로필"
-                     style="width:32px; height:32px; border-radius:50%; object-fit:cover;"
-                     onerror="this.src='${pageContext.request.contextPath}/user/userImg/Ayanokoji.jpg'">
+                <%--                <img src="${sessionScope.loginUser.user_profile.startsWith('http')--%>
+                <%--                           ? sessionScope.loginUser.user_profile--%>
+                <%--                           : pageContext.request.contextPath.concat('/user/userImg/').concat(sessionScope.loginUser.user_profile)}"--%>
+                <%--                     alt="프로필"--%>
+                <%--                     style="width:32px; height:32px; border-radius:50%; object-fit:cover;"--%>
+                <%--                     onerror="this.src='${pageContext.request.contextPath}/user/userImg/Ayanokoji.jpg'">--%>
 
                 <a href="mypage" class="hdr-link">마이페이지</a>
                 <a href="logout" class="btn-login" style="padding: 5px 12px;">로그아웃</a>

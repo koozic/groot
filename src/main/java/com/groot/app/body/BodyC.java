@@ -35,6 +35,7 @@ public class BodyC extends HttpServlet {
             throws ServletException, IOException {
         String uri = request.getRequestURI();
         String action = request.getParameter("action"); // action 파라미터를 먼저 받습니다.
+//        request.setCharacterEncoding("UTF-8");
 
         // 페이지 요청인 경우 (AJAX가 아님) 단순 페이지 이동 (action이 없을 때만 실행)
         if (uri.contains("body_view") && action == null) {
@@ -44,7 +45,7 @@ public class BodyC extends HttpServlet {
         // 2. 여기서부터는 AJAX 또는 상세페이지 이동 처리
         request.setCharacterEncoding("UTF-8");
         // action에 따라 컨텐츠 타입을 결정 (detail은 HTML, 나머지는 JSON)
-        response.setContentType("application/json; charset=UTF-8");
+//        response.setContentType("application/json; charset=UTF-8");
 
         if ("detail".equals(action)) {
             response.setContentType("text/html; charset=UTF-8");
