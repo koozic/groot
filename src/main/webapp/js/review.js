@@ -91,8 +91,16 @@ function fetchModalPhotoReviews() {
 // ==========================================
 // 🚀 2. 좋아요 비동기 처리 (메인/모달 동시 적용)
 // ==========================================
+// ==========================================
+// 🚀 2. 좋아요 비동기 처리 (메인/모달 동시 적용)
+// ==========================================
 function toggleLike(reviewId, userId) {
-    if (!userId || userId === 'null') { alert('로그인이 필요합니다.'); return; }
+
+    // 🌟 [수정] 촌스러운 alert() 지우고, 예쁜 토스트 알림으로 교체!
+    if (!userId || userId === 'null' || userId === '') {
+        showToast("로그인이 필요한 기능입니다! 🔒", "error");
+        return;
+    }
 
     const params = new URLSearchParams();
     params.append('review_id', reviewId);
@@ -161,42 +169,63 @@ function renderPaginatedReviews(isAppend = false) {
     const emptyUi = document.getElementById('empty-review-ui');
     const fullUi = document.getElementById('full-review-ui');
 
-    if (!isAppend) {
-        container.innerHTML = '';
-    }
+    if (!isAppend) container.innerHTML = '';
 
-    // 🌟 [추가된 로직] 데이터가 0개면 텅 빈 화면 ON, 풀세트 OFF!
-    if (filteredReviewsData.length === 0) {
-        if(emptyUi) emptyUi.style.display = 'block';
-        if(fullUi) fullUi.style.display = 'none';
-
-        // (기존의 못생긴 텍스트 문구는 지워줍니다)
-        // container.innerHTML = `<div class="empty-msg">...</div>`;
-
+    // 1️⃣ [완전 텅 빈 상태] 이 상품에 리뷰가 전 세계에 단 하나도 없을 때
+    if (allReviewsData.length === 0) {
+        if (emptyUi) {
+            emptyUi.style.display = 'block';
+            emptyUi.innerHTML = `
+                <div style="font-size: 3rem; margin-bottom: 15px;">🌿</div>
+                <h3 style="color: #495057; font-size: 1.3rem; margin-bottom: 10px;">아직 등록된 리뷰가 없습니다.</h3>
+                <p style="color: #868e96; margin-bottom: 25px;">이 제품의 첫 번째 리뷰어가 되어주세요! 경험을 공유해주시면 큰 도움이 됩니다.</p>
+                <button type="button" onclick="openWriteModal()" style="padding: 12px 24px; background: #6a8d3a; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1.1em;">
+                    ✍️ 첫 리뷰 작성하기
+                </button>
+            `;
+        }
+        if (fullUi) fullUi.style.display = 'none'; // 통계/필터 다 숨김
         renderPaginationButtons();
         return;
     }
 
-    // 🌟 [추가된 로직] 데이터가 1개라도 있으면 텅 빈 화면 OFF, 풀세트 ON!
-    if(emptyUi) emptyUi.style.display = 'none';
-    if(fullUi) fullUi.style.display = 'block';
+    // 2️⃣ [데이터는 있는데 필터 결과만 0개일 때] 예: '내 글 보기'를 눌렀는데 내가 쓴 게 없을 때
+    if (filteredReviewsData.length === 0) {
+        if (fullUi) fullUi.style.display = 'block'; // 🌟 중요: 필터(체크박스)는 계속 보여줘야 함!
+        if (emptyUi) emptyUi.style.display = 'none';
 
-    // ... (이 아래로는 무영님이 만든 5개씩 자르기 로직 그대로 유지!) ...
+        // 대신 리스트가 들어갈 자리에 문구를 띄워줍니다.
+        const isMyReviewChecked = document.getElementById('myReviewCheck')?.checked;
+        const msg = isMyReviewChecked
+            ? "🔍 작성하신 리뷰가 없습니다. 첫 리뷰를 남겨보세요!"
+            : "🔍 조건에 맞는 리뷰가 없습니다.";
 
-    // ✂️ 5개씩 데이터 자르기!
+        container.innerHTML = `
+            <div style="text-align:center; padding:80px 20px; color:#777; background:#fff; border-radius:12px; border:1px solid #eee;">
+                <div style="font-size:2.5rem; margin-bottom:15px;">🔍</div>
+                <h3 style="margin-bottom:10px;">${msg}</h3>
+                <p>체크박스를 해제하시거나 새로운 리뷰를 작성해 보세요.</p>
+            </div>
+        `;
+        renderPaginationButtons();
+        return;
+    }
+
+    // 3️⃣ [정상 출력] 데이터가 1개라도 있을 때
+    if (emptyUi) emptyUi.style.display = 'none';
+    if (fullUi) fullUi.style.display = 'block';
+
+    // ✂️ 5개씩 자르기 로직 시작...
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const pageData = filteredReviewsData.slice(startIndex, endIndex);
 
-    // 잘라낸 5개 데이터 화면에 붙이기 (이전 renderReviews 안의 로직과 동일)
     pageData.forEach(r => {
+        // ... (무영님의 기존 리뷰 카드 그리는 코드 그대로 넣어주세요) ...
         let imgHtml = (r.r_img && r.r_img !== 'null') ? `<div class="review-img-box" style="margin: 15px 0;"><img src="../upload/${r.r_img}" style="width: 150px; border-radius: 8px;"></div>` : '';
         const rUser = r.user_id ? r.user_id.trim() : "";
         let menuHtml = '';
 
-        // 🌟 'kim124' 하드코딩 완벽 삭제!
-        // 조건: 1. 로그인을 한 상태여야 함 (currentLoginId !== "")
-        // 조건: 2. 현재 로그인한 아이디와 글 작성자의 아이디가 완벽히 똑같아야 함!
         if (currentLoginId !== "" && rUser === currentLoginId) {
             menuHtml = `
             <div class="review-more-menu">
@@ -212,7 +241,7 @@ function renderPaginatedReviews(isAppend = false) {
             <div class="review-card" style="position: relative;">
                 ${menuHtml}
                 <div class="review-title">제목: ${r.r_title}</div>
-             <div class="review-meta">작성자: ${r.user_id} | ${makeStarHtml(r.r_score)} | 작성일: ${formatKoreanDate(r.r_date)}</div>
+                <div class="review-meta">작성자: ${r.user_id} | ${makeStarHtml(r.r_score)} | 작성일: ${formatKoreanDate(r.r_date)}</div>
                 ${imgHtml}
                 <hr style="border:0; border-top:1px solid #eee;">
                 <div class="review-content">${r.r_content}</div>
@@ -223,7 +252,7 @@ function renderPaginatedReviews(isAppend = false) {
             </div>`;
     });
 
-    renderPaginationButtons(); // 다 그렸으면 하단 버튼 그리기
+    renderPaginationButtons();
 }
 
 // 🌟 PC(번호판) / 모바일(더보기) 하단 버튼 자동 변환 마술
