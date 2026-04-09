@@ -5,10 +5,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title >약쟁이</title>
+    <title>약쟁이</title>
     <link rel="stylesheet" href="css/app.css">
     <script>
-        const IS_LOGIN = ${ not empty sessionScope.loginUser };
+        // loginUser가 있거나, isAdmin이 true이면 로그인 상태로 간주
+        const IS_LOGIN = ${ (not empty sessionScope.loginUser) or (sessionScope.isAdmin == true) };
     </script>
     <script src="js/app.js"></script>
     <link rel="stylesheet" href="css/recommend.css">
@@ -30,14 +31,14 @@
                         src="${pageContext.request.contextPath}/user/userImg/${sessionScope.loginUser.user_profile}"
                         alt="프로필"
                         style="width:40px; height:40px; border-radius:50%; object-fit:cover;"
-                        onerror="this.src='${pageContext.request.contextPath}/user/userImg/${sessionScope.loginUser.user_profile}'"
+                        onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/user/userImg/Ayanokoji.jfif';"
                 >
 
                 <a href="mypage" methods="post" class="hdr-link">마이페이지</a>
                 <a href="logout" class="btn-login">로그아웃</a>
             </c:when>
             <c:otherwise>
-                <a href="join"  class="hdr-link">회원가입</a>
+                <a href="join" class="hdr-link">회원가입</a>
                 <a href="user-Login" class="btn-login">로그인</a>
             </c:otherwise>
         </c:choose>
@@ -49,10 +50,13 @@
      ============================================= -->
 <nav class="site-nav">
     <div class="nav-left">
-        <a href="product"   class="nav-item ${activeTab == 'product'   ? 'active' : ''}">제품</a>
+        <a href="product" class="nav-item ${activeTab == 'product'   ? 'active' : ''}">제품</a>
         <a href="supplements" class="nav-item ${activeTab == 'nutrition' ? 'active' : ''}">영양성분</a>
         <a href="recommend" class="nav-item ${Tab == 'recommend' ? 'active' : ''}">영양추천</a>
-
+        <%-- ✅ 추가: 관리자 세션일 때만 탭 표시 --%>
+        <c:if test="${sessionScope.isAdmin == true}">
+            <a href="admin" class="nav-item ${activeTab == 'admin' ? 'active' : ''}">🛠️ 영양제 관리</a>
+        </c:if>
     </div>
     <%-- nav 장바구니 버튼 --%>
     <div class="nav-cart" onclick="toggleCart()">
@@ -72,7 +76,7 @@
     <c:if test="${not empty msg}">
         <div class="alert alert-info">${msg}</div>
     </c:if>
-    <jsp:include page="${content}" />
+    <jsp:include page="${content}"/>
 </main>
 
 <!-- =============================================
@@ -133,10 +137,10 @@
      6. 하단 탭바 (모바일 전용)
      ============================================= -->
 <nav class="bottom-tab">
-    <a href="hello-servlet"      class="tab-item ${activeTab == 'home'      ? 'active' : ''}">
+    <a href="hello-servlet" class="tab-item ${activeTab == 'home'      ? 'active' : ''}">
         <span class="tab-icon">🏠</span>홈
     </a>
-    <a href="product"   class="tab-item ${activeTab == 'product'   ? 'active' : ''}">
+    <a href="product" class="tab-item ${activeTab == 'product'   ? 'active' : ''}">
         <span class="tab-icon">💊</span>제품
     </a>
     <a href="supplements" class="tab-item ${activeTab == 'nutrition' ? 'active' : ''}">
@@ -145,6 +149,11 @@
     <a href="recommend" class="tab-item ${activeTab == 'recommend' ? 'active' : ''}">
         <span class="tab-icon">✨</span>추천
     </a>
+    <c:if test="${sessionScope.isAdmin == true}">
+        <a href="admin" class="tab-item ${activeTab == 'admin' ? 'active' : ''}">
+            <span class="tab-icon">🛠️</span>관리
+        </a>
+    </c:if>
     <c:choose>
         <c:when test="${not empty sessionScope.loginUser}">
             <a href="mypage" class="tab-item ${activeTab == 'mypage' ? 'active' : ''}">
@@ -165,10 +174,10 @@
 <script>
     // 장바구니 토글
     function toggleCart() {
-        const panel    = document.getElementById('cartPanel');
+        const panel = document.getElementById('cartPanel');
         const floatBtn = document.getElementById('floatCart');
-        const body     = document.getElementById('siteBody');
-        const isOpen   = panel.classList.toggle('open');
+        const body = document.getElementById('siteBody');
+        const isOpen = panel.classList.toggle('open');
         floatBtn.classList.toggle('open', isOpen);
         // 모바일에서는 본문 안 밀림
         if (window.innerWidth > 768) {
@@ -178,7 +187,7 @@
 
     // 장바구니 삭제 (AJAX)
     function removeCart(cartId) {
-        fetch('cart/remove?id=' + cartId, { method: 'POST' })
+        fetch('cart/remove?id=' + cartId, {method: 'POST'})
             .then(res => res.json())
             .then(data => {
                 if (data.success) location.reload();
@@ -186,10 +195,10 @@
     }
 
     // 패널 바깥 클릭시 닫기
-    document.addEventListener('click', function(e) {
-        const panel    = document.getElementById('cartPanel');
+    document.addEventListener('click', function (e) {
+        const panel = document.getElementById('cartPanel');
         const floatBtn = document.getElementById('floatCart');
-        const navCart  = document.querySelector('.nav-cart');
+        const navCart = document.querySelector('.nav-cart');
         if (panel.classList.contains('open') &&
             !panel.contains(e.target) &&
             !floatBtn.contains(e.target) &&

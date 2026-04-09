@@ -170,5 +170,10 @@ SELECT *
 FROM admin
 WHERE admin_id = 'admin1';
 
+select *
+from USERS;
+
+
+
 
 
