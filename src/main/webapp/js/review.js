@@ -342,21 +342,29 @@ function openDetailModal(title, user, score, date, content, img) {
 }
 function closeDetailModal() { document.getElementById('detailModal').style.display = 'none'; }
 
-// ==========================================
-// ==========================================
-// 🗑️ 리뷰 삭제 (깜빡임 없는 스무스 삭제)
-// ==========================================
 // 🗑️ 리뷰 삭제
 function deleteReview(reviewId) {
     if (!confirm("정말 삭제하시겠습니까?")) return;
 
     fetch(`review-delete?review_id=${reviewId}`)
-        .then(res => res.text())
+        .then(res => res.text()) // 🌟 [복구] 이 줄이 실수로 지워졌었습니다! 이거 없으면 에러 납니다!
         .then(data => {
             if (data.trim() === "1") {
                 showToast("리뷰를 삭제했습니다. 🗑️");
-                // 🌟 무조건 새로고침! (포토 박스 사라지게 만들기)
-                setTimeout(() => location.reload(), 1500);
+
+                // 🌟 스무스 삭제 애니메이션 부활!
+                const card = document.getElementById(`menu-content-${reviewId}`).closest('.review-card');
+                if(card) {
+                    card.style.transition = 'all 0.5s ease';
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateX(100px)';
+
+                    setTimeout(() => {
+                        card.remove();
+                        refreshReviewUI(); // 상단 통계 샥! 업데이트
+                        fetchReviews();    // 하단 리스트 샥! 업데이트
+                    }, 500);
+                }
             } else {
                 alert("삭제 실패!");
             }
@@ -446,8 +454,10 @@ function submitUpdate() {
             if (data.trim() === "1") {
                 showToast("리뷰 수정을 완료했습니다! 🪄");
                 closeUpdateModal();
-                // 🌟 수정 후에도 별점/사진이 바뀌었을 수 있으니 무조건 새로고침!
-                setTimeout(() => location.reload(), 1500);
+
+                // 🌟 딸깍(새로고침) 삭제!
+                refreshReviewUI();
+                fetchReviews();
             } else {
                 alert("수정 실패!");
             }
@@ -530,9 +540,11 @@ function submitReview() {
             if (data.trim() === "1") {
                 showToast("리뷰가 등록되었습니다! ✨");
                 closeWriteModal();
-                // 🌟 무조건 새로고침해서 통계/포토박스 싱크 맞추기!
-                setTimeout(() => location.reload(), 1500);
-            } else {
+
+                // 🌟 딸깍(새로고침) 삭제! 비동기로 화면 갈아끼우고 리스트 불러오기!
+                refreshReviewUI();
+                fetchReviews();
+            } else{
                 alert("리뷰 등록 실패 ㅠㅠ 다시 시도해주세요.");
             }
         });
@@ -574,4 +586,34 @@ function formatKoreanDate(dateStr) {
 
     // 만약 다른 형식이면 그냥 원래대로 출력 (에러 방지)
     return dateStr;
+}
+// =========================================================
+// 🪄 10. 마법의 비동기 화면 갈아끼우기 (딸깍 방지용)
+// ==========================================
+function refreshReviewUI() {
+    // 1. 뒤에서 몰래 현재 주소로 서버에 한 번 더 다녀옵니다.
+    fetch(window.location.href)
+        .then(res => res.text())
+        .then(html => {
+            // 2. 서버가 준 새 HTML을 자바스크립트가 읽을 수 있게 변환
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+
+            // 3. 새 HTML에서 '통계 헤더' 오려와서 내 화면에 덮어쓰기
+            const oldHeader = document.querySelector('.review-header');
+            const newHeader = doc.querySelector('.review-header');
+            if(oldHeader && newHeader) oldHeader.innerHTML = newHeader.innerHTML;
+
+            // 4. 새 HTML에서 '포토 갤러리' 오려와서 내 화면에 덮어쓰기 (숨김/보임 상태 포함)
+            const oldGallery = document.querySelector('.photo-gallery-container');
+            const newGallery = doc.querySelector('.photo-gallery-container');
+            if(oldGallery && newGallery) {
+                oldGallery.innerHTML = newGallery.innerHTML;
+                oldGallery.style.display = newGallery.style.display;
+            }
+
+            // 5. 텅 빈 화면(0개) / 풀세트 스위치 상태도 똑같이 복사
+            document.getElementById('empty-review-ui').style.display = doc.getElementById('empty-review-ui').style.display;
+            document.getElementById('full-review-ui').style.display = doc.getElementById('full-review-ui').style.display;
+        });
 }
