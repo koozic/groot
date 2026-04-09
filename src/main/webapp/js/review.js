@@ -155,19 +155,33 @@ function fetchReviews() {
         });
 }
 
-// 🌟 핵심: 페이징 처리해서 화면에 그리는 함수 (isAppend: 모바일 더보기용)
+// 🌟 핵심: 페이징 처리해서 화면에 그리는 함수
 function renderPaginatedReviews(isAppend = false) {
     const container = document.getElementById('review-list-container');
+    const emptyUi = document.getElementById('empty-review-ui');
+    const fullUi = document.getElementById('full-review-ui');
 
     if (!isAppend) {
-        container.innerHTML = ''; // PC 번호 이동이거나 첫 로딩이면 싹 비우기
+        container.innerHTML = '';
     }
 
+    // 🌟 [추가된 로직] 데이터가 0개면 텅 빈 화면 ON, 풀세트 OFF!
     if (filteredReviewsData.length === 0) {
-        container.innerHTML = `<div class="empty-msg" style="text-align:center; padding:50px;"><p>해당 조건에 맞는 리뷰가 없습니다.</p></div>`;
-        renderPaginationButtons(); // 데이터 없으면 하단 버튼도 지우기
+        if(emptyUi) emptyUi.style.display = 'block';
+        if(fullUi) fullUi.style.display = 'none';
+
+        // (기존의 못생긴 텍스트 문구는 지워줍니다)
+        // container.innerHTML = `<div class="empty-msg">...</div>`;
+
+        renderPaginationButtons();
         return;
     }
+
+    // 🌟 [추가된 로직] 데이터가 1개라도 있으면 텅 빈 화면 OFF, 풀세트 ON!
+    if(emptyUi) emptyUi.style.display = 'none';
+    if(fullUi) fullUi.style.display = 'block';
+
+    // ... (이 아래로는 무영님이 만든 5개씩 자르기 로직 그대로 유지!) ...
 
     // ✂️ 5개씩 데이터 자르기!
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -329,7 +343,8 @@ function openDetailModal(title, user, score, date, content, img) {
 function closeDetailModal() { document.getElementById('detailModal').style.display = 'none'; }
 
 // ==========================================
-// 🗑️ 5. 리뷰 삭제 (삭제 후 자동 새로고침!)
+// ==========================================
+// 🗑️ 리뷰 삭제 (깜빡임 없는 스무스 삭제)
 // ==========================================
 function deleteReview(reviewId) {
     if (!confirm("정말 삭제하시겠습니까?")) return;
@@ -339,13 +354,18 @@ function deleteReview(reviewId) {
         .then(data => {
             if (data.trim() === "1") {
                 showToast("리뷰를 삭제했습니다. 🗑️");
+
+                // 🌟 [핵심] 새로고침(reload)을 지우고 스르륵 효과 추가!
                 const card = document.getElementById(`menu-content-${reviewId}`).closest('.review-card');
                 if(card) {
+                    card.style.transition = 'all 0.5s ease';
                     card.style.opacity = '0';
-                    card.style.transition = 'opacity 0.3s ease';
-                    setTimeout(() => location.reload(), 1300);
-                } else {
-                    location.reload();
+                    card.style.transform = 'translateX(100px)'; // 오른쪽으로 밀려나며 삭제
+
+                    setTimeout(() => {
+                        card.remove(); // 화면에서 완전히 지우기
+                        fetchReviews(); // 🆕 서버에서 새 리스트만 조용히 땡겨오기
+                    }, 500);
                 }
             } else {
                 alert("삭제 실패!");
@@ -427,6 +447,9 @@ function toggleImgDelete() {
 
 function closeUpdateModal() { document.getElementById('updateModal').style.display = 'none'; }
 
+// ==========================================
+// 🪄 6. 리뷰 수정 (깜빡임 없는 비동기 수정)
+// ==========================================
 function submitUpdate() {
     const formData = new FormData(document.getElementById('updateForm'));
     fetch('ReviewUpdateC', { method: 'POST', body: formData })
@@ -434,8 +457,11 @@ function submitUpdate() {
         .then(data => {
             if (data.trim() === "1") {
                 showToast("리뷰 수정을 완료했습니다! 🪄");
-                closeUpdateModal();
-                setTimeout(() => location.reload(), 2000);
+                closeUpdateModal(); // 모달창 부드럽게 닫기
+
+                // 🌟 [핵심] 새로고침(reload) 완전 삭제!
+                // 대신 서버에서 바뀐 데이터로 리스트만 조용히 다시 땡겨옵니다.
+                fetchReviews();
             } else {
                 alert("수정 실패!");
             }
@@ -507,35 +533,32 @@ function setWriteStars(score) {
     });
 }
 
-// 🚀 [핵심] 비동기 리뷰 등록
+// ==========================================
+// 🚀 리뷰 등록 (깜빡임 없는 비동기 등록)
+// ==========================================
 function submitReview() {
     const form = document.getElementById('writeForm');
     const formData = new FormData(form);
 
-    // ReviewInsertC 서블릿으로 비동기 요청 전송
     fetch('review-write', {
         method: 'POST',
         body: formData
     })
         .then(res => res.text())
         .then(data => {
-            // 서블릿에서 성공 시 "1"을 응답하도록 수정할 예정입니다.
             if (data.trim() === "1") {
                 showToast("리뷰가 등록되었습니다! ✨");
                 closeWriteModal();
 
-                // 🌟 fetchReviews() 대신 location.reload()를 씁니다!
-                // 페이지를 한 번 새로고침해서 위쪽 통계 그래프와 사진첩 숫자까지 완벽하게 최신화시킵니다.
-                setTimeout(() => location.reload(), 1300);
-                // 등록 후 페이지 상단 통계 그래프도 갱신하고 싶다면 새로고침이 가장 확실하긴 합니다.
-                // location.reload();
+                // 🌟 [핵심] location.reload() 지우고, 함수 하나만 부릅니다!
+                fetchReviews();
+
             } else {
                 alert("리뷰 등록 실패 ㅠㅠ 다시 시도해주세요.");
             }
         })
         .catch(err => console.error("등록 에러:", err));
 }
-
 // =========================================================
 // 🍞 토스트 알림 띄우기 함수 (경용씨 '가운데 빵!' UI 완벽 동기화)
 // =========================================================
