@@ -136,19 +136,6 @@ function validateProductForm() {
 }
 
 
-//edit 영역
-
-function handleImagePreview(input) {
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            document.getElementById('previewImg').src = e.target.result;
-        };
-        reader.readAsDataURL(input.files[0]);
-    }
-}
-
-
 // edit 부분 js
 function handleImagePreview(input) {
     if (input.files && input.files[0]) {
@@ -160,3 +147,65 @@ function handleImagePreview(input) {
         reader.readAsDataURL(input.files[0]);
     }
 }
+
+
+
+//add부분 이미지 미리보기 함수
+// 이미지 미리보기 함수
+function previewImage(input) {
+    const preview = document.getElementById('modal-img-preview');
+    const placeholder = document.querySelector('.image-placeholder');
+
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            // 1. 미리보기 이미지의 src에 읽어온 데이터 할당
+            preview.src = e.target.result;
+            // 2. hidden 클래스 제거하여 이미지 표시
+            preview.classList.remove('hidden');
+            // 3. 기존의 아이콘과 텍스트(placeholder) 숨기기
+            if (placeholder) {
+                placeholder.style.display = 'none';
+            }
+        };
+
+        reader.readAsDataURL(input.files[0]); // 파일을 Data URL로 읽기
+    } else {
+        // 파일 선택 취소 시 초기화
+        preview.src = "";
+        preview.classList.add('hidden');
+        if (placeholder) {
+            placeholder.style.display = 'block';
+        }
+    }
+}
+
+// 모달 닫을 때 이미지 초기화 로직 (추가 권장)
+function closeModal() {
+    const modal = document.getElementById('productModal');
+    modal.style.display = 'none';
+
+    // 이미지 초기화
+    const preview = document.getElementById('modal-img-preview');
+    const placeholder = document.querySelector('.image-placeholder');
+    const fileInput = document.getElementById('product_image_file');
+
+    if(preview) {
+        preview.src = "";
+        preview.classList.add('hidden');
+    }
+    if(placeholder) placeholder.style.display = 'block';
+    if(fileInput) fileInput.value = ""; // 파일 선택 값 비우기
+}
+
+
+
+// 페이지 로드 완료 시 순차적 페이드인 적용
+document.addEventListener("DOMContentLoaded", function() {
+    const cards = document.querySelectorAll('.product-card');
+    cards.forEach((card, index) => {
+        // 각 카드마다 0.05초씩 딜레이를 주어 물결처럼 나타나게 처리
+        card.style.animationDelay = (index * 0.05) + 's';
+    });
+});

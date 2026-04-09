@@ -59,7 +59,9 @@
     <main class="content-wrapper">
         <section class="product-hero">
             <div class="product-img-box">
-                <img src="placeholder.png" class="product-img">
+                <img src="${pageContext.request.contextPath}/img/${product.productImage}"
+                     class="product-img"
+                     alt="${product.productName} 이미지">
             </div>
             <div class="product-basic-info">
                 <span class="brand-name">${product.productBrand}</span>
