@@ -13,6 +13,7 @@ import java.io.IOException;
 @MultipartConfig(
         maxFileSize = 1024 * 1024 * 5,
         maxRequestSize = 1024 * 1024 * 10
+
 )
 public class UserJoinC extends HttpServlet {
 
