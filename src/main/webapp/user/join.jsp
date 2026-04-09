@@ -223,30 +223,52 @@
     </div>
 </div>
 <script>
+<<<<<<< HEAD
     // 1. 파일 업로드 칸과 라디오 버튼들을 찾아서 변수에 담기
     const fileInput = document.querySelector('input[name="user_profile"]');
     const defaultProfiles = document.querySelectorAll('input[name="default_profile"]');
+=======
+    // 문서의 모든 HTML 요소가 로드된 후 실행되도록 감싸기
+    document.addEventListener('DOMContentLoaded', function() {
+>>>>>>> d7cf8b58995511605dfbf24f89d12361c334b712
 
-    // 2. 사용자가 '파일 업로드'에 사진을 넣었을 때!
-    fileInput.addEventListener('change', function() {
-        if (this.value) { // 파일이 선택되었다면
-            // 라디오 버튼들의 체크를 전부 해제해버려!
-            defaultProfiles.forEach(function(radio) {
-                radio.checked = false;
+        // 1. 요소 찾기 (안전하게 변수에 담기)
+        const fileInput = document.querySelector('input[name="user_profile"]');
+        const defaultProfiles = document.querySelectorAll('input[name="default_profile"]');
+
+        // [방어 코드] 요소가 페이지에 존재할 때만 로직 실행
+        if (fileInput && defaultProfiles.length > 0) {
+
+            // 2. 사용자가 '파일 업로드'에 사진을 넣었을 때!
+            fileInput.addEventListener('change', function() {
+                if (this.value) { // 파일이 선택되었다면
+                    // 라디오 버튼들의 체크를 전부 해제!
+                    defaultProfiles.forEach(function(radio) {
+                        radio.checked = false;
+                    });
+                } else {
+                    // 사용자가 파일 선택창을 열었다가 '취소'를 눌러서 파일이 없어지면?
+                    // 첫 번째 라디오 버튼(Ayanokoji)을 다시 체크!
+                    if (defaultProfiles[0]) {
+                        defaultProfiles[0].checked = true;
+                    }
+                }
             });
-        } else {
-            // 사용자가 파일 선택창을 열었다가 '취소'를 눌러서 파일이 없어지면?
-            // 첫 번째 라디오 버튼(Ayanokoji)을 다시 체크해줘!
-            defaultProfiles[0].checked = true;
-        }
-    });
 
-    // 3. (보너스 기능!) 사용자가 다시 '기본 이미지(라디오 버튼)'를 클릭했을 때!
-    defaultProfiles.forEach(function(radio) {
-        radio.addEventListener('click', function() {
-            // 올려뒀던 파일을 싹 지워버려!
-            fileInput.value = '';
-        });
+            // 3. 사용자가 다시 '기본 이미지(라디오 버튼)'를 클릭했을 때!
+            defaultProfiles.forEach(function(radio) {
+                radio.addEventListener('click', function() {
+                    // 올려뒀던 파일 입력을 초기화!
+                    fileInput.value = '';
+                });
+            });
+
+            console.log("프로필 선택 로직이 성공적으로 연결되었습니다.");
+
+        } else {
+            // 요소를 못 찾았을 때 콘솔에 띄워줌 (디버깅용)
+            console.error("오류: 프로필 관련 input 요소를 찾을 수 없습니다. HTML의 name 속성을 확인하세요.");
+        }
     });
 </script>
 
