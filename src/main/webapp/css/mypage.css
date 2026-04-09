@@ -206,21 +206,35 @@
 .vit-list {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    margin-bottom: 16px;
+    gap: 12px; /* 간격을 조금 더 넓혀 가독성 향상 */
+    margin-bottom: 24px;
 }
 
 .vit-item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px 14px;
+    padding: 18px 24px;
     border: 1.5px solid #e5e7eb;
-    border-radius: 10px;
+    border-radius: 16px;
+    background: #fff;
     cursor: pointer;
-    transition: all .15s;
+    transition: all .2s ease;
+    gap: 15px; /* 요소 간 기본 간격 */
 }
-
+/* 중앙 좌측: 영양소 & 제품명 */
+.vit-content {
+    flex: 1.5; /* 더 많은 공간 할당 */
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+/* 중앙 우측: 시간 정보 (독립) */
+.vit-details {
+    flex: 1; /* 중간 정도의 공간 할당 */
+    display: flex;
+    justify-content: center; /* 시간 정보를 가로 중앙에 배치 */
+    border-left: 1px solid #f3f4f6; /* 구분을 위한 얇은 선 (선택 사항) */
+}
 .vit-item:hover {
     border-color: #93c5fd;
     background: #f8faff;
@@ -238,18 +252,109 @@
 
 .vit-info {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px; /* 정보 간 세로 간격 */
+    margin: 0 16px; /* 아이콘과 체크박스 사이 여백 */
 }
 
-.vit-name {
-    font-size: 13px;
+/* 1순위 강조: 영양소 종류 */
+.vit-nutrient {
+    font-size: 16px;
+    font-weight: 800;
+    color: #2563eb;
+    line-height: 1.2;
+}
+
+/* 2순위 강조: 복용 시간 */
+.vit-time {
+    font-size: 14px;
     font-weight: 700;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: #f9fafb; /* 시간 영역에 아주 연한 배경색 주어 강조 */
 }
 
-.vit-dose {
-    font-size: 11px;
-    color: #9ca3af;
-    margin-top: 2px;
+/* 보조 정보(제품명, 브랜드) 및 구분선 색상 수정 */
+.vit-sub-info {
+    font-size: 12px;
+    color: #4b5563; /* 짙은 회색으로 변경 (기존보다 훨씬 잘 보임) */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
+
+.vit-sub-info span {
+    color: #9ca3af; /* 구분선(|)은 글자보다 약간 연한 회색으로 밸런스 조정 */
+    margin: 0 6px;  /* 가로 여백을 살짝 늘려 시원하게 배치 */
+    font-weight: normal;
+}
+/* 우측 액션 영역 묶음 */
+.vit-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px; /* 체크박스와 삭제버튼 간격 */
+    flex-shrink: 0;
+}
+
+/* 삭제 버튼 스타일 개선 */
+.vit-delete-btn {
+    border: none;
+    background: #fef2f2; /* 연한 빨간색 배경 */
+    color: #ef4444;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.vit-delete-btn:hover {
+    background: #fee2e2;
+}
+
+/* --- 모바일 반응형 최적화 (추가) --- */
+@media (max-width: 640px) {
+    .vit-item {
+        flex-wrap: wrap; /* 모바일에서 공간 부족 시 줄바꿈 */
+        padding: 15px;
+    }
+
+    .vit-details {
+        flex: none;
+        width: 100%; /* 모바일에서는 시간 정보를 아래쪽으로 넓게 배치 */
+        justify-content: flex-start;
+        border-left: none;
+        margin-top: 5px;
+        order: 3; /* 순서를 뒤로 보냄 */
+    }
+
+    .vit-content {
+        flex: 1;
+        order: 2;
+    }
+
+    .vit-icon {
+        order: 1;
+    }
+
+    .vit-actions {
+        order: 2; /* 체크박스는 우측 상단 유지 */
+    }
+
+    .vit-time {
+        width: 100%;
+        background: #f3f8ff; /* 모바일에서 더 눈에 띄게 */
+        font-size: 13px;
+    }
+}
+
 
 .vit-check-box {
     width: 24px;
@@ -570,4 +675,179 @@
     border-radius: 50%;
     font-weight: bold;
     cursor: pointer;
+}
+
+
+/* Toast 컨테이너 */
+#toast-container {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Toast 스타일 */
+.toast {
+    min-width: 250px;
+    padding: 14px 20px;
+    background: #1f2937; /* 다크 톤 */
+    color: #fff;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: slideUp 0.3s ease-out, fadeOut 0.3s 2.7s forwards;
+}
+
+.toast.success { border-left: 4px solid #16a34a; }
+.toast.error { border-left: 4px solid #dc2626; }
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+    to { opacity: 0; visibility: hidden; }
+}
+
+.vit-delete-btn.confirm-mode {
+    width: auto;
+    padding: 0 10px;
+    background: #ef4444;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+
+
+
+.cal-day {
+    display: flex;
+    flex-direction: column;
+    min-height: 80px; /* 정보가 들어갈 수 있도록 높이 확보 */
+    padding: 4px;
+    border: 1px solid #e5e7eb;
+}
+.day-num {
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+.day-status {
+    font-size: 11px;
+    padding: 2px 4px;
+    border-radius: 4px;
+    margin-bottom: 2px;
+    text-align: center;
+}
+.status-ok { background-color: #dcfce7; color: #166534; }
+.status-miss { background-color: #fee2e2; color: #991b1b; }
+
+.day-alerts {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.alert-item {
+    font-size: 10px;
+    padding: 2px;
+    border-radius: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.badge-warn { background-color: #ffedd5; color: #9a3412; }
+.badge-buy { background-color: #dbeafe; color: #1e40af; }
+
+
+/* =========================================
+   마이페이지 - 이번 달 복용 통계 (아코디언)
+   ========================================= */
+
+/* details 전체 영역 */
+.mp-stat-details {
+    cursor: pointer;
+}
+
+/* summary (클릭 가능한 제목 영역) */
+.mp-accordion-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0;
+    list-style: none; /* 브라우저 기본 화살표 숨김 */
+}
+
+/* 웹킷 기반 브라우저(크롬, 사파리) 기본 화살표 숨김 */
+.mp-accordion-summary::-webkit-details-marker {
+    display: none;
+}
+
+/* '▼ 펼쳐보기' 텍스트 */
+.mp-accordion-toggle {
+    font-size: 12px;
+    color: #6b7280;
+    font-weight: normal;
+}
+
+/* 펼쳐졌을 때 내용 컨테이너 */
+.mp-stat-content {
+    margin-top: 12px;
+    border-top: 1px solid #f3f4f6;
+    padding-top: 8px;
+}
+
+/* 통계 리스트 (ul) */
+.mp-stat-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* 통계 리스트 개별 아이템 (li) */
+.mp-stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+/* 마지막 리스트는 밑줄 제거 (깔끔한 UI용) */
+.mp-stat-item:last-child {
+    border-bottom: none;
+}
+
+/* 영양제 이름 (span) */
+.mp-stat-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+}
+
+/* 복용 횟수 배지 (span) */
+.mp-stat-count {
+    font-size: 13px;
+    font-weight: 600;
+    color: #2563eb;
+    background-color: #eff6ff;
+    padding: 4px 8px;
+    border-radius: 12px;
+}
+
+/* 데이터가 없을 때 안내 문구 (p) */
+.mp-stat-empty {
+    text-align: center;
+    color: #9ca3af;
+    padding: 10px;
+    margin: 0;
 }

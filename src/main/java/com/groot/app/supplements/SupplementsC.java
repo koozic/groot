@@ -2,6 +2,7 @@ package com.groot.app.supplements;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -12,25 +13,44 @@ import java.util.List;
 import static com.groot.app.supplements.SupplementsDAO.SDAO;
 
 @WebServlet(name = "SupplementsC", value = "/supplements")
+
 public class SupplementsC extends HttpServlet {
 
     // 화면 조회 (리스트 보기)
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
-        // 1. 사용자가 요청한 페이지 번호 받기 (기본값은 1페이지)
+        // 1. 페이지 번호 처리 (기본 코드)
         int p = 1;
         String pParam = request.getParameter("p");
         if (pParam != null) {
-            p = Integer.parseInt(pParam); // ?p=2 처럼 숫자가 넘어오면 그 숫자로 변경
+            p = Integer.parseInt(pParam);
         }
 
-        // 2. DAO에게 전체 리스트 가져오라고 시키기
+        // 2. 전체 영양제 리스트 가져오기 (기본 코드)
         List<SupplementsDTO> allList = SDAO.getSupplementsList();
 
-        // 3. 가져온 전체 리스트를 페이징 메서드에 넘겨서 자르기!
+        // ---------------------------------------------------------
+        // [새로 추가할 로직] 로그인한 유저의 좋아요 목록 가져오기
+        // ---------------------------------------------------------
+        // 세션에서 로그인 정보를 가져옵니다.
+        javax.servlet.http.HttpSession session = request.getSession(false);
+        String userId = (session != null) ? (String) session.getAttribute("userId") : null;
+
+        // 결과를 담을 리스트 (로그인 안 했을 경우를 대비해 미리 생성)
+        java.util.List<Integer> likedIds = new java.util.ArrayList<>();
+
+        // 로그인 상태라면 DB에서 좋아요한 ID 목록을 조회해옵니다.
+        if (userId != null) {
+            likedIds = SDAO.getLikedIdsByUser(userId);
+        }
+
+        // JSP에서 사용할 수 있도록 request에 담아줍니다.
+        request.setAttribute("likedIds", likedIds);
+        // ---------------------------------------------------------
+
+        // 3. 페이징 처리 및 화면 포워딩
         SDAO.paging(p, request, allList);
 
-        // 4. 화면 포워딩 (기존 코드와 동일)
         request.setAttribute("activeTab", "nutrition");
         request.setAttribute("content", "supplements/supplements.jsp");
         request.getRequestDispatcher("/index.jsp").forward(request, response);

@@ -16,7 +16,14 @@ public class UserDeleteC extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setCharacterEncoding("UTF-8");
+
         UserDAO.UserDelete(req);
+
+        req.getSession().invalidate();  // 세션 종료 추가
+        req.getRequestDispatcher("index.jsp").forward(req, resp);
+
+
     }
 
     public void destroy() {

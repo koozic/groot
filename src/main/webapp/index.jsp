@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -22,10 +23,15 @@
      1. 헤더
      ============================================= -->
 <header class="site-header">
-    <a href="hello-servlet" class="logo">약<span>쟁</span>이</a>
+    <%-- 로고가 있어야 로그인이 오른쪽으로 밀려납니다 --%>
+    <div class="logo" onclick="location.href='index'">약<span>쟁이</span></div>
+
+    <%-- 직접 썼던 style은 지우고 클래스명만 유지! --%>
     <div class="hdr-right">
         <c:choose>
+            <%-- [1] 로그인 했을 때 --%>
             <c:when test="${not empty sessionScope.loginUser}">
+                <<<<<<< HEAD
                 <span class="hdr-link">${sessionScope.loginUser.name}님 어서오세요. 당신의 건강을 챙기세요</span>
                 <img
                         src="${pageContext.request.contextPath}/user/userImg/${sessionScope.loginUser.user_profile}"
@@ -33,10 +39,23 @@
                         style="width:40px; height:40px; border-radius:50%; object-fit:cover;"
                         onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/user/userImg/Ayanokoji.jfif';"
                 >
+                =======
+                <span class="hdr-link">${sessionScope.loginUser.name}님 어서오세요.</span>
+                >>>>>>> 8cde72fb9f6eb00552226cec1f572dc8e16dc2c7
 
-                <a href="mypage" methods="post" class="hdr-link">마이페이지</a>
-                <a href="logout" class="btn-login">로그아웃</a>
+                <%-- 삼항 연산자 로직은 그대로 유지 --%>
+                <img src="${sessionScope.loginUser.user_profile.startsWith('http')
+                           ? sessionScope.loginUser.user_profile
+                           : pageContext.request.contextPath.concat('/user/userImg/').concat(sessionScope.loginUser.user_profile)}"
+                     alt="프로필"
+                     style="width:32px; height:32px; border-radius:50%; object-fit:cover;"
+                     onerror="this.src='${pageContext.request.contextPath}/user/userImg/Ayanokoji.jpg'">
+
+                <a href="mypage" class="hdr-link">마이페이지</a>
+                <a href="logout" class="btn-login" style="padding: 5px 12px;">로그아웃</a>
             </c:when>
+
+            <%-- [2] 로그인 안 했을 때 --%>
             <c:otherwise>
                 <a href="join" class="hdr-link">회원가입</a>
                 <a href="user-Login" class="btn-login">로그인</a>
@@ -45,9 +64,6 @@
     </div>
 </header>
 
-<!-- =============================================
-     2. 네비게이션 (PC용 상단 nav)
-     ============================================= -->
 <nav class="site-nav">
     <div class="nav-left">
         <a href="product" class="nav-item ${activeTab == 'product'   ? 'active' : ''}">제품</a>
@@ -57,8 +73,8 @@
         <c:if test="${sessionScope.isAdmin == true}">
             <a href="admin" class="nav-item ${activeTab == 'admin' ? 'active' : ''}">🛠️ 영양제 관리</a>
         </c:if>
+
     </div>
-    <%-- nav 장바구니 버튼 --%>
     <div class="nav-cart" onclick="toggleCart()">
         <span class="nav-cart-icon">🛒</span>
         <span>장바구니</span>
@@ -67,7 +83,6 @@
         </c:if>
     </div>
 </nav>
-
 <!-- =============================================
      3. 메인 콘텐츠 (여기만 바뀜)
      ============================================= -->

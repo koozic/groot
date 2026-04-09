@@ -22,11 +22,19 @@
             <div class="supp-wrap">
                 <div class="supp-img" onclick="openDetailModal(this)"
                 data-id="${supp.supplementId}" data-name="${supp.supplementName}" data-efficacy="${supp.supplementEfficacy}" data-dosage="${supp.supplementDosage}" data-timing="${supp.supplementTiming}" data-caution="${supp.supplementCaution}" data-imgPath="${supp.supplementImagePath}">
-                <img src="/supplementImg/supplementImgFile/${supp.supplementImagePath}">
+                <img  src=" ${supp.supplementImagePath}" alt="${supp.supplementName}">
                 </div>
 
                 <div class="supp-name">${supp.supplementName}</div>
                 <div class="supp-efficacy">${supp.supplementEfficacy}</div>
+
+                <%-- ★ 좋아요 버튼 추가 --%>
+                <button class="like-btn ${likedIds.contains(supp.supplementId) ? 'liked' : ''}"
+                        onclick="toggleLike(this, ${supp.supplementId})">
+                    ♥ <span class="like-label">
+                        ${likedIds.contains(supp.supplementId) ? '좋아요 취소' : '좋아요'}
+                </span>
+                </button>
 
                 <div style="margin-top: 10px;">
                     <button class="supp-btn" onclick="delSupplement('${supp.supplementId}')">삭제</button>

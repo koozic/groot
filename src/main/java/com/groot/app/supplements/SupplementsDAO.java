@@ -315,6 +315,83 @@ public class SupplementsDAO {
         request.setAttribute("supplementsList", items);
     }
 
+    // 좋아요 토글 (없으면 INSERT, 있으면 DELETE)
+// 반환값: "liked" 또는 "unliked"
+    public String supplementLike(String userId, int supplementId) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String result = "unliked";
+
+        try {
+            con = DBManager_new.connect();
+
+            // 이미 좋아요 눌렀는지 확인
+            String checkSql = "SELECT COUNT(*) FROM supplements_like " +
+                    "WHERE user_id = ? AND supplement_id = ?";
+            pstmt = con.prepareStatement(checkSql);
+            pstmt.setString(1, userId);
+            pstmt.setInt(2, supplementId);
+            rs = pstmt.executeQuery();
+
+            rs.next();
+            int count = rs.getInt(1);
+            DBManager_new.close(null, pstmt, rs);
+            rs = null;
+
+            if (count > 0) {
+                // 이미 좋아요 → 취소(DELETE)
+                String delSql = "DELETE FROM supplements_like " +
+                        "WHERE user_id = ? AND supplement_id = ?";
+                pstmt = con.prepareStatement(delSql);
+                pstmt.setString(1, userId);
+                pstmt.setInt(2, supplementId);
+                pstmt.executeUpdate();
+                result = "unliked";
+            } else {
+                // 좋아요 없음 → 추가(INSERT)
+                String insSql = "INSERT INTO supplements_like " +
+                        "(supplement_like_id, user_id, supplement_id) " +
+                        "VALUES (seq_supplements_like_id.NEXTVAL, ?, ?)";
+                pstmt = con.prepareStatement(insSql);
+                pstmt.setString(1, userId);
+                pstmt.setInt(2, supplementId);
+                pstmt.executeUpdate();
+                result = "liked";
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBManager_new.close(con, pstmt, rs);
+        }
+        return result;
+    }
+
+    // 특정 유저가 좋아요 누른 supplementId 목록 조회
+    public List<Integer> getLikedIdsByUser(String userId) {
+        List<Integer> likedIds = new ArrayList<>();
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            con = DBManager_new.connect();
+            String sql = "SELECT supplement_id FROM supplements_like WHERE user_id = ?";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, userId);
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                likedIds.add(rs.getInt("supplement_id"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBManager_new.close(con, pstmt, rs);
+        }
+        return likedIds;
+    }
+
     }
 
 

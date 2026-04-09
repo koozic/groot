@@ -7,6 +7,34 @@
     <title>약쟁이 회원가입</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/app.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/login.css">
+    <style>
+        .id-check-btn {
+            background-color: #2e7d32;
+            color: white;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .id-check-btn:hover {
+            background-color: #256628;
+        }
+
+        #idCheckMsg {
+            display: block;
+            margin-top: 8px;
+            font-size: 13px;
+        }
+
+
+
+
+    </style>
+
+
 </head>
 <body>
 
@@ -38,6 +66,11 @@
                     <div class="login-input-group">
                         <label for="user_id">아이디</label>
                         <input type="text" id="user_id" name="user_id" placeholder="아이디를 입력하세요" required>
+                        <button type="button" class="id-check-btn" onclick="checkUserId()">아이디 중복확인</button>
+
+                        <small id="idCheckMsg"></small>
+                        <input type="hidden" id="idCheckResult" value="false">
+
                     </div>
 
                     <div class="login-input-group">
@@ -66,9 +99,22 @@
                     <div class="login-input-group">
                         <label for="email_auth_btn">이메일 본인인증</label>
                         <div style="display:flex; gap:8px;">
-                            <input type="button" id="email_auth_btn" value="인증번호 전송" class="login-btn" style="width:40%; height:46px;">
-                            <input type="text" name="email_code" placeholder="인증번호 입력" style="width:60%; height:46px; border:1px solid #ddd; border-radius:8px; padding:0 10px;">
+                            <input type="button"
+                                   id="email_auth_btn"
+                                   value="인증번호 전송"
+                                   class="login-btn"
+                                   style="width:40%; height:46px;"
+                                   onclick="sendEmailAuth()">
+
+                            <input type="text"
+                                   id="email_code"
+                                   name="email_code"
+                                   placeholder="인증번호 입력"
+                                   style="width:60%; height:46px; border:1px solid #ddd; border-radius:8px; padding:0 10px;">
                         </div>
+
+                        <small id="emailAuthMsg"></small>
+                        <input type="hidden" id="emailAuthPassed" value="false">
                     </div>
 
                     <div class="login-input-group">
@@ -92,44 +138,36 @@
                                 required
                         >
                     </div>
-                    <div class="login-input-group">
-                        <label>기본 프로필 선택</label>
-                        <div class="profile-grid">
-                            <label class="profile-item">
-                                <input type="radio" name="user_profile" value="Ryuen.jfif">
-                                <img src="${pageContext.request.contextPath}/user/userImg/Ryuen.jfif" alt="기본프로필1">
+
+
+                        <!-- 기본 프로필 6개 중 선택 -->
+                        <div>
+                            <label>
+                                <input type="radio" name="default_profile" value="Ayanokoji.jfif" checked>
+                                <img src="${pageContext.request.contextPath}/user/userImg/Ayanokoji.jfif" width="80">
                             </label>
 
-                            <label class="profile-item">
-                                <input type="radio" name="user_profile" value="Sudou.jfif">
-                                <img src="${pageContext.request.contextPath}/user/userImg/Sudou.jfif" alt="기본프로필2">
+                            <label>
+                                <input type="radio" name="default_profile" value="Ryuen.jfif">
+                                <img src="${pageContext.request.contextPath}/user/userImg/Ryuen.jfif" width="80">
                             </label>
 
-                            <label class="profile-item">
-                                <input type="radio" name="user_profile" value="Ayanokoji.jfif">
-                                <img src="${pageContext.request.contextPath}/user/userImg/Ayanokoji.jfif" alt="기본프로필3">
+                            <label>
+                                <input type="radio" name="default_profile" value="Horikita.jfif">
+                                <img src="${pageContext.request.contextPath}/user/userImg/Horikita.jfif" width="80">
                             </label>
 
-                            <label class="profile-item">
-                                <input type="radio" name="user_profile" value="B.jfif">
-                                <img src="${pageContext.request.contextPath}/user/userImg/B.jfif" alt="기본프로필4">
-                            </label>
-
-                            <label class="profile-item">
-                                <input type="radio" name="user_profile" value="Horikita.jfif">
-                                <img src="${pageContext.request.contextPath}/user/userImg/Horikita.jfif" alt="기본프로필5">
-                            </label>
+                            <!-- 나머지 3개도 동일 -->
                         </div>
-                    </div>
 
-                    <!-- 직접 업로드 -->
-                    <div class="login-input-group">
-                        <label for="user_profile_file">직접 사진 업로드</label>
-                        <input type="file" id="user_profile_file" name="user_profile" accept="image/*">
-                        <small style="color:#777;">파일을 올리면 기본 프로필 대신 이 사진을 사용합니다.</small>
-                    </div>
+                        <!-- 직접 업로드 -->
+                        <div>
+                            <p>직접 업로드(선택사항)</p>
+                            <input type="file" name="user_profile" accept="image/*">
+                        </div>
 
-                    <!-- 주소 -->
+
+                        <!-- 주소 -->
                     <div class="login-input-group">
                         <label for="user_zipcode">우편번호</label>
                         <div style="display:flex; gap:8px;">
@@ -184,6 +222,140 @@
 
     </div>
 </div>
+<script>
+    // 문서의 모든 HTML 요소가 로드된 후 실행되도록 감싸기
+    document.addEventListener('DOMContentLoaded', function() {
+        // 1. 요소 찾기 (안전하게 변수에 담기)
+        const fileInput = document.querySelector('input[name="user_profile"]');
+        const defaultProfiles = document.querySelectorAll('input[name="default_profile"]');
+
+        // [방어 코드] 요소가 페이지에 존재할 때만 로직 실행
+        if (fileInput && defaultProfiles.length > 0) {
+
+            // 2. 사용자가 '파일 업로드'에 사진을 넣었을 때!
+            fileInput.addEventListener('change', function() {
+                if (this.value) { // 파일이 선택되었다면
+                    // 라디오 버튼들의 체크를 전부 해제!
+                    defaultProfiles.forEach(function(radio) {
+                        radio.checked = false;
+                    });
+                } else {
+                    // 사용자가 파일 선택창을 열었다가 '취소'를 눌러서 파일이 없어지면?
+                    // 첫 번째 라디오 버튼(Ayanokoji)을 다시 체크!
+                    if (defaultProfiles[0]) {
+                        defaultProfiles[0].checked = true;
+                    }
+                }
+            });
+
+            // 3. 사용자가 다시 '기본 이미지(라디오 버튼)'를 클릭했을 때!
+            defaultProfiles.forEach(function(radio) {
+                radio.addEventListener('click', function() {
+                    // 올려뒀던 파일 입력을 초기화!
+                    fileInput.value = '';
+                });
+            });
+
+            console.log("프로필 선택 로직이 성공적으로 연결되었습니다.");
+
+        } else {
+            // 요소를 못 찾았을 때 콘솔에 띄워줌 (디버깅용)
+            console.error("오류: 프로필 관련 input 요소를 찾을 수 없습니다. HTML의 name 속성을 확인하세요.");
+        }
+    });
+</script>
+
+<script>
+    const userIdInput = document.getElementById("user_id");
+    const idCheckMsg = document.getElementById("idCheckMsg");
+    const idCheckResult = document.getElementById("idCheckResult");
+
+    // 아이디를 다시 입력하면 중복확인 상태 초기화
+    userIdInput.addEventListener("input", function () {
+        idCheckResult.value = "false";
+        idCheckMsg.innerText = "";
+    });
+
+    function checkUserId() {
+        const userId = userIdInput.value.trim();
+
+        if (userId === "") {
+            idCheckMsg.innerText = "아이디를 입력하세요.";
+            idCheckMsg.style.color = "red";
+            userIdInput.focus();
+            return;
+        }
+
+        fetch("${pageContext.request.contextPath}/user.id.check?user_id=" + encodeURIComponent(userId))
+            .then(function (response) {
+                return response.text();
+            })
+            .then(function (result) {
+                console.log("서버 응답값:", "[" + result + "]");
+
+                // 공백/줄바꿈 제거 + 대문자 변환
+                result = result.trim().toUpperCase();
+
+                // 사용 가능 처리
+                if (result === "OK" || result === "AVAILABLE" || result === "FALSE" || result === "0") {
+                    idCheckMsg.innerText = "사용 가능한 아이디입니다.";
+                    idCheckMsg.style.color = "green";
+                    idCheckResult.value = "true";
+                }
+                // 중복 처리
+                else if (result === "DUPLICATE" || result === "TAKEN" || result === "TRUE" || result === "1") {
+                    idCheckMsg.innerText = "이미 사용 중인 아이디입니다.";
+                    idCheckMsg.style.color = "red";
+                    idCheckResult.value = "false";
+                }
+
+            })
+            .catch(function (error) {
+                console.log(error);
+                idCheckMsg.innerText = "중복확인 중 오류가 발생했습니다.";
+                idCheckMsg.style.color = "red";
+                idCheckResult.value = "false";
+            });
+    }
+</script>
+
+<script>
+    function sendEmailAuth() {
+        const emailInput = document.getElementById("user_email");   // 네 이메일 input id
+        const codeInput = document.getElementById("email_code");
+        const msg = document.getElementById("emailAuthMsg");
+        const passed = document.getElementById("emailAuthPassed");
+
+        if (!emailInput || emailInput.value.trim() === "") {
+            msg.innerText = "이메일을 먼저 입력하세요.";
+            msg.style.color = "red";
+            return;
+        }
+
+        fetch("email-auth-send?user_email=" + encodeURIComponent(emailInput.value.trim()))
+            .then(res => res.json())
+            .then(data => {
+                if (data.result === "success") {
+                    codeInput.value = data.authCode;   // 자동으로 인증번호 찍힘
+                    msg.innerText = "인증번호가 전송되었습니다.";
+                    msg.style.color = "green";
+                    passed.value = "true";   // 테스트용이니까 바로 true 처리
+                } else {
+                    msg.innerText = "인증번호 전송 실패";
+                    msg.style.color = "red";
+                    passed.value = "false";
+                }
+            })
+            .catch(() => {
+                msg.innerText = "오류가 발생했습니다.";
+                msg.style.color = "red";
+                passed.value = "false";
+            });
+    }
+</script>
+
+
+
 
 </body>
 </html>
