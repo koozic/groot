@@ -79,7 +79,8 @@
             </div> <%-- review-header 닫기 --%>
 
             <%-- 📸 1-2. 포토 갤러리 구역 --%>
-            <div class="photo-gallery-container">
+                <%-- ✅ [수정된 코드] 사진이 0개면 아예 박스 자체를 숨겨라! (`display: none`) --%>
+                <div class="photo-gallery-container" style="display: ${empty allPhotoImages or allPhotoImages.size() == 0 ? 'none' : 'block'};">
                 <div class="gallery-header">
                     <h2>📸 포토 리뷰 <span id="photo-count">(${allPhotoImages.size()})</span></h2>
                     <a href="javascript:void(0)" class="view-all-photos" onclick="openPhotoGalleryModal()">포토 리뷰만 모아보기 </a>

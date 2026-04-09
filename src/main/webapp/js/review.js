@@ -346,6 +346,7 @@ function closeDetailModal() { document.getElementById('detailModal').style.displ
 // ==========================================
 // 🗑️ 리뷰 삭제 (깜빡임 없는 스무스 삭제)
 // ==========================================
+// 🗑️ 리뷰 삭제
 function deleteReview(reviewId) {
     if (!confirm("정말 삭제하시겠습니까?")) return;
 
@@ -354,19 +355,8 @@ function deleteReview(reviewId) {
         .then(data => {
             if (data.trim() === "1") {
                 showToast("리뷰를 삭제했습니다. 🗑️");
-
-                // 🌟 [핵심] 새로고침(reload)을 지우고 스르륵 효과 추가!
-                const card = document.getElementById(`menu-content-${reviewId}`).closest('.review-card');
-                if(card) {
-                    card.style.transition = 'all 0.5s ease';
-                    card.style.opacity = '0';
-                    card.style.transform = 'translateX(100px)'; // 오른쪽으로 밀려나며 삭제
-
-                    setTimeout(() => {
-                        card.remove(); // 화면에서 완전히 지우기
-                        fetchReviews(); // 🆕 서버에서 새 리스트만 조용히 땡겨오기
-                    }, 500);
-                }
+                // 🌟 무조건 새로고침! (포토 박스 사라지게 만들기)
+                setTimeout(() => location.reload(), 1500);
             } else {
                 alert("삭제 실패!");
             }
@@ -447,9 +437,7 @@ function toggleImgDelete() {
 
 function closeUpdateModal() { document.getElementById('updateModal').style.display = 'none'; }
 
-// ==========================================
-// 🪄 6. 리뷰 수정 (깜빡임 없는 비동기 수정)
-// ==========================================
+// 🪄 리뷰 수정
 function submitUpdate() {
     const formData = new FormData(document.getElementById('updateForm'));
     fetch('ReviewUpdateC', { method: 'POST', body: formData })
@@ -457,11 +445,9 @@ function submitUpdate() {
         .then(data => {
             if (data.trim() === "1") {
                 showToast("리뷰 수정을 완료했습니다! 🪄");
-                closeUpdateModal(); // 모달창 부드럽게 닫기
-
-                // 🌟 [핵심] 새로고침(reload) 완전 삭제!
-                // 대신 서버에서 바뀐 데이터로 리스트만 조용히 다시 땡겨옵니다.
-                fetchReviews();
+                closeUpdateModal();
+                // 🌟 수정 후에도 별점/사진이 바뀌었을 수 있으니 무조건 새로고침!
+                setTimeout(() => location.reload(), 1500);
             } else {
                 alert("수정 실패!");
             }
@@ -533,31 +519,23 @@ function setWriteStars(score) {
     });
 }
 
-// ==========================================
-// 🚀 리뷰 등록 (깜빡임 없는 비동기 등록)
-// ==========================================
+// 🚀 리뷰 등록
 function submitReview() {
     const form = document.getElementById('writeForm');
     const formData = new FormData(form);
 
-    fetch('review-write', {
-        method: 'POST',
-        body: formData
-    })
+    fetch('review-write', { method: 'POST', body: formData })
         .then(res => res.text())
         .then(data => {
             if (data.trim() === "1") {
                 showToast("리뷰가 등록되었습니다! ✨");
                 closeWriteModal();
-
-                // 🌟 [핵심] location.reload() 지우고, 함수 하나만 부릅니다!
-                fetchReviews();
-
+                // 🌟 무조건 새로고침해서 통계/포토박스 싱크 맞추기!
+                setTimeout(() => location.reload(), 1500);
             } else {
                 alert("리뷰 등록 실패 ㅠㅠ 다시 시도해주세요.");
             }
-        })
-        .catch(err => console.error("등록 에러:", err));
+        });
 }
 // =========================================================
 // 🍞 토스트 알림 띄우기 함수 (경용씨 '가운데 빵!' UI 완벽 동기화)
@@ -571,10 +549,10 @@ function showToast(message, type = "success") {
         toast.className = "toast";
         toast.classList.add("show", type);
 
-        // 3초 뒤에 사라짐
+        // 2초 뒤에 사라짐 (아까 무영님이 2초로 해달라고 하셨던 세팅!)
         setTimeout(() => {
             toast.classList.remove("show", type);
-        }, 3000);
+        }, 1300);
     } else {
         alert(message);
     }
