@@ -21,48 +21,44 @@
 <!-- =============================================
      1. 헤더
      ============================================= -->
-<div class="hdr-right" style="display: flex; align-items: center; justify-content: flex-end; gap: 15px;">
-    <c:choose>
-        <%-- [1] 로그인 했을 때 --%>
-        <c:when test="${not empty sessionScope.loginUser}">
-            <span class="hdr-link" style="margin-right: 5px;">
-                ${sessionScope.loginUser.name}님 어서오세요.
-            </span>
+<header class="site-header">
+    <%-- 로고가 있어야 로그인이 오른쪽으로 밀려납니다 --%>
+    <div class="logo" onclick="location.href='index'">약<span>쟁이</span></div>
 
-            <%-- 삼항 연산자로 깔끔하게 이미지 출력 --%>
-            <img
-                    src="${sessionScope.loginUser.user_profile.startsWith('http')
-                       ? sessionScope.loginUser.user_profile
-                       : pageContext.request.contextPath.concat('/user/userImg/').concat(sessionScope.loginUser.user_profile)}"
-                    alt="프로필"
-                    style="width:40px; height:40px; border-radius:50%; object-fit:cover;"
-                    onerror="this.src='${pageContext.request.contextPath}/user/userImg/Ayanokoji.jfif'"
-            >
+    <%-- 직접 썼던 style은 지우고 클래스명만 유지! --%>
+    <div class="hdr-right">
+        <c:choose>
+            <%-- [1] 로그인 했을 때 --%>
+            <c:when test="${not empty sessionScope.loginUser}">
+                <span class="hdr-link">${sessionScope.loginUser.name}님 어서오세요.</span>
 
-            <a href="mypage" class="hdr-link">마이페이지</a>
-            <a href="logout" class="btn-login">로그아웃</a>
-        </c:when>
+                <%-- 삼항 연산자 로직은 그대로 유지 --%>
+                <img src="${sessionScope.loginUser.user_profile.startsWith('http')
+                           ? sessionScope.loginUser.user_profile
+                           : pageContext.request.contextPath.concat('/user/userImg/').concat(sessionScope.loginUser.user_profile)}"
+                     alt="프로필"
+                     style="width:32px; height:32px; border-radius:50%; object-fit:cover;"
+                     onerror="this.src='${pageContext.request.contextPath}/user/userImg/Ayanokoji.jfif'">
 
-        <%-- [2] 로그인 안 했을 때 (회원가입, 로그인이 오른쪽 끝으로!) --%>
-        <c:otherwise>
-            <a href="join" class="hdr-link">회원가입</a>
-            <a href="user-Login" class="btn-login">로그인</a>
-        </c:otherwise>
-    </c:choose>
-</div>
+                <a href="mypage" class="hdr-link">마이페이지</a>
+                <a href="logout" class="btn-login" style="padding: 5px 12px;">로그아웃</a>
+            </c:when>
+
+            <%-- [2] 로그인 안 했을 때 --%>
+            <c:otherwise>
+                <a href="join" class="hdr-link">회원가입</a>
+                <a href="user-Login" class="btn-login">로그인</a>
+            </c:otherwise>
+        </c:choose>
+    </div>
 </header>
 
-<!-- =============================================
-     2. 네비게이션 (PC용 상단 nav)
-     ============================================= -->
 <nav class="site-nav">
     <div class="nav-left">
-        <a href="product"   class="nav-item ${activeTab == 'product'   ? 'active' : ''}">제품</a>
+        <a href="product"   class="nav-item ${activeTab == 'product' ? 'active' : ''}">제품</a>
         <a href="supplements" class="nav-item ${activeTab == 'nutrition' ? 'active' : ''}">영양성분</a>
         <a href="recommend" class="nav-item ${Tab == 'recommend' ? 'active' : ''}">영양추천</a>
-
     </div>
-    <%-- nav 장바구니 버튼 --%>
     <div class="nav-cart" onclick="toggleCart()">
         <span class="nav-cart-icon">🛒</span>
         <span>장바구니</span>
@@ -71,7 +67,6 @@
         </c:if>
     </div>
 </nav>
-
 <!-- =============================================
      3. 메인 콘텐츠 (여기만 바뀜)
      ============================================= -->

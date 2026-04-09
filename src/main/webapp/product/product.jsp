@@ -79,7 +79,8 @@
         </div>
 
         <%--ADD 부분 모달--%>
-        <form action="product-add" class="modal-form" method="post" enctype="multipart/form-data" onsubmit="return validateProductForm()">
+        <form action="product-add" class="modal-form" method="post" enctype="multipart/form-data"
+              onsubmit="return validateProductForm()">
             <input type="hidden" name="productAdmin" value="ky11">
             <input type="hidden" id="product_current" name="productCurrent" value="0">
             <div class="modal-body-visual">
@@ -95,7 +96,7 @@
 
                     <input type="file" id="product_image_file" name="productImage"
                            accept="image/*" onchange="previewImage(this)"
-                           style="display: none;" >
+                           style="display: none;">
                 </div>
 
                 <div class="form-inputs-container">
@@ -189,7 +190,14 @@
             <div class="product-info">
                 <div class="product-name">${p.productName}</div>
                 <div class="product-brand">${p.productBrand}</div>
-                <div class="product-nutrient">${p.productNutrient}</div>
+                <div class="product-nutrient">
+                    <c:forEach items="${nutrients}" var="n">
+                        <c:if test="${p.productNutrient == n.nutrientId}">
+                            ${n.nutrientName}
+                        </c:if>
+                    </c:forEach>
+
+                </div>
                 <div class="product-price">${p.productPrice}원</div>
                 <div class="product-date">${p.productStartDate}</div>
             </div>
