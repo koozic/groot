@@ -195,7 +195,7 @@ public class UserDAO {
             }
             // 혹시 모를 예외 대비
             else {
-                finalProfilePath = "user/userImg/Ayanokoji.jfif";
+                finalProfilePath = "user/userImg/Ayanokoji.jpg";
                 System.out.println("기본값 적용: " + finalProfilePath);
             }
 

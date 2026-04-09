@@ -223,15 +223,8 @@
     </div>
 </div>
 <script>
-<<<<<<< HEAD
-    // 1. 파일 업로드 칸과 라디오 버튼들을 찾아서 변수에 담기
-    const fileInput = document.querySelector('input[name="user_profile"]');
-    const defaultProfiles = document.querySelectorAll('input[name="default_profile"]');
-=======
     // 문서의 모든 HTML 요소가 로드된 후 실행되도록 감싸기
     document.addEventListener('DOMContentLoaded', function() {
->>>>>>> d7cf8b58995511605dfbf24f89d12361c334b712
-
         // 1. 요소 찾기 (안전하게 변수에 담기)
         const fileInput = document.querySelector('input[name="user_profile"]');
         const defaultProfiles = document.querySelectorAll('input[name="default_profile"]');

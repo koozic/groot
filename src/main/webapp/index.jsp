@@ -38,7 +38,7 @@
                            : pageContext.request.contextPath.concat('/user/userImg/').concat(sessionScope.loginUser.user_profile)}"
                      alt="프로필"
                      style="width:32px; height:32px; border-radius:50%; object-fit:cover;"
-                     onerror="this.src='${pageContext.request.contextPath}/user/userImg/Ayanokoji.jfif'">
+                     onerror="this.src='${pageContext.request.contextPath}/user/userImg/Ayanokoji.jpg'">
 
                 <a href="mypage" class="hdr-link">마이페이지</a>
                 <a href="logout" class="btn-login" style="padding: 5px 12px;">로그아웃</a>
