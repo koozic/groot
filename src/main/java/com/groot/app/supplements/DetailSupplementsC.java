@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.List;
 
 @WebServlet(name = "DetailSupplementsC", value = "/detailSupplements")
+
 public class DetailSupplementsC extends HttpServlet {
 
     // 화면 조회 (리스트 보기)

@@ -17,6 +17,11 @@ public class UserDeleteC extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         UserDAO.UserDelete(req);
+
+
+        req.getRequestDispatcher("mypage.jsp").forward(req, resp);
+
+
     }
 
     public void destroy() {
