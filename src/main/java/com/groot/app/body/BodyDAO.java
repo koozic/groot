@@ -1,6 +1,7 @@
 package com.groot.app.body;
 
 import com.groot.app.main.DBManager_new;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -166,13 +167,11 @@ public class BodyDAO {
     }
 
 
-
-
     // ─────────────────────────────────────────
     // 4. 영양소 좋아요 토글
     // ─────────────────────────────────────────
     public boolean toggleSupplementLike(String userId, int supplementId) throws Exception {
-        String checkSql  = "SELECT supplement_like_id FROM supplements_like " +
+        String checkSql = "SELECT supplement_like_id FROM supplements_like " +
                 "WHERE user_id = ? AND supplement_id = ?";
         String deleteSql = "DELETE FROM supplements_like " +
                 "WHERE user_id = ? AND supplement_id = ?";
@@ -181,7 +180,7 @@ public class BodyDAO {
         //    CREATE SEQUENCE seq_supplement_like START WITH 1 INCREMENT BY 1;
         String insertSql = "INSERT INTO supplements_like " +
                 "(supplement_like_id, user_id, supplement_id, supplement_like_date) " +
-                "VALUES (seq_supplement_like.NEXTVAL, ?, ?, SYSDATE)";
+                "VALUES (seq_supplements_like_id.NEXTVAL, ?, ?, SYSDATE)";
 
         try (Connection con = DBManager_new.connect();
              PreparedStatement checkPs = con.prepareStatement(checkSql)) {
