@@ -19,7 +19,7 @@ public class UserDeleteC extends HttpServlet {
         UserDAO.UserDelete(req);
 
 
-        req.getRequestDispatcher("mypage.jsp").forward(req, resp);
+        req.getRequestDispatcher("index.jsp").forward(req, resp);
 
 
     }
