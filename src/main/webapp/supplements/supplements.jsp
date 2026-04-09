@@ -28,6 +28,14 @@
                 <div class="supp-name">${supp.supplementName}</div>
                 <div class="supp-efficacy">${supp.supplementEfficacy}</div>
 
+                <%-- ★ 좋아요 버튼 추가 --%>
+                <button class="like-btn ${likedIds.contains(supp.supplementId) ? 'liked' : ''}"
+                        onclick="toggleLike(this, ${supp.supplementId})">
+                    ♥ <span class="like-label">
+                        ${likedIds.contains(supp.supplementId) ? '좋아요 취소' : '좋아요'}
+                </span>
+                </button>
+
                 <div style="margin-top: 10px;">
                     <button class="supp-btn" onclick="delSupplement('${supp.supplementId}')">삭제</button>
                     <button class="supp-btn" onclick="updateSupplement('${supp.supplementId}')">수정</button>
