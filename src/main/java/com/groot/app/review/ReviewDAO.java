@@ -548,9 +548,9 @@ public class ReviewDAO {
         }
     }
     // =========================================================
-    // 🏆 메인 페이지용 베스트 리뷰 4개 가져오기 (싱글톤 전용)
+    // 🏆 메인 페이지용 베스트 리뷰 4개 가져오기 (3단 조인 풀버전)
     // =========================================================
-    public ArrayList<ReviewDTO> getBestReviews() { // 🌟 static 뺐습니다!
+    public ArrayList<ReviewDTO> getBestReviews() {
         ArrayList<ReviewDTO> bestList = new ArrayList<>();
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -559,29 +559,47 @@ public class ReviewDAO {
         try {
             con = DBManager_new.connect();
 
-            // 🌟 좋아요 높은 순으로 딱 4개만! (테이블명 REVIEWS)
-            String sql = "SELECT * FROM (" +
-                    "    SELECT * FROM REVIEWS ORDER BY r_like DESC, r_date DESC" +
-                    ") WHERE ROWNUM <= 4";
+            // 🌟 에이스 무영표 3단 조인 쿼리! (리뷰 + 제품 + 성분 + 해당 제품의 평균 평점까지)
+            String sql =
+                    "SELECT * FROM (" +
+                            "    SELECT " +
+                            "        R.review_id, R.user_id, R.product_id, R.r_title, R.r_content, " +
+                            "        R.r_score, R.r_img, R.r_date, R.r_like, " +
+                            "        P.product_name, P.product_image, " +
+                            "        S.supplement_name, " +
+                            "        (SELECT ROUND(NVL(AVG(r_score), 0), 1) FROM reviews WHERE product_id = P.product_id) AS avg_score " +
+                            "    FROM reviews R " +
+                            "    JOIN products P ON R.product_id = P.product_id " +
+                            "    JOIN supplements S ON P.product_nutrient = S.supplement_id " +
+                            "    ORDER BY R.r_like DESC, R.r_date DESC" +
+                            ") WHERE ROWNUM <= 4";
 
             pstmt = con.prepareStatement(sql);
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
                 ReviewDTO r = new ReviewDTO();
-                r.setReview_id(rs.getInt("REVIEW_ID"));
-                r.setProduct_id(rs.getInt("PRODUCT_ID"));
-                r.setUser_id(rs.getString("USER_ID"));
-                r.setR_title(rs.getString("R_TITLE"));
-                r.setR_content(rs.getString("R_CONTENT"));
-                r.setR_score(rs.getInt("R_SCORE"));
-                r.setR_img(rs.getString("R_IMG"));
-                r.setR_date(rs.getDate("R_DATE"));
-                r.setR_like(rs.getInt("R_LIKE"));
+                // 1. 기존 리뷰 정보
+                r.setReview_id(rs.getInt("review_id"));
+                r.setUser_id(rs.getString("user_id"));
+                r.setProduct_id(rs.getInt("product_id"));
+                r.setR_title(rs.getString("r_title"));
+                r.setR_content(rs.getString("r_content"));
+                r.setR_score(rs.getInt("r_score"));
+                r.setR_img(rs.getString("r_img"));
+                r.setR_date(rs.getDate("r_date"));
+                r.setR_like(rs.getInt("r_like"));
+
+                // 2. 🌟 조인으로 가져온 제품 & 성분 정보 세팅!
+                r.setP_name(rs.getString("product_name"));
+                r.setP_img(rs.getString("product_image"));
+                r.setSupp_name(rs.getString("supplement_name"));
+                r.setP_avg_score(rs.getDouble("avg_score"));
+
                 bestList.add(r);
             }
         } catch (Exception e) {
-            System.out.println("베스트 리뷰 4개 가져오기 에러!");
+            System.out.println("❌ 베스트 리뷰 3단 조인 에러!");
             e.printStackTrace();
         } finally {
             DBManager_new.close(con, pstmt, rs);
