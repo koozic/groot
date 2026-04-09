@@ -78,70 +78,68 @@
                 </div>
             </div> <%-- review-header 닫기 --%>
 
-            <%-- 📸 1-2. 포토 갤러리 구역 --%>
-                <%-- ✅ [수정된 코드] 사진이 0개면 아예 박스 자체를 숨겨라! (`display: none`) --%>
+                <%-- 📸 1-2. 포토 갤러리 구역 --%>
                 <div class="photo-gallery-container" style="display: ${empty allPhotoImages or allPhotoImages.size() == 0 ? 'none' : 'block'};">
-                <div class="gallery-header">
-                    <h2>📸 포토 리뷰 <span id="photo-count">(${allPhotoImages.size()})</span></h2>
-                    <a href="javascript:void(0)" class="view-all-photos" onclick="openPhotoGalleryModal()">포토 리뷰만 모아보기 </a>
-                </div>
-                <div class="photo-slider-wrapper">
-                    <button type="button" class="slider-btn prev-btn" onclick="slideGallery(-1)">&lt;</button>
-                    <div class="photo-slider" id="photo-slider">
-                        <c:forEach var="img" items="${allPhotoImages}">
-                            <div class="photo-slide-item" onclick="openDetailModal('${img.r_title}', '${img.user_id}', '${img.r_score}', '${img.r_date}', '${img.r_content}', '${img.r_img}')">
-                                <img src="../upload/${img.r_img}" alt="포토리뷰 이미지">
-                            </div>
-                        </c:forEach>
+                    <div class="gallery-header">
+                        <h2>📸 포토 리뷰 <span id="photo-count">(${allPhotoImages.size()})</span></h2>
+                        <a href="javascript:void(0)" class="view-all-photos" onclick="openPhotoGalleryModal()">포토 리뷰만 모아보기 </a>
                     </div>
-                    <button type="button" class="slider-btn next-btn" onclick="slideGallery(1)">&gt;</button>
-                </div>
-            </div>
 
-            <%-- 🎛️ 1-3. 리뷰 컨트롤 바 (정렬 & 필터 & 내 글 보기) --%>
-            <div class="review-control-bar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #222;">
-                <div class="sort-options" style="display: flex; align-items: center; gap: 20px;">
-                    <select id="sortType" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; outline: none; cursor: pointer;">
-                        <option value="like">👍 베스트순(좋아요순)</option>
-                        <option value="date" selected>🆕 최신순</option>
-                        <option value="high_score">⭐ 별점 높은순</option>
-                        <option value="low_score">📉 별점 낮은순</option>
-                    </select>
+                    <div class="photo-slider-wrapper">
+                        <%-- 왼쪽 버튼 --%>
+                        <button type="button" class="slider-btn prev-btn" onclick="slideGallery(-1)"
+                                style="display: ${allPhotoImages.size() > 4 ? 'block' : 'none'};">&lt;</button>
 
-                    <%-- 🌟 [새로 추가됨] 내가 쓴 글만 보기 체크박스 --%>
-                    <label style="cursor: pointer; display: flex; align-items: center; font-weight: bold; font-size: 0.95em; color: #34495e; user-select: none;">
-                        <input type="checkbox" id="myReviewCheck" style="margin-right: 8px; transform: scale(1.3); cursor: pointer;">
-                        내가 쓴 글만 보기 🙋‍♂️
-                    </label>
-                </div>
+                        <div class="photo-slider" id="photo-slider">
+                            <c:forEach var="img" items="${allPhotoImages}">
+                                <div class="photo-slide-item" onclick="openDetailModal('${img.r_title}', '${img.user_id}', '${img.r_score}', '${img.r_date}', '${img.r_content}', '${img.r_img}')">
+                                    <img src="../upload/${img.r_img}" alt="포토리뷰 이미지">
+                                </div>
+                            </c:forEach>
+                        </div>
 
-                <div class="filter-options">
-                    <select id="starFilter" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; outline: none; cursor: pointer;">
-                        <option value="0" selected>모든 별점 보기</option>
-                        <option value="5">별점 5점만</option>
-                        <option value="4">별점 4점만</option>
-                        <option value="3">별점 3점만</option>
-                        <option value="2">별점 2점만</option>
-                        <option value="1">별점 1점만</option>
-                    </select>
+                        <%-- 오른쪽 버튼 --%>
+                        <button type="button" class="slider-btn next-btn" onclick="slideGallery(1)"
+                                style="display: ${allPhotoImages.size() > 4 ? 'block' : 'none'};">&gt;</button>
+                    </div>
+                </div> <%-- 🌟 [수정] 여기가 포토 갤러리 끝! --%>
+
+
+                <%-- 🎛️ 1-3. 리뷰 컨트롤 바 (정렬 & 필터 & 내 글 보기) --%>
+                <div class="review-control-bar" style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid #222;">
+                    <div class="sort-options" style="display: flex; align-items: center; gap: 20px;">
+                        <select id="sortType" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; outline: none; cursor: pointer;">
+                            <option value="like">👍 베스트순(좋아요순)</option>
+                            <option value="date" selected>🆕 최신순</option>
+                            <option value="high_score">⭐ 별점 높은순</option>
+                            <option value="low_score">📉 별점 낮은순</option>
+                        </select>
+
+                        <label style="cursor: pointer; display: flex; align-items: center; font-weight: bold; font-size: 0.95em; color: #34495e; user-select: none;">
+                            <input type="checkbox" id="myReviewCheck" style="margin-right: 8px; transform: scale(1.3); cursor: pointer;">
+                            내가 쓴 글만 보기 🙋‍♂️
+                        </label>
+                    </div>
+
+                    <div class="filter-options">
+                        <select id="starFilter" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; outline: none; cursor: pointer;">
+                            <option value="0" selected>모든 별점 보기</option>
+                            <option value="5">별점 5점만</option>
+                            <option value="4">별점 4점만</option>
+                            <option value="3">별점 3점만</option>
+                            <option value="2">별점 2점만</option>
+                            <option value="1">별점 1점만</option>
+                        </select>
+                    </div>
                 </div>
-            </div>
 
         </div> <%-- 🌟 full-review-ui 닫기 --%>
 
-        <%-- ========================================================= --%>
-        <%-- 📝 4. 리뷰 리스트 뿌려지는 구역 (비동기로 채워짐) --%>
-        <div id="review-list-container">
-        </div>
+            <%-- 📝 4. 리뷰 리스트 뿌려지는 구역 --%>
+            <div id="review-list-container">
+            </div>
 
     </div> <%-- 🌟 review-container (메인 박스) 닫기 --%>
-    <%-- ========================================================= --%>
-    <%-- 📝 4. 리뷰 리스트 뿌려지는 구역 (비동기로 채워짐) --%>
-    <div id="review-list-container">
-    </div>
-
-</div> <%-- 🌟 review-container (메인 박스) 닫기 --%>
-
 
 <%-- ========================================================= --%>
 <%-- 🚧 모달(Modal) 창들 모음 (화면 위로 뜨는 애들) --%>
