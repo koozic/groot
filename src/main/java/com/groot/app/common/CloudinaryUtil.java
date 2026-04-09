@@ -28,8 +28,12 @@ public class CloudinaryUtil {
 
         Cloudinary cloudinary = CloudinaryUtil.getCloudinary(); //얘가 회사까지 전달
 
-        // folderName에 들어온 값("user", "product" 등)으로 폴더가 결정됨! , 여기에서 폴더거 결정됨! 여기서 회사에서처리
-        Map uploadResult = cloudinary.uploader().upload(fileBytes, ObjectUtils.asMap( //json으로 변환하는 과정에  Url이 생김
+
+        //json문자열로 바꿔준다.
+        // folderName에 들어온 값("user", "product" 등)으로 폴더가 결정됨!
+        // URL주소를 만들어줌.
+        Map uploadResult = cloudinary.uploader().upload(fileBytes, ObjectUtils.asMap(
+
                 "folder", folderName
         ));
 

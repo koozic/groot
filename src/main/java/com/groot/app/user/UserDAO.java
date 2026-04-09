@@ -178,23 +178,27 @@ public class UserDAO {
             // =========================
             // 프로필 이미지 처리
             // =========================
+
+
             String selectedProfile = request.getParameter("default_profile");   // 라디오 선택값
-            Part profileFile = request.getPart("user_profile");            // 파일 업로드,유저가 입력한 이미지는 스트링값이 아니라서 겟 파트로 받아야됨
+
+            String profileImg= (String) request.getAttribute("user_profile");
             String finalProfilePath = null;
 
             // 직접 업로드가 있으면 Cloudinary 우선
-            if (profileFile != null && profileFile.getSize() > 0) {
-                finalProfilePath = CloudinaryUtil.uploadFile(profileFile, "users");//이 폴더 이름은 이미지 저장소에 있는
-                System.out.println("직접 업로드 이미지 URL: " + finalProfilePath);
+            if (profileImg != null && !profileImg.trim().isEmpty()) {
+                // finalProfilePath=CloudinaryUtil.uploadFile(profileFile,"user");
+                finalProfilePath = profileImg;
+                // 업로드 없으면 기본 프로필 사용}
+
             }
-            // 업로드 없으면 기본 프로필 사용
             else if (selectedProfile != null && !selectedProfile.trim().isEmpty()) {
-                finalProfilePath = "user/userimg/" + selectedProfile;
+                finalProfilePath = "user/userImg/" + selectedProfile;
                 System.out.println("기본 프로필 선택: " + finalProfilePath);
             }
             // 혹시 모를 예외 대비
             else {
-                finalProfilePath = "user/userimg/Ayanokoji.jfif";
+                finalProfilePath = "user/userImg/Ayanokoji.jpg";
                 System.out.println("기본값 적용: " + finalProfilePath);
             }
 
@@ -283,6 +287,11 @@ public class UserDAO {
 
            if (pstmt.executeUpdate() == 1){
                System.out.println("수정 완료");
+               
+               // 세션의 loginUser 객체 업데이트
+               UserDTO loginUser = (UserDTO) req.getSession().getAttribute("loginUser");
+               loginUser.setName(name);
+               req.getSession().setAttribute("loginUser", loginUser);
            }
 
         } catch (Exception e) {
