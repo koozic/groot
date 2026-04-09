@@ -251,8 +251,11 @@ public class UserDAO {
             // 프로필 이미지 처리
             // =========================
 
+
             String selectedProfile = request.getParameter("default_profile");   // 라디오 선택값
+
             String profileImg = (String) request.getAttribute("user_profile");
+
             String finalProfilePath = null;
 
             // 직접 업로드가 있으면 Cloudinary 우선
@@ -260,7 +263,10 @@ public class UserDAO {
                 // finalProfilePath=CloudinaryUtil.uploadFile(profileFile,"user");
                 finalProfilePath = profileImg;
                 // 업로드 없으면 기본 프로필 사용}
+
+
             } else if (selectedProfile != null && !selectedProfile.trim().isEmpty()) {
+
                 finalProfilePath = "user/userImg/" + selectedProfile;
                 System.out.println("기본 프로필 선택: " + finalProfilePath);
             }

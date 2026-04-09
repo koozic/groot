@@ -219,7 +219,7 @@ public class SupplementsDAO {
             PreparedStatement pstmt = null;
 
             // 1. 사진이 저장될 내 프로젝트 안의 진짜 폴더 경로 찾기
-            String path = request.getServletContext().getRealPath("/supplementImg/supplementImgFile");
+            // String path = request.getServletContext().getRealPath("/supplementImg/supplementImgFile");
 
             String sql = "update supplements set supplement_name = ?, supplement_efficacy = ?, " +
                          "supplement_dosage = ?, supplement_timing = ?, supplement_caution = ?, " +
@@ -235,6 +235,7 @@ public class SupplementsDAO {
                 //        1024 * 1024 * 20, "UTF-8", new DefaultFileRenamePolicy());
 
                 // JSP에서 보낸 텍스트 데이터들 낚아채기
+                // dinary쓰기 때문에 mr쓸 필요가 없다.
                 String supplementId = request.getParameter("supplementId"); // 🚨 hidden으로 숨겨왔던 고유번호!
                 String supplementName = request.getParameter("supplementName");
                 String supplementEfficacy =request.getParameter("supplementEfficacy");
