@@ -178,7 +178,8 @@ public class UserDAO {
             // =========================
             // 프로필 이미지 처리
             // =========================
-            String selectedProfile = request.getParameter("default_profile");   // 라디오 선택값
+            // 유저가 입력한 파일(이미지)은 part로 받는다.
+            String selectedProfile = request.getParameter("default_profile");   // 라디오 선택값, userImg에 있는 주소값.
             Part profileFile = request.getPart("user_profile");            // 파일 업로드
             String finalProfilePath = null;
 

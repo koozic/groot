@@ -10,11 +10,13 @@ import javax.servlet.http.Part;
 import java.io.IOException;
 
 @WebServlet(name = "UserJoinC", value = "/join")
+
+// 이미지 넣기 위해 필요!
 @MultipartConfig(
         maxFileSize = 1024 * 1024 * 5,
         maxRequestSize = 1024 * 1024 * 10
-
 )
+
 public class UserJoinC extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -27,6 +29,7 @@ public class UserJoinC extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 
+        // 우리가 보낸 파일을 url형태로 바꿔줌.
         String imgUrl = com.groot.app.common.CloudinaryUtil.uploadFromRequest(req, "user_profile", "user");
 
         if (imgUrl != null) {
