@@ -7,6 +7,34 @@
     <title>약쟁이 회원가입</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/app.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/login.css">
+    <style>
+        .id-check-btn {
+            background-color: #2e7d32;
+            color: white;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .id-check-btn:hover {
+            background-color: #256628;
+        }
+
+        #idCheckMsg {
+            display: block;
+            margin-top: 8px;
+            font-size: 13px;
+        }
+
+
+
+
+    </style>
+
+
 </head>
 <body>
 
@@ -38,6 +66,11 @@
                     <div class="login-input-group">
                         <label for="user_id">아이디</label>
                         <input type="text" id="user_id" name="user_id" placeholder="아이디를 입력하세요" required>
+                        <button type="button" class="id-check-btn" onclick="checkUserId()">아이디 중복확인</button>
+
+                        <small id="idCheckMsg"></small>
+                        <input type="hidden" id="idCheckResult" value="false">
+
                     </div>
 
                     <div class="login-input-group">
@@ -184,6 +217,65 @@
 
     </div>
 </div>
+
+<script>
+    const userIdInput = document.getElementById("user_id");
+    const idCheckMsg = document.getElementById("idCheckMsg");
+    const idCheckResult = document.getElementById("idCheckResult");
+
+    // 아이디를 다시 입력하면 중복확인 상태 초기화
+    userIdInput.addEventListener("input", function () {
+        idCheckResult.value = "false";
+        idCheckMsg.innerText = "";
+    });
+
+    function checkUserId() {
+        const userId = userIdInput.value.trim();
+
+        if (userId === "") {
+            idCheckMsg.innerText = "아이디를 입력하세요.";
+            idCheckMsg.style.color = "red";
+            userIdInput.focus();
+            return;
+        }
+
+        fetch("${pageContext.request.contextPath}/user.id.check?user_id=" + encodeURIComponent(userId))
+            .then(function (response) {
+                return response.text();
+            })
+            .then(function (result) {
+                console.log("서버 응답값:", "[" + result + "]");
+
+                // 공백/줄바꿈 제거 + 대문자 변환
+                result = result.trim().toUpperCase();
+
+                // 사용 가능 처리
+                if (result === "OK" || result === "AVAILABLE" || result === "FALSE" || result === "0") {
+                    idCheckMsg.innerText = "사용 가능한 아이디입니다.";
+                    idCheckMsg.style.color = "green";
+                    idCheckResult.value = "true";
+                }
+                // 중복 처리
+                else if (result === "DUPLICATE" || result === "TAKEN" || result === "TRUE" || result === "1") {
+                    idCheckMsg.innerText = "이미 사용 중인 아이디입니다.";
+                    idCheckMsg.style.color = "red";
+                    idCheckResult.value = "false";
+                }
+
+            })
+            .catch(function (error) {
+                console.log(error);
+                idCheckMsg.innerText = "중복확인 중 오류가 발생했습니다.";
+                idCheckMsg.style.color = "red";
+                idCheckResult.value = "false";
+            });
+    }
+</script>
+
+
+
+
+
 
 </body>
 </html>
