@@ -19,7 +19,8 @@ public class SupplementsDAO {
     // 싱글톤 패턴: 오직 하나의 객체만 생성하여 SDAO라는 이름으로 공유
     public static final SupplementsDAO SDAO = new SupplementsDAO();
 
-    public SupplementsDAO() { // 기본 생성자 }
+    public SupplementsDAO() {
+        // 기본 생성자
     }
 
         // 영양성분 전체 리스트 조회 메서드 (Read)
@@ -66,7 +67,7 @@ public class SupplementsDAO {
         }
 
         public void addSupplement (HttpServletRequest request){
-            // 1. 값 받거나 DB 세팅
+            // 값 받거나 DB 세팅
             Connection con = null;
             PreparedStatement pstmt = null;
 
@@ -131,7 +132,6 @@ public class SupplementsDAO {
             } finally {
                 DBManager_new.close(con, pstmt, null);
             }
-
         }
 
         public void delSupplement (HttpServletRequest request){

@@ -275,19 +275,11 @@ public class UserDAO {
             System.out.println("Update completed successfully!");
             System.out.println("========================");
 
-            // 새 비밀번호가 입력된 경우에만 비밀번호 업데이트
-            if (newPw != null && !newPw.trim().isEmpty()) {
-                sql = "update users set user_name=?, user_pw=? where user_id=?";
-                pstmt = con.prepareStatement(sql); // recreate PreparedStatement
-                pstmt.setString(1, name);
-                pstmt.setString(2, newPw);
-                pstmt.setString(3, id);
-            } else {
-                sql = "update users set user_name=? where user_id=?";
-                pstmt = con.prepareStatement(sql); // recreate PreparedStatement
-                pstmt.setString(1, name);
-                pstmt.setString(2, id);
-            }
+            // 이름만 업데이트 (비밀번호 변경은 별도 기능으로 분리)
+            sql = "update users set user_name=? where user_id=?";
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, name);
+            pstmt.setString(2, id);
 
            if (pstmt.executeUpdate() == 1){
                System.out.println("수정 완료");

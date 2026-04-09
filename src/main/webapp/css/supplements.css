@@ -1,17 +1,25 @@
+/* =========================================
+   1. 영양성분 리스트 컨테이너 (Grid 3x2 배열)
+   ========================================= */
 .supplements-container {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid; /* 기존 flex 대신 grid 사용! */
+    grid-template-columns: repeat(3, 1fr); /* 1줄을 똑같이 3칸으로 나눔 */
     gap: 20px;
-    justify-content: center;
-    margin-bottom: 20px;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto 30px auto; /* 가운데 정렬 및 하단 여백 */
 }
 
+/* =========================================
+   2. 개별 영양성분 카드
+   ========================================= */
 .supp-wrap {
     border: 1px solid #ddd;
     padding: 15px;
     border-radius: 8px;
-    width: 250px;
     text-align: center;
+    background-color: #fff;
+    /* width: 250px; 🚨 Grid가 알아서 맞추므로 고정 넓이는 삭제했습니다! */
 }
 
 .supp-img img {
@@ -22,10 +30,12 @@
     border-radius: 4px;
 }
 
-.supp-title {
+/* HTML에서는 supp-name을 쓰셨고 CSS에는 supp-title이 있어서 둘 다 적용되게 묶었습니다. */
+.supp-name, .supp-title {
     font-size: 1.2em;
     font-weight: bold;
     margin: 10px 0;
+    color: #333;
 }
 
 .supp-efficacy {
@@ -42,14 +52,77 @@
     background-color: #f0f0f0;
     border: 1px solid #ccc;
     border-radius: 4px;
+    transition: background-color 0.2s; /* 마우스 올렸을 때 부드럽게 변하도록 추가 */
 }
 
 .supp-btn:hover {
     background-color: #e0e0e0;
 }
 
-#commonModal{
+/* =========================================
+   3. 모달 창 기본 설정
+   ========================================= */
+#commonModal {
     margin: 25px auto;
     display: flex;
+    border: none;
+    border-radius: 15px;
+    padding: 0; /* 모달 자체의 기본 패딩 제거 (내부 박스에 패딩이 있으므로) */
+}
+#commonModal::backdrop {
+    background: rgba(0, 0, 0, 0.5); /* 모달 열렸을 때 뒷배경 어둡게 */
 }
 
+/* =========================================
+   4. 페이징 버튼 디자인
+   ========================================= */
+.page-container { text-align: center; margin-top: 40px; margin-bottom: 20px; }
+.page-btn { padding: 8px 15px; margin: 0 5px; border: 1px solid #ddd; background-color: white; color: #333; cursor: pointer; border-radius: 5px; text-decoration: none; display: inline-block; }
+.page-btn:hover { background-color: #f5f5f5; }
+.page-btn.active { background-color: #4CAF50; color: white; border: 1px solid #4CAF50; font-weight: bold; }
+.page-btn.disabled { color: #ccc; cursor: not-allowed; }
+
+/* =========================================
+   5. 📱 모바일 반응형 (가로 768px 이하)
+   ========================================= */
+@media (max-width: 768px) {
+    /* 리스트 화면: 1줄에 1개씩 꽉 차게 변경 */
+    .supplements-container {
+        grid-template-columns: repeat(1, 1fr);
+        padding: 0 15px;
+        box-sizing: border-box;
+    }
+
+    /* 등록/상세 모달 박스 크기 모바일에 맞게 조절 */
+    .reg-container, .supp-detail-box {
+        margin: 20px auto;
+        padding: 15px !important;
+        width: 100% !important;
+        box-sizing: border-box;
+    }
+
+    /* 상세 정보 글씨들 좌우 나열 -> 위아래 쌓이게 변경 */
+    .detail-row, .form-group {
+        flex-direction: column;
+        padding: 10px 0;
+    }
+
+    .col-1, .col-2 { width: 100%; }
+    .col-1 { margin-bottom: 5px; font-size: 0.95em; }
+    .col-2 { font-size: 0.9em; }
+
+    /* 사진 크기 조절 */
+    .detail-img-area img {
+        height: 250px !important;
+    }
+
+    /* 모바일에서는 버튼을 큼직하게 하나씩 누를 수 있게 세로로 배치 */
+    .btn-group {
+        flex-direction: column;
+    }
+    .btn-list, .btn-submit, .btn-cancel, .supp-btn {
+        width: 100%;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+    }
+}

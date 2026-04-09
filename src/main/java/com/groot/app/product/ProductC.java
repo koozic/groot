@@ -12,9 +12,16 @@ import java.util.ArrayList;
 public class ProductC extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        //일
-        ProductDAO.PDAO.showAllProducts(request);
 
+        // 1. 파라미터 확인
+        String nutrientId = request.getParameter("nutrientId");
+
+        // 2. 파라미터 유무에 따른 DAO 메서드 분기
+        if (nutrientId != null && !nutrientId.isEmpty()) {
+            ProductDAO.PDAO.showProductsByNutrient(request, nutrientId);
+        } else {
+            ProductDAO.PDAO.showAllProducts(request);
+        }
 
         ArrayList<NutrientDTO> nutrients = ProductDAO.PDAO.getAllNutrients(request);
         request.setAttribute("nutrients", nutrients);
@@ -22,8 +29,6 @@ public class ProductC extends HttpServlet {
         request.getRequestDispatcher("product/product.jsp").forward(request, response);
 
     }
-
-
 
 
     public void destroy() {
