@@ -80,11 +80,13 @@
             </form>
 
             <%-- 회원 탈퇴 --%>
+            <form id="deleteUser" action="user-delete" method="post">
             <div style="margin-top:20px;padding-top:16px;border-top:1px solid #f3f4f6;text-align:right;">
                 <%-- TODO: action="userDelete" 연결 --%>
                 <a href="#" class="mp-withdraw-link"
                    onclick="return confirm('정말 탈퇴하시겠어요?')">회원 탈퇴</a>
             </div>
+            </form>
         </div>
     </div>
     <%-- ============================================
