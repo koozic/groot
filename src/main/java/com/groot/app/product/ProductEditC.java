@@ -28,7 +28,13 @@
         public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
             request.setCharacterEncoding("UTF-8");
 
-    //        ProductDAO.PDAO.productEdit(request);
+            // 1. Cloudinary에 이미지 업로드 후 URL 반환
+            String imgUrl = com.groot.app.common.CloudinaryUtil.uploadFromRequest(request, "productImage", "products");
+
+            // 2. 반환된 URL을 Request에 저장 (DAO로 전달하기 위함)
+            if (imgUrl != null) {
+                request.setAttribute("productImage", imgUrl);
+            }
 
             String id = ProductDAO.PDAO.productEdit(request);
             // 3. Redirect 사용하여 GET 방식으로 상세 페이지 호출

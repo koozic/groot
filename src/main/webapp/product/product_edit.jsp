@@ -62,7 +62,7 @@
             <section class="product-hero">
                 <div class="product-img-box" onclick="document.getElementById('productImage').click()"
                      style="cursor: pointer;">
-                    <img src="${pageContext.request.contextPath}/img/${product.productImage}" class="product-img"
+                    <img src="${product.productImage}" class="product-img"
                          id="previewImg">
 
                     <input type="file" id="productImage" name="productImage" accept="image/*"

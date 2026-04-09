@@ -59,7 +59,7 @@
     <main class="content-wrapper">
         <section class="product-hero">
             <div class="product-img-box">
-                <img src="${pageContext.request.contextPath}/img/${product.productImage}"
+                <img src="${product.productImage}"
                      class="product-img"
                      alt="${product.productName} 이미지">
             </div>
