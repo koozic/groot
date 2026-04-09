@@ -179,6 +179,7 @@ public class UserDAO {
             // 프로필 이미지 처리
             // =========================
 
+
             String selectedProfile = request.getParameter("default_profile");   // 라디오 선택값
             String profileImg= (String) request.getAttribute("user_profile");
             String finalProfilePath = null;
