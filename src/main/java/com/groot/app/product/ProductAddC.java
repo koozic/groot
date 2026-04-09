@@ -22,6 +22,14 @@ public class ProductAddC extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // 1. Cloudinary에 이미지 업로드 후 URL 반환
+        String imgUrl = com.groot.app.common.CloudinaryUtil.uploadFromRequest(request, "productImage", "products");
+
+        // 2. 반환된 URL을 Request에 저장 (DAO로 전달하기 위함)
+        if (imgUrl != null) {
+            request.setAttribute("productImage", imgUrl);
+        }
+
         //일
         ProductDAO.PDAO.productAdd(request);
 
