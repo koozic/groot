@@ -25,10 +25,12 @@ public class CloudinaryUtil {
 
         // 파일을 바이트 배열로 변환해서 업로드
         byte[] fileBytes = filePart.getInputStream().readAllBytes();
-//회사까지전달
+
         Cloudinary cloudinary = CloudinaryUtil.getCloudinary();
 
-        // folderName에 들어온 값("user", "product" 등)으로 폴더가 결정됨! 여기서 회사에서처리
+        //json문자열로 바꿔준다.
+        // folderName에 들어온 값("user", "product" 등)으로 폴더가 결정됨!
+        // URL주소를 만들어줌.
         Map uploadResult = cloudinary.uploader().upload(fileBytes, ObjectUtils.asMap(
                 "folder", folderName
         ));

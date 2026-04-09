@@ -181,7 +181,7 @@
 
 
             <div class="product-image">
-                <img src="${pageContext.request.contextPath}/img/${p.productImage}"
+                <img src="${p.productImage}"
                      alt="상품 이미지" style="width:100%; height:100%; object-fit:cover;">
                 <button class="btn-delete"
                         onclick="event.stopPropagation(); confirmDelete('${p.productId}')">&times;

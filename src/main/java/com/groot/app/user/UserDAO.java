@@ -179,17 +179,17 @@ public class UserDAO {
             // 프로필 이미지 처리
             // =========================
 
+
             String selectedProfile = request.getParameter("default_profile");   // 라디오 선택값
             String uploadedProfile = (String) request.getAttribute("user_profile"); // UserJoinC에서 업로드한 URL
-
-            String finalProfilePath = null;
+         String finalProfilePath="";
 
             // UserJoinC에서 Cloudinary 업로드한 URL이 있으면 우선 사용
             if (uploadedProfile != null && !uploadedProfile.trim().isEmpty()) {
                 finalProfilePath = uploadedProfile;
                 System.out.println("Cloudinary 업로드 이미지: " + finalProfilePath);
+
             }
-            // 업로드 없으면 기본 프로필 사용
             else if (selectedProfile != null && !selectedProfile.trim().isEmpty()) {
                 finalProfilePath = "user/userImg/" + selectedProfile;
                 System.out.println("기본 프로필 선택: " + finalProfilePath);

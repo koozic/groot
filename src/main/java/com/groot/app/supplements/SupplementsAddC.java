@@ -1,6 +1,7 @@
 package com.groot.app.supplements;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -9,6 +10,11 @@ import java.io.IOException;
 import java.util.List;
 
 @WebServlet(name = "supplementAddC", value = "/supplementAdd")
+@MultipartConfig(
+        maxFileSize = 1024 * 1024 * 5,
+        maxRequestSize = 1024 * 1024 * 10
+)
+
 public class SupplementsAddC extends HttpServlet {
 
     // 화면 조회 (리스트 보기)
