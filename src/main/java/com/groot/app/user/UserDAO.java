@@ -185,7 +185,7 @@ public class UserDAO {
 
             // 직접 업로드가 있으면 Cloudinary 우선
             if (profileFile != null && profileFile.getSize() > 0) {
-                finalProfilePath = CloudinaryUtil.uploadFile(profileFile, "users");
+                finalProfilePath = CloudinaryUtil.uploadFile(profileFile, "user");
                 System.out.println("직접 업로드 이미지 URL: " + finalProfilePath);
             }
             // 업로드 없으면 기본 프로필 사용
