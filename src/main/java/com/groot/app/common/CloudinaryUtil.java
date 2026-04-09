@@ -26,17 +26,19 @@ public class CloudinaryUtil {
         // 파일을 바이트 배열로 변환해서 업로드
         byte[] fileBytes = filePart.getInputStream().readAllBytes();
 
-        Cloudinary cloudinary = CloudinaryUtil.getCloudinary();
+        Cloudinary cloudinary = CloudinaryUtil.getCloudinary(); //얘가 회사까지 전달
+
 
         //json문자열로 바꿔준다.
         // folderName에 들어온 값("user", "product" 등)으로 폴더가 결정됨!
         // URL주소를 만들어줌.
         Map uploadResult = cloudinary.uploader().upload(fileBytes, ObjectUtils.asMap(
+
                 "folder", folderName
         ));
 
         // 업로드된 이미지의 '인터넷 주소(URL)'만 리턴
-        return (String) uploadResult.get("url");
+        return (String) uploadResult.get("url"); //url = String
     }
 
     // 2. 🚀 [새로 추가] 서블릿 코드를 단 한 줄로 만들어주는 마법의 메서드
