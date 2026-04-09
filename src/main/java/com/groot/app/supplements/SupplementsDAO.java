@@ -446,29 +446,29 @@ public class SupplementsDAO {
     }
 
     // 특정 유저가 좋아요 누른 supplementId 목록 조회
-    public List<Integer> getLikedIdsByUser(String userId) {
-        List<Integer> likedIds = new ArrayList<>();
-        Connection con = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-
-        try {
-            con = DBManager_new.connect();
-            String sql = "SELECT supplement_id FROM supplements_like WHERE user_id = ?";
-            pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, userId);
-            rs = pstmt.executeQuery();
-            while (rs.next()) {
-                likedIds.add(rs.getInt("supplement_id"));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            DBManager_new.close(con, pstmt, rs);
-        }
-        return likedIds;
-    }
-
+//    public List<Integer> getLikedIdsByUser(String userId) {
+//        List<Integer> likedIds = new ArrayList<>();
+//        Connection con = null;
+//        PreparedStatement pstmt = null;
+//        ResultSet rs = null;
+//
+//        try {
+//            con = DBManager_new.connect();
+//            String sql = "SELECT supplement_id FROM supplements_like WHERE user_id = ?";
+//            pstmt = con.prepareStatement(sql);
+//            pstmt.setString(1, userId);
+//            rs = pstmt.executeQuery();
+//            while (rs.next()) {
+//                likedIds.add(rs.getInt("supplement_id"));
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        } finally {
+//            DBManager_new.close(con, pstmt, rs);
+//        }
+//        return likedIds;
+//    }
+//
     }
 
 
