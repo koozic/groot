@@ -47,6 +47,7 @@ public class CloudinaryUtil {
         } catch (Exception e) {
             e.printStackTrace();
             return null; // 파일이 없거나 에러나면 null
+            //체크용ㄴ
         }
     }
 }
