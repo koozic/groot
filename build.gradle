@@ -46,10 +46,18 @@ dependencies {
         // Cloudinary 라이브러리 추가
         implementation 'com.cloudinary:cloudinary-http5:2.0.0'
 
+    // 인증번호를 불러드리기 위한 라이브러리
+    implementation 'org.eclipse.angus:jakarta.mail:2.0.5'
+
+
+
+
 
     // SLF4J 경고 해결을 위한 단순 로거 추가
     implementation 'org.slf4j:slf4j-simple:1.7.36'
 }
+
+
 
 test {
     useJUnitPlatform()
