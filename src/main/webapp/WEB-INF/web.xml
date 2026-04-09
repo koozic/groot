@@ -4,10 +4,21 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
     <filter>
-    <filter-name>encodingFilter</filter-name>
-    <filter-class>com.groot.app.common.filter.CharacterEncodingFilter</filter-class>
-</filter>
+        <filter-name>encodingFilter</filter-name>
+        <filter-class>com.groot.app.common.filter.CharacterEncodingFilter</filter-class>
+    </filter>
 
+    <filter-mapping>
+        <filter-name>encodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <mime-mapping>
+        <extension>jfif</extension>
+        <mime-type>image/jpeg</mime-type>
+    </mime-mapping>
+
+
+<<<<<<< HEAD
 <<<<<<< HEAD
     <filter>
         <filter-name>encodingFilter</filter-name>
@@ -25,4 +36,6 @@
 <url-pattern>/*</url-pattern>
 </filter-mapping>
 >>>>>>> f15643595cb8fe368f9172c8c01b5617d99c52ee
+=======
+>>>>>>> 7f28595209ec051a313184cb2bafd12908fadbf1
 </web-app>
