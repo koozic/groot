@@ -20,22 +20,18 @@ public class UserJoinC extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 
-
-       response.sendRedirect("user/join.jsp");
+        response.sendRedirect("user/join.jsp");
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setCharacterEncoding("UTF-8");
 
-        Part profile = req.getPart("user_profile");
 
-        String imgUrl = com.groot.app.common.CloudinaryUtil.uploadFile(profile, "user");
+        String imgUrl = com.groot.app.common.CloudinaryUtil.uploadFromRequest(req, "user_profile", "user");
 
         if (imgUrl != null) {
             req.setAttribute("user_profile", imgUrl);
         }
-
 
 
         UserDAO.join(req);
@@ -47,7 +43,6 @@ public class UserJoinC extends HttpServlet {
         } else {
             resp.sendRedirect("index.jsp");
         }
-
 
 
     }
