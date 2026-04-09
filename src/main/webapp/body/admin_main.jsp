@@ -22,7 +22,7 @@
 <h2>🛠️ 영양소 관리</h2>
 
 <%-- 등록 버튼 --%>
-<a href="admin?action=form">
+<a href="admin?action=form"><!-- 이거 뭐지 form form이라는 파라ㅣ터의 ㅁ밸류가어다?-->
   <button class="btn btn-add">+ 새 영양소 등록</button>
 </a>
 
