@@ -130,17 +130,17 @@
                         <!-- 기본 프로필 6개 중 선택 -->
                         <div>
                             <label>
-                                <input type="radio" name="default_profile" value="Ayanokoji.jfif" checked>
+                                <input type="radio" name="user_profile" value="Ayanokoji.jfif" checked>
                                 <img src="${pageContext.request.contextPath}/user/userImg/Ayanokoji.jfif" width="80">
                             </label>
 
                             <label>
-                                <input type="radio" name="default_profile" value="Ryuen.jfif">
+                                <input type="radio" name="user_profile" value="Ryuen.jfif">
                                 <img src="${pageContext.request.contextPath}/user/userImg/Ryuen.jfif" width="80">
                             </label>
 
                             <label>
-                                <input type="radio" name="default_profile" value="Horikita.jfif">
+                                <input type="radio" name="user_profile" value="Horikita.jfif">
                                 <img src="${pageContext.request.contextPath}/user/userImg/Horikita.jfif" width="80">
                             </label>
 

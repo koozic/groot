@@ -80,7 +80,8 @@
             </form>
 
             <%-- 회원 탈퇴 --%>
-            <form id="deleteUser" action="user-delete" method="post" onsubmit="return confirmDelete()">
+            <form id="deleteUser" action="${pageContext.request.contextPath}/user-delete" method="post" onsubmit="return confirmDelete()">
+                <input type="hidden" name="user_id" value="${sessionScope.loginUser.user_id}">
                 <div style="margin-top:20px; padding-top:16px; border-top:1px solid #f3f4f6; text-align:right;">
                     <button type="submit" class="mp-withdraw-link">회원 탈퇴</button>
                 </div>

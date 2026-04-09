@@ -178,14 +178,19 @@ public class UserDAO {
             // =========================
             // 프로필 이미지 처리
             // =========================
-            String selectedProfile = request.getParameter("default_profile");   // 라디오 선택값
+            String selectedProfile = request.getParameter("user_profile");   // 라디오 선택값
             Part profileFile = request.getPart("user_profile_file");            // 파일 업로드
             String finalProfilePath = null;
 
             // 직접 업로드가 있으면 Cloudinary 우선
             if (profileFile != null && profileFile.getSize() > 0) {
-                finalProfilePath = CloudinaryUtil.uploadFile(profileFile, "users");
-                System.out.println("직접 업로드 이미지 URL: " + finalProfilePath);
+                try {
+                    finalProfilePath = CloudinaryUtil.uploadFile(profileFile, "users");
+                    System.out.println("직접 업로드 이미지 URL: " + finalProfilePath);
+                } catch (Exception e) {
+                    System.out.println("Cloudinary 업로드 실패, 기본 프로필 사용: " + e.getMessage());
+                    finalProfilePath = "user/userimg/Ayanokoji.jfif";
+                }
             }
             // 업로드 없으면 기본 프로필 사용
             else if (selectedProfile != null && !selectedProfile.trim().isEmpty()) {
