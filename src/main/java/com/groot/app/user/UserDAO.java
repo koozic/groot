@@ -294,6 +294,69 @@ public class UserDAO {
 
 
     public static void UserDelete(HttpServletRequest req) {
+            Connection con = null;
+            PreparedStatement pstmt = null;
+            ResultSet rs = null;
+            String sql = "delete users where user_id=?";
+            try {
+               con = DBManager_new.connect();
+               pstmt = con.prepareStatement(sql);
+               pstmt.setString(1, req.getParameter("user_id"));
+               if (pstmt.executeUpdate() == 1){
+                   req.setAttribute("msg", "회원 탈퇴가 완료되었습니다.");
+                   System.out.println("회원 탈퇴 완료");
+               } else {
+                   req.setAttribute("msg", "회원 탈퇴에 실패했습니다.");
+               }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                req.setAttribute("msg", "회원 탈퇴 처리 중 오류가 발생했습니다.");
+            } finally {
+                DBManager_new.close(con, pstmt, null);
+            }
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+    public static boolean checkUserIdDuplicate(String userId) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        
+        String sql = "SELECT COUNT(*) FROM users WHERE user_id = ?";
+        
+        try {
+            con = DBManager_new.connect();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, userId);
+            rs = pstmt.executeQuery();
+            
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                return count > 0; // count가 0보다 크면 중복
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBManager_new.close(con, pstmt, rs);
+        }
+        
+        return false; // 에러 발생 시 중복 아님으로 처리
     }
 }
 
