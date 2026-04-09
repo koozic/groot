@@ -4,6 +4,9 @@
     <!DOCTYPE html>
     <html>
     <head>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+        <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
         <meta charset="UTF-8">
         <title>Groot - 상품 리뷰</title>
         <link rel="stylesheet" href="../css/review.css">
@@ -263,6 +266,7 @@
         // 2. 경용씨의 제품 ID 연동 (product_detail.jsp에서 넘겨준 값)
         const currentProductId = "${param.PRODUCT_ID != null ? param.PRODUCT_ID : '106'}";
     </script>
+
 
     <%-- 🌟 외부 JS 파일 연결은 무조건 맨 마지막에! --%>
     <script src="../js/review.js"></script>

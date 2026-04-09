@@ -572,7 +572,7 @@ public class ReviewDAO {
                             "  LEFT JOIN products P ON R.product_id = P.product_id " +
                             "  LEFT JOIN supplements S ON P.product_nutrient = S.supplement_id " +
                             "    ORDER BY R.r_like DESC, R.r_date DESC" +
-                            ") WHERE ROWNUM <= 4";
+                            ") WHERE ROWNUM <= 15";
 
             pstmt = con.prepareStatement(sql);
             rs = pstmt.executeQuery();
