@@ -2,7 +2,7 @@ package com.groot.app.mypage;
 
 import com.groot.app.product.ProductDAO;
 import com.groot.app.product.ProductDTO;
-import com.groot.app.user.UserDAO;
+import com.groot.app.user.UserDTO;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,7 +17,7 @@ public class MyPage extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         // 사물함(세션)에서 "loginUser"라는 이름표가 붙은 상자(UserDTO)를 통째로 꺼냅니다.
-        com.groot.app.user.UserDTO loginUser = (com.groot.app.user.UserDTO) request.getSession().getAttribute("loginUser");
+        UserDTO loginUser = (com.groot.app.user.UserDTO) request.getSession().getAttribute("loginUser");
 
         // 상자가 비어있지 않다면(로그인 상태라면), 상자를 열어서 그 안의 ID 값을 꺼냅니다.
         if (loginUser == null) {
@@ -34,8 +34,11 @@ public class MyPage extends HttpServlet {
 
         // 화면에 띄울 '내 영양제' (MyPageDAO에 새로 만들어야 함)
         ArrayList<ProductDTO> myProducts = MyPageDAO.MDAO.getUserProducts(userId);
-        request.setAttribute("myProducts", myProducts);
+        ArrayList<Integer> intakeList = MyPageDAO.MDAO.getTodayIntakeList(userId);
 
+
+        request.setAttribute("myProducts", myProducts);
+        request.setAttribute("intakeList", intakeList); // JSP에서 체크 여부 판단용
         // HomeServlet.java 예시
         request.setAttribute("content", "mypage/mypage.jsp");
         request.setAttribute("activeTab", "home");

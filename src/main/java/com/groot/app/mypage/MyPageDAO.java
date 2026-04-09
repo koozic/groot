@@ -121,5 +121,51 @@ public class MyPageDAO {
 
         return isSuccess;
     }
+
+    // 1. 복용 여부 업데이트 (체크 시 INSERT, 해제 시 DELETE)
+    public boolean updateIntakeStatus(String userId, int productId, boolean isTaken) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        String sql = isTaken
+                ? "INSERT INTO user_intake_log (user_id, product_id, intake_date) VALUES (?, ?, SYSDATE)"
+                : "DELETE FROM user_intake_log WHERE user_id = ? AND product_id = ? AND TRUNC(intake_date) = TRUNC(SYSDATE)";
+
+        try {
+            con = DBManager_new.connect();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, userId);
+            pstmt.setInt(2, productId);
+            return pstmt.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            DBManager_new.close(con, pstmt, null);
+        }
+    }
+
+    // 2. 오늘 복용한 영양제 ID 리스트 조회 (화면 복구용)
+    public ArrayList<Integer> getTodayIntakeList(String userId) {
+        ArrayList<Integer> list = new ArrayList<>();
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "SELECT product_id FROM user_intake_log WHERE user_id = ? AND TRUNC(intake_date) = TRUNC(SYSDATE)";
+
+        try {
+            con = DBManager_new.connect();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, userId);
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                list.add(rs.getInt("product_id"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBManager_new.close(con, pstmt, rs);
+        }
+        return list;
+    }
 }
 

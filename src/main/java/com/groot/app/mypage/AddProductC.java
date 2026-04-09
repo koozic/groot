@@ -10,7 +10,7 @@ import java.io.IOException;
 
 // JS의 fetch('mypage/add-product') 주소와 매핑됩니다.
 @WebServlet("/mypage/add-product")
-public class AddProductServlet extends HttpServlet {
+public class AddProductC extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // 1. 세션에서 로그인 유저 ID 가져오기

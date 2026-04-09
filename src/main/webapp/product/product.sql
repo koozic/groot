@@ -128,7 +128,7 @@ VALUES ('kim123', 101);
 select *
 from calendar;
 
-
+-- drop table calendar;
 
 -- 유저별 보관함(내 영양제) 테이블 예시
 CREATE TABLE user_supplements (
@@ -136,4 +136,11 @@ CREATE TABLE user_supplements (
                                   product_id NUMBER,         -- 제품 ID (products 테이블 FK)
                                   reg_date DATE DEFAULT SYSDATE,
                                   PRIMARY KEY (user_id, product_id)
+);
+
+CREATE TABLE user_intake_log (
+                                 user_id VARCHAR(50),
+                                 product_id INT,
+                                 intake_date DATE DEFAULT (sysdate), -- 오라클의 경우 SYSDATE
+                                 PRIMARY KEY (user_id, product_id, intake_date)
 );

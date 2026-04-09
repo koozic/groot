@@ -120,7 +120,17 @@
                     <c:choose>
                         <c:when test="${not empty myProducts}">
                             <c:forEach var="p" items="${myProducts}">
-                                <div class="vit-item" onclick="toggleCheck(this, '${p.productId}')">
+
+                                <%-- [추가] 현재 제품이 오늘 복용 리스트(intakeList)에 있는지 확인하는 로직 --%>
+                                <c:set var="isTaken" value="false" />
+                                <c:forEach var="takenId" items="${intakeList}">
+                                    <c:if test="${takenId == p.productId}">
+                                        <c:set var="isTaken" value="true" />
+                                    </c:if>
+                                </c:forEach>
+
+                                <%-- [수정] 복용 여부에 따라 'checked' 클래스 자동 부여 --%>
+                                <div class="vit-item ${isTaken ? 'checked' : ''}" onclick="toggleCheck(this, '${p.productId}')">
                                         <%-- 1. 좌측: 아이콘 --%>
                                     <div class="vit-icon">💊</div>
 
@@ -141,7 +151,8 @@
 
                                         <%-- 4. 우측: 액션 버튼 --%>
                                     <div class="vit-actions">
-                                        <div class="vit-check-box"></div>
+                                            <%-- [수정] 복용 여부에 따라 '✓' 표시 자동 생성 --%>
+                                        <div class="vit-check-box">${isTaken ? '✓' : ''}</div>
                                         <button class="vit-delete-btn" onclick="event.stopPropagation(); removeSupplement('${p.productId}');">
                                             &times;
                                         </button>

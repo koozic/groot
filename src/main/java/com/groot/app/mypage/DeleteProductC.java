@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebServlet("/mypage/remove-product")
-public class DeleteProductServlet extends HttpServlet {
+public class DeleteProductC extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         UserDTO loginUser = (com.groot.app.user.UserDTO) request.getSession().getAttribute("loginUser");
 
