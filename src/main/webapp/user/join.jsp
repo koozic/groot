@@ -99,9 +99,22 @@
                     <div class="login-input-group">
                         <label for="email_auth_btn">이메일 본인인증</label>
                         <div style="display:flex; gap:8px;">
-                            <input type="button" id="email_auth_btn" value="인증번호 전송" class="login-btn" style="width:40%; height:46px;">
-                            <input type="text" name="email_code" placeholder="인증번호 입력" style="width:60%; height:46px; border:1px solid #ddd; border-radius:8px; padding:0 10px;">
+                            <input type="button"
+                                   id="email_auth_btn"
+                                   value="인증번호 전송"
+                                   class="login-btn"
+                                   style="width:40%; height:46px;"
+                                   onclick="sendEmailAuth()">
+
+                            <input type="text"
+                                   id="email_code"
+                                   name="email_code"
+                                   placeholder="인증번호 입력"
+                                   style="width:60%; height:46px; border:1px solid #ddd; border-radius:8px; padding:0 10px;">
                         </div>
+
+                        <small id="emailAuthMsg"></small>
+                        <input type="hidden" id="emailAuthPassed" value="false">
                     </div>
 
                     <div class="login-input-group">
@@ -130,17 +143,17 @@
                         <!-- 기본 프로필 6개 중 선택 -->
                         <div>
                             <label>
-                                <input type="radio" name="user_profile" value="Ayanokoji.jfif" checked>
+                                <input type="radio" name="default_profile" value="Ayanokoji.jfif" checked>
                                 <img src="${pageContext.request.contextPath}/user/userImg/Ayanokoji.jfif" width="80">
                             </label>
 
                             <label>
-                                <input type="radio" name="user_profile" value="Ryuen.jfif">
+                                <input type="radio" name="default_profile" value="Ryuen.jfif">
                                 <img src="${pageContext.request.contextPath}/user/userImg/Ryuen.jfif" width="80">
                             </label>
 
                             <label>
-                                <input type="radio" name="user_profile" value="Horikita.jfif">
+                                <input type="radio" name="default_profile" value="Horikita.jfif">
                                 <img src="${pageContext.request.contextPath}/user/userImg/Horikita.jfif" width="80">
                             </label>
 
@@ -211,7 +224,7 @@
 </div>
 <script>
     // 1. 파일 업로드 칸과 라디오 버튼들을 찾아서 변수에 담기
-    const fileInput = document.querySelector('input[name="user_profile_file"]');
+    const fileInput = document.querySelector('input[name="user_profile"]');
     const defaultProfiles = document.querySelectorAll('input[name="default_profile"]');
 
     // 2. 사용자가 '파일 업로드'에 사진을 넣었을 때!
@@ -291,7 +304,40 @@
     }
 </script>
 
+<script>
+    function sendEmailAuth() {
+        const emailInput = document.getElementById("user_email");   // 네 이메일 input id
+        const codeInput = document.getElementById("email_code");
+        const msg = document.getElementById("emailAuthMsg");
+        const passed = document.getElementById("emailAuthPassed");
 
+        if (!emailInput || emailInput.value.trim() === "") {
+            msg.innerText = "이메일을 먼저 입력하세요.";
+            msg.style.color = "red";
+            return;
+        }
+
+        fetch("email-auth-send?user_email=" + encodeURIComponent(emailInput.value.trim()))
+            .then(res => res.json())
+            .then(data => {
+                if (data.result === "success") {
+                    codeInput.value = data.authCode;   // 자동으로 인증번호 찍힘
+                    msg.innerText = "인증번호가 전송되었습니다.";
+                    msg.style.color = "green";
+                    passed.value = "true";   // 테스트용이니까 바로 true 처리
+                } else {
+                    msg.innerText = "인증번호 전송 실패";
+                    msg.style.color = "red";
+                    passed.value = "false";
+                }
+            })
+            .catch(() => {
+                msg.innerText = "오류가 발생했습니다.";
+                msg.style.color = "red";
+                passed.value = "false";
+            });
+    }
+</script>
 
 
 

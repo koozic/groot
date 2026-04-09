@@ -191,17 +191,17 @@ public class UserDAO {
                     System.out.println("직접 업로드 이미지 URL: " + finalProfilePath);
                 } catch (Exception e) {
                     System.out.println("Cloudinary 업로드 실패, 기본 프로필 사용: " + e.getMessage());
-                    finalProfilePath = "user/userimg/Ayanokoji.jfif";
+                    finalProfilePath = "user/userImg/Ayanokoji.jfif";
                 }
             }
             // 업로드 없으면 기본 프로필 사용
             else if (selectedProfile != null && !selectedProfile.trim().isEmpty()) {
-                finalProfilePath = "user/userimg/" + selectedProfile;
+                finalProfilePath = "user/userImg/" + selectedProfile;
                 System.out.println("기본 프로필 선택: " + finalProfilePath);
             }
             // 혹시 모를 예외 대비
             else {
-                finalProfilePath = "user/userimg/Ayanokoji.jfif";
+                finalProfilePath = "user/userImg/Ayanokoji.jfif";
                 System.out.println("기본값 적용: " + finalProfilePath);
             }
 
@@ -290,6 +290,11 @@ public class UserDAO {
 
            if (pstmt.executeUpdate() == 1){
                System.out.println("수정 완료");
+               
+               // 세션의 loginUser 객체 업데이트
+               UserDTO loginUser = (UserDTO) req.getSession().getAttribute("loginUser");
+               loginUser.setName(name);
+               req.getSession().setAttribute("loginUser", loginUser);
            }
 
         } catch (Exception e) {
