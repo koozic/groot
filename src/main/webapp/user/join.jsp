@@ -150,7 +150,7 @@
                         <!-- 직접 업로드 -->
                         <div>
                             <p>직접 업로드(선택사항)</p>
-                            <input type="file" name="user_profile_file" accept="image/*">
+                            <input type="file" name="user_profile" accept="image/*">
                         </div>
 
 

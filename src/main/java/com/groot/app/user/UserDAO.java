@@ -179,7 +179,7 @@ public class UserDAO {
             // 프로필 이미지 처리
             // =========================
             String selectedProfile = request.getParameter("default_profile");   // 라디오 선택값
-            Part profileFile = request.getPart("user_profile_file");            // 파일 업로드
+            Part profileFile = request.getPart("user_profile");            // 파일 업로드
             String finalProfilePath = null;
 
             // 직접 업로드가 있으면 Cloudinary 우선
