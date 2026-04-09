@@ -72,6 +72,6 @@ VALUES (review_likes_seq.NEXTVAL, 84, 'kim124');
 -- ==========================================
 SELECT * FROM reviews;
 SELECT * FROM review_likes;
-
+SELECT * FROM reviews ORDER BY review_id DESC;
 -- ★★★ 이거 안 하면 조원들 컴퓨터에서 네 리뷰 안 보임! ★★★
 COMMIT;

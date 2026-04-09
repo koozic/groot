@@ -181,6 +181,7 @@ public class UserDAO {
 
 
             String selectedProfile = request.getParameter("default_profile");   // 라디오 선택값
+
             String profileImg= (String) request.getAttribute("user_profile");
             String finalProfilePath = null;
 
@@ -189,6 +190,7 @@ public class UserDAO {
                 // finalProfilePath=CloudinaryUtil.uploadFile(profileFile,"user");
                 finalProfilePath = profileImg;
                 // 업로드 없으면 기본 프로필 사용}
+
             }
             else if (selectedProfile != null && !selectedProfile.trim().isEmpty()) {
                 finalProfilePath = "user/userImg/" + selectedProfile;
