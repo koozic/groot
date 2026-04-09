@@ -343,8 +343,7 @@ function deleteReview(reviewId) {
                 if(card) {
                     card.style.opacity = '0';
                     card.style.transition = 'opacity 0.3s ease';
-                    // 🌟 스르륵 지워지고 나서 페이지 전체 새로고침! (그래프/숫자 동기화)
-                    setTimeout(() => location.reload(), 300);
+                    setTimeout(() => location.reload(), 1300);
                 } else {
                     location.reload();
                 }
@@ -436,7 +435,7 @@ function submitUpdate() {
             if (data.trim() === "1") {
                 showToast("리뷰 수정을 완료했습니다! 🪄");
                 closeUpdateModal();
-                location.reload(); // 🌟 수정 후 페이지 전체 새로고침! (그래프/사진 동기화)
+                setTimeout(() => location.reload(), 2000);
             } else {
                 alert("수정 실패!");
             }
@@ -527,8 +526,7 @@ function submitReview() {
 
                 // 🌟 fetchReviews() 대신 location.reload()를 씁니다!
                 // 페이지를 한 번 새로고침해서 위쪽 통계 그래프와 사진첩 숫자까지 완벽하게 최신화시킵니다.
-                location.reload()
-
+                setTimeout(() => location.reload(), 1300);
                 // 등록 후 페이지 상단 통계 그래프도 갱신하고 싶다면 새로고침이 가장 확실하긴 합니다.
                 // location.reload();
             } else {
