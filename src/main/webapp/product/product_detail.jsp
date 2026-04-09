@@ -17,7 +17,7 @@
     <div class="hdr-right">
         <c:choose>
             <c:when test="${not empty sessionScope.loginUser}">
-                <span class="hdr-link">${sessionScope.loginUser.nameㅌ}님</span>
+                <span class="hdr-link">${sessionScope.loginUser.name}님</span>
                 <a href="mypage" class="hdr-link">마이페이지</a>
                 <a href="logout" class="btn-login">로그아웃.</a>
             </c:when>
