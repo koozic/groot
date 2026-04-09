@@ -19,7 +19,7 @@
             <c:when test="${not empty sessionScope.loginUser}">
                 <span class="hdr-link">${sessionScope.loginUser.name}님</span>
                 <a href="mypage" class="hdr-link">마이페이지</a>
-                <a href="logout" class="btn-login">로그아웃.</a>
+                <a href="logout" class="btn-login">로그아웃</a>
             </c:when>
             <c:otherwise>
                 <a href="join" class="hdr-link">회원가입</a>
@@ -59,7 +59,9 @@
     <main class="content-wrapper">
         <section class="product-hero">
             <div class="product-img-box">
-                <img src="placeholder.png" class="product-img">
+                <img src="${pageContext.request.contextPath}/img/${product.productImage}"
+                     class="product-img"
+                     alt="${product.productName} 이미지">
             </div>
             <div class="product-basic-info">
                 <span class="brand-name">${product.productBrand}</span>

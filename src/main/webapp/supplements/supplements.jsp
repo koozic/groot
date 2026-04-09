@@ -9,16 +9,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>영양성분 리스트</title>
     <link rel="stylesheet" href="css/supplements.css">
-
-    <style>
-        /* 🪄 모바일 화면(768px 이하)일 때 여백 살짝 줄여주기 */
-        @media (max-width: 768px) {
-            .reg-container {
-                margin: 20px auto; /* 위아래 여백을 살짝 줄여서 화면을 넓게 씁니다 */
-                padding: 15px;
-            }
-        }
-    </style>
 </head>
 
 <body>
@@ -45,6 +35,38 @@
             </div>
         </c:forEach>
     </div>
+
+    <div class="page-container">
+        <c:choose>
+            <c:when test="${currentPage != 1}">
+                <a href="supplements?p=${currentPage - 1}" class="page-btn">이전</a>
+            </c:when>
+            <c:otherwise>
+                <span class="page-btn disabled">이전</span>
+            </c:otherwise>
+        </c:choose>
+
+        <c:forEach begin="1" end="${totalPage}" var="i">
+            <c:choose>
+                <c:when test="${currentPage == i}">
+                    <a href="supplements?p=${i}" class="page-btn active">${i}</a>
+                </c:when>
+                <c:otherwise>
+                    <a href="supplements?p=${i}" class="page-btn">${i}</a>
+                </c:otherwise>
+            </c:choose>
+        </c:forEach>
+
+        <c:choose>
+            <c:when test="${currentPage != totalPage}">
+                <a href="supplements?p=${currentPage + 1}" class="page-btn">다음</a>
+            </c:when>
+            <c:otherwise>
+                <span class="page-btn disabled">다음</span>
+            </c:otherwise>
+        </c:choose>
+    </div>
+
 </div>
 
         <dialog id="commonModal">

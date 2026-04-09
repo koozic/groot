@@ -49,10 +49,26 @@
     </div>
 </nav>
 
-<div class="header-actions">
-    <button type="button" class="btn-add-item" onclick="openModal()">
-        <span class="icon">+</span> 영양제 등록
-    </button>
+<div class="action-bar-container">
+    <div class="nutrient-filter-list">
+        <button type="button" class="filter-btn ${empty param.nutrientId ? 'active' : ''}"
+                onclick="location.href='product'">
+            <span class="icon">🔍</span> 전체
+        </button>
+
+        <c:forEach items="${nutrients}" var="n">
+            <button type="button" class="filter-btn ${param.nutrientId == n.nutrientId ? 'active' : ''}"
+                    onclick="location.href='product?nutrientId=${n.nutrientId}'">
+                <span class="icon">💊</span> ${n.nutrientName}
+            </button>
+        </c:forEach>
+    </div>
+
+    <div class="header-actions">
+        <button type="button" class="btn-add-item" onclick="openModal()">
+            <span class="icon">+</span> 영양제 등록
+        </button>
+    </div>
 </div>
 
 <div id="productModal" class="modal">
