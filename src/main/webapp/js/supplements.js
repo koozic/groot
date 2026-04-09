@@ -57,6 +57,28 @@ async function openDetailModal(div) {
     const btns = document.querySelectorAll(".btn-group .btn-list");
     // btns[0]은 목록으로 버튼, btns[1]이 수정 버튼입니다.
     btns[1].setAttribute("onclick", `updateSupplement('${id}')`);
+}
 
+//---------------------------------------------------------------------------------------------
+// 버튼을 클릭했을 때 화면 새로고침 없이 하트를 바꿔주고 서버(컨트롤러)로 데이터를 보내는 자바스크립트
 
+function toggleLike(btn, supplementId) {
+    fetch('supplementsLike', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'supplementId=' + supplementId
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 'liked') {
+                btn.classList.add('liked');
+                btn.querySelector('.like-label').textContent = '좋아요 취소';
+            } else if (data.status === 'unliked') {
+                btn.classList.remove('liked');
+                btn.querySelector('.like-label').textContent = '좋아요';
+            } else {
+                alert(data.message || '로그인이 필요합니다.');
+            }
+        })
+        .catch(err => console.error('좋아요 오류:', err));
 }
