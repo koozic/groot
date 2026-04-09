@@ -35,19 +35,10 @@ public class AdminC extends HttpServlet {
         HttpSession session = request.getSession(false);
         if (session == null) return false;
 
-        // 통합 세션 체크: "user"라는 키로 저장된 객체를 가져옴
-        Object userObj = session.getAttribute("user");
-
-        if (userObj != null && userObj instanceof com.groot.app.user.UserDTO) {
-            com.groot.app.user.UserDTO user = (com.groot.app.user.UserDTO) userObj;
-
-            // UserDTO의 아이디 필드명이 user_id라면 getUser_id(), userId라면 getUserId() 사용
-            // 앞서 발생한 에러를 고려하여 본인의 DTO 필드명에 맞게 호출하세요.
-            String userId = user.getUser_id(); // 예시: 실제 필드명에 맞출 것
-
-            return "admin".equals(userId); // 아이디가 admin이면 관리자로 인정
-        }
-        return false;
+        // UserDAO에서 관리자 로그인 시 setAttribute("isAdmin", true) 로 저장했으므로
+        // 그 값만 꺼내서 확인
+        Boolean isAdmin = (Boolean) session.getAttribute("isAdmin");
+        return Boolean.TRUE.equals(isAdmin);
     }
 
 
@@ -116,10 +107,11 @@ public class AdminC extends HttpServlet {
                 // ── 영양소 등록 ──
                 case "insert": {
                     BodyDTO dto = buildDtoFromRequest(request);
-                    dao.insertSupplement(dto);
+                    dao.insertSupplement(dto); // 여기서 시퀀스로 생성된 ID가 dto에 세팅됨
 
                     // 등록 후 어떤 body에 연결할지 처리
                     String bodyIdParam = request.getParameter("bodyId");
+                    // bodyId가 '선택 안함'("")이 아닐 때만 연결
                     if (bodyIdParam != null && !bodyIdParam.isEmpty()) {
                         int bodyId = Integer.parseInt(bodyIdParam);
                         // 방금 등록한 supplement의 ID를 DAO에서 시퀀스로 가져와 연결
@@ -160,7 +152,7 @@ public class AdminC extends HttpServlet {
 
                     // 삭제 후 원래 있던 곳으로 돌아가기 위해 referer(이전 페이지)를 확인하거나
                     // 추천 화면 주소로 직접 보냅니다.
-                    response.sendRedirect("body_view");
+                    response.sendRedirect("admin");
                     break;
                 }
 

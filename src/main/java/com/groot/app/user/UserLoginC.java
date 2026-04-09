@@ -19,10 +19,13 @@ public class UserLoginC extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
         boolean isSuccess = UserDAO.Login(request);
-
+        System.out.println(isSuccess);
         if (isSuccess) {
-            // 2-1. 로그인 성공: 메인 페이지(또는 성공 후 보여줄 페이지)로 이동 (보통 Redirect 사용)
-            response.sendRedirect("index.jsp");
+            // ✅ 관리자 여부 확인 후 분기
+            Boolean isAdmin = (Boolean) request.getSession().getAttribute("isAdmin");
+//            if (Boolean.TRUE.equals(isAdmin)) {
+            response.sendRedirect("hello-servlet");
+//            }
         } else {
             // 2-2. 로그인 실패: 다시 로그인 페이지로 포워딩 (Forward)
             // request.setAttribute에 담긴 "loginMsg"가 유지되어 로그인 창에 에러 문구를 띄울 수 있음

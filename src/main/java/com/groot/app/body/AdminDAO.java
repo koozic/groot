@@ -9,6 +9,20 @@ import java.util.List;
 
 public class AdminDAO {
 
+    public boolean checkIsAdmin(String userId) throws Exception {
+        String sql = "SELECT COUNT(*) FROM admin WHERE admin_id = ?"; // AdminDTO의 adminId 필드와 매핑되는 컬럼명
+        try (Connection con = DBManager_new.connect();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, userId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        }
+        return false;
+    }
+
     // ── 전체 영양소 목록 (관리자용) ──
     public List<BodyDTO> getAllSupplements() throws Exception {
         List<BodyDTO> list = new ArrayList<>();
