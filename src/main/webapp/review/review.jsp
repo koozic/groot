@@ -96,7 +96,8 @@
                             <div class="photo-slider" id="photo-slider">
                                 <c:forEach var="img" items="${allPhotoImages}">
                                     <div class="photo-slide-item" onclick="openDetailModal('${img.r_title}', '${img.user_id}', '${img.r_score}', '${img.r_date}', '${img.r_content}', '${img.r_img}')">
-                                        <img src="../upload/${img.r_img}" alt="포토리뷰 이미지">
+                                            <%-- 클라우드 URL 자체를 바로 src에 꽂아줍니다! --%>
+                                        <img src="${img.r_img}" alt="포토리뷰 이미지">
                                     </div>
                                 </c:forEach>
                             </div>
