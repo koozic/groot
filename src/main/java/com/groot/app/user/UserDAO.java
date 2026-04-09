@@ -51,57 +51,59 @@ public class UserDAO {
 
                     request.setAttribute("loginMsg", "어서오세요. 당신의 건강을 챙기세요");
                     isLoginSuccess = true;
+                } else if (rs.getString("user_pw").equals("ADMIN_PROTECTED")) {
+                    // ── Step 2. users에 없으면 admin 테이블 조회 ──
+                    // 중요: 다음 조회를 위해 기존 리소스 닫기
+                    DBManager_new.close(null, pstmt, rs);
+
+                    String adminSql = "SELECT * FROM admin WHERE admin_id=?";
+                    pstmt = con.prepareStatement(adminSql);
+                    pstmt.setString(1, id);
+                    rs = pstmt.executeQuery();
+
+                    if (rs.next()) {
+                        if (rs.getString("admin_pw").equals(pw)) {
+                            // [관리자 로그인 성공]
+                            UserDTO adminUser = new UserDTO();
+                            adminUser.setUser_id(rs.getString("admin_id"));
+                            adminUser.setName(rs.getString("admin_name"));
+                            adminUser.setEmail(rs.getString("admin_email"));
+                            // 관리자는 프로필 이미지가 없을 수 있으므로 기본값 설정 가능
+                            adminUser.setUser_profile("admin_icon.png");
+
+                            // 2. 중요: users 테이블에 이 관리자 ID가 있는지 확인하고, 없으면 생성
+                            // 이 처리를 통해 supplements_like 테이블의 FK 제약조건을 통과할 수 있습니다.
+                            try {
+                                syncAdminToUserTable(adminUser);
+
+                            } catch (Exception e) {
+                                System.out.println("⚠️ 동기화 중 오류가 났지만 로그인은 진행합니다: " + e.getMessage());
+                            }
+
+                            HttpSession session = request.getSession();
+                            session.setAttribute("loginUser", adminUser);
+                            session.setAttribute("isAdmin", true); // 관리자 권한 부여
+                            session.removeAttribute("loginFailCount");
+
+                            request.setAttribute("loginMsg", "관리자로 로그인되었습니다.");
+                            isLoginSuccess = true;
+                        } else {
+                            // 관리자 비밀번호 불일치
+                            incrementFailCount(request, id);
+                            request.setAttribute("loginMsg", "아이디 또는 비밀번호가 일치하지 않습니다.");
+                        }
+                    } else {
+                        // 유저도 아니고 관리자도 아닌 경우
+                        incrementFailCount(request, id);
+                        request.setAttribute("loginMsg", "존재하지 않는 아이디입니다. 회원가입 해주세요");
+                        request.setAttribute("needVerifyChoice", true);
+                    }
                 } else {
+
+
                     // 비밀번호 불일치
                     incrementFailCount(request, id);
                     request.setAttribute("loginMsg", "아이디 또는 비밀번호가 일치하지 않습니다.");
-                }
-            } else {
-                // ── Step 2. users에 없으면 admin 테이블 조회 ──
-                // 중요: 다음 조회를 위해 기존 리소스 닫기
-                DBManager_new.close(null, pstmt, rs);
-
-                String adminSql = "SELECT * FROM admin WHERE admin_id=?";
-                pstmt = con.prepareStatement(adminSql);
-                pstmt.setString(1, id);
-                rs = pstmt.executeQuery();
-
-                if (rs.next()) {
-                    if (rs.getString("admin_pw").equals(pw)) {
-                        // [관리자 로그인 성공]
-                        UserDTO adminUser = new UserDTO();
-                        adminUser.setUser_id(rs.getString("admin_id"));
-                        adminUser.setName(rs.getString("admin_name"));
-                        adminUser.setEmail(rs.getString("admin_email"));
-                        // 관리자는 프로필 이미지가 없을 수 있으므로 기본값 설정 가능
-                        adminUser.setUser_profile("admin_icon.png");
-
-                        // 2. 중요: users 테이블에 이 관리자 ID가 있는지 확인하고, 없으면 생성
-                        // 이 처리를 통해 supplements_like 테이블의 FK 제약조건을 통과할 수 있습니다.
-                        try {
-                            syncAdminToUserTable(adminUser);
-
-                        } catch (Exception e) {
-                            System.out.println("⚠️ 동기화 중 오류가 났지만 로그인은 진행합니다: " + e.getMessage());
-                        }
-
-                        HttpSession session = request.getSession();
-                        session.setAttribute("loginUser", adminUser);
-                        session.setAttribute("isAdmin", true); // 관리자 권한 부여
-                        session.removeAttribute("loginFailCount");
-
-                        request.setAttribute("loginMsg", "관리자로 로그인되었습니다.");
-                        isLoginSuccess = true;
-                    } else {
-                        // 관리자 비밀번호 불일치
-                        incrementFailCount(request, id);
-                        request.setAttribute("loginMsg", "아이디 또는 비밀번호가 일치하지 않습니다.");
-                    }
-                } else {
-                    // 유저도 아니고 관리자도 아닌 경우
-                    incrementFailCount(request, id);
-                    request.setAttribute("loginMsg", "존재하지 않는 아이디입니다. 회원가입 해주세요");
-                    request.setAttribute("needVerifyChoice", true);
                 }
             }
 
