@@ -87,76 +87,97 @@
             </div>
         </div>
     </div>
-
-
     <%-- ============================================
-     탭 2. 오늘의 영양제 체크
-     TODO: List<ProductDTO>를 받아와서 반복문 출력
-     ============================================ --%>
-    <div id="tab-check" class="mp-tab-content">
-        <div class="mp-card">
-            <div class="mp-sec-title">
-                오늘의 영양제
-                <span class="today-badge" id="todayDate"></span>
+            탭 2. 오늘의 영양제 체크
+            TODO: List<ProductDTO>를 받아와서 반복문 출력
+    ============================================ --%>
+
+        <%-- ============================================
+         탭 2. 오늘의 영양제 체크
+         ============================================ --%>
+        <div id="tab-check" class="mp-tab-content">
+            <div class="mp-card">
+                <div class="mp-sec-title">
+                    오늘의 영양제
+                    <span class="today-badge" id="todayDate"></span>
+                </div>
+
+                <%-- 진행률 바 (Progress Bar) --%>
+                <div class="progress-wrap" style="margin-bottom: 20px;">
+                    <div class="progress-label">
+                        <span>오늘의 달성도</span>
+                        <span id="progressText">0 / 0</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+                    </div>
+                </div>
+
+                <%-- 복구된 부분: vit-list 컨테이너와 c:choose / c:forEach 블록 --%>
+                <div class="vit-list">
+                    <c:choose>
+                        <c:when test="${not empty myProducts}">
+                            <c:forEach var="p" items="${myProducts}">
+                                <div class="vit-item" onclick="toggleCheck(this, '${p.productId}')">
+                                        <%-- 1. 좌측: 아이콘 --%>
+                                    <div class="vit-icon">💊</div>
+
+                                        <%-- 2. 중앙 좌측: 핵심 제품 정보 --%>
+                                    <div class="vit-content">
+                                        <div class="vit-nutrient">
+                                            <c:forEach items="${nutrients}" var="n">
+                                                <c:if test="${p.productNutrient == n.nutrientId}">${n.nutrientName}</c:if>
+                                            </c:forEach>
+                                        </div>
+                                        <div class="vit-sub-info">${p.productName} <span>|</span> ${p.productBrand}</div>
+                                    </div>
+
+                                        <%-- 3. 중앙 우측: 복용 시간 --%>
+                                    <div class="vit-details">
+                                        <div class="vit-time">⏰ ${p.productTimeInfo}</div>
+                                    </div>
+
+                                        <%-- 4. 우측: 액션 버튼 --%>
+                                    <div class="vit-actions">
+                                        <div class="vit-check-box"></div>
+                                        <button class="vit-delete-btn" onclick="event.stopPropagation(); removeSupplement('${p.productId}');">
+                                            &times;
+                                        </button>
+                                    </div>
+                                </div>
+                            </c:forEach>
+                        </c:when>
+                        <c:otherwise>
+                            <p style="text-align:center; font-size:13px; color:#9ca3af; padding:20px 0;">
+                                등록된 영양제가 없습니다. 추가해주세요!
+                            </p>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+
+                <%-- 영양제 추가 버튼 --%>
+                <button type="button" class="mp-add-btn" onclick="openProductModal()" style="width:100%; margin-top: 16px;">
+                    + 영양제 추가하기
+                </button>
             </div>
 
-            <div class="progress-wrap">
-                <div class="progress-label">
-                    <span>오늘의 달성도</span>
-                    <span id="progressText">0 / 0</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
-                </div>
-            </div>
-
-            <div class="vit-list">
-                <c:choose>
-                    <c:when test="${not empty productList}">
-                        <c:forEach var="p" items="${productList}">
-                            <%--
-                              item_id: DB의 식별값
-                              is_taken: 오늘 복용 여부 (DB에서 가져온 상태값에 따라 'checked' 클래스 조건부 부여)
-                            --%>
-                            <div class="vit-item ${p.isTaken ? 'checked' : ''}"
-                                 onclick="toggleCheck(this, '${p.productId}')">
-                                <div class="vit-icon">💊</div>
-                                <div class="vit-info">
-                                    <div class="vit-name">${p.productName}</div>
-                                    <div class="vit-dose">${p.dosage}</div>
-                                </div>
-                                <div class="vit-check-box">
-                                        ${p.isTaken ? '✓' : ''}
-                                </div>
-                            </div>
-                        </c:forEach>
-                    </c:when>
-                    <c:otherwise>
-                        <%-- 데이터가 없을 경우 가이드 제공 --%>
-                        <p style="text-align:center; font-size:13px; color:#9ca3af; padding:20px 0;">
-                            등록된 영양제가 없습니다.
-                        </p>
-                    </c:otherwise>
-                </c:choose>
-            </div>
+            <%-- 모달 영역 --%>
             <div id="productModal" class="mp-modal">
                 <div class="mp-modal-content">
                     <div class="mp-modal-header">
                         <div class="mp-sec-title">영양제 선택</div>
                         <button class="modal-close" onclick="closeProductModal()">&times;</button>
                     </div>
-
                     <div class="modal-search">
                         <input type="text" id="modalSearchInput" placeholder="제품명 검색..." onkeyup="filterProducts()">
                     </div>
-
                     <div class="modal-product-list" id="modalProductList">
-                        <c:forEach var="p" items="${productListAll}">
+                        <c:forEach var="p" items="${products}">
                             <div class="modal-item" onclick="addSupplement('${p.productId}')">
                                 <div class="vit-icon">💊</div>
                                 <div class="vit-info">
                                     <div class="vit-name">${p.productName}</div>
-                                    <div class="vit-dose">${p.brand} | ${p.dosage}</div>
+                                    <div class="vit-dose">${p.productBrand}</div>
                                 </div>
                                 <button class="add-select-btn">+</button>
                             </div>
@@ -164,12 +185,7 @@
                     </div>
                 </div>
             </div>
-            <%-- 영양제 추가/관리 페이지 이동 (팀원 기능 연결) --%>
-            <a href="${pageContext.request.contextPath}/product/search" class="mp-add-btn">
-                + 영양제 추가하기
-            </a>
         </div>
-    </div>
 
 
     <%-- ============================================

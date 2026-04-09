@@ -127,3 +127,13 @@ VALUES ('kim123', 101);
 
 select *
 from calendar;
+
+
+
+-- 유저별 보관함(내 영양제) 테이블 예시
+CREATE TABLE user_supplements (
+                                  user_id VARCHAR2(50),      -- 유저 ID (users 테이블 FK)
+                                  product_id NUMBER,         -- 제품 ID (products 테이블 FK)
+                                  reg_date DATE DEFAULT SYSDATE,
+                                  PRIMARY KEY (user_id, product_id)
+);
