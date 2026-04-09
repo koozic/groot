@@ -186,18 +186,7 @@ public class UserDAO {
 
             // 직접 업로드가 있으면 Cloudinary 우선
             if (profileFile != null && profileFile.getSize() > 0) {
-<<<<<<< HEAD
-                try {
-                    finalProfilePath = CloudinaryUtil.uploadFile(profileFile, "users");
-                    System.out.println("직접 업로드 이미지 URL: " + finalProfilePath);
-                } catch (Exception e) {
-                    System.out.println("Cloudinary 업로드 실패, 기본 프로필 사용: " + e.getMessage());
-                    finalProfilePath = "user/userImg/Ayanokoji.jfif";
-                }
-=======
-                finalProfilePath = CloudinaryUtil.uploadFile(profileFile, "user");
-                System.out.println("직접 업로드 이미지 URL: " + finalProfilePath);
->>>>>>> d7cf8b58995511605dfbf24f89d12361c334b712
+
             }
             // 업로드 없으면 기본 프로필 사용
             else if (selectedProfile != null && !selectedProfile.trim().isEmpty()) {
