@@ -569,8 +569,8 @@ public class ReviewDAO {
                             "        S.supplement_name, " +
                             "        (SELECT ROUND(NVL(AVG(r_score), 0), 1) FROM reviews WHERE product_id = P.product_id) AS avg_score " +
                             "    FROM reviews R " +
-                            "    JOIN products P ON R.product_id = P.product_id " +
-                            "    JOIN supplements S ON P.product_nutrient = S.supplement_id " +
+                            "  LEFT JOIN products P ON R.product_id = P.product_id " +
+                            "  LEFT JOIN supplements S ON P.product_nutrient = S.supplement_id " +
                             "    ORDER BY R.r_like DESC, R.r_date DESC" +
                             ") WHERE ROWNUM <= 4";
 

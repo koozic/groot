@@ -179,12 +179,12 @@ public class UserDAO {
             // 프로필 이미지 처리
             // =========================
             String selectedProfile = request.getParameter("default_profile");   // 라디오 선택값
-            Part profileFile = request.getPart("user_profile");            // 파일 업로드
+            Part profileFile = request.getPart("user_profile");            // 파일 업로드,유저가 입력한 이미지는 스트링값이 아니라서 겟 파트로 받아야됨
             String finalProfilePath = null;
 
             // 직접 업로드가 있으면 Cloudinary 우선
             if (profileFile != null && profileFile.getSize() > 0) {
-                finalProfilePath = CloudinaryUtil.uploadFile(profileFile, "users");
+                finalProfilePath = CloudinaryUtil.uploadFile(profileFile, "users");//이 폴더 이름은 이미지 저장소에 있는
                 System.out.println("직접 업로드 이미지 URL: " + finalProfilePath);
             }
             // 업로드 없으면 기본 프로필 사용

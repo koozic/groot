@@ -95,38 +95,61 @@
     </form>
 </section>
 
-<div class="grid-4">
-    <%-- 🌟 컨트롤러가 넘겨준 무영표 베스트 리뷰 4개 반복문 시작! --%>
-    <c:forEach var="best" items="${bestReviews}" varStatus="status">
-
-        <%-- 🎨 배지 색상 로테이션 (파, 노, 초, 주 순서대로 돌려 입히기) --%>
-        <c:set var="badgeColor" value="${status.index % 4 == 0 ? 'badge-blue' : (status.index % 4 == 1 ? 'badge-yellow' : (status.index % 4 == 2 ? 'badge-green' : 'badge-orange'))}" />
-
-        <div class="card review-card" onclick="location.href='product-detail?id=${best.product_id}'" style="cursor: pointer;">
-
-                <%-- 🚨 수정된 부분: 에러 안 나게 '베스트'로 텍스트 고정! --%>
-            <span class="badge ${badgeColor}">베스트</span>
-
-                <%-- 2. 리뷰 제목 --%>
-            <div class="review-title">${best.r_title}</div>
-
-                <%-- 3. 리뷰 내용 --%>
-            <div class="review-body">${best.r_content}</div>
-
-                <%-- 4. 별점 --%>
-            <div class="review-stars">
-                <c:forEach begin="1" end="${best.r_score}">★</c:forEach>
-                <c:forEach begin="${best.r_score + 1}" end="5">☆</c:forEach>
-            </div>
-
-                <%-- 5. 작성자 --%>
-            <div class="review-author">${best.user_id} &nbsp;|&nbsp; 👍 ${best.r_like}</div>
-
-        </div>
-
-    </c:forEach>
+<section style="margin-bottom: 36px; margin-top: 40px;">
+<div class="sec-header">
+    <div class="sec-title">🏆 지금 가장 핫한 베스트 리뷰</div>
+    <a href="review" class="sec-more">전체보기 ›</a>
 </div>
 
-<!-- =============================================
-home.jsp 전용 스타일
-============================================= -->
+<div class="grid-4">
+    <c:choose>
+        <%-- 데이터가 있을 때 --%>
+        <c:when test="${not empty bestReviews}">
+            <c:forEach var="best" items="${bestReviews}" varStatus="status">
+
+                <c:set var="badgeColor" value="${status.index % 4 == 0 ? 'badge-blue' : (status.index % 4 == 1 ? 'badge-yellow' : (status.index % 4 == 2 ? 'badge-green' : 'badge-orange'))}" />
+
+                <div class="card review-card" onclick="location.href='product-detail?id=${best.product_id}'" style="cursor: pointer; padding: 20px;">
+
+                        <%-- 1. 상단: 은사님의 영양성분 태그 + 평균 평점 --%>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                        <span class="badge ${badgeColor}">${not empty best.supp_name ? best.supp_name : '종합영양제'}</span>
+                        <span style="font-size: 12px; font-weight: bold; color: #555;">⭐ 상품평점: ${best.p_avg_score}</span>
+                    </div>
+
+                        <%-- 2. 제품 정보 영역 (사진 + 이름) --%>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dashed #eee;">
+                        <img src="${not empty best.p_img ? best.p_img : '../images/default.jpg'}" alt="제품사진" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">
+                        <div style="font-weight: bold; font-size: 14px; color: #333;">${not empty best.p_name ? best.p_name : '제품명 없음'}</div>
+                    </div>
+
+                        <%-- 3. 리뷰 제목 및 내용 (2줄 요약 처리) --%>
+                    <div class="review-title" style="margin-bottom: 5px;">${best.r_title}</div>
+                    <div class="review-body" style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; margin-bottom: 10px;">
+                            ${best.r_content}
+                    </div>
+
+                        <%-- 4. 리뷰 별점 --%>
+                    <div class="review-stars" style="margin-bottom: 10px;">
+                        <c:forEach begin="1" end="${best.r_score}">★</c:forEach>
+                        <c:forEach begin="${best.r_score + 1}" end="5">☆</c:forEach>
+                    </div>
+
+                        <%-- 5. 하단: 작성자 및 좋아요 --%>
+                    <div class="review-author" style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>${best.user_id}</span>
+                        <span style="font-weight: bold; font-size: 11px;">👍 ${best.r_like}</span>
+                    </div>
+                </div>
+            </c:forEach>
+        </c:when>
+
+        <%-- 데이터가 없을 때 (무영님 확인용) --%>
+        <c:otherwise>
+            <div style="grid-column: span 4; text-align: center; padding: 40px; color: #777; background: #f8f9fa; border-radius: 12px;">
+                앗! DB에서 데이터를 못 가져왔습니다. 서버 로그를 확인해주세요!
+            </div>
+        </c:otherwise>
+    </c:choose>
+</div>
+</section>
