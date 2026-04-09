@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -20,28 +21,35 @@
 <!-- =============================================
      1. 헤더
      ============================================= -->
-<header class="site-header">
-    <a href="hello-servlet" class="logo">약<span>쟁</span>이</a>
-    <div class="hdr-right">
-        <c:choose>
-            <c:when test="${not empty sessionScope.loginUser}">
-                <span class="hdr-link">${sessionScope.loginUser.name}님 어서오세요. 당신의 건강을 챙기세요</span>
-                <img
-                        src="${pageContext.request.contextPath}/user/userImg/${sessionScope.loginUser.user_profile}"
-                        alt="프로필"
-                        style="width:40px; height:40px; border-radius:50%; object-fit:cover;"
-                        onerror="this.src='${pageContext.request.contextPath}/user/userImg/${sessionScope.loginUser.user_profile}'"
-                >
+<div class="hdr-right" style="display: flex; align-items: center; justify-content: flex-end; gap: 15px;">
+    <c:choose>
+        <%-- [1] 로그인 했을 때 --%>
+        <c:when test="${not empty sessionScope.loginUser}">
+            <span class="hdr-link" style="margin-right: 5px;">
+                ${sessionScope.loginUser.name}님 어서오세요.
+            </span>
 
-                <a href="mypage" methods="post" class="hdr-link">마이페이지</a>
-                <a href="logout" class="btn-login">로그아웃</a>
-            </c:when>
-            <c:otherwise>
-                <a href="join"  class="hdr-link">회원가입</a>
-                <a href="user-Login" class="btn-login">로그인</a>
-            </c:otherwise>
-        </c:choose>
-    </div>
+            <%-- 삼항 연산자로 깔끔하게 이미지 출력 --%>
+            <img
+                    src="${sessionScope.loginUser.user_profile.startsWith('http')
+                       ? sessionScope.loginUser.user_profile
+                       : pageContext.request.contextPath.concat('/user/userImg/').concat(sessionScope.loginUser.user_profile)}"
+                    alt="프로필"
+                    style="width:40px; height:40px; border-radius:50%; object-fit:cover;"
+                    onerror="this.src='${pageContext.request.contextPath}/user/userImg/Ayanokoji.jfif'"
+            >
+
+            <a href="mypage" class="hdr-link">마이페이지</a>
+            <a href="logout" class="btn-login">로그아웃</a>
+        </c:when>
+
+        <%-- [2] 로그인 안 했을 때 (회원가입, 로그인이 오른쪽 끝으로!) --%>
+        <c:otherwise>
+            <a href="join" class="hdr-link">회원가입</a>
+            <a href="user-Login" class="btn-login">로그인</a>
+        </c:otherwise>
+    </c:choose>
+</div>
 </header>
 
 <!-- =============================================

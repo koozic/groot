@@ -2,6 +2,7 @@ package com.groot.app.supplements;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +13,7 @@ import java.util.List;
 import static com.groot.app.supplements.SupplementsDAO.SDAO;
 
 @WebServlet(name = "SupplementsC", value = "/supplements")
+
 public class SupplementsC extends HttpServlet {
 
     // 화면 조회 (리스트 보기)

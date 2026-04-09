@@ -258,7 +258,7 @@ from admin;
 
 
 
-
+ALTER TABLE USERS RENAME COLUMN USER_PROFILE_PATH TO user_profile;
 
 
 
