@@ -14,6 +14,7 @@
 </head>
 
 <body>
+
 <h1 style="text-align: center;">영양성분 리스트</h1>
 
 <button class="supp-btn" onclick="openAddModal()">새 영양성분 등록</button>

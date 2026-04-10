@@ -24,7 +24,7 @@
      ============================================= -->
 <header class="site-header">
     <%-- 로고가 있어야 로그인이 오른쪽으로 밀려납니다 --%>
-    <div class="logo" onclick="location.href='index'">약<span>쟁이</span></div>
+    <div class="logo" onclick="location.href='hello-servlet'">약<span>쟁이</span></div>
 
     <%-- 직접 썼던 style은 지우고 클래스명만 유지! --%>
     <div class="hdr-right">
