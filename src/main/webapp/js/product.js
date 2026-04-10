@@ -7,6 +7,10 @@ const delModal = document.getElementById("deleteConfirmModal");
 
 
 document.addEventListener("DOMContentLoaded", function () {
+    // 1. 초기 로드 시 전체 리스트 비동기 호출
+    loadProductList('');
+
+    // 2. 동기식 처리에 따른 토스트 알림 로직 (기존 코드 유지)
     const urlParams = new URLSearchParams(window.location.search);
     const toast = document.getElementById("toast");
 
@@ -25,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
             paramToClear = "delete";
         } else if (urlParams.get('update') === 'success') {
             message = "✨ 수정이 완료되었습니다!";
-            toastType = "update"; // 하늘색 테마
+            toastType = "update";
             paramToClear = "update";
         }
 
@@ -38,7 +42,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 toast.classList.remove("show", toastType);
             }, 3000);
 
-            // 성공 파라미터만 제거하고 id는 유지
             urlParams.delete(paramToClear);
             const newSearch = urlParams.toString();
             const newUrl = window.location.pathname + (newSearch ? "?" + newSearch : "");
@@ -46,6 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    // 3. 동기식 삭제 처리 로직 (기존 코드 유지)
     const btnConfirm = document.getElementById("btn-confirm-delete");
     if (btnConfirm) {
         btnConfirm.addEventListener("click", function () {
@@ -56,10 +60,69 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-// --- 모달 제어 및 유효성 검사 함수들은 기존과 동일하게 유지하되,
 // 맨 마지막에 남는 불필요한 '}' 가 없는지 꼭 확인하세요! ---
+async function loadProductList(nutrientId) {
+    updateFilterUI(nutrientId);
 
+    // ★ URL에 cmd=list 파라미터 추가하여 백엔드의 비동기 로직(JSON 반환)을 타도록 수정
+    const url = nutrientId ? `product?cmd=list&nutrientId=${nutrientId}` : `product?cmd=list`;
 
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("네트워크 응답 오류");
+        const products = await response.json();
+        renderProducts(products); // JSON 데이터를 받아서 화면에 그리기
+    } catch (error) {
+        console.error("데이터 로드 실패:", error);
+    }
+}
+function renderProducts(products) {
+    const container = document.getElementById("product-list-container");
+    const isAdmin = document.getElementById("isAdmin").value === "true";
+
+    if (products.length === 0) {
+        container.innerHTML = "<p style='text-align:center; width:100%;'>등록된 상품이 없습니다.</p>";
+        return;
+    }
+
+    let htmlString = "";
+    products.forEach((p, index) => {
+        // 기존 동기식 삭제 모달을 띄우는 confirmDelete 함수 호출
+        const deleteBtnHtml = isAdmin ?
+            `<button class="btn-delete" onclick="event.stopPropagation(); confirmDelete('${p.productId}')">&times;</button>` : '';
+
+        const delay = index * 0.05;
+
+        htmlString += `
+            <div class="product-card" style="animation-delay: ${delay}s" onclick="location.href='product-detail?id=${p.productId}'">
+                <div class="product-image">
+                    <img src="${p.productImage}" alt="상품 이미지" onerror="this.src='default-image.png'">
+                    ${deleteBtnHtml}
+                </div>
+                <div class="product-info">
+                    <div class="product-name">${p.productName}</div>
+                    <div class="product-brand">${p.productBrand}</div>
+                    <div class="product-nutrient">${p.nutrientName || ''}</div>
+                    <div class="product-price">${p.productPrice}원</div>
+                    <div class="product-date">${p.productStartDate}</div>
+                </div>
+            </div>
+        `;
+    });
+    container.innerHTML = htmlString;
+}
+
+function updateFilterUI(selectedId) {
+    document.getElementById("filter-all").classList.remove("active");
+    document.querySelectorAll(".filter-item").forEach(btn => btn.classList.remove("active"));
+
+    if (!selectedId) {
+        document.getElementById("filter-all").classList.add("active");
+    } else {
+        const targetBtn = document.querySelector(`.filter-item[data-id='${selectedId}']`);
+        if (targetBtn) targetBtn.classList.add("active");
+    }
+}
 /**
  * 모달 제어 함수 (등록)
  */
