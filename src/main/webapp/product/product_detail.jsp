@@ -6,7 +6,9 @@
     <header class="app-header">
         <button class="back-btn" onclick="location.href='product'">이전</button>
         <h1 class="header-title">제품 정보</h1>
-        <button class="back-btn" onclick="location.href='product-edit?id=${product.productId}'">수정</button>
+        <c:if test="${sessionScope.isAdmin == true}">
+            <button class="back-btn" onclick="location.href='product-edit?id=${product.productId}'">수정</button>
+        </c:if>
     </header>
 
     <main class="content-wrapper">

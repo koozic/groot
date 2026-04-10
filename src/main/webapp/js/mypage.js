@@ -92,10 +92,16 @@ function toggleCheck(element, productId) {
     })
         .then(response => response.text())
         .then(text => {
-            if (text === 'success') {
+            // 1. trim()을 사용하여 불필요한 공백/줄바꿈 제거
+            if (text.trim() === 'success') {
                 if (typeof renderCalendar === 'function') {
-                    renderCalendar();
+                    // 2. DB 업데이트가 반영될 수 있도록 미세한 딜레이 부여 (필요 시)
+                    setTimeout(() => {
+                        renderCalendar();
+                    }, 100);
                 }
+            } else {
+                console.warn("Status update failed response:", text);
             }
         })
         .catch(err => console.error("체크 상태 업데이트 실패", err));
