@@ -23,15 +23,15 @@ public class CloudinaryUtil {
     public static String uploadFile(Part filePart, String folderName) throws IOException {
         if (filePart == null || filePart.getSize() == 0) return null;
 
-        // 파일을 바이트 배열로 변환해서 업로드
+        // 파일을 바이트 배열로 변환해서 업로드, 다까려면 ( 엄청큰 여러가지정보, 자바의 세계에서는 , 시각적자료임 ) 다 쪼개야됨
         byte[] fileBytes = filePart.getInputStream().readAllBytes();
 
-        Cloudinary cloudinary = CloudinaryUtil.getCloudinary(); //얘가 회사까지 전달
+        Cloudinary cloudinary = CloudinaryUtil.getCloudinary(); //얘가 회사랑 연결
 
 
-        //json문자열로 바꿔준다.
         // folderName에 들어온 값("user", "product" 등)으로 폴더가 결정됨!
         // URL주소를 만들어줌.
+        //json문자열로 바꿔준다.
         Map uploadResult = cloudinary.uploader().upload(fileBytes, ObjectUtils.asMap(
 
                 "folder", folderName
