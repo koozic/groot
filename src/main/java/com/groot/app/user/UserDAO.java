@@ -325,8 +325,14 @@ public class UserDAO {
             }
 
 
+        } catch (java.sql.SQLIntegrityConstraintViolationException e) {
+            e.printStackTrace();
+            request.setAttribute("msg", "이미 사용 중인 아이디 또는 이메일입니다.");
+            request.setAttribute("redirectJoin", true);
         } catch (Exception e) {
             e.printStackTrace();
+            request.setAttribute("msg", "회원가입 중 오류가 발생했습니다.");
+            request.setAttribute("redirectJoin", true);
         } finally {
             DBManager_new.close(con, pstmt, null);
         }

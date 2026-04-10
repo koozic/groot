@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebServlet("/email-auth-check")
+@WebServlet("/user/email-auth-verify")
 public class UserVerifyCheckC extends HttpServlet {
 
     @Override
@@ -19,7 +19,7 @@ public class UserVerifyCheckC extends HttpServlet {
         response.setContentType("application/json; charset=UTF-8");
 
         String email = request.getParameter("user_email");
-        String inputCode = request.getParameter("email_code");
+        String inputCode = request.getParameter("auth_code");
 
         HttpSession session = request.getSession();
         String savedEmail = (String) session.getAttribute("emailAuthEmail");
