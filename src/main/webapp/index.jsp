@@ -15,7 +15,20 @@
     <script src="js/app.js"></script>
     <link rel="stylesheet" href="css/recommend.css">
     <link rel="stylesheet" href="css/home.css">
-    <link rel="stylesheet" href="css/home.css">
+    <%-- body 페이지가 포함될 때 body.css 로드 --%>
+    <c:if test="${content == 'body/body.jsp'}">
+        <link rel="stylesheet" href="css/body.css">
+    </c:if>
+    <script>
+        const IS_LOGIN = ${ (not empty sessionScope.loginUser) or (sessionScope.isAdmin == true) };
+        window.IS_LOGIN = IS_LOGIN;
+        window.IS_ADMIN = ${ sessionScope.isAdmin == true };
+        window.LOGIN_USER_ID = "${not empty sessionScope.loginUser ? sessionScope.loginUser.user_id : ''}";
+    </script>
+    <%-- body 페이지가 포함될 때만 body.js 로드 --%>
+    <c:if test="${content == 'body/body.jsp'}">
+        <script src="js/body.js" defer></script>
+    </c:if>
 </head>
 <body>
 
@@ -52,7 +65,9 @@
         </c:choose>
     </div>
 </header>
-
+<!-- =============================================
+     2. 네비게이션
+     ============================================= -->
 <nav class="site-nav">
     <div class="nav-left">
         <a href="product" class="nav-item ${activeTab == 'product'   ? 'active' : ''}">제품</a>
@@ -80,6 +95,7 @@
     <c:if test="${not empty msg}">
         <div class="alert alert-info">${msg}</div>
     </c:if>
+
     <jsp:include page="${content}"/>
 </main>
 

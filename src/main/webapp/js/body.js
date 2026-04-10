@@ -24,6 +24,8 @@ let sort = 'recent';
 let page = 1;
 let modalId = null;
 let allMode = false;
+const isAdmin = (window.IS_ADMIN === true);
+let adminModeOn = false;
 
 // ── 체크박스 렌더링 ──
 function buildCheckboxes() {
@@ -299,6 +301,20 @@ function renderList() {
           ${likedIds.has(s.id) ? '&#9829; 취소' : '&#9825; 좋아요'}
         </button>
       </div>
+      ${adminModeOn && isAdmin ? `
+      <div style="display:flex;gap:6px;margin-top:8px;padding-top:8px;border-top:1px solid #f0f0f0;"
+           onclick="event.stopPropagation()">
+        <button onclick="openAdminModal('update',${s.id})"
+                style="flex:1;padding:5px 0;background:#2196F3;color:white;
+                       border:none;border-radius:5px;cursor:pointer;font-size:0.8em;font-weight:600;">
+          ✏️ 수정
+        </button>
+        <button onclick="deleteSupp(${s.id},'${s.name.replace(/'/g, "\\'")}')"
+                style="flex:1;padding:5px 0;background:#f44336;color:white;
+                       border:none;border-radius:5px;cursor:pointer;font-size:0.8em;font-weight:600;">
+          🗑️ 삭제
+        </button>
+      </div>` : ''}
     </div>`).join('') + '</div>';
 
     // 페이징
@@ -461,5 +477,168 @@ document.querySelectorAll('.body-part').forEach(el => {
         }
     });
 });
+
+/* =========================================================
+   관리자 모드 — body_view 화면 인라인 CRUD
+   ========================================================= */
+
+// ── 관리 모드 ON/OFF 토글 ──
+function toggleAdminMode() {
+    adminModeOn = !adminModeOn;
+    const toggleBtn = document.getElementById('adminToggleBtn');
+    const addBtn = document.getElementById('adminAddBtn');
+
+    if (adminModeOn) {
+        toggleBtn.textContent = '🛠️ 관리 모드 ON';
+        toggleBtn.style.background = '#e53935';
+    } else {
+        toggleBtn.textContent = '🛠️ 관리 모드';
+        toggleBtn.style.background = '#FF9800';
+    }
+
+    // 추가 버튼 표시/숨김
+    if (addBtn) addBtn.style.display = adminModeOn ? 'inline-block' : 'none';
+
+    // 카드 다시 렌더해서 수정/삭제 버튼 표시 반영
+    renderList();
+}
+
+// ── 관리자 모달 열기 ──
+// mode: 'insert' | 'update'
+function openAdminModal(mode, suppId) {
+    const overlay = document.getElementById('adminModalOverlay');
+    if (!overlay) return;
+
+    // 공통 초기화
+    document.getElementById('adminAction').value = mode;
+    document.getElementById('adminSuppId').value = suppId || '';
+    ['adminName', 'adminEfficacy', 'adminDosage',
+        'adminTiming', 'adminCaution', 'adminImgPath'].forEach(id => {
+        document.getElementById(id).value = '';
+    });
+    // 신체 부위 선택: 등록 시에만 표시
+    document.getElementById('adminBodyIdWrap').style.display =
+        mode === 'insert' ? 'block' : 'none';
+
+    if (mode === 'update' && suppId) {
+        document.getElementById('adminModalTitle').textContent = '✏️ 영양소 수정';
+        // 기존 데이터 불러와서 폼 채우기
+        fetch(`admin/api?action=get&suppId=${suppId}`)
+            .then(r => r.json())
+            .then(data => {
+                if (data.error) {
+                    alert('데이터 조회 실패');
+                    return;
+                }
+                document.getElementById('adminName').value = data.supplementName || '';
+                document.getElementById('adminEfficacy').value = data.supplementEfficacy || '';
+                document.getElementById('adminDosage').value = data.supplementDosage || '';
+                document.getElementById('adminTiming').value = data.supplementTiming || '';
+                document.getElementById('adminCaution').value = data.supplementCaution || '';
+                document.getElementById('adminImgPath').value = data.supplementImagePath || '';
+            });
+    } else {
+        document.getElementById('adminModalTitle').textContent = '➕ 영양소 등록';
+        document.getElementById('adminBodyId').value = '';
+    }
+
+    overlay.style.display = 'flex';
+    document.body.style.overflow = 'hidden'; // 배경 스크롤 잠금
+}
+
+// ── 관리자 모달 닫기 ──
+function closeAdminModal() {
+    const overlay = document.getElementById('adminModalOverlay');
+    if (overlay) overlay.style.display = 'none';
+    document.body.style.overflow = '';
+}
+
+// ── 저장 버튼 (insert / update AJAX) ──
+function submitAdminModal() {
+    const action = document.getElementById('adminAction').value;
+    const suppId = document.getElementById('adminSuppId').value;
+    const name = document.getElementById('adminName').value.trim();
+    const efficacy = document.getElementById('adminEfficacy').value.trim();
+
+    if (!name) {
+        alert('영양소 이름을 입력해주세요.');
+        return;
+    }
+    if (!efficacy) {
+        alert('효능을 입력해주세요.');
+        return;
+    }
+
+    const params = new URLSearchParams();
+    params.append('action', action);
+    params.append('supplementName', name);
+    params.append('supplementEfficacy', efficacy);
+    params.append('supplementDosage', document.getElementById('adminDosage').value.trim());
+    params.append('supplementTiming', document.getElementById('adminTiming').value.trim());
+    params.append('supplementCaution', document.getElementById('adminCaution').value.trim());
+    params.append('supplementImagePath', document.getElementById('adminImgPath').value.trim());
+
+    if (action === 'update') {
+        params.append('suppId', suppId);
+    }
+    if (action === 'insert') {
+        const bodyId = document.getElementById('adminBodyId').value;
+        if (bodyId) params.append('bodyId', bodyId);
+    }
+
+    fetch('admin/api', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: params.toString()
+    })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                closeAdminModal();
+                alert(data.message);
+                // ── 캐시 초기화 후 현재 선택 부위 재로드 ──
+                const savedSelected = [...selected];
+                suppCache = {};
+                selected.clear();
+                savedSelected.forEach(p => selected.add(p));
+                Promise.all(
+                    savedSelected
+                        .filter(p => PARTS[p].body_id)
+                        .map(p => fetchSupps(p))
+                ).then(() => renderList());
+            } else {
+                alert('오류: ' + (data.message || '알 수 없는 오류'));
+            }
+        })
+        .catch(() => alert('서버 연결 실패'));
+}
+
+// ── 삭제 AJAX ──
+function deleteSupp(suppId, suppName) {
+    if (!confirm(`"${suppName}"을(를) 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) return;
+
+    const params = new URLSearchParams();
+    params.append('action', 'delete');
+    params.append('suppId', suppId);
+
+    fetch('admin/api', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: params.toString()
+    })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                // 캐시에서도 해당 항목 즉시 제거
+                for (const p in suppCache) {
+                    suppCache[p] = suppCache[p].filter(s => s.id !== suppId);
+                }
+                renderList();
+            } else {
+                alert('삭제 실패: ' + data.message);
+            }
+        })
+        .catch(() => alert('서버 연결 실패'));
+}
 
 buildCheckboxes();
