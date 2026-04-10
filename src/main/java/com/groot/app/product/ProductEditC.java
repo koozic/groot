@@ -21,7 +21,16 @@
             // 서블릿 doGet 내부
             ArrayList<NutrientDTO> nutrients = ProductDAO.PDAO.getAllNutrients(request);
             request.setAttribute("nutrients", nutrients); // 여기서 리스트를 "nutrients"라는 이름으로 담고
-            request.getRequestDispatcher("product/product_edit.jsp").forward(request, response); // 여기서 JSP로 전달함
+
+//            request.getRequestDispatcher("product/product_edit.jsp").forward(request, response); // 여기서 JSP로 전달함
+
+            // 기존 코드 삭제
+// request.getRequestDispatcher("product/product_edit.jsp").forward(request, response);
+
+// 신규 코드 적용 (Template Pattern 포워딩)
+            request.setAttribute("content", "product/product_edit.jsp");
+            request.setAttribute("activeTab", "product"); // 네비게이션 하이라이트 유지
+            request.getRequestDispatcher("index.jsp").forward(request, response);
 
         }
 
