@@ -1,5 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%--(글자 검사 기능)--%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -22,7 +24,21 @@
             <div class="supp-wrap">
                 <div class="supp-img" onclick="openDetailModal(this)"
                 data-id="${supp.supplementId}" data-name="${supp.supplementName}" data-efficacy="${supp.supplementEfficacy}" data-dosage="${supp.supplementDosage}" data-timing="${supp.supplementTiming}" data-caution="${supp.supplementCaution}" data-imgPath="${supp.supplementImagePath}">
-                <img  src=" ${supp.supplementImagePath}" alt="${supp.supplementName}">
+<%--                    <img src="${supp.supplementImagePath}" alt="${supp.supplementName}">--%>
+
+                    <%-- 💡 똑똑한 이미지 출력 로직 --%>
+                <c:choose>
+                    <%-- 1. DB 값이 'http'로 시작하면? (인터넷 주소면) -> 경로 안 붙이고 그대로 출력! --%>
+                    <c:when test="${fn:startsWith(supp.supplementImagePath, 'http')}">
+                        <img src="${supp.supplementImagePath}" alt="${supp.supplementName}">
+                    </c:when>
+
+                    <%-- 2. 그게 아니면? (직접 올린 'test.png' 같은 파일이면) -> 앞에 폴더 경로를 싹 붙여서 출력! --%>
+                    <c:otherwise>
+                        <img src="/supplementImg/supplementImgFile/${supp.supplementImagePath}" alt="${supp.supplementName}">
+                    </c:otherwise>
+                </c:choose>
+
                 </div>
 
                 <div class="supp-name">${supp.supplementName}</div>
