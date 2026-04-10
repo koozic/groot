@@ -36,11 +36,31 @@ body {
 /* SVG */
 .svg-wrap {
     width: 100%;
+    max-width: 200px; /* 원하는 최대 너비 */
+    margin: 0 auto;
+    position: relative;
+
+    background-image: url('../img/girl.png');
+
+    /* 🌟 1. 이미지가 박스 안에서 비율을 유지하며 다 보이게 함 */
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center top;
+
+    /* 🌟 2. 이미지의 실제 가로/세로 비율을 입력 (중요!) */
+    /* 예: 이미지 실제 크기가 가로 200px, 세로 380px라면 200 / 380 */
+    aspect-ratio: 200 / 380;
+
+    /* 만약 구형 브라우저 지원이 필요하다면 height: auto 대신 적절한 min-height를 줍니다. */
 }
 
 .svg-wrap svg {
+    /* SVG가 컨테이너를 꽉 채우도록 설정 */
     width: 100%;
-    height: auto;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 .body-part {
@@ -471,3 +491,4 @@ body {
         grid-template-columns: repeat(2, 1fr);
     }
 }
+
