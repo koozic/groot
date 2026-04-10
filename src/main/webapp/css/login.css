@@ -331,3 +331,17 @@
         height: 48px;
     }
 }
+.login-pill-emoji {
+    font-size: 110px;
+    max-width: 26%;
+    transform: rotate(-12deg);
+    filter: drop-shadow(0 8px 16px rgba(0,0,0,0.10));
+    display: inline-block;
+}
+
+.login-bottle-emoji {
+    font-size: 220px;
+    max-width: 48%;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.12));
+    display: inline-block;
+}

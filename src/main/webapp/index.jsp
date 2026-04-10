@@ -11,7 +11,9 @@
     <script>
         // loginUser가 있거나, isAdmin이 true이면 로그인 상태로 간주
         const IS_LOGIN = ${ (not empty sessionScope.loginUser) or (sessionScope.isAdmin == true) };
+
     </script>
+
     <script src="js/app.js"></script>
     <link rel="stylesheet" href="css/recommend.css">
     <link rel="stylesheet" href="css/home.css">
