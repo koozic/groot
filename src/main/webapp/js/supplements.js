@@ -93,14 +93,30 @@ function toggleLike(btn, supplementId) {
         .then(res => res.json())
         .then(data => {
             if (data.status === 'liked') {
-                btn.classList.add('liked');
-                btn.querySelector('.like-label').textContent = '좋아요 취소';
+                btn.classList.add('liked'); // 하트 색상 칠하기
+
+                // 만약 버튼 안에 'like-label' 이라는 텍스트 영역이 있다면 글씨도 변경
+                const label = btn.querySelector('.like-label');
+                if(label) label.textContent = '좋아요 취소';
+
             } else if (data.status === 'unliked') {
-                btn.classList.remove('liked');
-                btn.querySelector('.like-label').textContent = '좋아요';
+                btn.classList.remove('liked'); // 하트 색상 지우기
+
+                const label = btn.querySelector('.like-label');
+                if(label) label.textContent = '좋아요';
+
             } else {
-                alert(data.message || '로그인이 필요합니다.');
+                // status가 error일 경우 경고창
+                alert(data.message || '로그인이 필요하거나 오류가 발생했습니다.');
             }
         })
-        .catch(err => console.error('좋아요 오류:', err));
+        .catch(err => console.error('좋아요 비동기 통신 오류:', err));
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+    const cards = document.querySelectorAll('.supp-wrap');
+    cards.forEach((card, index) => {
+        // 각 카드마다 0.05초씩 딜레이를 주어 물결처럼 나타나게 처리
+        card.style.animationDelay = (index * 0.08) + 's';
+    });
+});

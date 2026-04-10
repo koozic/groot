@@ -2,6 +2,7 @@ package com.groot.app.mypage;
 
 import com.groot.app.main.DBManager_new;
 import com.groot.app.product.ProductDTO;
+import com.groot.app.supplements.SupplementsDTO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -421,6 +422,46 @@ public class MyPageDAO {
             DBManager_new.close(con, pstmt, rs);
         }
         return statusMap;
+    }
+
+    // =============================================================================
+    // 내가 좋아요(찜)한 영양성분 리스트 가져오기_여은사
+    // ==============================================================================
+    public ArrayList<SupplementsDTO> getLikedSupplements(String userId) {
+        ArrayList<SupplementsDTO> list = new ArrayList<>();
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        // supplements 테이블과 supplements_like 테이블을 조인하여 로그인한 유저의 데이터만 추출
+        String sql = "SELECT s.* FROM supplements s " +
+                "JOIN supplements_like sl ON s.supplement_id = sl.supplement_id " +
+                "WHERE sl.user_id = ? ORDER BY sl.supplement_like_date DESC";
+
+        try {
+            con = DBManager_new.connect();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, userId);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                SupplementsDTO dto = new SupplementsDTO();
+                dto.setSupplementName(rs.getString("supplement_name"));
+                dto.setSupplementEfficacy(rs.getString("supplement_efficacy"));
+                dto.setSupplementDosage(rs.getString("supplement_dosage"));
+                dto.setSupplementTiming(rs.getString("supplement_timing"));
+                dto.setSupplementCaution(rs.getString("supplement_caution"));
+                dto.setSupplementImagePath(rs.getString("supplement_image_path"));
+                // 필요한 정보만 담아서 리스트에 추가
+                list.add(dto);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBManager_new.close(con, pstmt, rs);
+        }
+
+        return list;
     }
 }
 

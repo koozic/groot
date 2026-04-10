@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <%-- =============================================
      마이페이지 - views/user/mypage.jsp
@@ -26,6 +27,7 @@
         <button class="mp-tab active" onclick="switchTab('info',   this)">👤 회원정보</button>
         <button class="mp-tab" onclick="switchTab('check',  this)">💊 오늘의 영양제</button>
         <button class="mp-tab" onclick="switchTab('cal',    this)">📅 복용 캘린더</button>
+        <button class="mp-tab" onclick="switchTab('like',   this)">❤️ 찜한 영양성분</button>
     </div>
 
     <%-- ============================================
@@ -331,7 +333,69 @@
 
     </div>
 
-</div>
+        <%-- ============================================================================
+                     찜한 영양성분 (추가_여은사)
+        ================================================================================= --%>
+        <div id="tab-like" class="mp-tab-content">
+            <div class="mp-card">
+                <div class="mp-sec-title">❤️ 내가 찜한 영양성분</div>
+
+                <%-- 영양성분 카드들을 나열하는 그리드 컨테이너 --%>
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-top: 15px;">
+                    <c:choose>
+                        <c:when test="${not empty likedSupplements}">
+                            <c:forEach var="supp" items="${likedSupplements}">
+
+                                <%-- 개별 영양성분 카드 --%>
+                                <div style="border: 1px solid #eee; border-radius: 10px; padding: 15px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); background: #fff; display: flex; flex-direction: column; justify-content: space-between;">
+
+                                        <%-- 상단 영역 (이미지 + 텍스트) --%>
+                                    <div>
+                                            <%-- 이미지 영역 --%>
+                                        <div style="width: 100%; height: 150px; border-radius: 8px; overflow: hidden; background: #000; position: relative; margin-bottom: 12px;">
+                                            <c:choose>
+                                                <c:when test="${fn:startsWith(supp.supplementImagePath, 'http')}">
+                                                    <img src="${supp.supplementImagePath}" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.7; mix-blend-mode: screen;" alt="영양제 이미지">
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <img src="/supplementImg/supplementImgFile/${supp.supplementImagePath}" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.7; mix-blend-mode: screen;" alt="영양제 이미지">
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </div>
+
+                                            <%-- 텍스트 정보 --%>
+                                        <div style="font-weight: bold; font-size: 1.1em; color: #333; margin-bottom: 5px;">
+                                                ${supp.supplementName}
+                                        </div>
+                                        <div style="font-size: 0.85em; color: #666; height: 35px; overflow: hidden; line-height: 1.4;">
+                                                ${supp.supplementEfficacy}
+                                        </div>
+                                    </div>
+
+                                        <%-- 상세보기 버튼 (불필요한 div 래퍼 제거 및 스타일 정리) --%>
+                                    <button onclick="showSupplementDetail('${supp.supplementId}', '${supp.supplementName}', '${supp.supplementEfficacy}', '${supp.supplementDosage}', '${supp.supplementTiming}', '${supp.supplementCaution}', '${supp.supplementImagePath}')"
+                                            style="margin-top: 15px; padding: 8px 10px; background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; border-radius: 5px; cursor: pointer; font-size: 0.9em; width: 100%; font-weight: bold;">
+                                        자세히 보기
+                                    </button>
+
+                                </div>
+
+                            </c:forEach>
+                        </c:when>
+
+                        <%-- 찜한 내역이 없을 때 --%>
+                        <c:otherwise>
+                            <div style="grid-column: 1 / -1; text-align: center; padding: 40px 0; color: #9ca3af; font-size: 14px;">
+                                <div style="font-size: 3em; margin-bottom: 10px;">🩶</div>
+                                아직 찜한 영양성분이 없습니다.<br>영양성분 리스트에서 하트를 눌러보세요!
+                            </div>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
+            </div>
+        </div>
 </div>
 
+<%--JSP(웹 페이지)에 외부 자바스크립트(JavaScript) 파일을 불러와서 적용하는 역할--%>
+<script src="js/supplementDetailModal.js"></script>
 <script src="js/mypage.js"></script>

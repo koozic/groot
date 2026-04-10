@@ -17,6 +17,7 @@ import static com.groot.app.supplements.SupplementsDAO.SDAO;
 public class SupplementsC extends HttpServlet {
 
     // 화면 조회 (리스트 보기)
+    // 화면 조회 (리스트 보기)
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
         // 1. 페이지 번호 처리 (기본 코드)
@@ -30,21 +31,23 @@ public class SupplementsC extends HttpServlet {
         List<SupplementsDTO> allList = SDAO.getSupplementsList();
 
         // ---------------------------------------------------------
-        // [새로 추가할 로직] 로그인한 유저의 좋아요 목록 가져오기
+        // 💡 [수정된 로직] 로그인한 유저의 좋아요 목록 가져오기
         // ---------------------------------------------------------
-        // 세션에서 로그인 정보를 가져옵니다.
         javax.servlet.http.HttpSession session = request.getSession(false);
-        String userId = (session != null) ? (String) session.getAttribute("userId") : null;
 
-        // 결과를 담을 리스트 (로그인 안 했을 경우를 대비해 미리 생성)
+        // 1) "loginUser"라는 이름으로 UserDTO 객체를 통째로 꺼냅니다.
+        com.groot.app.user.UserDTO loginUser = (session != null) ? (com.groot.app.user.UserDTO) session.getAttribute("loginUser") : null;
+
+        // 2) 객체가 있다면 그 안에서 진짜 아이디를 꺼냅니다.
+        String userId = (loginUser != null) ? loginUser.getUser_id() : null;
+
         java.util.List<Integer> likedIds = new java.util.ArrayList<>();
 
-        // 로그인 상태라면 DB에서 좋아요한 ID 목록을 조회해옵니다.
         if (userId != null) {
+            // 로그인한 유저라면 DAO를 실행해서 좋아요 누른 번호들을 가져옵니다.
             likedIds = SDAO.getLikedIdsByUser(userId);
         }
 
-        // JSP에서 사용할 수 있도록 request에 담아줍니다.
         request.setAttribute("likedIds", likedIds);
         // ---------------------------------------------------------
 

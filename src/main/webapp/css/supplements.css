@@ -20,6 +20,9 @@
     text-align: center;
     background-color: #fff;
     /* width: 250px; 🚨 Grid가 알아서 맞추므로 고정 넓이는 삭제했습니다! */
+    opacity: 0;
+    transform: translateY(15px);
+    animation: fadeUp 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
 .supp-img img {
@@ -252,4 +255,15 @@
 /* (보너스) 마우스를 올리면 이미지가 조금 더 선명해지도록 디테일 추가 */
 .supp-img:hover img {
     opacity: 0.8;
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
