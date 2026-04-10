@@ -200,18 +200,23 @@ function renderPaginatedReviews(isAppend = false) {
             : '';
 
         const rUser = r.user_id ? r.user_id.trim() : "";
-        let menuHtml = (currentLoginId !== "" && rUser === currentLoginId) ? `
+
+        // 🌟 [핵심 변경] 여기에 관리자 아이디 조건을 추가합니다! (예: 'admin')
+        // 만약 팀에서 정한 관리자 아이디가 다르다면 'admin' 글자를 바꿔주세요!
+        const isAdmin = (currentLoginId === 'admin');
+
+        // 내 글이거나 OR 관리자일 때만 메뉴 버튼을 보여줌!
+        let menuHtml = (currentLoginId !== "" && (rUser === currentLoginId || isAdmin)) ? `
             <div class="review-more-menu">
                 <button type="button" class="btn-more" onclick="toggleMenu(${r.review_id})">⋮</button>
                 <div id="menu-content-${r.review_id}" class="menu-content" style="display:none;">
-                    <a href="javascript:void(0)" onclick="openUpdateForm(${r.review_id})">수정하기</a>
+                    ${rUser === currentLoginId ? `<a href="javascript:void(0)" onclick="openUpdateForm(${r.review_id})">수정하기</a>` : ''}
                     <a href="javascript:void(0)" onclick="deleteReview(${r.review_id})" style="color:red;">삭제하기</a>
                 </div>
             </div>` : '';
 
         const safeTitle = r.r_title ? r.r_title.replace(/'/g, "\\'") : '';
         const safeContent = r.r_content ? r.r_content.replace(/'/g, "\\'") : '';
-
         container.innerHTML += `
             <div class="review-card" style="position: relative;">
                 ${menuHtml}
