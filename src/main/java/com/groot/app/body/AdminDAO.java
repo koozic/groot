@@ -24,15 +24,77 @@ public class AdminDAO {
     }
 
     // ── 전체 영양소 목록 (관리자용) ──
-    public List<BodyDTO> getAllSupplements() throws Exception {
-        List<BodyDTO> list = new ArrayList<>();
+//    public List<BodyDTO> getAllSupplements() throws Exception {
+//        List<BodyDTO> list = new ArrayList<>();
+//        String sql = "SELECT supplement_id, supplement_name, supplement_efficacy, " +
+//                "       supplement_dosage, supplement_timing, supplement_caution, " +
+//                "       supplement_image_path, supplement_view_count, " +
+//                "       TO_CHAR(supplement_reg_date, 'YYYY-MM-DD') AS supplement_reg_date " +
+//                "FROM supplements " +
+//                "ORDER BY supplement_id DESC";
+//
+//        try (Connection con = DBManager_new.connect();
+//             PreparedStatement ps = con.prepareStatement(sql);
+//             ResultSet rs = ps.executeQuery()) {
+//
+//            while (rs.next()) {
+//                BodyDTO dto = new BodyDTO();
+//                dto.setSupplementId(rs.getInt("supplement_id"));
+//                dto.setSupplementName(rs.getString("supplement_name"));
+//                dto.setSupplementEfficacy(rs.getString("supplement_efficacy"));
+//                dto.setSupplementDosage(rs.getString("supplement_dosage"));
+//                dto.setSupplementTiming(rs.getString("supplement_timing"));
+//                dto.setSupplementCaution(rs.getString("supplement_caution"));
+//                dto.setSupplementImagePath(rs.getString("supplement_image_path"));
+//                dto.setSupplementViewCount(rs.getInt("supplement_view_count"));
+//                dto.setSupplementRegDate(rs.getString("supplement_reg_date"));
+//                list.add(dto);
+//            }
+//        }
+//        return list;
+//    }
+
+    // 기존 메서드는 그대로 두고, 아래 메서드를 추가합니다.
+
+    /**
+     * 정렬 조건을 받아 전체 영양소 목록을 반환합니다.
+     * sortBy:
+     * "id_desc"   → 최신 등록순 (supplement_id DESC) — 기본값
+     * "id_asc"    → 오래된 등록순 (supplement_id ASC)
+     * "date_desc" → 등록일 최신순 (supplement_reg_date DESC)
+     * "date_asc"  → 등록일 오래된순 (supplement_reg_date ASC)
+     * "name_asc"  → 이름 가나다순 (supplement_name ASC)
+     */
+    public List<BodyDTO> getAllSupplements(String sortBy) throws Exception {
+
+        // ── 허용된 정렬 값만 사용 (SQL Injection 방지) ──
+        String orderBy;
+        switch (sortBy == null ? "" : sortBy) {
+            case "id_asc":
+                orderBy = "supplement_id ASC";
+                break;
+            case "date_desc":
+                orderBy = "supplement_reg_date DESC";
+                break;
+            case "date_asc":
+                orderBy = "supplement_reg_date ASC";
+                break;
+            case "name_asc":
+                orderBy = "supplement_name ASC";
+                break;
+            default:
+                orderBy = "supplement_id DESC";
+                break; // id_desc
+        }
+
         String sql = "SELECT supplement_id, supplement_name, supplement_efficacy, " +
                 "       supplement_dosage, supplement_timing, supplement_caution, " +
                 "       supplement_image_path, supplement_view_count, " +
                 "       TO_CHAR(supplement_reg_date, 'YYYY-MM-DD') AS supplement_reg_date " +
                 "FROM supplements " +
-                "ORDER BY supplement_id DESC";
+                "ORDER BY " + orderBy;
 
+        List<BodyDTO> list = new ArrayList<>();
         try (Connection con = DBManager_new.connect();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -52,6 +114,11 @@ public class AdminDAO {
             }
         }
         return list;
+    }
+
+    // 기존 파라미터 없는 메서드는 내부에서 위 메서드를 호출하도록 수정 (하위 호환)
+    public List<BodyDTO> getAllSupplements() throws Exception {
+        return getAllSupplements("id_desc");
     }
 
     // ── 단일 영양소 조회 (수정 폼용) ──

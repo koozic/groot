@@ -175,6 +175,14 @@
                 </div>
                 <div class="product-price">${p.productPrice}원</div>
                 <div class="product-date">${p.productStartDate}</div>
+                <button class="btn-wish"
+                        onclick="event.stopPropagation(); toggleWish(this, ${p.productId})">🤍
+                </button>
+                <button class="btn-cart"
+                        onclick="event.stopPropagation(); addCart(${p.productId}, '${p.productName}', '${p.productBrand}')">
+                    🛒 담기
+                </button>
+
             </div>
         </div>
 
@@ -199,6 +207,7 @@
 </div>
 
 
+<script src="js/app.js"></script>
 <%--<script src="js/product.js"></script>--%>
 <script src="js/product.js?v=20260408"></script>
 

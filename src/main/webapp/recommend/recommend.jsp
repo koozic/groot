@@ -1,20 +1,37 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Groot - 영양 추천 선택</title>
-    <style>
-        .select-container { display: flex; justify-content: center; gap: 50px; margin-top: 100px; }
-        .select-box {
-            width: 300px; padding: 40px; border: 2px solid #eee; border-radius: 20px;
-            text-align: center; cursor: pointer; transition: 0.3s;
-        }
-        .select-box:hover { border-color: #4CAF50; transform: translateY(-10px); }
-        .select-box h2 { color: #333; }
-        .select-box p { color: #666; }
-    </style>
-</head>
-<body>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
+<title>Groot - 영양 추천 선택</title>
+<style>
+    .select-container {
+        display: flex;
+        justify-content: center;
+        gap: 50px;
+        margin-top: 100px;
+    }
+
+    .select-box {
+        width: 300px;
+        padding: 40px;
+        border: 2px solid #eee;
+        border-radius: 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .select-box:hover {
+        border-color: #4CAF50;
+        transform: translateY(-10px);
+    }
+
+    .select-box h2 {
+        color: #333;
+    }
+
+    .select-box p {
+        color: #666;
+    }
+</style>
 <div class="select-container">
     <div class="select-box" onclick="location.href='body_view'">
         <h2>👤 신체별 추천</h2>
@@ -38,5 +55,3 @@
         <% } %>
     }
 </script>
-</body>
-</html>

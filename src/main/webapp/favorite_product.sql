@@ -37,4 +37,4 @@ VALUES (favorite_products_seq.NEXTVAL, 'choi03', 104);
 
 INSERT INTO favorite_products (favorite_id, user_id, product_id)
 VALUES (favorite_products_seq.NEXTVAL, 'jung04',105);
-
+
