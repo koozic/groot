@@ -422,5 +422,70 @@ public class MyPageDAO {
         }
         return statusMap;
     }
+
+
+    /**
+     * 특정 연/월에 유저가 보유한 모든 영양제를 100% 복용한 날짜(Day) 리스트 반환
+     */
+    public ArrayList<Integer> getCompletedIntakeDays(String userId, int year, int month) {
+        ArrayList<Integer> completedDays = new ArrayList<>();
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            con = DBManager_new.connect();
+
+            // 1. 화면에 보이는(유효한) 총 영양제 개수 파악 (JOIN 적용으로 유령 데이터 방어)
+            int totalSupps = 0;
+            String sqlTotal = "SELECT COUNT(*) FROM user_supplements us JOIN products p ON us.product_id = p.product_id WHERE us.user_id = ?";
+            pstmt = con.prepareStatement(sqlTotal);
+            pstmt.setString(1, userId);
+            rs = pstmt.executeQuery();
+            if (rs.next()) totalSupps = rs.getInt(1);
+
+            pstmt.close();
+            rs.close();
+
+            // 🔥 [디버깅] 톰캣 콘솔창 출력 (이 로그를 꼭 확인하세요!)
+            System.out.println("\n====== 캘린더 연산 디버깅 (" + year + "년 " + month + "월) ======");
+            System.out.println("유저 ID: " + userId + " | 화면상 총 영양제 개수: " + totalSupps);
+
+            if (totalSupps == 0) return completedDays;
+
+            // 2. 일자별 '중복 없는' 복용 개수 카운트 (DISTINCT 적용으로 중복 데이터 방어)
+            String sqlCount = "SELECT EXTRACT(DAY FROM intake_date) AS d, COUNT(DISTINCT product_id) AS cnt " +
+                    "FROM user_intake_log " +
+                    "WHERE user_id = ? AND EXTRACT(YEAR FROM intake_date) = ? AND EXTRACT(MONTH FROM intake_date) = ? " +
+                    "GROUP BY EXTRACT(DAY FROM intake_date)";
+
+            pstmt = con.prepareStatement(sqlCount);
+            pstmt.setString(1, userId);
+            pstmt.setInt(2, year);
+            pstmt.setInt(3, month);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                int day = rs.getInt("d");
+                int count = rs.getInt("cnt");
+
+                // 🔥 [디버깅] 톰캣 콘솔창 출력
+                System.out.println(day + "일자 실제 복용 개수: " + count + " (필요 달성수: " + totalSupps + ")");
+
+                // 총 개수와 해당 일자의 복용 개수가 일치하면 완료 처리
+                if (count >= totalSupps) {
+                    completedDays.add(day);
+                }
+            }
+            System.out.println("최종 완료 처리된 날짜들: " + completedDays);
+            System.out.println("====================================================\n");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBManager_new.close(con, pstmt, rs);
+        }
+        return completedDays;
+    }
 }
 
