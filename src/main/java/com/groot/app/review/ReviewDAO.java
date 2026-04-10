@@ -739,7 +739,7 @@ public class ReviewDAO {
             }
 
             // 3. 정렬 및 상위 20개 자르기
-            sql += "    ORDER BY R.r_like DESC, R.r_date DESC " +
+            sql += "    ORDER BY R.r_like DESC, R.r_score DESC, R.r_date DESC " +
                     ") WHERE ROWNUM <= 20";
 
             pstmt = con.prepareStatement(sql);

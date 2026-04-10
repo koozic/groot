@@ -8,7 +8,7 @@ body { background-color: #f9f9fa; }
 .pill-btn { padding: 10px 24px; border-radius: 30px; border: 1px solid #e0e0e0; background: #fff; color: #555; cursor: pointer; font-weight: bold; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
 .pill-btn.active, .pill-btn:hover { background: #6a8d3a; color: #fff; border-color: #6a8d3a; box-shadow: 0 4px 8px rgba(106, 141, 58, 0.3); transform: translateY(-2px); }
 .lounge-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
-.lounge-card { background: #fff; border-radius: 16px; border: 1px solid #eee; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.03); display: flex; flex-direction: column;}
+.lounge-card { background: #fff; border-radius: 16px; border: 1px solid #eee; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.03); display: flex; flex-direction: column ;align-self: start;}
 .lounge-card:hover { transform: translateY(-5px); box-shadow: 0 12px 24px rgba(0,0,0,0.08); }
 .card-prod-info { display: flex; align-items: center; gap: 12px; padding: 15px; background: #fdfdfd; border-bottom: 1px solid #f0f0f0; cursor: pointer; transition: background 0.2s; }
 .card-prod-info:hover { background: #f5f7fa; }
