@@ -23,9 +23,9 @@
     window.IS_ADMIN = ${sessionScope.isAdmin == true ? "true" : "false"};
 
     console.log("--- [Groot 세션 체크] ---");
-    console.log("로그인 여부:", window.IS_LOGIN);
-    console.log("사용자 아이디:", window.LOGIN_USER_ID);
-    console.log("관리자 여부:", window.IS_ADMIN);
+    // console.log("로그인 여부:", window.IS_LOGIN);
+    // console.log("사용자 아이디:", window.LOGIN_USER_ID);
+    // console.log("관리자 여부:", window.IS_ADMIN);
 </script>
 
 <div class="wrap">
@@ -239,12 +239,19 @@
                                color:#555; margin-bottom:5px;">연결할 신체 부위</label>
                     <select id="adminBodyId"
                             style="width:100%; padding:9px 11px; border:1px solid #ddd;
-                               border-radius:7px; font-size:0.95em;">
+               border-radius:7px; font-size:0.95em;">
                         <option value="">선택 안함</option>
-                        <option value="1">👁️ 눈</option>
-                        <option value="2">🥩 간</option>
-                        <option value="3">💤 피로개선</option>
-                        <option value="4">🦴 뼈/관절</option>
+                        <option value="1">💇 머리카락 (hair)</option>
+                        <option value="2">🧴 피부 (skin)</option>
+                        <option value="3">👁️ 눈 (eye)</option>
+                        <option value="4">🧠 뇌 (brain)</option>
+                        <option value="5">🫁 폐 (lung)</option>
+                        <option value="6">❤️ 심장 (heart)</option>
+                        <option value="7">🫀 간 (liver)</option>
+                        <option value="8">🫃 위 (stomach)</option>
+                        <option value="9">🌀 장 (intestine)</option>
+                        <option value="10">🦴 뼈 (bone)</option>
+                        <option value="11">💪 근육 (muscle)</option>
                     </select>
                 </div>
 
@@ -270,6 +277,5 @@
             <%-- /modal box --%>
     </div><%-- /overlay --%>
 </c:if>
-<script src="js/body.js"></script>
 </body>
 </html>

@@ -8,10 +8,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>약쟁이</title>
     <link rel="stylesheet" href="css/app.css">
-    <script>
-        // loginUser가 있거나, isAdmin이 true이면 로그인 상태로 간주
-        const IS_LOGIN = ${ (not empty sessionScope.loginUser) or (sessionScope.isAdmin == true) };
-    </script>
     <script src="js/app.js"></script>
     <link rel="stylesheet" href="css/recommend.css">
     <link rel="stylesheet" href="css/home.css">
@@ -20,17 +16,14 @@
         <link rel="stylesheet" href="css/body.css">
     </c:if>
     <script>
-        const IS_LOGIN = ${ (not empty sessionScope.loginUser) or (sessionScope.isAdmin == true) };
+        let IS_LOGIN = ${(not empty sessionScope.loginUser) or (sessionScope.isAdmin == true)};
         window.IS_LOGIN = IS_LOGIN;
-        window.IS_ADMIN = ${ sessionScope.isAdmin == true };
+        window.IS_ADMIN = ${sessionScope.isAdmin == true};
         window.LOGIN_USER_ID = "${not empty sessionScope.loginUser ? sessionScope.loginUser.user_id : ''}";
     </script>
-    <%-- body 페이지가 포함될 때만 body.js 로드 --%>
-    <c:if test="${content == 'body/body.jsp'}">
-        <script src="js/body.js" defer></script>
-    </c:if>
 </head>
 <body>
+
 
 <!-- =============================================
      1. 헤더
@@ -229,6 +222,9 @@
         }
     });
 </script>
-
+<%--body.js는 body.jsp가 include된 경우에만, body 태그 닫히기 직전에 로드--%>
+<c:if test="${content == 'body/body.jsp'}">
+    <script src="js/body.js"></script>
+</c:if>
 </body>
 </html>

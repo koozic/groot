@@ -117,10 +117,17 @@
             <label>연결할 신체 부위</label>
             <select name="bodyId">
                 <option value="">선택 안함</option>
-                <option value="1">👁️ 눈</option>
-                <option value="2">🥩 간</option>
-                <option value="3">💤 피로개선</option>
-                <option value="4">🦴 뼈/관절</option>
+                <option value="1">💇 머리카락 (hair)</option>
+                <option value="2">🧴 피부 (skin)</option>
+                <option value="3">👁️ 눈 (eye)</option>
+                <option value="4">🧠 뇌 (brain)</option>
+                <option value="5">🫁 폐 (lung)</option>
+                <option value="6">❤️ 심장 (heart)</option>
+                <option value="7">🫀 간 (liver)</option>
+                <option value="8">🫃 위 (stomach)</option>
+                <option value="9">🌀 장 (intestine)</option>
+                <option value="10">🦴 뼈 (bone)</option>
+                <option value="11">💪 근육 (muscle)</option>
             </select>
         </div>
     </c:if>

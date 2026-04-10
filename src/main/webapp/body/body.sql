@@ -173,6 +173,55 @@ WHERE admin_id = 'admin1';
 select *
 from USERS;
 
+-- =============================================
+-- 기존 데이터 정리 (FK 순서 주의)
+-- =============================================
+DELETE
+FROM body_supplement;
+DELETE
+FROM supplements_like;
+DELETE
+FROM supplements;
+DELETE
+FROM body;
+COMMIT;
+
+-- =============================================
+-- body 테이블 — DB의 body_id에 맞게 직접 INSERT
+-- =============================================
+INSERT INTO body (body_id, body_name, body_image)
+VALUES (1, 'hair', 'images/body/hair.png');
+INSERT INTO body (body_id, body_name, body_image)
+VALUES (2, 'skin', 'images/body/skin.png');
+INSERT INTO body (body_id, body_name, body_image)
+VALUES (3, 'eye', 'images/body/eye.png');
+INSERT INTO body (body_id, body_name, body_image)
+VALUES (4, 'brain', 'images/body/brain.png');
+INSERT INTO body (body_id, body_name, body_image)
+VALUES (5, 'lung', 'images/body/lung.png');
+INSERT INTO body (body_id, body_name, body_image)
+VALUES (6, 'heart', 'images/body/heart.png');
+INSERT INTO body (body_id, body_name, body_image)
+VALUES (7, 'liver', 'images/body/liver.png');
+INSERT INTO body (body_id, body_name, body_image)
+VALUES (8, 'stomach', 'images/body/stomach.png');
+INSERT INTO body (body_id, body_name, body_image)
+VALUES (9, 'intestine', 'images/body/intestine.png');
+INSERT INTO body (body_id, body_name, body_image)
+VALUES (10, 'bone', 'images/body/bone.png');
+INSERT INTO body (body_id, body_name, body_image)
+VALUES (11, 'muscle', 'images/body/muscle.png');
+COMMIT;
+
+select *
+from body;
+
+drop table body;
+
+DELETE
+FROM body_supplement;
+DELETE
+FROM body;
 
 
 
