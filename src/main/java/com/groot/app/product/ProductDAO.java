@@ -115,8 +115,6 @@ public class ProductDAO {
     }
 
 
-
-
     public void showProductDetail(HttpServletRequest request) {
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -223,33 +221,37 @@ public class ProductDAO {
                 "product_nutrient = ?, product_description = ?, product_image = ?, product_total = ?," +
                 "product_serve = ?, product_per_day = ?, product_time_info = ? where product_id = ?";
 
-        // 1. 파일 저장 경로 설정 및 MR 생성
-//        String path = "C:\\kky\\groot\\src\\main\\webapp\\img";
-        String path = request.getServletContext().getRealPath("img");
-        MultipartRequest mr = new MultipartRequest(
-                request, path, 1024 * 1024 * 20, "UTF-8", new DefaultFileRenamePolicy()
-        );
 
         try {
-            id = mr.getParameter("productId");
+            id = request.getParameter("productId");
             con = DBManager_new.connect();
             pstmt = con.prepareStatement(sql);
-            pstmt.setInt(11, Integer.parseInt(mr.getParameter("productId")));
-            pstmt.setString(1, mr.getParameter("productName"));
-            pstmt.setString(2, mr.getParameter("productBrand"));
-            pstmt.setInt(3, Integer.parseInt(mr.getParameter("productPrice")));
-            pstmt.setInt(4, Integer.parseInt(mr.getParameter("productNutrient")));
-            pstmt.setString(5, mr.getParameter("productDescription"));
-
-            // [수정 포인트] 새 파일이 없으면(null) hidden으로 넘겨받은 기존 파일명(oldProductImage) 사용
-            String img = mr.getFilesystemName("productImage");
-            pstmt.setString(6, img != null ? img : mr.getParameter("oldProductImage"));
+            pstmt.setInt(11, Integer.parseInt(request.getParameter("productId")));
+            pstmt.setString(1, request.getParameter("productName"));
+            pstmt.setString(2, request.getParameter("productBrand"));
+            pstmt.setInt(3, Integer.parseInt(request.getParameter("productPrice")));
+            pstmt.setInt(4, Integer.parseInt(request.getParameter("productNutrient")));
+            pstmt.setString(5, request.getParameter("productDescription"));
 
 
-            pstmt.setInt(7, Integer.parseInt(mr.getParameter("productTotal")));
-            pstmt.setInt(8, Integer.parseInt(mr.getParameter("productServe")));
-            pstmt.setInt(9, Integer.parseInt(mr.getParameter("productPerDay")));
-            pstmt.setString(10, mr.getParameter("productTimeInfo"));
+            String finalProductPath = (String) request.getAttribute("productImage");
+
+            if (finalProductPath == null || finalProductPath.isEmpty()) {
+                finalProductPath = request.getParameter("oldProductImage");
+            }
+            // 3. 기존/신규 이미지 모두 부재 시 DB 제약 조건 예외 처리를 위한 빈 문자열 할당
+            if (finalProductPath == null) {
+                finalProductPath = "";
+            }
+
+
+            pstmt.setString(6, finalProductPath);
+
+
+            pstmt.setInt(7, Integer.parseInt(request.getParameter("productTotal")));
+            pstmt.setInt(8, Integer.parseInt(request.getParameter("productServe")));
+            pstmt.setInt(9, Integer.parseInt(request.getParameter("productPerDay")));
+            pstmt.setString(10, request.getParameter("productTimeInfo"));
 
 
             if (pstmt.executeUpdate() == 1) {
