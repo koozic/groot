@@ -182,7 +182,7 @@ public class UserDAO {
 
             String selectedProfile = request.getParameter("default_profile");   // 라디오 선택값
             String uploadedProfile = (String) request.getAttribute("user_profile"); // UserJoinC에서 업로드한 URL
-         String finalProfilePath="";
+            String finalProfilePath="";
 
             // UserJoinC에서 Cloudinary 업로드한 URL이 있으면 우선 사용
             if (uploadedProfile != null && !uploadedProfile.trim().isEmpty()) {

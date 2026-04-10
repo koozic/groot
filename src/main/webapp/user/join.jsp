@@ -61,7 +61,7 @@
                     ${msg}
                 </div>
 
-                <form action="${pageContext.request.contextPath}/join" method="post" enctype="multipart/form-data">
+                <form action="${pageContext.request.contextPath}/join" method="post" enctype="multipart/form-data" onsubmit="return joinCheck()">
 
                     <div class="login-input-group">
                         <label for="user_id">아이디</label>
@@ -354,7 +354,16 @@
     }
 </script>
 
-
+<script>
+    function joinCheck() {
+        const passed = document.getElementById("emailAuthPassed");
+        if (passed && passed.value !== "true") {
+            alert("이메일 인증을 완료해주세요.");
+            return false;
+        }
+        return true;
+    }
+</script>
 
 
 </body>
