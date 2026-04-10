@@ -92,10 +92,16 @@ function toggleCheck(element, productId) {
     })
         .then(response => response.text())
         .then(text => {
-            if (text === 'success') {
+            // 1. trim()을 사용하여 불필요한 공백/줄바꿈 제거
+            if (text.trim() === 'success') {
                 if (typeof renderCalendar === 'function') {
-                    renderCalendar();
+                    // 2. DB 업데이트가 반영될 수 있도록 미세한 딜레이 부여 (필요 시)
+                    setTimeout(() => {
+                        renderCalendar();
+                    }, 100);
                 }
+            } else {
+                console.warn("Status update failed response:", text);
             }
         })
         .catch(err => console.error("체크 상태 업데이트 실패", err));
@@ -246,25 +252,41 @@ function buildCal(mappedAlerts, checkedDates, firstDay, lastDate, today) {
     var grid = document.getElementById('calGrid');
     var html = '<div class="cal-day-name">일</div><div class="cal-day-name">월</div><div class="cal-day-name">화</div><div class="cal-day-name">수</div><div class="cal-day-name">목</div><div class="cal-day-name">금</div><div class="cal-day-name">토</div>';
 
+    // [추가] 넘어온 배열이 없으면 빈 배열 할당, 문자열이 섞여 있어도 무조건 숫자로 변환
+    var safeCheckedDates = (checkedDates || []).map(Number);
+
+            // 1. 1일 이전의 빈 칸 그리기
     for (var i = 0; i < firstDay; i++) {
         html += '<div class="cal-day empty"></div>';
     }
 
+    // [수정된 부분] 날짜 비교를 위해 '오늘 자정(00:00:00)' 기준 객체 생성
+    var todayMidnight = new Date();
+    todayMidnight.setHours(0, 0, 0, 0);
+
+    // 2. 실제 날짜 셀 그리기
     for (var d = 1; d <= lastDate; d++) {
         var cls = 'cal-day';
         var isToday = (today.getFullYear() === calYear && today.getMonth() === calMonth && today.getDate() === d);
+
+        // [수정된 부분] 현재 렌더링 중인 캘린더 셀의 날짜 객체 생성 (자정 기준)
+        var currentCellDate = new Date(calYear, calMonth, d);
+        currentCellDate.setHours(0, 0, 0, 0);
 
         if (isToday) cls += ' today';
 
         html += `<div class="${cls}">`;
         html += `<span class="day-num">${d}</span>`;
 
-        if (checkedDates && checkedDates.indexOf(d) > -1) {
+        // [수정된 부분] 복용/미복용 상태 판단 로직
+        if (checkedDates && checkedDates.includes(d)) {
             html += `<div class="day-status status-ok">✅ 완료</div>`;
-        } else if (d < today.getDate() && calMonth <= today.getMonth() || calYear < today.getFullYear()) {
+        } else if (currentCellDate < todayMidnight) {
+            // 셀의 날짜가 오늘 자정보다 과거일 경우에만 미복용 처리
             html += `<div class="day-status status-miss">⚠️ 미복용</div>`;
         }
 
+        // 3. 구매 알림 데이터(배지) 렌더링
         if (mappedAlerts && mappedAlerts[d]) {
             html += `<div class="day-alerts">`;
             mappedAlerts[d].forEach(alert => {
@@ -279,8 +301,6 @@ function buildCal(mappedAlerts, checkedDates, firstDay, lastDate, today) {
     }
     grid.innerHTML = html;
 }
-
-
 
 function renderAlerts(alerts) {
     const alertList = document.getElementById('alertList');

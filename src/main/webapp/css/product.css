@@ -1,397 +1,3 @@
-/* ================================================
-   약쟁이 - app.css
-   반응형 (PC + 모바일 공용)
-   ================================================ */
-
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Black+Han+Sans&display=swap');
-
-/* ── 변수 ── */
-:root {
-    --primary:     #2563eb;
-    --primary-lt:  #eff6ff;
-    --primary-dk:  #1d4ed8;
-    --accent:      #f97316;
-    --accent-lt:   #fff7ed;
-    --bg:          #f5f6f8;
-    --bg-card:     #ffffff;
-    --border:      #e5e7eb;
-    --text:        #1a1a1a;
-    --text-sub:    #6b7280;
-    --text-light:  #c4c4c4;
-    --shadow:      0 2px 12px rgba(0,0,0,0.07);
-    --radius:      10px;
-    --radius-sm:   6px;
-    --radius-pill: 999px;
-    --header-h:    52px;
-    --nav-h:       46px;
-    --tab-h:       58px;
-}
-
-/* ── 리셋 ── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-    font-family: 'Noto Sans KR', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-}
-a { text-decoration: none; color: inherit; }
-
-/* ================================================
-   1. 헤더
-   ================================================ */
-.site-header {
-    position: sticky;
-    top: 0;
-    z-index: 200;
-    height: var(--header-h);
-    background: #fff;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 40px;
-}
-
-.logo {
-    font-family: 'Black Han Sans', cursive;
-    font-size: 24px;
-    color: var(--primary);
-    letter-spacing: -1px;
-    cursor: pointer;
-}
-.logo span { color: var(--accent); }
-
-.hdr-right {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-.hdr-link {
-    font-size: 13px;
-    color: var(--text-sub);
-    cursor: pointer;
-}
-.hdr-link:hover { color: var(--text); }
-
-.btn-login {
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    padding: 7px 18px;
-    border-radius: var(--radius-sm);
-    background: var(--primary);
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    transition: background .2s;
-}
-.btn-login:hover { background: var(--primary-dk); }
-
-/* ================================================
-   2. 네비게이션
-   ================================================ */
-.site-nav {
-    position: sticky;
-    top: var(--header-h);
-    z-index: 190;
-    height: var(--nav-h);
-    background: var(--primary);
-    display: flex;
-    align-items: center;
-    padding: 0 40px;
-}
-
-.nav-left { display: flex; flex: 1; height: 100%; }
-
-.nav-item {
-    display: flex;
-    align-items: center;
-    color: rgba(255,255,255,0.75);
-    font-size: 14px;
-    font-weight: 500;
-    padding: 0 18px;
-    cursor: pointer;
-    border-bottom: 3px solid transparent;
-    transition: all .2s;
-    white-space: nowrap;
-    text-decoration: none;
-}
-.nav-item:hover  { color: #fff; background: rgba(255,255,255,0.08); }
-.nav-item.active { color: #fff; border-bottom-color: var(--accent); }
-
-/* nav 장바구니 버튼 */
-.nav-cart {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    color: #fff;
-    font-size: 13px;
-    font-weight: 700;
-    padding: 7px 16px;
-    border-radius: var(--radius-sm);
-    background: rgba(255,255,255,0.15);
-    border: 1.5px solid rgba(255,255,255,0.3);
-    cursor: pointer;
-    white-space: nowrap;
-    transition: background .2s;
-}
-.nav-cart:hover { background: rgba(255,255,255,0.25); }
-.nav-cart-icon  { font-size: 16px; line-height: 1; }
-
-.nav-badge {
-    background: var(--accent);
-    color: #fff;
-    border-radius: var(--radius-pill);
-    font-size: 11px;
-    font-weight: 900;
-    min-width: 18px;
-    height: 18px;
-    padding: 0 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* ================================================
-   3. 본문 래퍼
-   ================================================ */
-.site-body {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 28px 40px 60px;
-    transition: margin-right .3s;
-}
-
-.site-body.shifted { margin-right: 300px; }
-
-/* ================================================
-   4. 플로팅 장바구니 버튼
-   ================================================ */
-.float-cart {
-    position: fixed;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 46px;
-    background: #fff;
-    border: 1px solid var(--border);
-    border-right: none;
-    border-radius: 10px 0 0 10px;
-    box-shadow: -3px 0 16px rgba(0,0,0,0.08);
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 12px 0;
-    gap: 5px;
-    z-index: 150;
-    transition: right .3s, background .2s;
-}
-.float-cart:hover   { background: var(--primary-lt); }
-.float-cart.open    { right: 300px; background: var(--primary-lt); border-color: #bfdbfe; }
-
-.float-icon  { font-size: 20px; line-height: 1; }
-.float-badge {
-    background: var(--accent);
-    color: #fff;
-    border-radius: var(--radius-pill);
-    font-size: 10px;
-    font-weight: 900;
-    min-width: 16px;
-    height: 16px;
-    padding: 0 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* ================================================
-   5. 장바구니 패널
-   ================================================ */
-.cart-panel {
-    position: fixed;
-    right: -300px;
-    top: 0;
-    width: 300px;
-    height: 100vh;
-    background: #fff;
-    border-left: 1px solid var(--border);
-    box-shadow: -4px 0 20px rgba(0,0,0,0.10);
-    z-index: 180;
-    display: flex;
-    flex-direction: column;
-    transition: right .3s;
-}
-.cart-panel.open { right: 0; }
-
-.cp-header {
-    padding: 16px 18px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-.cp-title {
-    font-size: 15px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 7px;
-}
-.cp-count {
-    background: var(--primary);
-    color: #fff;
-    border-radius: var(--radius-pill);
-    font-size: 11px;
-    font-weight: 700;
-    padding: 2px 9px;
-}
-.cp-close {
-    background: none;
-    border: none;
-    font-size: 18px;
-    color: var(--text-light);
-    cursor: pointer;
-    padding: 4px;
-    border-radius: 4px;
-    transition: color .15s;
-}
-.cp-close:hover { color: var(--text); }
-
-.cp-body {
-    flex: 1;
-    overflow-y: auto;
-    padding: 12px 18px;
-}
-.cp-body::-webkit-scrollbar { width: 3px; }
-.cp-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-
-.cart-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 11px 0;
-    border-bottom: 1px solid #f3f4f6;
-}
-.ci-icon {
-    width: 38px;
-    height: 38px;
-    border-radius: var(--radius-sm);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    flex-shrink: 0;
-}
-.ci-info { flex: 1; min-width: 0; }
-.ci-name {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--text);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-.ci-sub  { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
-.ci-del {
-    background: none;
-    border: none;
-    font-size: 14px;
-    color: var(--text-light);
-    cursor: pointer;
-    padding: 4px;
-    flex-shrink: 0;
-    transition: color .15s;
-    border-radius: 4px;
-}
-.ci-del:hover { color: var(--accent); }
-
-.cp-empty {
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--text-sub);
-}
-.cp-empty-icon { font-size: 44px; display: block; margin-bottom: 12px; }
-.cp-empty p    { font-size: 14px; font-weight: 700; margin-bottom: 4px; color: var(--text); }
-.cp-empty span { font-size: 12px; }
-
-.cp-footer {
-    padding: 14px 18px;
-    border-top: 1px solid var(--border);
-}
-.cp-note { font-size: 11px; color: var(--text-light); text-align: center; margin-bottom: 10px; }
-.cp-btn {
-    width: 100%;
-    background: var(--primary);
-    color: #fff;
-    border: none;
-    border-radius: var(--radius-sm);
-    padding: 12px;
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background .2s;
-}
-.cp-btn:hover { background: var(--primary-dk); }
-
-/* ================================================
-   6. 공통 컴포넌트
-   ================================================ */
-
-/* 섹션 헤더 */
-.sec-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 14px;
-}
-.sec-title {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--text);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-.sec-title::before {
-    content: '';
-    display: inline-block;
-    width: 4px;
-    height: 16px;
-    background: var(--primary);
-    border-radius: 2px;
-    flex-shrink: 0;
-}
-.sec-more {
-    font-size: 12px;
-    color: var(--text-sub);
-    cursor: pointer;
-}
-.sec-more:hover { color: var(--primary); }
-
-/* 카드 */
-.card {
-    background: var(--bg-card);
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    padding: 18px;
-    box-shadow: var(--shadow);
-}
-
-/* 배지 */
-.badge {
-    display: inline-block;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 3px 9px;
-    border-radius: var(--radius-pill);
-}
-.badge-blue   { background: var(--primary-lt); color: var(--primary); }
-.badge-orange { background: var(--accent-lt);  color: var(--accent); }
-.badge-green  { background: #f0fdf4;           color: #16a34a; }
-.badge-yellow { background: #fefce8;           color: #ca8a04; }
 
 /* 버튼 */
 .btn {
@@ -423,22 +29,6 @@ a { text-decoration: none; color: inherit; }
 .btn-full { width: 100%; justify-content: center; }
 
 /* 찜 버튼 */
-.btn-wish {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 1px solid var(--border);
-    background: #fff;
-    font-size: 16px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all .2s;
-    flex-shrink: 0;
-}
-.btn-wish:hover    { transform: scale(1.1); border-color: #fda4af; }
-.btn-wish.wished   { background: #fce4ec; border-color: #fda4af; }
 
 /* 그리드 */
 .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
@@ -1181,4 +771,48 @@ textarea {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* 드롭다운 컨테이너 */
+.filter-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* 드롭다운 메뉴 스타일 */
+.dropdown-menu {
+    display: none; /* 기본 비노출 */
+    position: absolute;
+    top: 110%;
+    left: 0;
+    background-color: #ffffff;
+    min-width: 200px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    z-index: 100;
+    padding: 8px;
+    grid-template-columns: repeat(2, 1fr); /* 비타민 항목이 많으므로 2열 배치 추천 */
+    gap: 5px;
+}
+
+/* 드롭다운 활성화 상태 */
+.dropdown-menu.show {
+    display: grid;
+}
+
+/* 드롭다운 내부 아이템 */
+.dropdown-item {
+    padding: 8px 12px;
+    border: 1px solid #f0f0f0;
+    border-radius: 4px;
+    background: transparent;
+    cursor: pointer;
+    text-align: left;
+    font-size: 0.9em;
+}
+
+.dropdown-item:hover, .dropdown-item.active {
+    background-color: #f4f6ff;
+    color: #4a6ee0;
+    border-color: #4a6ee0;
 }

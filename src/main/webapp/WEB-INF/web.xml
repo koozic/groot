@@ -18,4 +18,9 @@
     </filter-mapping>
 
 
+    <mime-mapping>
+        <extension>jfif</extension>
+        <mime-type>image/jpeg</mime-type>
+    </mime-mapping>
+
 </web-app>

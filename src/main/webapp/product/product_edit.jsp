@@ -1,51 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<html>
-<head>
-    <title>Title</title>
-    <link rel="stylesheet" href="css/app.css">
-    <link rel="stylesheet" href="css/product_edit.css">
-</head>
-<body>
-
-<!-- =============================================
-     1. 헤더
-     ============================================= -->
-<header class="site-header">
-    <a href="hello-servlet" class="logo">약<span>쟁</span>이</a>
-    <div class="hdr-right">
-        <c:choose>
-            <c:when test="${not empty sessionScope.loginUser}">
-                <span class="hdr-link">${sessionScope.loginUser.name}님</span>
-                <a href="mypage" class="hdr-link">마이페이지</a>
-                <a href="logout" class="btn-login">로그아웃.</a>
-            </c:when>
-            <c:otherwise>
-                <a href="join" class="hdr-link">회원가입</a>
-                <a href="user-Login" class="btn-login">로그인</a>
-            </c:otherwise>
-        </c:choose>
-    </div>
-</header>
-
-<!-- =============================================
-     2. 네비게이션 (PC용 상단 nav)
-     ============================================= -->
-<nav class="site-nav">
-    <div class="nav-left">
-        <a href="product" class="nav-item ${activeTab == 'product'   ? 'active' : ''}">제품</a>
-        <a href="supplements" class="nav-item ${activeTab == 'nutrition' ? 'active' : ''}">영양성분</a>
-        <a href="recommend" class="nav-item ${activeTab == 'recommend' ? 'active' : ''}">영양추천</a>
-    </div>
-    <%-- nav 장바구니 버튼 --%>
-    <div class="nav-cart" onclick="toggleCart()">
-        <span class="nav-cart-icon">🛒</span>
-        <span>장바구니</span>
-        <c:if test="${not empty sessionScope.cartCount and sessionScope.cartCount > 0}">
-            <div class="nav-badge">${sessionScope.cartCount}</div>
-        </c:if>
-    </div>
-</nav>
 
 
 <form action="product-edit" method="post" enctype="multipart/form-data">
@@ -62,7 +16,7 @@
             <section class="product-hero">
                 <div class="product-img-box" onclick="document.getElementById('productImage').click()"
                      style="cursor: pointer;">
-                    <img src="${pageContext.request.contextPath}/img/${product.productImage}" class="product-img"
+                    <img src="${product.productImage}" class="product-img"
                          id="previewImg">
 
                     <input type="file" id="productImage" name="productImage" accept="image/*"
@@ -136,11 +90,5 @@
 </form>
 
 
-<div>review 부분</div>
-
-
-</body>
-
 <%-- body 태그가 끝나기 직전에 삽입 --%>
 <script src="${pageContext.request.contextPath}/js/product.js?v=<%=System.currentTimeMillis()%>"></script>
-</html>
