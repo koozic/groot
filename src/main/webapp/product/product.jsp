@@ -9,6 +9,7 @@
     <title>제품 상세 페이지</title>
     <link rel="stylesheet" href="css/product.css">
 </head>
+
 <body>
 <!-- =============================================
      1. 헤더
@@ -40,7 +41,7 @@
         <a href="recommend" class="nav-item ${activeTab == 'recommend' ? 'active' : ''}">영양추천</a>
     </div>
     <%-- nav 장바구니 버튼 --%>
-    <div class="nav-cart" onclick="toggleCart()">
+    <div class="nav-cart">
         <span class="nav-cart-icon">🛒</span>
         <span>장바구니</span>
         <c:if test="${not empty sessionScope.cartCount and sessionScope.cartCount > 0}">
@@ -200,6 +201,14 @@
                 </div>
                 <div class="product-price">${p.productPrice}원</div>
                 <div class="product-date">${p.productStartDate}</div>
+                <button class="btn-wish"
+                        onclick="event.stopPropagation(); toggleWish(this, ${p.productId})">🤍
+                </button>
+                <button class="btn-cart"
+                        onclick="event.stopPropagation(); addCart(${p.productId}, '${p.productName}', '${p.productBrand}')">
+                    🛒 담기
+                </button>
+
             </div>
         </div>
 
@@ -225,6 +234,7 @@
 
 </body>
 
+<script src="js/app.js"></script>
 <%--<script src="js/product.js"></script>--%>
 <script src="js/product.js?v=20260408"></script>
 </html>
