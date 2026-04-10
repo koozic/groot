@@ -1,53 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>제품 상세 페이지</title>
-    <link rel="stylesheet" href="css/product.css">
-</head>
-<body>
-<!-- =============================================
-     1. 헤더
-     ============================================= -->
-<header class="site-header">
-    <a href="hello-servlet" class="logo">약<span>쟁</span>이</a>
-    <div class="hdr-right">
-        <c:choose>
-            <c:when test="${not empty sessionScope.loginUser}">
-                <span class="hdr-link">${sessionScope.loginUser.name}님</span>
-                <a href="mypage" class="hdr-link">마이페이지</a>
-                <a href="logout" class="btn-login">로그아웃.</a>
-            </c:when>
-            <c:otherwise>
-                <a href="join" class="hdr-link">회원가입</a>
-                <a href="user-Login" class="btn-login">로그인</a>
-            </c:otherwise>
-        </c:choose>
-    </div>
-</header>
-
-<!-- =============================================
-     2. 네비게이션 (PC용 상단 nav)
-     ============================================= -->
-<nav class="site-nav">
-    <div class="nav-left">
-        <a href="product" class="nav-item ${activeTab == 'product'   ? 'active' : ''}">제품</a>
-        <a href="supplements" class="nav-item ${activeTab == 'nutrition' ? 'active' : ''}">영양성분</a>
-        <a href="recommend" class="nav-item ${activeTab == 'recommend' ? 'active' : ''}">영양추천</a>
-    </div>
-    <%-- nav 장바구니 버튼 --%>
-    <div class="nav-cart" onclick="toggleCart()">
-        <span class="nav-cart-icon">🛒</span>
-        <span>장바구니</span>
-        <c:if test="${not empty sessionScope.cartCount and sessionScope.cartCount > 0}">
-            <div class="nav-badge">${sessionScope.cartCount}</div>
-        </c:if>
-    </div>
-</nav>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <div class="action-bar-container">
     <div class="nutrient-filter-list">
@@ -56,18 +9,37 @@
             <span class="icon">🔍</span> 전체
         </button>
 
-        <c:forEach items="${nutrients}" var="n">
-            <button type="button" class="filter-btn ${param.nutrientId == n.nutrientId ? 'active' : ''}"
-                    onclick="location.href='product?nutrientId=${n.nutrientId}'">
-                <span class="icon">💊</span> ${n.nutrientName}
+        <div class="filter-dropdown">
+            <button type="button" class="filter-btn dropdown-toggle" onclick="toggleDropdown(this)">
+                <span class="icon">💊</span> 비타민 <span class="arrow">▼</span>
             </button>
+            <div class="dropdown-menu">
+                <c:forEach items="${nutrients}" var="n">
+                    <c:if test="${fn:contains(n.nutrientName, '비타민')}">
+                        <button type="button" class="dropdown-item ${param.nutrientId == n.nutrientId ? 'active' : ''}"
+                                onclick="location.href='product?nutrientId=${n.nutrientId}'">
+                                ${n.nutrientName}
+                        </button>
+                    </c:if>
+                </c:forEach>
+            </div>
+
+        </div>
+        <c:forEach items="${nutrients}" var="n">
+            <c:if test="${!fn:contains(n.nutrientName, '비타민')}">
+                <button type="button" class="filter-btn ${param.nutrientId == n.nutrientId ? 'active' : ''}"
+                        onclick="location.href='product?nutrientId=${n.nutrientId}'">
+                    <span class="icon">💊</span> ${n.nutrientName}
+                </button>
+            </c:if>
         </c:forEach>
     </div>
-
     <div class="header-actions">
-        <button type="button" class="btn-add-item" onclick="openModal()">
-            <span class="icon">+</span> 영양제 등록
-        </button>
+        <c:if test="${sessionScope.isAdmin == true}">
+            <button type="button" class="btn-add-item" onclick="openModal()">
+                <span class="icon">+</span> 영양제 등록
+            </button>
+        </c:if>
     </div>
 </div>
 
@@ -113,7 +85,8 @@
 
                         <div class="input-group">
                             <label>가격</label>
-                            <input type="number" name="productPrice" placeholder="판매가(원)" min="0" max="99999" required>
+                            <input type="number" name="productPrice" placeholder="판매가(원)" min="0" max="99999"
+                                   required>
                         </div>
 
                         <div class="input-group">
@@ -183,9 +156,11 @@
             <div class="product-image">
                 <img src="${p.productImage}"
                      alt="상품 이미지" style="width:100%; height:100%; object-fit:cover;">
-                <button class="btn-delete"
-                        onclick="event.stopPropagation(); confirmDelete('${p.productId}')">&times;
-                </button>
+                <c:if test="${sessionScope.isAdmin == true}">
+                    <button class="btn-delete"
+                            onclick="event.stopPropagation(); confirmDelete('${p.productId}')">&times;
+                    </button>
+                </c:if>
             </div>
             <div class="product-info">
                 <div class="product-name">${p.productName}</div>
@@ -223,11 +198,9 @@
     </div>
 </div>
 
-</body>
 
 <%--<script src="js/product.js"></script>--%>
 <script src="js/product.js?v=20260408"></script>
-</html>
 
 
 

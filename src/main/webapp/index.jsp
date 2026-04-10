@@ -16,6 +16,11 @@
     <link rel="stylesheet" href="css/recommend.css">
     <link rel="stylesheet" href="css/home.css">
     <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="css/product.css">
+    <link rel="stylesheet" href="css/product_detail.css">
+    <link rel="stylesheet" href="css/product_edit.css">
+
+
 </head>
 <body>
 

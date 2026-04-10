@@ -434,5 +434,21 @@ public class UserDAO {
 
         return false; // 에러 발생 시 중복 아님으로 처리
     }
+
+    public static boolean isAdmin(HttpServletRequest request) {
+        // 1. 세션 가져오기 (없으면 null 반환)
+        HttpSession session = request.getSession(false);
+
+        // 2. 세션이 없으면 당연히 관리자도 아님
+        if (session == null) {
+            return false;
+        }
+
+        // 3. 세션에서 isAdmin 값을 꺼내서 확인
+        Boolean isAdmin = (Boolean) session.getAttribute("isAdmin");
+
+        // null 체크와 true 여부를 동시에 확인하여 반환
+        return isAdmin != null && isAdmin;
+    }
 }
 
