@@ -31,8 +31,11 @@ public class MyPage extends HttpServlet {
 
         // 전체 리스트 확인용
         ProductDAO.PDAO.showAllProducts(request);
-        // nutrients 리스트가 request에 담겨있어야 JSP의 c:forEach가 작동합니다.
+
+        // ======================================================================
+        // 내가 찜한 영양성분 리스트 가져오기_여은사
         request.setAttribute("nutrients", ProductDAO.PDAO.getAllNutrients(request));
+        // ======================================================================
 
         // 화면에 띄울 '내 영양제' (MyPageDAO에 새로 만들어야 함)
         ArrayList<ProductDTO> myProducts = MyPageDAO.MDAO.getUserProducts(userId);
@@ -46,10 +49,17 @@ public class MyPage extends HttpServlet {
         ArrayList<Map<String, Object>> monthlyStats =
                 MyPageDAO.MDAO.getMonthlyIntakeStatistics(userId, currentYear, currentMonth);
 
+        // ======================================================================
+        // 내가 찜한 영양성분 리스트 가져오기_여은사
+        ArrayList<com.groot.app.supplements.SupplementsDTO> likedSupplements =
+                MyPageDAO.MDAO.getLikedSupplements(userId);
+        // ======================================================================
+
         //데이터 바인딩
         request.setAttribute("myProducts", myProducts);
         request.setAttribute("intakeList", intakeList); // JSP에서 체크 여부 판단용
         request.setAttribute("monthlyStats", monthlyStats); // 통계 데이터 전달
+        request.setAttribute("likedSupplements", likedSupplements); // 찜한 영양성분 전달
 
         // HomeServlet.java 예시
         request.setAttribute("content", "mypage/mypage.jsp");

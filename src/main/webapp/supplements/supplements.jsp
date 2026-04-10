@@ -1,5 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%--(글자 검사 기능)--%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -12,9 +14,15 @@
 </head>
 
 <body>
+<%-- ✅ 세션에서 isAdmin 값을 꺼내 변수로 저장 --%>
+<c:set var="isAdmin" value="${sessionScope.isAdmin}" />
+
 <h1 style="text-align: center;">영양성분 리스트</h1>
 
-<button class="supp-btn" onclick="openAddModal()">새 영양성분 등록</button>
+<%-- ✅ 관리자만 등록 버튼 보임 --%>
+<c:if test="${isAdmin == true}">
+    <button class="supp-btn" onclick="openAddModal()">새 영양성분 등록</button>
+</c:if>
 
 <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
     <div class="supplements-container">
@@ -22,7 +30,21 @@
             <div class="supp-wrap">
                 <div class="supp-img" onclick="openDetailModal(this)"
                 data-id="${supp.supplementId}" data-name="${supp.supplementName}" data-efficacy="${supp.supplementEfficacy}" data-dosage="${supp.supplementDosage}" data-timing="${supp.supplementTiming}" data-caution="${supp.supplementCaution}" data-imgPath="${supp.supplementImagePath}">
-                <img  src=" ${supp.supplementImagePath}" alt="${supp.supplementName}">
+<%--                    <img src="${supp.supplementImagePath}" alt="${supp.supplementName}">--%>
+
+                    <%-- 💡 똑똑한 이미지 출력 로직 --%>
+                <c:choose>
+                    <%-- 1. DB 값이 'http'로 시작하면? (인터넷 주소면) -> 경로 안 붙이고 그대로 출력! --%>
+                    <c:when test="${fn:startsWith(supp.supplementImagePath, 'http')}">
+                        <img src="${supp.supplementImagePath}" alt="${supp.supplementName}">
+                    </c:when>
+
+                    <%-- 2. 그게 아니면? (직접 올린 'test.png' 같은 파일이면) -> 앞에 폴더 경로를 싹 붙여서 출력! --%>
+                    <c:otherwise>
+                        <img src="/supplementImg/supplementImgFile/${supp.supplementImagePath}" alt="${supp.supplementName}">
+                    </c:otherwise>
+                </c:choose>
+
                 </div>
 
                 <div class="supp-name">${supp.supplementName}</div>
@@ -34,10 +56,14 @@
                     ♥
                 </button>
 
-                <div style="margin-top: 10px;">
-                    <button class="supp-btn" onclick="delSupplement('${supp.supplementId}')">삭제</button>
-                    <button class="supp-btn" onclick="updateSupplement('${supp.supplementId}')">수정</button>
-                </div>
+                    <%-- ✅ 관리자만 수정/삭제 버튼 보임 --%>
+                <c:if test="${isAdmin == true}">
+                    <div style="margin-top: 10px;">
+                        <button class="supp-btn" onclick="delSupplement('${supp.supplementId}')">삭제</button>
+                        <button class="supp-btn" onclick="updateSupplement('${supp.supplementId}')">수정</button>
+                    </div>
+                </c:if>
+
             </div>
         </c:forEach>
     </div>
@@ -101,6 +127,25 @@
             location.href = 'updateSupplement?id=' + id;
         }
     }
+</script>
+
+<script>
+// 마이페이지에서 넘어왔을 때 자동으로 모달 열기
+window.onload = function() {
+// 주소창에서 ?openId= 번호 가져오기
+const urlParams = new URLSearchParams(window.location.search);
+const openId = urlParams.get('openId');
+
+if (openId) {
+// openId와 일치하는 data-id를 가진 div(이미지 영역)를 찾음
+const targetDiv = document.querySelector(`.supp-img[data-id="${openId}"]`);
+
+if (targetDiv) {
+// 찾았다면 마치 사용자가 클릭한 것처럼 이벤트를 발생시킴!
+targetDiv.click();
+}
+}
+};
 </script>
 
 <script src="js/supplements.js"></script>
