@@ -4,6 +4,7 @@ import com.groot.app.common.CloudinaryUtil;
 import com.groot.app.main.DBManager_new;
 import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
+import lombok.NonNull;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -190,7 +191,7 @@ public class UserDAO {
 
     }
 
-    public static void ProfileUpdate(HttpServletRequest request) {
+    public static void ProfileUpdate(@NonNull HttpServletRequest request) {
 
         UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
         String newProfile = request.getParameter("user_profile");
@@ -254,18 +255,16 @@ public class UserDAO {
 
             String selectedProfile = request.getParameter("default_profile");   // 라디오 선택값
 
-            String profileImg = (String) request.getAttribute("user_profile");
+            String uploadedProfile = (String) request.getAttribute("user_profile"); // UserJoinC에서 업로드한 URL
+            String finalProfilePath="";
 
-            String finalProfilePath = null;
+            // UserJoinC에서 Cloudinary 업로드한 URL이 있으면 우선 사용
+            if (uploadedProfile != null && !uploadedProfile.trim().isEmpty()) {
+                finalProfilePath = uploadedProfile;
+                System.out.println("Cloudinary 업로드 이미지: " + finalProfilePath);
 
-            // 직접 업로드가 있으면 Cloudinary 우선
-            if (profileImg != null && !profileImg.trim().isEmpty()) {
-                // finalProfilePath=CloudinaryUtil.uploadFile(profileFile,"user");
-                finalProfilePath = profileImg;
-                // 업로드 없으면 기본 프로필 사용}
-
-
-            } else if (selectedProfile != null && !selectedProfile.trim().isEmpty()) {
+            }
+            else if (selectedProfile != null && !selectedProfile.trim().isEmpty()) {
 
                 finalProfilePath = "user/userImg/" + selectedProfile;
                 System.out.println("기본 프로필 선택: " + finalProfilePath);
@@ -326,8 +325,14 @@ public class UserDAO {
             }
 
 
+        } catch (java.sql.SQLIntegrityConstraintViolationException e) {
+            e.printStackTrace();
+            request.setAttribute("msg", "이미 사용 중인 아이디 또는 이메일입니다.");
+            request.setAttribute("redirectJoin", true);
         } catch (Exception e) {
             e.printStackTrace();
+            request.setAttribute("msg", "회원가입 중 오류가 발생했습니다.");
+            request.setAttribute("redirectJoin", true);
         } finally {
             DBManager_new.close(con, pstmt, null);
         }
