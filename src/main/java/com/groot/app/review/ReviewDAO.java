@@ -44,8 +44,6 @@ public class ReviewDAO {
             sql += " ORDER BY R_LIKE DESC, R_DATE DESC"; // 좋아요순
 
         } else if ("photo".equals(sortType)) {
-            // 🌟 99년생 에이스 무영이가 추가할 부분!
-            // 📸 사진이 있는(R_IMG가 NULL이 아닌) 리뷰만 골라내고 최신순 정렬!
             sql += " AND R_IMG IS NOT NULL ORDER BY R_DATE DESC";
 
         } else if ("high_score".equals(sortType)) {
@@ -54,9 +52,12 @@ public class ReviewDAO {
         } else if ("low_score".equals(sortType)) {
             sql += " ORDER BY R_SCORE ASC, R_DATE DESC";  // 평점 낮은순
 
+            // 🌟 [여기 추가!!!] '최신순'을 명확하게 알려주는 로직 추가! (번호가 높을수록 최근에 쓴 글)
+        } else if ("date".equals(sortType)) {
+            sql += " ORDER BY REVIEW_ID DESC";
+
         } else {
-            // ❌ 기존: sql += " ORDER BY R_DATE DESC"; (최신순)
-            // ✅ 수정: 베스트순(좋아요순)을 기본값으로 설정!
+            // 아무것도 안 넘어오면 기본값은 좋아요순
             sql += " ORDER BY R_LIKE DESC, R_DATE DESC";
         }
 
