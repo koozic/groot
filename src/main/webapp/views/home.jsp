@@ -109,7 +109,7 @@
 <section style="margin-bottom: 36px; margin-top: 40px;">
     <div class="sec-header">
         <div class="sec-title">🏆 지금 가장 핫한 베스트 리뷰</div>
-        <a href="review" class="sec-more">전체보기 ›</a>
+        <a href="review-lounge" class="sec-more">전체보기 ›</a>
     </div>
 
     <div class="swiper best-review-swiper">

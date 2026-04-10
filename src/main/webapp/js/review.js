@@ -8,14 +8,18 @@ function getImgPath(img) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    const sortSelect = document.getElementById('sortType');
-    const starSelect = document.getElementById('starFilter');
-    const myReviewCheck = document.getElementById('myReviewCheck');
 
-    if(sortSelect) sortSelect.addEventListener('change', fetchReviews);
-    if(starSelect) starSelect.addEventListener('change', fetchReviews);
-    if(myReviewCheck) myReviewCheck.addEventListener('change', fetchReviews);
+    // 🌟 [핵심 해결책] 이벤트 위임(Event Delegation) 기법!
+    // 버튼들이 통째로 갈아끼워져도 절대 지워지지 않는 body에 센서를 달아둡니다.
+    document.body.addEventListener('change', function(event) {
+        // 폼 안에서 무언가 변경되었을 때, 그게 우리가 찾는 필터 버튼들이 맞는지 확인!
+        const id = event.target.id;
+        if (id === 'sortType' || id === 'starFilter' || id === 'myReviewCheck') {
+            fetchReviews();
+        }
+    });
 
+    // 화면 켜지자마자 리스트 1번 불러오기
     fetchReviews();
 });
 
@@ -24,6 +28,8 @@ window.onclick = function(event) {
         document.querySelectorAll('.menu-content').forEach(m => m.style.display = 'none');
     }
 }
+
+// ... (이하 코드들은 기존 그대로 두시면 됩니다!) ...
 
 // ==========================================
 // 📸 1. 포토 갤러리 모달
