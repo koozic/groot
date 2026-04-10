@@ -712,4 +712,69 @@ public class ReviewDAO {
             default: return eng;
         }
     }
+    // 🌟 [라운지 필터 전용] 카테고리별 베스트 리뷰 가져오기
+    public ArrayList<ReviewDTO> getLoungeFilterReviews(String category) {
+        ArrayList<ReviewDTO> list = new ArrayList<>();
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            con = DBManager_new.connect();
+
+            // 1. 기본 뼈대 (리뷰 + 상품명/사진 + 성분명 조인)
+            String sql = "SELECT * FROM (" +
+                    "    SELECT R.*, P.product_name, P.product_image, S.supplement_name " +
+                    "    FROM reviews R " +
+                    "    LEFT JOIN products P ON R.product_id = P.product_id " +
+                    "    LEFT JOIN supplements S ON P.product_nutrient = S.supplement_id ";
+
+            // 2. 동적 필터링 조건 추가!
+            if ("photo".equals(category)) {
+                // 포토 리뷰만 보기
+                sql += " WHERE R.r_img IS NOT NULL ";
+            } else if (!"all".equals(category)) {
+                // 특정 성분(비타민 C 등)만 보기
+                sql += " WHERE S.supplement_name = ? ";
+            }
+
+            // 3. 정렬 및 상위 20개 자르기
+            sql += "    ORDER BY R.r_like DESC, R.r_date DESC " +
+                    ") WHERE ROWNUM <= 20";
+
+            pstmt = con.prepareStatement(sql);
+
+            // 4. 물음표 세팅 ("all"이나 "photo"가 아닐 때만 성분명이 들어감)
+            if (!"all".equals(category) && !"photo".equals(category)) {
+                pstmt.setString(1, category);
+            }
+
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                ReviewDTO r = new ReviewDTO();
+                r.setReview_id(rs.getInt("review_id"));
+                r.setUser_id(rs.getString("user_id"));
+                r.setProduct_id(rs.getInt("product_id"));
+                r.setR_title(rs.getString("r_title"));
+                r.setR_content(rs.getString("r_content"));
+                r.setR_score(rs.getInt("r_score"));
+                r.setR_img(rs.getString("r_img"));
+                r.setR_date(rs.getDate("r_date"));
+                r.setR_like(rs.getInt("r_like"));
+
+                // 조인된 데이터들
+                r.setP_name(rs.getString("product_name"));
+                r.setP_img(rs.getString("product_image"));
+                r.setSupp_name(rs.getString("supplement_name"));
+
+                list.add(r);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBManager_new.close(con, pstmt, rs);
+        }
+        return list;
+    }
 } // ReviewDAO 클래스 끝
