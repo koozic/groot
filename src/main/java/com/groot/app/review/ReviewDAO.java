@@ -96,45 +96,36 @@ public class ReviewDAO {
         PreparedStatement pstmt = null;
 
         try {
-            // 1. 사진 저장 경로 잡기
-            String path = request.getServletContext().getRealPath("upload");
-            System.out.println("사진 저장 폴더: " + path);
+            // ❌ 기존에 쓰던 골치 아픈 MultipartRequest(mr) 완전 삭제!
+            // ✅ 대신 일반 request.getParameter()를 다시 씁니다.
+            String product_id = request.getParameter("product_id");
+            String r_title = request.getParameter("r_title");
+            String r_score = request.getParameter("r_score");
+            String r_content = request.getParameter("r_content");
 
-            // 2. 🌟 MultipartRequest 객체 생성 (파일 업로드 시작)
-            MultipartRequest mr = new MultipartRequest(request, path, 1024 * 1024 * 10, "UTF-8", new DefaultFileRenamePolicy());
+            // 🌟 [핵심 변경] 사진을 클라우드에 올리고 인터넷 주소(URL)만 받아옵니다!
+            // 파라미터: 1. request, 2. input태그 name("r_img"), 3. 저장할 폴더명("review")
+            String r_img_url = com.groot.app.common.CloudinaryUtil.uploadFromRequest(request, "r_img", "review");
 
-            // 3. 박스에서 내용물(파라미터) 꺼내기
-            String product_id = mr.getParameter("product_id");
-            String r_title = mr.getParameter("r_title");
-            String r_score = mr.getParameter("r_score");
-            String r_content = mr.getParameter("r_content");
-            String r_img = mr.getFilesystemName("r_img");
+            // 세션에서 아이디 꺼내기
             com.groot.app.user.UserDTO loginUser = (com.groot.app.user.UserDTO) request.getSession().getAttribute("loginUser");
-            String user_id = loginUser.getUser_id(); // 찐 아이디 추출!
-            // 🌟 [보안 및 필터링 구간] - 여기서부터가 핵심!
-            // ==========================================
+            String user_id = loginUser.getUser_id();
 
-            // ① XSS 방어 (스크립트 공격 무력화)
-            // 사용자가 입력한 < > 기호를 문자로 바꿔서 브라우저가 실행하지 못하게 함
+            // ==========================================
+            // [보안 및 필터링 구간] - 기존과 동일
             r_title = r_title.replace("<", "&lt;").replace(">", "&gt;");
             r_content = r_content.replace("<", "&lt;").replace(">", "&gt;");
-
-            // ② 욕설 필터링 (비속어를 귀여운 단어로!)
             String[] badWords = {"시발", "존나", "개새끼", "ㅅㅂ"};
             for (String word : badWords) {
                 r_title = r_title.replaceAll(word, "꿍디");
                 r_content = r_content.replaceAll(word, "꿍디");
             }
-
-            // ③ 줄바꿈 처리 (보안 처리 후에 해야 <br>이 안 깨짐!)
             r_content = r_content.replaceAll("\r\n", "<br>");
-
             // ==========================================
 
-            // 4. 컨트롤러가 쓸 수 있게 가방에 담아주기
             request.setAttribute("p_id", product_id);
 
-            // 5. DB 연결 및 INSERT
+            // DB 연결 및 INSERT
             con = DBManager_new.connect();
             String sql = "INSERT INTO reviews (review_id, user_id, product_id, r_title, r_content, r_score, r_img, r_date, r_like) " +
                     "VALUES (reviews_seq.NEXTVAL, ?, ?, ?, ?, ?, ?, SYSDATE, 0)";
@@ -145,11 +136,12 @@ public class ReviewDAO {
             pstmt.setString(3, r_title);
             pstmt.setString(4, r_content);
             pstmt.setInt(5, Integer.parseInt(r_score));
-            pstmt.setString(6, r_img);
 
-            // 6. 쿼리 실행
+            // DB에는 클라우드에서 받은 긴 인터넷 주소를 넣습니다!
+            pstmt.setString(6, r_img_url);
+
             if (pstmt.executeUpdate() == 1) {
-                System.out.println("✅ 보안 필터링 적용된 리뷰 작성 대성공!");
+                System.out.println("✅ 클라우드 사진 업로드 & 리뷰 작성 성공!");
             }
 
         } catch (Exception e) {
@@ -546,5 +538,64 @@ public class ReviewDAO {
         } finally {
             DBManager_new.close(con, pstmt, null);
         }
+    }
+    // =========================================================
+    // 🏆 메인 페이지용 베스트 리뷰 4개 가져오기 (3단 조인 풀버전)
+    // =========================================================
+    public ArrayList<ReviewDTO> getBestReviews() {
+        ArrayList<ReviewDTO> bestList = new ArrayList<>();
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            con = DBManager_new.connect();
+
+            // 🌟 에이스 무영표 3단 조인 쿼리! (리뷰 + 제품 + 성분 + 해당 제품의 평균 평점까지)
+            String sql =
+                    "SELECT * FROM (" +
+                            "    SELECT " +
+                            "        R.review_id, R.user_id, R.product_id, R.r_title, R.r_content, " +
+                            "        R.r_score, R.r_img, R.r_date, R.r_like, " +
+                            "        P.product_name, P.product_image, " +
+                            "        S.supplement_name, " +
+                            "        (SELECT ROUND(NVL(AVG(r_score), 0), 1) FROM reviews WHERE product_id = P.product_id) AS avg_score " +
+                            "    FROM reviews R " +
+                            "  LEFT JOIN products P ON R.product_id = P.product_id " +
+                            "  LEFT JOIN supplements S ON P.product_nutrient = S.supplement_id " +
+                            "    ORDER BY R.r_like DESC, R.r_date DESC" +
+                            ") WHERE ROWNUM <= 15";
+
+            pstmt = con.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                ReviewDTO r = new ReviewDTO();
+                // 1. 기존 리뷰 정보
+                r.setReview_id(rs.getInt("review_id"));
+                r.setUser_id(rs.getString("user_id"));
+                r.setProduct_id(rs.getInt("product_id"));
+                r.setR_title(rs.getString("r_title"));
+                r.setR_content(rs.getString("r_content"));
+                r.setR_score(rs.getInt("r_score"));
+                r.setR_img(rs.getString("r_img"));
+                r.setR_date(rs.getDate("r_date"));
+                r.setR_like(rs.getInt("r_like"));
+
+                // 2. 🌟 조인으로 가져온 제품 & 성분 정보 세팅!
+                r.setP_name(rs.getString("product_name"));
+                r.setP_img(rs.getString("product_image"));
+                r.setSupp_name(rs.getString("supplement_name"));
+                r.setP_avg_score(rs.getDouble("avg_score"));
+
+                bestList.add(r);
+            }
+        } catch (Exception e) {
+            System.out.println("❌ 베스트 리뷰 3단 조인 에러!");
+            e.printStackTrace();
+        } finally {
+            DBManager_new.close(con, pstmt, rs);
+        }
+        return bestList;
     }
 } // ReviewDAO 클래스 끝

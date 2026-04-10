@@ -91,8 +91,16 @@ function fetchModalPhotoReviews() {
 // ==========================================
 // 🚀 2. 좋아요 비동기 처리 (메인/모달 동시 적용)
 // ==========================================
+// ==========================================
+// 🚀 2. 좋아요 비동기 처리 (메인/모달 동시 적용)
+// ==========================================
 function toggleLike(reviewId, userId) {
-    if (!userId || userId === 'null') { alert('로그인이 필요합니다.'); return; }
+
+    // 🌟 [수정] 촌스러운 alert() 지우고, 예쁜 토스트 알림으로 교체!
+    if (!userId || userId === 'null' || userId === '') {
+        showToast("로그인이 필요한 기능입니다! 🔒", "error");
+        return;
+    }
 
     const params = new URLSearchParams();
     params.append('review_id', reviewId);
@@ -155,34 +163,69 @@ function fetchReviews() {
         });
 }
 
-// 🌟 핵심: 페이징 처리해서 화면에 그리는 함수 (isAppend: 모바일 더보기용)
+// 🌟 핵심: 페이징 처리해서 화면에 그리는 함수
 function renderPaginatedReviews(isAppend = false) {
     const container = document.getElementById('review-list-container');
+    const emptyUi = document.getElementById('empty-review-ui');
+    const fullUi = document.getElementById('full-review-ui');
 
-    if (!isAppend) {
-        container.innerHTML = ''; // PC 번호 이동이거나 첫 로딩이면 싹 비우기
-    }
+    if (!isAppend) container.innerHTML = '';
 
-    if (filteredReviewsData.length === 0) {
-        container.innerHTML = `<div class="empty-msg" style="text-align:center; padding:50px;"><p>해당 조건에 맞는 리뷰가 없습니다.</p></div>`;
-        renderPaginationButtons(); // 데이터 없으면 하단 버튼도 지우기
+    // 1️⃣ [완전 텅 빈 상태] 이 상품에 리뷰가 전 세계에 단 하나도 없을 때
+    if (allReviewsData.length === 0) {
+        if (emptyUi) {
+            emptyUi.style.display = 'block';
+            emptyUi.innerHTML = `
+                <div style="font-size: 3rem; margin-bottom: 15px;">🌿</div>
+                <h3 style="color: #495057; font-size: 1.3rem; margin-bottom: 10px;">아직 등록된 리뷰가 없습니다.</h3>
+                <p style="color: #868e96; margin-bottom: 25px;">이 제품의 첫 번째 리뷰어가 되어주세요! 경험을 공유해주시면 큰 도움이 됩니다.</p>
+                <button type="button" onclick="openWriteModal()" style="padding: 12px 24px; background: #6a8d3a; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1.1em;">
+                    ✍️ 첫 리뷰 작성하기
+                </button>
+            `;
+        }
+        if (fullUi) fullUi.style.display = 'none'; // 통계/필터 다 숨김
+        renderPaginationButtons();
         return;
     }
 
-    // ✂️ 5개씩 데이터 자르기!
+    // 2️⃣ [데이터는 있는데 필터 결과만 0개일 때] 예: '내 글 보기'를 눌렀는데 내가 쓴 게 없을 때
+    if (filteredReviewsData.length === 0) {
+        if (fullUi) fullUi.style.display = 'block'; // 🌟 중요: 필터(체크박스)는 계속 보여줘야 함!
+        if (emptyUi) emptyUi.style.display = 'none';
+
+        // 대신 리스트가 들어갈 자리에 문구를 띄워줍니다.
+        const isMyReviewChecked = document.getElementById('myReviewCheck')?.checked;
+        const msg = isMyReviewChecked
+            ? "🔍 작성하신 리뷰가 없습니다. 첫 리뷰를 남겨보세요!"
+            : "🔍 조건에 맞는 리뷰가 없습니다.";
+
+        container.innerHTML = `
+            <div style="text-align:center; padding:80px 20px; color:#777; background:#fff; border-radius:12px; border:1px solid #eee;">
+                <div style="font-size:2.5rem; margin-bottom:15px;">🔍</div>
+                <h3 style="margin-bottom:10px;">${msg}</h3>
+                <p>체크박스를 해제하시거나 새로운 리뷰를 작성해 보세요.</p>
+            </div>
+        `;
+        renderPaginationButtons();
+        return;
+    }
+
+    // 3️⃣ [정상 출력] 데이터가 1개라도 있을 때
+    if (emptyUi) emptyUi.style.display = 'none';
+    if (fullUi) fullUi.style.display = 'block';
+
+    // ✂️ 5개씩 자르기 로직 시작...
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const pageData = filteredReviewsData.slice(startIndex, endIndex);
 
-    // 잘라낸 5개 데이터 화면에 붙이기 (이전 renderReviews 안의 로직과 동일)
     pageData.forEach(r => {
+        // ... (무영님의 기존 리뷰 카드 그리는 코드 그대로 넣어주세요) ...
         let imgHtml = (r.r_img && r.r_img !== 'null') ? `<div class="review-img-box" style="margin: 15px 0;"><img src="../upload/${r.r_img}" style="width: 150px; border-radius: 8px;"></div>` : '';
         const rUser = r.user_id ? r.user_id.trim() : "";
         let menuHtml = '';
 
-        // 🌟 'kim124' 하드코딩 완벽 삭제!
-        // 조건: 1. 로그인을 한 상태여야 함 (currentLoginId !== "")
-        // 조건: 2. 현재 로그인한 아이디와 글 작성자의 아이디가 완벽히 똑같아야 함!
         if (currentLoginId !== "" && rUser === currentLoginId) {
             menuHtml = `
             <div class="review-more-menu">
@@ -198,7 +241,7 @@ function renderPaginatedReviews(isAppend = false) {
             <div class="review-card" style="position: relative;">
                 ${menuHtml}
                 <div class="review-title">제목: ${r.r_title}</div>
-             <div class="review-meta">작성자: ${r.user_id} | ${makeStarHtml(r.r_score)} | 작성일: ${formatKoreanDate(r.r_date)}</div>
+                <div class="review-meta">작성자: ${r.user_id} | ${makeStarHtml(r.r_score)} | 작성일: ${formatKoreanDate(r.r_date)}</div>
                 ${imgHtml}
                 <hr style="border:0; border-top:1px solid #eee;">
                 <div class="review-content">${r.r_content}</div>
@@ -209,7 +252,7 @@ function renderPaginatedReviews(isAppend = false) {
             </div>`;
     });
 
-    renderPaginationButtons(); // 다 그렸으면 하단 버튼 그리기
+    renderPaginationButtons();
 }
 
 // 🌟 PC(번호판) / 모바일(더보기) 하단 버튼 자동 변환 마술
@@ -328,24 +371,28 @@ function openDetailModal(title, user, score, date, content, img) {
 }
 function closeDetailModal() { document.getElementById('detailModal').style.display = 'none'; }
 
-// ==========================================
-// 🗑️ 5. 리뷰 삭제 (삭제 후 자동 새로고침!)
-// ==========================================
+// 🗑️ 리뷰 삭제
 function deleteReview(reviewId) {
     if (!confirm("정말 삭제하시겠습니까?")) return;
 
     fetch(`review-delete?review_id=${reviewId}`)
-        .then(res => res.text())
+        .then(res => res.text()) // 🌟 [복구] 이 줄이 실수로 지워졌었습니다! 이거 없으면 에러 납니다!
         .then(data => {
             if (data.trim() === "1") {
                 showToast("리뷰를 삭제했습니다. 🗑️");
+
+                // 🌟 스무스 삭제 애니메이션 부활!
                 const card = document.getElementById(`menu-content-${reviewId}`).closest('.review-card');
                 if(card) {
+                    card.style.transition = 'all 0.5s ease';
                     card.style.opacity = '0';
-                    card.style.transition = 'opacity 0.3s ease';
-                    setTimeout(() => location.reload(), 1300);
-                } else {
-                    location.reload();
+                    card.style.transform = 'translateX(100px)';
+
+                    setTimeout(() => {
+                        card.remove();
+                        refreshReviewUI(); // 상단 통계 샥! 업데이트
+                        fetchReviews();    // 하단 리스트 샥! 업데이트
+                    }, 500);
                 }
             } else {
                 alert("삭제 실패!");
@@ -427,6 +474,7 @@ function toggleImgDelete() {
 
 function closeUpdateModal() { document.getElementById('updateModal').style.display = 'none'; }
 
+// 🪄 리뷰 수정
 function submitUpdate() {
     const formData = new FormData(document.getElementById('updateForm'));
     fetch('ReviewUpdateC', { method: 'POST', body: formData })
@@ -435,7 +483,10 @@ function submitUpdate() {
             if (data.trim() === "1") {
                 showToast("리뷰 수정을 완료했습니다! 🪄");
                 closeUpdateModal();
-                setTimeout(() => location.reload(), 2000);
+
+                // 🌟 딸깍(새로고침) 삭제!
+                refreshReviewUI();
+                fetchReviews();
             } else {
                 alert("수정 실패!");
             }
@@ -507,35 +558,26 @@ function setWriteStars(score) {
     });
 }
 
-// 🚀 [핵심] 비동기 리뷰 등록
+// 🚀 리뷰 등록
 function submitReview() {
     const form = document.getElementById('writeForm');
     const formData = new FormData(form);
 
-    // ReviewInsertC 서블릿으로 비동기 요청 전송
-    fetch('review-write', {
-        method: 'POST',
-        body: formData
-    })
+    fetch('review-write', { method: 'POST', body: formData })
         .then(res => res.text())
         .then(data => {
-            // 서블릿에서 성공 시 "1"을 응답하도록 수정할 예정입니다.
             if (data.trim() === "1") {
                 showToast("리뷰가 등록되었습니다! ✨");
                 closeWriteModal();
 
-                // 🌟 fetchReviews() 대신 location.reload()를 씁니다!
-                // 페이지를 한 번 새로고침해서 위쪽 통계 그래프와 사진첩 숫자까지 완벽하게 최신화시킵니다.
-                setTimeout(() => location.reload(), 1300);
-                // 등록 후 페이지 상단 통계 그래프도 갱신하고 싶다면 새로고침이 가장 확실하긴 합니다.
-                // location.reload();
-            } else {
+                // 🌟 딸깍(새로고침) 삭제! 비동기로 화면 갈아끼우고 리스트 불러오기!
+                refreshReviewUI();
+                fetchReviews();
+            } else{
                 alert("리뷰 등록 실패 ㅠㅠ 다시 시도해주세요.");
             }
-        })
-        .catch(err => console.error("등록 에러:", err));
+        });
 }
-
 // =========================================================
 // 🍞 토스트 알림 띄우기 함수 (경용씨 '가운데 빵!' UI 완벽 동기화)
 // =========================================================
@@ -548,10 +590,10 @@ function showToast(message, type = "success") {
         toast.className = "toast";
         toast.classList.add("show", type);
 
-        // 3초 뒤에 사라짐
+        // 2초 뒤에 사라짐 (아까 무영님이 2초로 해달라고 하셨던 세팅!)
         setTimeout(() => {
             toast.classList.remove("show", type);
-        }, 3000);
+        }, 1300);
     } else {
         alert(message);
     }
@@ -573,4 +615,34 @@ function formatKoreanDate(dateStr) {
 
     // 만약 다른 형식이면 그냥 원래대로 출력 (에러 방지)
     return dateStr;
+}
+// =========================================================
+// 🪄 10. 마법의 비동기 화면 갈아끼우기 (딸깍 방지용)
+// ==========================================
+function refreshReviewUI() {
+    // 1. 뒤에서 몰래 현재 주소로 서버에 한 번 더 다녀옵니다.
+    fetch(window.location.href)
+        .then(res => res.text())
+        .then(html => {
+            // 2. 서버가 준 새 HTML을 자바스크립트가 읽을 수 있게 변환
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+
+            // 3. 새 HTML에서 '통계 헤더' 오려와서 내 화면에 덮어쓰기
+            const oldHeader = document.querySelector('.review-header');
+            const newHeader = doc.querySelector('.review-header');
+            if(oldHeader && newHeader) oldHeader.innerHTML = newHeader.innerHTML;
+
+            // 4. 새 HTML에서 '포토 갤러리' 오려와서 내 화면에 덮어쓰기 (숨김/보임 상태 포함)
+            const oldGallery = document.querySelector('.photo-gallery-container');
+            const newGallery = doc.querySelector('.photo-gallery-container');
+            if(oldGallery && newGallery) {
+                oldGallery.innerHTML = newGallery.innerHTML;
+                oldGallery.style.display = newGallery.style.display;
+            }
+
+            // 5. 텅 빈 화면(0개) / 풀세트 스위치 상태도 똑같이 복사
+            document.getElementById('empty-review-ui').style.display = doc.getElementById('empty-review-ui').style.display;
+            document.getElementById('full-review-ui').style.display = doc.getElementById('full-review-ui').style.display;
+        });
 }

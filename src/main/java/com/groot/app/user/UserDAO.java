@@ -4,6 +4,7 @@ import com.groot.app.common.CloudinaryUtil;
 import com.groot.app.main.DBManager_new;
 import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
+import lombok.NonNull;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -37,7 +38,7 @@ public class UserDAO {
 
             if (rs.next()) {
                 if (rs.getString("user_pw").equals(pw)) {
-                    // [로그인 성공]
+                    // [일반 유저 로그인 성공]
                     UserDTO user = new UserDTO();
                     user.setUser_id(rs.getString("user_id"));
                     user.setName(rs.getString("user_name"));
@@ -46,47 +47,118 @@ public class UserDAO {
                     user.setGender(rs.getString("user_gender"));
                     user.setUser_profile(rs.getString("user_profile"));
 
+                    HttpSession session = request.getSession();
+                    session.setAttribute("loginUser", user);
+                    session.removeAttribute("isAdmin"); // 일반 유저이므로 관리자 권한 제거
+                    session.removeAttribute("loginFailCount");
 
-                    String profileImg = rs.getString("user_profile");
-                    System.out.println("=== Login Debug ===");
-                    System.out.println("프로필 이미지: " + profileImg);
-                    System.out.println("UserDTO profile: " + user.getUser_profile());
-                    System.out.println("==================");
-                    System.out.println("어서오세요. 당신의 건강을 챙기세요");
-                    loginMsg = "어서오세요. 당신의 건강을 챙기세요";
+                    request.setAttribute("loginMsg", "어서오세요. 당신의 건강을 챙기세요");
+                    isLoginSuccess = true;
+                } else if (rs.getString("user_pw").equals("ADMIN_PROTECTED")) {
+                    // ── Step 2. users에 없으면 admin 테이블 조회 ──
+                    // 중요: 다음 조회를 위해 기존 리소스 닫기
+                    DBManager_new.close(null, pstmt, rs);
 
-                    request.getSession().setAttribute("loginUser", user);
-                    request.getSession().removeAttribute("loginFailCount"); // 실패 카운트 초기화
+                    String adminSql = "SELECT * FROM admin WHERE admin_id=?";
+                    pstmt = con.prepareStatement(adminSql);
+                    pstmt.setString(1, id);
+                    rs = pstmt.executeQuery();
 
-                    isLoginSuccess = true; // 성공 상태로 변경
+                    if (rs.next()) {
+                        if (rs.getString("admin_pw").equals(pw)) {
+                            // [관리자 로그인 성공]
+                            UserDTO adminUser = new UserDTO();
+                            adminUser.setUser_id(rs.getString("admin_id"));
+                            adminUser.setName(rs.getString("admin_name"));
+                            adminUser.setEmail(rs.getString("admin_email"));
+                            // 관리자는 프로필 이미지가 없을 수 있으므로 기본값 설정 가능
+                            adminUser.setUser_profile("admin_icon.png");
 
+                            // 2. 중요: users 테이블에 이 관리자 ID가 있는지 확인하고, 없으면 생성
+                            // 이 처리를 통해 supplements_like 테이블의 FK 제약조건을 통과할 수 있습니다.
+                            try {
+                                syncAdminToUserTable(adminUser);
+
+                            } catch (Exception e) {
+                                System.out.println("⚠️ 동기화 중 오류가 났지만 로그인은 진행합니다: " + e.getMessage());
+                            }
+
+                            HttpSession session = request.getSession();
+                            session.setAttribute("loginUser", adminUser);
+                            session.setAttribute("isAdmin", true); // 관리자 권한 부여
+                            session.removeAttribute("loginFailCount");
+
+                            request.setAttribute("loginMsg", "관리자로 로그인되었습니다.");
+                            isLoginSuccess = true;
+                        } else {
+                            // 관리자 비밀번호 불일치
+                            incrementFailCount(request, id);
+                            request.setAttribute("loginMsg", "아이디 또는 비밀번호가 일치하지 않습니다.");
+                        }
+                    } else {
+                        // 유저도 아니고 관리자도 아닌 경우
+                        incrementFailCount(request, id);
+                        request.setAttribute("loginMsg", "존재하지 않는 아이디입니다. 회원가입 해주세요");
+                        request.setAttribute("needVerifyChoice", true);
+                    }
                 } else {
-                    // [로그인 실패 - 비밀번호 불일치]
+
+
+                    // 비밀번호 불일치
                     incrementFailCount(request, id);
-                    System.out.println("다시 로그인 해주세요 (5회 이상 실패 시 본인인증)");
-                    loginMsg = "아이디 또는 비밀번호가 일치하지 않습니다. (5회 이상 실패 시 본인인증)";
+                    request.setAttribute("loginMsg", "아이디 또는 비밀번호가 일치하지 않습니다.");
                 }
-
-            } else {
-                // [로그인 실패 - 신규 회원 (없는 아이디)]
-                incrementFailCount(request, id);
-                System.out.println("새로 오셨네요. 회원가입 해주세요");
-                loginMsg = "존재하지 않는 아이디입니다. 회원가입 해주세요";
-                request.setAttribute("needVerifyChoice", true);
             }
-
-            // 성공이든 실패든 메시지는 request에 담아줌
-            request.setAttribute("loginMsg", loginMsg);
 
 
         } catch (Exception e) {
             e.printStackTrace();
+
+
         } finally {
             DBManager_new.close(con, pstmt, rs);
         }
 
         // 컨트롤러에게 로그인 성공 여부를 반환
         return isLoginSuccess;
+    }
+
+    private static void syncAdminToUserTable(UserDTO adminUser) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        String checkSql = "SELECT user_id FROM users WHERE user_id = ?";
+
+        // 컬럼명을 명시하여 순서 꼬임을 방지합니다.
+        String insertSql = "INSERT INTO users (user_id, user_pw, user_name, user_age, user_gender, user_profile, user_email, user_address, user_agree, user_join_path, user_point, user_grade) " +
+                "VALUES (?, 'ADMIN_PROTECTED', ?, 0, 'N', ?, ?, 'ADMIN_ADDR', 'Y', 'ADMIN', '0', 'A')";
+
+        try {
+            con = DBManager_new.connect();
+            pstmt = con.prepareStatement(checkSql);
+            pstmt.setString(1, adminUser.getUser_id());
+            rs = pstmt.executeQuery();
+
+            if (!rs.next()) {
+                DBManager_new.close(null, pstmt, rs);
+
+                pstmt = con.prepareStatement(insertSql);
+                // 명시한 컬럼 순서대로 매핑
+                pstmt.setString(1, adminUser.getUser_id());      // user_id
+                pstmt.setString(2, adminUser.getName());         // user_name
+                pstmt.setString(3, "admin_icon.png");           // user_profile
+                pstmt.setString(4, adminUser.getEmail());        // user_email
+
+                pstmt.executeUpdate();
+                System.out.println("✅ 관리자 동기화 성공: " + adminUser.getUser_id());
+            }
+        } catch (Exception e) {
+            System.out.println("❌ 동기화 실패: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            DBManager_new.close(con, pstmt, rs);
+        }
     }
 
     private static void incrementFailCount(HttpServletRequest request, String id) {
@@ -119,7 +191,7 @@ public class UserDAO {
 
     }
 
-    public static void ProfileUpdate(HttpServletRequest request) {
+    public static void ProfileUpdate(@NonNull HttpServletRequest request) {
 
         UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
         String newProfile = request.getParameter("user_profile");
@@ -166,7 +238,8 @@ public class UserDAO {
         String sql = "insert into users values (?,?,?,?,?,?,?,?,?,?,?,?)";
 
         try {
-            con=DBManager_new.connect();
+
+            con = DBManager_new.connect();
             pstmt = con.prepareStatement(sql);
 
             pstmt.setString(1, request.getParameter("user_id"));
@@ -181,6 +254,7 @@ public class UserDAO {
 
 
             String selectedProfile = request.getParameter("default_profile");   // 라디오 선택값
+
             String uploadedProfile = (String) request.getAttribute("user_profile"); // UserJoinC에서 업로드한 URL
             String finalProfilePath="";
 
@@ -191,6 +265,7 @@ public class UserDAO {
 
             }
             else if (selectedProfile != null && !selectedProfile.trim().isEmpty()) {
+
                 finalProfilePath = "user/userImg/" + selectedProfile;
                 System.out.println("기본 프로필 선택: " + finalProfilePath);
             }
@@ -228,6 +303,7 @@ public class UserDAO {
                 fullAddress += " (" + extraAddr + ")";
             }
 
+
             pstmt.setString(8, fullAddress.trim());
 
             // 체크박스는 미체크 시 null일 수 있음
@@ -241,11 +317,13 @@ public class UserDAO {
             pstmt.setString(11, "0");
             pstmt.setString(12, "N");
 
+
             int result = pstmt.executeUpdate();
 
             if (result == 1) {
                 System.out.println("회원가입 성공");
             }
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -268,7 +346,7 @@ public class UserDAO {
             String newPw = req.getParameter("newPw");
             String currentPw = req.getParameter("currentPw");
             String id = ((com.groot.app.user.UserDTO) req.getSession().getAttribute("loginUser")).getUser_id();
-            
+
             System.out.println("=== UserUpdate Debug ===");
             System.out.println("name: " + name);
             System.out.println("newPw: " + newPw);
@@ -283,14 +361,16 @@ public class UserDAO {
             pstmt.setString(1, name);
             pstmt.setString(2, id);
 
-           if (pstmt.executeUpdate() == 1){
-               System.out.println("수정 완료");
-               
-               // 세션의 loginUser 객체 업데이트
-               UserDTO loginUser = (UserDTO) req.getSession().getAttribute("loginUser");
-               loginUser.setName(name);
-               req.getSession().setAttribute("loginUser", loginUser);
-           }
+
+            if (pstmt.executeUpdate() == 1) {
+                System.out.println("수정 완료");
+
+                // 세션의 loginUser 객체 업데이트
+                UserDTO loginUser = (UserDTO) req.getSession().getAttribute("loginUser");
+                loginUser.setName(name);
+                req.getSession().setAttribute("loginUser", loginUser);
+            }
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -301,68 +381,56 @@ public class UserDAO {
 
 
     public static void UserDelete(HttpServletRequest req) {
-            Connection con = null;
-            PreparedStatement pstmt = null;
-            ResultSet rs = null;
-            String sql = "delete users where user_id=?";
-            try {
-               con = DBManager_new.connect();
-               pstmt = con.prepareStatement(sql);
-               pstmt.setString(1, req.getParameter("user_id"));
-               if (pstmt.executeUpdate() == 1){
-                   req.setAttribute("msg", "회원 탈퇴가 완료되었습니다.");
-                   System.out.println("회원 탈퇴 완료");
-               } else {
-                   req.setAttribute("msg", "회원 탈퇴에 실패했습니다.");
-               }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                req.setAttribute("msg", "회원 탈퇴 처리 중 오류가 발생했습니다.");
-            } finally {
-                DBManager_new.close(con, pstmt, null);
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "delete users where user_id=?";
+        try {
+            con = DBManager_new.connect();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, req.getParameter("user_id"));
+            if (pstmt.executeUpdate() == 1) {
+                req.setAttribute("msg", "회원 탈퇴가 완료되었습니다.");
+                System.out.println("회원 탈퇴 완료");
+            } else {
+                req.setAttribute("msg", "회원 탈퇴에 실패했습니다.");
             }
 
-
-
+        } catch (Exception e) {
+            e.printStackTrace();
+            req.setAttribute("msg", "회원 탈퇴 처리 중 오류가 발생했습니다.");
+        } finally {
+            DBManager_new.close(con, pstmt, null);
+        }
 
 
     }
-
-
-
-
-
-
-
-
-
 
 
     public static boolean checkUserIdDuplicate(String userId) {
         Connection con = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        
+
         String sql = "SELECT COUNT(*) FROM users WHERE user_id = ?";
-        
+
         try {
             con = DBManager_new.connect();
             pstmt = con.prepareStatement(sql);
             pstmt.setString(1, userId);
             rs = pstmt.executeQuery();
-            
+
             if (rs.next()) {
                 int count = rs.getInt(1);
                 return count > 0; // count가 0보다 크면 중복
             }
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             DBManager_new.close(con, pstmt, rs);
         }
-        
+
         return false; // 에러 발생 시 중복 아님으로 처리
     }
 }
