@@ -13,12 +13,34 @@ document.addEventListener('keydown', function(event) {
 
 // 1. 등록 모달 열기
 function openAddModal() {
-    fetch('/supplementAdd') // 등록용 JSP를 반환하는 서블릿 경로
-        .then(res => res.text())
+    fetch('/supplementAdd', {
+        // 💡 서버(필터)가 비동기 요청임을 알아챌 수 있도록 헤더를 추가
+        headers: {
+            'X-Requested-With': 'fetch'
+        }
+        }) // 등록용 JSP를 반환하는 서블릿 경로
+
+        .then(res => {
+            // 서버에서 403 에러 코드를 보냈다면 권한이 없다는 뜻입니다.
+            if (res.status === 403) {
+                alert('관리자만 접근할 수 있는 기능입니다!');
+                // throw 에러를 발생시켜서 아래의 .then(html => ...) 부분이 실행되지 않게 막습니다.
+                throw new Error('권한 없음');
+            }
+            // 권한이 있다면 정상적으로 HTML 텍스트를 반환
+            return res.text();
+        })
+
         .then(html => {
             console.log(html)
             content.innerHTML = html;
             modal.showModal();
+        })
+
+        .catch(error => {
+            // 위에서 throw한 에러(권한 없음)를 여기서 조용히 처리합니다.
+            console.log(error.message);
+            // 에러가 났으므로 모달 창은 열리지 않습니다!
         });
 }
 
