@@ -48,8 +48,8 @@
             </div>
 
             <div class="login-img-box">
-                <img src="${pageContext.request.contextPath}/img/pill.png" alt="알약 이미지" class="login-pill-img">
-                <img src="${pageContext.request.contextPath}/img/bottle.png" alt="영양제 통 이미지" class="login-bottle-img">
+                <img src="${pageContext.request.contextPath}/userImg/pill.jfif" alt="알약 이미지" class="login-pill-img">
+                <img src="${pageContext.request.contextPath}/userImg/bottle.jfif" alt="영양제 통 이미지" class="login-bottle-img">
             </div>
         </div>
 
@@ -113,7 +113,12 @@
                                    style="width:60%; height:46px; border:1px solid #ddd; border-radius:8px; padding:0 10px;">
                         </div>
 
-                        <small id="emailAuthMsg"></small>
+                        <div class="input-group" style="margin-top: 10px;">
+                            <button type="button" id="verify_btn" onclick="checkEmailAuth()">인증완료</button>
+                        </div>
+
+                        <div id="emailAuthMsg" style="font-size: 13px; margin-top: 5px; min-height: 15px;"></div>
+
                         <input type="hidden" id="emailAuthPassed" value="false">
                     </div>
 

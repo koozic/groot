@@ -47,8 +47,9 @@ dependencies {
         implementation 'com.cloudinary:cloudinary-http5:2.0.0'
 
     // 인증번호를 불러드리기 위한 라이브러리
-    implementation 'org.eclipse.angus:jakarta.mail:2.0.5'
-
+//    implementation 'org.eclipse.angus:jakarta.mail:2.0.5'
+    // 이 라이브러리로 교체 (javax용 메일 라이브러리)
+    implementation 'com.sun.mail:javax.mail:1.6.2'
 
 
 

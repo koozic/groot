@@ -9,7 +9,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Random;
 
-@WebServlet("/email-auth-send")
+@WebServlet("/user/email-auth-send")
 public class UserVerifyC extends HttpServlet {
 
     @Override
