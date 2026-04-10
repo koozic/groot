@@ -80,7 +80,8 @@
             </form>
 
             <%-- 회원 탈퇴 --%>
-            <form id="deleteUser" action="${pageContext.request.contextPath}/user-delete" method="post" onsubmit="return confirmDelete()">
+            <form id="deleteUser" action="${pageContext.request.contextPath}/user-delete" method="post"
+                  onsubmit="return confirmDelete()">
                 <input type="hidden" name="user_id" value="${sessionScope.loginUser.user_id}">
                 <div style="margin-top:20px; padding-top:16px; border-top:1px solid #f3f4f6; text-align:right;">
                     <button type="submit" class="mp-withdraw-link">회원 탈퇴</button>
@@ -256,39 +257,39 @@
             </div>
         </div>
 
-            <%-- 2. 전체 복용 통계 영역 --%>
-            <div class="mp-card" style="margin-bottom:16px;">
-                <details class="mp-stat-details">
+        <%-- 2. 전체 복용 통계 영역 --%>
+        <div class="mp-card" style="margin-bottom:16px;">
+            <details class="mp-stat-details">
 
-                    <summary class="mp-sec-title mp-accordion-summary">
-                        이번 달 복용 통계
-                        <span class="mp-accordion-toggle">▼ 펼쳐보기</span>
-                    </summary>
+                <summary class="mp-sec-title mp-accordion-summary">
+                    이번 달 복용 통계
+                    <span class="mp-accordion-toggle">▼ 펼쳐보기</span>
+                </summary>
 
-                    <div id="statsContainer" class="mp-stat-content">
-                        <c:choose>
-                            <c:when test="${not empty monthlyStats}">
-                                <ul class="mp-stat-list">
-                                    <c:forEach var="stat" items="${monthlyStats}">
-                                        <li class="mp-stat-item">
+                <div id="statsContainer" class="mp-stat-content">
+                    <c:choose>
+                        <c:when test="${not empty monthlyStats}">
+                            <ul class="mp-stat-list">
+                                <c:forEach var="stat" items="${monthlyStats}">
+                                    <li class="mp-stat-item">
                                 <span class="mp-stat-name">
                                     💊 ${stat.productName}
                                 </span>
-                                            <span class="mp-stat-count">
+                                        <span class="mp-stat-count">
                                     ${stat.intakeCount}회 복용
                                 </span>
-                                        </li>
-                                    </c:forEach>
-                                </ul>
-                            </c:when>
-                            <c:otherwise>
-                                <p class="mp-stat-empty">이번 달 복용 기록이 없습니다.</p>
-                            </c:otherwise>
-                        </c:choose>
-                    </div>
+                                    </li>
+                                </c:forEach>
+                            </ul>
+                        </c:when>
+                        <c:otherwise>
+                            <p class="mp-stat-empty">이번 달 복용 기록이 없습니다.</p>
+                        </c:otherwise>
+                    </c:choose>
+                </div>
 
-                </details>
-            </div>
+            </details>
+        </div>
         <%-- 3. 복용 캘린더 영역 --%>
         <div class="mp-card">
             <div class="mp-sec-title">복용 캘린더</div>
@@ -331,7 +332,6 @@
 
     </div>
 
-</div>
 </div>
 
 <script src="js/mypage.js"></script>

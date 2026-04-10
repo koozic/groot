@@ -1,5 +1,7 @@
     package com.groot.app.product;
 
+    import com.groot.app.user.UserDAO;
+
     import javax.servlet.ServletException;
     import javax.servlet.annotation.MultipartConfig;
     import javax.servlet.annotation.WebServlet;
@@ -14,6 +16,13 @@
     public class ProductEditC extends HttpServlet {
 
         public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+            if (!UserDAO.isAdmin(request)) {
+                // 관리자가 아니면 403 에러를 던지거나 경고창 후 메인으로 리다이렉트
+                response.sendError(HttpServletResponse.SC_FORBIDDEN, "관리자만 접근 가능합니다.");
+                return; // 로직 중단
+            }
+
+
             //일
             ProductDAO.PDAO.showProductDetail(request);
 
@@ -21,14 +30,29 @@
             // 서블릿 doGet 내부
             ArrayList<NutrientDTO> nutrients = ProductDAO.PDAO.getAllNutrients(request);
             request.setAttribute("nutrients", nutrients); // 여기서 리스트를 "nutrients"라는 이름으로 담고
-            request.getRequestDispatcher("product/product_edit.jsp").forward(request, response); // 여기서 JSP로 전달함
+
+//            request.getRequestDispatcher("product/product_edit.jsp").forward(request, response); // 여기서 JSP로 전달함
+
+            // 기존 코드 삭제
+// request.getRequestDispatcher("product/product_edit.jsp").forward(request, response);
+
+// 신규 코드 적용 (Template Pattern 포워딩)
+            request.setAttribute("content", "product/product_edit.jsp");
+            request.setAttribute("activeTab", "product"); // 네비게이션 하이라이트 유지
+            request.getRequestDispatcher("index.jsp").forward(request, response);
 
         }
 
         public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
             request.setCharacterEncoding("UTF-8");
 
-    //        ProductDAO.PDAO.productEdit(request);
+            // 1. Cloudinary에 이미지 업로드 후 URL 반환
+            String imgUrl = com.groot.app.common.CloudinaryUtil.uploadFromRequest(request, "productImage", "products");
+
+            // 2. 반환된 URL을 Request에 저장 (DAO로 전달하기 위함)
+            if (imgUrl != null) {
+                request.setAttribute("productImage", imgUrl);
+            }
 
             String id = ProductDAO.PDAO.productEdit(request);
             // 3. Redirect 사용하여 GET 방식으로 상세 페이지 호출
