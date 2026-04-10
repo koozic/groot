@@ -315,3 +315,22 @@ function updateCartBadge(count) {
     var badge = document.querySelector('.nav-badge');
     if (badge) badge.textContent = count;
 }
+
+// 드롭다운 토글 함수
+function toggleDropdown(button) {
+    const dropdownMenu = button.nextElementSibling;
+    dropdownMenu.classList.toggle("show");
+}
+
+// 메뉴 외부 클릭 시 드롭다운 닫기
+window.onclick = function(event) {
+    if (!event.target.closest('.filter-dropdown')) {
+        const dropdowns = document.getElementsByClassName("dropdown-menu");
+        for (let i = 0; i < dropdowns.length; i++) {
+            let openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+                openDropdown.classList.remove('show');
+            }
+        }
+    }
+}
