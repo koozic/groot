@@ -14,9 +14,9 @@ public class RecommendC extends HttpServlet {
 
         // 탭 활성화 상태를 전달 (index.jsp의 active 클래스 제어용)
         request.setAttribute("activeTab", "recommend");
-
+        request.setAttribute("content", "recommend/recommend.jsp"); // ← 추가
         // 선택 페이지로 포워딩
-        request.getRequestDispatcher("recommend/recommend.jsp").forward(request, response);
+        request.getRequestDispatcher("index.jsp").forward(request, response);
 
     }
 
