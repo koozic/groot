@@ -3,7 +3,8 @@
    비동기(AJAX) + 로컬스토리지 장바구니 처리
    ================================================ */
 
-const isLogin = typeof IS_LOGIN !== 'undefined' && IS_LOGIN;
+const isLogin = (typeof IS_LOGIN !== 'undefined' && IS_LOGIN === true);
+console.log("현재 로그인 상태:", isLogin); // 디버깅용: F12 콘솔에서 확인 가능
 
 /* ── 로컬스토리지 장바구니 (비회원) ── */
 const LOCAL_CART_KEY = 'yakjaengi_cart';
@@ -11,34 +12,55 @@ const LOCAL_WISH_KEY = 'yakjaengi_wish';
 
 const LocalCart = {
     getAll() {
-        try { return JSON.parse(localStorage.getItem(LOCAL_CART_KEY)) || []; }
-        catch { return []; }
+        try {
+            return JSON.parse(localStorage.getItem(LOCAL_CART_KEY)) || [];
+        } catch {
+            return [];
+        }
     },
-    save(items) { localStorage.setItem(LOCAL_CART_KEY, JSON.stringify(items)); },
+    save(items) {
+        localStorage.setItem(LOCAL_CART_KEY, JSON.stringify(items));
+    },
     add(product) {
-        const items  = this.getAll();
+        const items = this.getAll();
         const exists = items.find(i => i.productId === product.productId);
-        if (exists) { showToast('이미 담긴 제품이에요', 'info'); return false; }
-        items.push({ cartId: Date.now(), productId: product.productId,
+        if (exists) {
+            showToast('이미 담긴 제품이에요', 'info');
+            return false;
+        }
+        items.push({
+            cartId: Date.now(), productId: product.productId,
             productName: product.productName, brand: product.brand,
-            icon: product.icon || '💊' });
-        this.save(items); return true;
+            icon: product.icon || '💊'
+        });
+        this.save(items);
+        return true;
     },
-    remove(cartId) { this.save(this.getAll().filter(i => i.cartId !== cartId)); },
-    count()        { return this.getAll().length; },
-    clear()        { localStorage.removeItem(LOCAL_CART_KEY); }
+    remove(cartId) {
+        this.save(this.getAll().filter(i => i.cartId !== cartId));
+    },
+    count() {
+        return this.getAll().length;
+    },
+    clear() {
+        localStorage.removeItem(LOCAL_CART_KEY);
+    }
 };
 
 /* ── 장바구니 담기 ── */
 function addCart(productId, productName, brand, icon = '💊') {
     if (isLogin) {
-        fetch('cart/add', { method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body: JSON.stringify({productId, productName, brand}) })
+        fetch('cart/add', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({productId, productName, brand})
+        })
             .then(r => r.json())
             .then(d => {
-                if (d.success) { updateCartBadge(d.cartCount); showToast('장바구니에 담았어요 🛒'); }
-                else showToast(d.message || '오류', 'error');
+                if (d.success) {
+                    updateCartBadge(d.cartCount);
+                    showToast('장바구니에 담았어요 🛒');
+                } else showToast(d.message || '오류', 'error');
             }).catch(() => showToast('서버 연결 실패', 'error'));
     } else {
         if (LocalCart.add({productId, productName, brand, icon})) {
@@ -52,11 +74,18 @@ function addCart(productId, productName, brand, icon = '💊') {
 /* ── 장바구니 삭제 ── */
 function removeCart(cartId) {
     if (isLogin) {
-        fetch('cart/remove', { method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body: JSON.stringify({cartId}) })
+        fetch('cart/remove', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({cartId})
+        })
             .then(r => r.json())
-            .then(d => { if (d.success) { removeCartItemDOM(cartId); updateCartBadge(d.cartCount); } });
+            .then(d => {
+                if (d.success) {
+                    removeCartItemDOM(cartId);
+                    updateCartBadge(d.cartCount);
+                }
+            });
     } else {
         LocalCart.remove(cartId);
         removeCartItemDOM(cartId);
@@ -67,14 +96,17 @@ function removeCart(cartId) {
 
 function removeCartItemDOM(cartId) {
     const el = document.querySelector(`[data-cart-id="${cartId}"]`);
-    if (el) { el.style.transition='opacity .2s,transform .2s';
-        el.style.opacity='0'; el.style.transform='translateX(20px)';
-        setTimeout(() => el.remove(), 200); }
+    if (el) {
+        el.style.transition = 'opacity .2s,transform .2s';
+        el.style.opacity = '0';
+        el.style.transform = 'translateX(20px)';
+        setTimeout(() => el.remove(), 200);
+    }
 }
 
 /* ── 비회원 패널 렌더링 ── */
 function renderLocalCartPanel() {
-    const body  = document.querySelector('.cp-body');
+    const body = document.querySelector('.cp-body');
     const count = document.querySelector('.cp-count');
     if (!body) return;
     const items = LocalCart.getAll();
@@ -107,7 +139,8 @@ function renderLocalCartPanel() {
 /* ── 배지 업데이트 ── */
 function updateCartBadge(count) {
     document.querySelectorAll('.nav-badge,.float-badge').forEach(b => {
-        b.textContent = count; b.style.display = count > 0 ? 'flex' : 'none';
+        b.textContent = count;
+        b.style.display = count > 0 ? 'flex' : 'none';
     });
 }
 
@@ -115,9 +148,11 @@ function updateCartBadge(count) {
 function toggleWish(btn, productId) {
     const isWished = btn.classList.contains('wished');
     if (isLogin) {
-        fetch('wish/toggle', { method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body: JSON.stringify({productId, action: isWished ? 'remove':'add'}) })
+        fetch('wish/toggle', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({productId, action: isWished ? 'remove' : 'add'})
+        })
             .then(r => r.json())
             .then(d => {
                 if (d.success) {
@@ -129,11 +164,22 @@ function toggleWish(btn, productId) {
     } else {
         try {
             const wishes = JSON.parse(localStorage.getItem(LOCAL_WISH_KEY)) || [];
-            const idx    = wishes.indexOf(productId);
-            if (idx > -1) { wishes.splice(idx,1); btn.classList.remove('wished'); btn.textContent='🤍'; showToast('찜 해제했어요'); }
-            else           { wishes.push(productId); btn.classList.add('wished');   btn.textContent='❤️'; showToast('찜했어요 ❤️'); }
+            const idx = wishes.indexOf(productId);
+            if (idx > -1) {
+                wishes.splice(idx, 1);
+                btn.classList.remove('wished');
+                btn.textContent = '🤍';
+                showToast('찜 해제했어요');
+            } else {
+                wishes.push(productId);
+                btn.classList.add('wished');
+                btn.textContent = '❤️';
+                showToast('찜했어요 ❤️');
+            }
             localStorage.setItem(LOCAL_WISH_KEY, JSON.stringify(wishes));
-        } catch { showToast('오류가 발생했어요','error'); }
+        } catch {
+            showToast('오류가 발생했어요', 'error');
+        }
     }
 }
 
@@ -143,24 +189,33 @@ function restoreWishState() {
         const wishes = JSON.parse(localStorage.getItem(LOCAL_WISH_KEY)) || [];
         document.querySelectorAll('[data-product-id]').forEach(btn => {
             if (wishes.includes(btn.dataset.productId)) {
-                btn.classList.add('wished'); btn.textContent = '❤️';
+                btn.classList.add('wished');
+                btn.textContent = '❤️';
             }
         });
-    } catch {}
+    } catch {
+    }
 }
 
 /* ── 영양제 분석 ── */
 function analyzeSupplements(type = 'my') {
     const checked = Array.from(document.querySelectorAll('input[name="supp"]:checked')).map(e => e.value);
-    if (checked.length === 0) { showAnalysisError('영양제를 하나 이상 선택해주세요 💊'); return; }
+    if (checked.length === 0) {
+        showAnalysisError('영양제를 하나 이상 선택해주세요 💊');
+        return;
+    }
     showAnalysisLoading();
-    fetch('recommend/analyze', { method:'post',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({supplements: checked, type}) })
+    fetch('recommend/analyze', {
+        method: 'post',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({supplements: checked, type})
+    })
         .then(r => r.json())
         .then(d => {
-            if (d.success) { showAnalysisResult(d); if (!isLogin) appendLoginNudge(); }
-            else showAnalysisError(d.message || '분석 오류');
+            if (d.success) {
+                showAnalysisResult(d);
+                if (!isLogin) appendLoginNudge();
+            } else showAnalysisError(d.message || '분석 오류');
         }).catch(() => showAnalysisError('서버 연결에 실패했어요'));
 }
 
@@ -169,7 +224,7 @@ function showAnalysisLoading() {
     if (!box) return;
     box.style.display = 'block';
     box.innerHTML = `<div class="analysis-loading"><div class="loading-spinner"></div><p>분석 중이에요...</p></div>`;
-    box.scrollIntoView({behavior:'smooth', block:'nearest'});
+    box.scrollIntoView({behavior: 'smooth', block: 'nearest'});
 }
 
 function showAnalysisResult(data) {
@@ -180,22 +235,22 @@ function showAnalysisResult(data) {
             ${items.map(tpl).join('')}</div>` : '';
 
     box.innerHTML = `<div class="analysis-result">
-        ${mk(data.missing,       'result-missing', '⚠️', '부족할 수 있는 영양소',
+        ${mk(data.missing, 'result-missing', '⚠️', '부족할 수 있는 영양소',
         m => `<div class="result-item result-missing"><span class="result-icon">${m.icon}</span>
                   <div class="result-info"><strong>${m.name}</strong><span>${m.reason}</span></div></div>`)}
-        ${mk(data.goodCombo,     'result-good',    '💚', '좋은 조합',
+        ${mk(data.goodCombo, 'result-good', '💚', '좋은 조합',
         g => `<div class="result-item result-good"><span class="result-icon">✅</span>
                   <div class="result-info"><strong>${g.combo}</strong><span>${g.effect}</span></div></div>`)}
-        ${mk(data.compatibility, 'result-compat',  '🔄', '상성 분석',
-        c => `<div class="result-item ${c.status==='bad'?'result-missing':'result-good'}">
-                  <span class="result-icon">${c.status==='bad'?'⚠️':'💚'}</span>
+        ${mk(data.compatibility, 'result-compat', '🔄', '상성 분석',
+        c => `<div class="result-item ${c.status === 'bad' ? 'result-missing' : 'result-good'}">
+                  <span class="result-icon">${c.status === 'bad' ? '⚠️' : '💚'}</span>
                   <div class="result-info"><strong>${c.suppA} + ${c.suppB}</strong><span>${c.reason}</span></div></div>`)}
-        ${mk(data.timing,        'result-time',    '⏰', '복용 시간 추천',
+        ${mk(data.timing, 'result-time', '⏰', '복용 시간 추천',
         t => `<div class="result-item result-time"><span class="result-icon">${t.icon}</span>
                   <div class="result-info"><strong>${t.name}</strong><span>${t.when}</span></div></div>`)}
         <a href="recommend" class="btn btn-primary btn-full" style="margin-top:16px;">자세한 분석 보기 →</a>
     </div>`;
-    box.scrollIntoView({behavior:'smooth', block:'nearest'});
+    box.scrollIntoView({behavior: 'smooth', block: 'nearest'});
 }
 
 function appendLoginNudge() {
@@ -221,22 +276,23 @@ function showAnalysisError(msg) {
 function toggleCart() {
     const panel = document.getElementById('cartPanel');
     const float = document.getElementById('floatCart');
-    const body  = document.getElementById('siteBody');
-    const open  = panel.classList.toggle('open');
+    const body = document.getElementById('siteBody');
+    const open = panel.classList.toggle('open');
     float.classList.toggle('open', open);
     if (window.innerWidth > 768) body.classList.toggle('shifted', open);
     if (open && !isLogin) renderLocalCartPanel();
 }
 
-document.addEventListener('click', function(e) {
+document.addEventListener('click', function (e) {
     const panel = document.getElementById('cartPanel');
     const float = document.getElementById('floatCart');
-    const nav   = document.querySelector('.nav-cart');
+    const nav = document.querySelector('.nav-cart');
     if (!panel || !float) return;
     if (panel.classList.contains('open') &&
         !panel.contains(e.target) && !float.contains(e.target) &&
         nav && !nav.contains(e.target)) {
-        panel.classList.remove('open'); float.classList.remove('open');
+        panel.classList.remove('open');
+        float.classList.remove('open');
         const body = document.getElementById('siteBody');
         if (body) body.classList.remove('shifted');
     }
@@ -247,10 +303,15 @@ function showToast(msg, type = 'success') {
     const old = document.getElementById('toast');
     if (old) old.remove();
     const t = document.createElement('div');
-    t.id = 'toast'; t.className = `toast toast-${type}`; t.textContent = msg;
+    t.id = 'toast';
+    t.className = `toast toast-${type}`;
+    t.textContent = msg;
     document.body.appendChild(t);
     requestAnimationFrame(() => t.classList.add('show'));
-    setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }, 2500);
+    setTimeout(() => {
+        t.classList.remove('show');
+        setTimeout(() => t.remove(), 300);
+    }, 2500);
 }
 
 /* ── 초기화 ── */
