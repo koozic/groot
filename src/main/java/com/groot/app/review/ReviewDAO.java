@@ -44,8 +44,6 @@ public class ReviewDAO {
             sql += " ORDER BY R_LIKE DESC, R_DATE DESC"; // 좋아요순
 
         } else if ("photo".equals(sortType)) {
-            // 🌟 99년생 에이스 무영이가 추가할 부분!
-            // 📸 사진이 있는(R_IMG가 NULL이 아닌) 리뷰만 골라내고 최신순 정렬!
             sql += " AND R_IMG IS NOT NULL ORDER BY R_DATE DESC";
 
         } else if ("high_score".equals(sortType)) {
@@ -54,9 +52,12 @@ public class ReviewDAO {
         } else if ("low_score".equals(sortType)) {
             sql += " ORDER BY R_SCORE ASC, R_DATE DESC";  // 평점 낮은순
 
+            // 🌟 [여기 추가!!!] '최신순'을 명확하게 알려주는 로직 추가! (번호가 높을수록 최근에 쓴 글)
+        } else if ("date".equals(sortType)) {
+            sql += " ORDER BY REVIEW_ID DESC";
+
         } else {
-            // ❌ 기존: sql += " ORDER BY R_DATE DESC"; (최신순)
-            // ✅ 수정: 베스트순(좋아요순)을 기본값으로 설정!
+            // 아무것도 안 넘어오면 기본값은 좋아요순
             sql += " ORDER BY R_LIKE DESC, R_DATE DESC";
         }
 
@@ -115,7 +116,7 @@ public class ReviewDAO {
             // [보안 및 필터링 구간] - 기존과 동일
             r_title = r_title.replace("<", "&lt;").replace(">", "&gt;");
             r_content = r_content.replace("<", "&lt;").replace(">", "&gt;");
-            String[] badWords = {"시발", "존나", "개새끼", "ㅅㅂ"};
+            String[] badWords = {"시발","씨발", "존나", "개새끼", "ㅅㅂ"};
             for (String word : badWords) {
                 r_title = r_title.replaceAll(word, "꿍디");
                 r_content = r_content.replaceAll(word, "꿍디");
@@ -597,5 +598,183 @@ public class ReviewDAO {
             DBManager_new.close(con, pstmt, rs);
         }
         return bestList;
+    }
+    // ReviewDAO.java 안에 아래 메서드를 추가하세요!
+
+    // 🌟 [추가 1] 내 영양제 분석용 (기존 로직 + 번역 기능 포함)
+    public ArrayList<ReviewDTO> getCustomBestReviews(String[] rawSupps) {
+        ArrayList<ReviewDTO> list = new ArrayList<>();
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            con = DBManager_new.connect();
+            StringBuilder sql = new StringBuilder(
+                    "SELECT * FROM (" +
+                            "    SELECT R.*, P.product_name, S.supplement_name " +
+                            "    FROM reviews R " +
+                            "    JOIN products P ON R.product_id = P.product_id " +
+                            "    JOIN supplements S ON P.product_nutrient = S.supplement_id "
+            );
+
+            if (rawSupps != null && rawSupps.length > 0) {
+                sql.append(" WHERE S.supplement_name IN (");
+                for (int i = 0; i < rawSupps.length; i++) {
+                    sql.append("?");
+                    if (i < rawSupps.length - 1) sql.append(", ");
+                }
+                sql.append(") ");
+            }
+
+            sql.append("    ORDER BY R.r_like DESC, R.r_date DESC " +
+                    ") WHERE ROWNUM <= 3");
+
+            pstmt = con.prepareStatement(sql.toString());
+
+            // 🌟 DAO 안에서 통역하며 세팅!
+            if (rawSupps != null && rawSupps.length > 0) {
+                for (int i = 0; i < rawSupps.length; i++) {
+                    pstmt.setString(i + 1, translateSupp(rawSupps[i])); // 번역기 호출
+                }
+            }
+
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                ReviewDTO r = new ReviewDTO();
+                r.setR_score(rs.getInt("r_score"));
+                r.setR_content(rs.getString("r_content"));
+                r.setUser_id(rs.getString("user_id"));
+                r.setSupp_name(rs.getString("supplement_name"));
+                list.add(r);
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        finally { DBManager_new.close(con, pstmt, rs); }
+        return list;
+    }
+
+    // 🌟 [추가 2] 부족한 영양소 분석용 (분배 로직 + 번역 기능 포함)
+    public ArrayList<ReviewDTO> getDeficiencyBestReviews(String[] rawSupps, int limitPerSupp) {
+        ArrayList<ReviewDTO> list = new ArrayList<>();
+        if (rawSupps == null || rawSupps.length == 0) return list;
+
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            con = DBManager_new.connect();
+            String sql = "SELECT * FROM (" +
+                    "    SELECT R.*, P.product_name, S.supplement_name " +
+                    "    FROM reviews R " +
+                    "    JOIN products P ON R.product_id = P.product_id " +
+                    "    JOIN supplements S ON P.product_nutrient = S.supplement_id " +
+                    "    WHERE S.supplement_name = ? " +
+                    "    ORDER BY R.r_like DESC, R.r_date DESC " +
+                    ") WHERE ROWNUM <= ?";
+
+            pstmt = con.prepareStatement(sql);
+
+            // 🌟 전달받은 영양제 각각에 대해 쿼리 실행
+            for (String s : rawSupps) {
+                pstmt.setString(1, translateSupp(s)); // 번역기 호출
+                pstmt.setInt(2, limitPerSupp); // 할당된 개수만큼만!
+                rs = pstmt.executeQuery();
+
+                while (rs.next()) {
+                    ReviewDTO r = new ReviewDTO();
+                    r.setR_score(rs.getInt("r_score"));
+                    r.setR_content(rs.getString("r_content"));
+                    r.setUser_id(rs.getString("user_id"));
+                    r.setSupp_name(rs.getString("supplement_name"));
+                    list.add(r);
+                }
+                rs.close();
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        finally { DBManager_new.close(con, pstmt, rs); }
+        return list;
+    }
+
+    // 🌟 [추가 3] 영어를 한글로 바꿔주는 프라이빗 번역기!
+    private String translateSupp(String eng) {
+        switch(eng) {
+            case "vitC": return "비타민 C";
+            case "vitD": return "비타민 D";
+            case "vitB": return "비타민 B";
+            case "vitA": return "비타민 A";
+            case "vitE": return "비타민 E";
+            case "omega3": return "오메가3";
+            case "magnesium": return "마그네슘";
+            case "calcium": return "칼슘";
+            case "iron": return "철분";
+            case "zinc": return "아연";
+            default: return eng;
+        }
+    }
+    // 🌟 [라운지 필터 전용] 카테고리별 베스트 리뷰 가져오기
+    public ArrayList<ReviewDTO> getLoungeFilterReviews(String category) {
+        ArrayList<ReviewDTO> list = new ArrayList<>();
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            con = DBManager_new.connect();
+
+            // 1. 기본 뼈대 (리뷰 + 상품명/사진 + 성분명 조인)
+            String sql = "SELECT * FROM (" +
+                    "    SELECT R.*, P.product_name, P.product_image, S.supplement_name " +
+                    "    FROM reviews R " +
+                    "    LEFT JOIN products P ON R.product_id = P.product_id " +
+                    "    LEFT JOIN supplements S ON P.product_nutrient = S.supplement_id ";
+
+            // 2. 동적 필터링 조건 추가!
+            if ("photo".equals(category)) {
+                // 포토 리뷰만 보기
+                sql += " WHERE R.r_img IS NOT NULL ";
+            } else if (!"all".equals(category)) {
+                // 특정 성분(비타민 C 등)만 보기
+                sql += " WHERE S.supplement_name = ? ";
+            }
+
+            // 3. 정렬 및 상위 20개 자르기
+            sql += "    ORDER BY R.r_like DESC, R.r_date DESC " +
+                    ") WHERE ROWNUM <= 20";
+
+            pstmt = con.prepareStatement(sql);
+
+            // 4. 물음표 세팅 ("all"이나 "photo"가 아닐 때만 성분명이 들어감)
+            if (!"all".equals(category) && !"photo".equals(category)) {
+                pstmt.setString(1, category);
+            }
+
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                ReviewDTO r = new ReviewDTO();
+                r.setReview_id(rs.getInt("review_id"));
+                r.setUser_id(rs.getString("user_id"));
+                r.setProduct_id(rs.getInt("product_id"));
+                r.setR_title(rs.getString("r_title"));
+                r.setR_content(rs.getString("r_content"));
+                r.setR_score(rs.getInt("r_score"));
+                r.setR_img(rs.getString("r_img"));
+                r.setR_date(rs.getDate("r_date"));
+                r.setR_like(rs.getInt("r_like"));
+
+                // 조인된 데이터들
+                r.setP_name(rs.getString("product_name"));
+                r.setP_img(rs.getString("product_image"));
+                r.setSupp_name(rs.getString("supplement_name"));
+
+                list.add(r);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBManager_new.close(con, pstmt, rs);
+        }
+        return list;
     }
 } // ReviewDAO 클래스 끝

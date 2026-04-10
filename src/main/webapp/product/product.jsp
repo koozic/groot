@@ -173,6 +173,49 @@
 <div id="toast" class="toast">등록 완료!</div>
 
 
+<div class="product-container">
+    <c:forEach items="${products}" var="p">
+
+        <div class="product-card" onclick="location.href='product-detail?id=${p.productId}'">
+
+
+            <div class="product-image">
+                <img src="${p.productImage}"
+                     alt="상품 이미지" style="width:100%; height:100%; object-fit:cover;">
+                <c:if test="${sessionScope.isAdmin == true}">
+                    <button class="btn-delete"
+                            onclick="event.stopPropagation(); confirmDelete('${p.productId}')">&times;
+                    </button>
+                </c:if>
+            </div>
+            <div class="product-info">
+                <div class="product-name">${p.productName}</div>
+                <div class="product-brand">${p.productBrand}</div>
+                <div class="product-nutrient">
+                    <c:forEach items="${nutrients}" var="n">
+                        <c:if test="${p.productNutrient == n.nutrientId}">
+                            ${n.nutrientName}
+                        </c:if>
+                    </c:forEach>
+
+                </div>
+                <div class="product-price">${p.productPrice}원</div>
+                <div class="product-date">${p.productStartDate}</div>
+                <button class="btn-wish"
+                        onclick="event.stopPropagation(); toggleWish(this, ${p.productId})">🤍
+                </button>
+                <button class="btn-cart"
+                        onclick="event.stopPropagation(); addCart(${p.productId}, '${p.productName}', '${p.productBrand}')">
+                    🛒 담기
+                </button>
+
+            </div>
+        </div>
+
+    </c:forEach>
+</div>
+
+
 <div id="deleteConfirmModal" class="modal">
     <div class="modal-content confirm-mini">
         <div class="modal-header">
@@ -191,6 +234,7 @@
 </div>
 
 
+<script src="js/app.js"></script>
 <%--<script src="js/product.js"></script>--%>
 <script src="js/product.js?v=20260408"></script>
 

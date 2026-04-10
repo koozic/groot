@@ -223,6 +223,7 @@ select *
 from users;
 
 
+
 create table admin(
       admin_no number primary key,
       admin_id varchar2(30 char) unique not null,

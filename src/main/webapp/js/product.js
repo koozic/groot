@@ -273,21 +273,45 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
-// 드롭다운 토글 함수
-function toggleDropdown(button) {
-    const dropdownMenu = button.nextElementSibling;
-    dropdownMenu.classList.toggle("show");
+// 장바구니/찜 담기
+function addCart(productId, productName, brand) {
+    console.log('Adding to cart:', {productId, productName, brand});
+    
+    fetch('cart/add', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({productId, productName, brand})
+    })
+    .then(r => {
+        console.log('Response status:', r.status);
+        return r.json();
+    })
+    .then(data => {
+        console.log('Response data:', data);
+        showToast(data.message);
+        if (data.success) updateCartBadge(data.cartCount);
+    })
+    .catch(error => {
+        console.error('Cart add error:', error);
+        showToast('장바구니 담기 오류가 발생했습니다');
+    });
 }
 
-// 메뉴 외부 클릭 시 드롭다운 닫기
-window.onclick = function(event) {
-    if (!event.target.closest('.filter-dropdown')) {
-        const dropdowns = document.getElementsByClassName("dropdown-menu");
-        for (let i = 0; i < dropdowns.length; i++) {
-            let openDropdown = dropdowns[i];
-            if (openDropdown.classList.contains('show')) {
-                openDropdown.classList.remove('show');
-            }
+function toggleWish(btn, productId) {
+    fetch('cart/toggle', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({productId})
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            btn.textContent = data.action === 'added' ? '❤️' : '🤍';
         }
-    }
+    });
+}
+
+function updateCartBadge(count) {
+    var badge = document.querySelector('.nav-badge');
+    if (badge) badge.textContent = count;
 }

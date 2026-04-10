@@ -1,6 +1,7 @@
     <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
     <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+    <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
     <!DOCTYPE html>
     <html>
     <head>
@@ -90,17 +91,26 @@
 
                         <div class="photo-slider-wrapper">
                             <%-- 왼쪽 버튼 --%>
-                            <button type="button" class="slider-btn prev-btn" onclick="slideGallery(-1)"
-                                    style="display: ${allPhotoImages.size() > 4 ? 'block' : 'none'};">&lt;</button>
+                                <div class="photo-slider" id="photo-slider">
+                                    <c:forEach var="img" items="${allPhotoImages}">
+                                        <div class="photo-slide-item" onclick="openDetailModal('${img.r_title}', '${img.user_id}', '${img.r_score}', '${img.r_date}', '${img.r_content}', '${img.r_img}')">
 
-                            <div class="photo-slider" id="photo-slider">
-                                <c:forEach var="img" items="${allPhotoImages}">
-                                    <div class="photo-slide-item" onclick="openDetailModal('${img.r_title}', '${img.user_id}', '${img.r_score}', '${img.r_date}', '${img.r_content}', '${img.r_img}')">
-                                            <%-- 클라우드 URL 자체를 바로 src에 꽂아줍니다! --%>
-                                        <img src="${img.r_img}" alt="포토리뷰 이미지">
-                                    </div>
-                                </c:forEach>
-                            </div>
+                                                <%-- 🌟 마법의 분기 처리 시작! --%>
+                                            <c:choose>
+                                                <%-- 1. DB에 저장된 주소가 'http'로 시작하면? -> 클라우드 사진! --%>
+                                                <c:when test="${fn:startsWith(img.r_img, 'http')}">
+                                                    <img src="${img.r_img}" alt="포토리뷰 이미지" style="width:100%; height:100%; object-fit:cover; border-radius:8px;">
+                                                </c:when>
+
+                                                <%-- 2. 아니면? -> 옛날에 올린 로컬 사진! (../upload/ 붙이기) --%>
+                                                <c:otherwise>
+                                                    <img src="../upload/${img.r_img}" alt="포토리뷰 이미지" style="width:100%; height:100%; object-fit:cover; border-radius:8px;">
+                                                </c:otherwise>
+                                            </c:choose>
+
+                                        </div>
+                                    </c:forEach>
+                                </div>
 
                             <%-- 오른쪽 버튼 --%>
                             <button type="button" class="slider-btn next-btn" onclick="slideGallery(1)"

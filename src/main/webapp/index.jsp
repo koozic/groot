@@ -11,16 +11,29 @@
     <script>
         // loginUser가 있거나, isAdmin이 true이면 로그인 상태로 간주
         const IS_LOGIN = ${ (not empty sessionScope.loginUser) or (sessionScope.isAdmin == true) };
+
     </script>
+
     <script src="js/app.js"></script>
     <link rel="stylesheet" href="css/recommend.css">
     <link rel="stylesheet" href="css/home.css">
-    <link rel="stylesheet" href="css/home.css">
+    <%-- body 페이지가 포함될 때 body.css 로드 --%>
+    <c:if test="${content == 'body/body.jsp'}">
+        <link rel="stylesheet" href="css/body.css">
+    </c:if>
+    <script>
+        const IS_LOGIN = ${ (not empty sessionScope.loginUser) or (sessionScope.isAdmin == true) };
+        window.IS_LOGIN = IS_LOGIN;
+        window.IS_ADMIN = ${ sessionScope.isAdmin == true };
+        window.LOGIN_USER_ID = "${not empty sessionScope.loginUser ? sessionScope.loginUser.user_id : ''}";
+    </script>
+    <%-- body 페이지가 포함될 때만 body.js 로드 --%>
+    <c:if test="${content == 'body/body.jsp'}">
+        <script src="js/body.js" defer></script>
+    </c:if>
     <link rel="stylesheet" href="css/product.css">
     <link rel="stylesheet" href="css/product_detail.css">
     <link rel="stylesheet" href="css/product_edit.css">
-
-
 </head>
 <body>
 
@@ -36,7 +49,6 @@
         <c:choose>
             <%-- [1] 로그인 했을 때 --%>
             <c:when test="${not empty sessionScope.loginUser}">
-                <%--                <<<<<<< HEAD--%>
                 <span class="hdr-link">${sessionScope.loginUser.name}님 어서오세요. 당신의 건강을 챙기세요</span>
                 <img
                         src="${pageContext.request.contextPath}/user/userImg/${sessionScope.loginUser.user_profile}"
@@ -45,13 +57,6 @@
                         onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/user/userImg/Ayanokoji.jfif';"
                 >
 
-                <%-- 삼항 연산자 로직은 그대로 유지 --%>
-                <%--                <img src="${sessionScope.loginUser.user_profile.startsWith('http')--%>
-                <%--                           ? sessionScope.loginUser.user_profile--%>
-                <%--                           : pageContext.request.contextPath.concat('/user/userImg/').concat(sessionScope.loginUser.user_profile)}"--%>
-                <%--                     alt="프로필"--%>
-                <%--                     style="width:32px; height:32px; border-radius:50%; object-fit:cover;"--%>
-                <%--                     onerror="this.src='${pageContext.request.contextPath}/user/userImg/Ayanokoji.jpg'">--%>
 
                 <a href="mypage" class="hdr-link">마이페이지</a>
                 <a href="logout" class="btn-login" style="padding: 5px 12px;">로그아웃</a>
@@ -65,12 +70,14 @@
         </c:choose>
     </div>
 </header>
-
+<!-- =============================================
+     2. 네비게이션
+     ============================================= -->
 <nav class="site-nav">
     <div class="nav-left">
         <a href="product" class="nav-item ${activeTab == 'product'   ? 'active' : ''}">제품</a>
         <a href="supplements" class="nav-item ${activeTab == 'nutrition' ? 'active' : ''}">영양성분</a>
-        <a href="recommend" class="nav-item ${Tab == 'recommend' ? 'active' : ''}">영양추천</a>
+        <a href="recommend" class="nav-item ${activeTab == 'recommend' ? 'active' : ''}">영양추천</a>
         <%-- ✅ 추가: 관리자 세션일 때만 탭 표시 --%>
         <c:if test="${sessionScope.isAdmin == true}">
             <a href="admin" class="nav-item ${activeTab == 'admin' ? 'active' : ''}">🛠️ 영양제 관리</a>
@@ -93,6 +100,7 @@
     <c:if test="${not empty msg}">
         <div class="alert alert-info">${msg}</div>
     </c:if>
+
     <jsp:include page="${content}"/>
 </main>
 
