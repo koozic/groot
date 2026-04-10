@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
@@ -119,9 +119,26 @@
             <div class="panel">
                 <div class="panel-top">
                     <span class="panel-title" id="panel-title">부위를 선택하세요</span>
-                    <div class="sort-bar">
-                        <button class="sort-btn" onclick="setSort('view',this)">조회순</button>
-                        <button class="sort-btn" onclick="setSort('like',this)">인기순</button>
+                    <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                        <div class="sort-bar">
+                            <button class="sort-btn" onclick="setSort('view',this)">조회순</button>
+                            <button class="sort-btn" onclick="setSort('like',this)">인기순</button>
+                        </div>
+                        <%-- 관리자 세션일 때만 표시 --%>
+                        <c:if test="${sessionScope.isAdmin == true}">
+                            <button id="adminToggleBtn" onclick="toggleAdminMode()"
+                                    style="padding:6px 14px; background:#FF9800; color:white;
+                           border:none; border-radius:6px; cursor:pointer;
+                           font-size:0.82em; font-weight:600; transition:background 0.2s;">
+                                🛠️ 관리 모드
+                            </button>
+                            <button id="adminAddBtn" onclick="openAdminModal('insert')"
+                                    style="display:none; padding:6px 14px; background:#4CAF50; color:white;
+                           border:none; border-radius:6px; cursor:pointer;
+                           font-size:0.82em; font-weight:600;">
+                                + 영양소 추가
+                            </button>
+                        </c:if>
                     </div>
                 </div>
                 <div class="tags" id="tag-area"></div>
@@ -138,7 +155,121 @@
     <div id="modal-area"></div>
     <div id="login-modal-area"></div>
 </div>
+<%-- ===== 관리자 CRUD 모달 (isAdmin일 때만 렌더) ===== --%>
+<c:if test="${sessionScope.isAdmin == true}">
+    <div id="adminModalOverlay"
+         style="display:none; position:fixed; inset:0;
+            background:rgba(0,0,0,0.55); z-index:10001;
+            justify-content:center; align-items:center; padding:16px;"
+         onclick="if(event.target===this) closeAdminModal()">
 
+        <div style="background:#fff; border-radius:14px; padding:28px 24px;
+                width:min(500px,95vw); max-height:88vh; overflow-y:auto;
+                position:relative; box-shadow:0 12px 30px rgba(0,0,0,0.2);">
+
+                <%-- 닫기 버튼 --%>
+            <button onclick="closeAdminModal()"
+                    style="position:absolute; top:14px; right:16px;
+                       background:none; border:none; font-size:1.5em;
+                       cursor:pointer; color:#999; line-height:1;">✕
+            </button>
+
+            <h3 id="adminModalTitle"
+                style="margin:0 0 20px; font-size:1.1em; color:#333;">➕ 영양소 등록</h3>
+
+                <%-- hidden 값 --%>
+            <input type="hidden" id="adminAction" value="insert">
+            <input type="hidden" id="adminSuppId" value="">
+
+            <div style="display:flex; flex-direction:column; gap:14px;">
+
+                <div>
+                    <label style="display:block; font-size:0.85em; font-weight:700;
+                               color:#555; margin-bottom:5px;">영양소 이름 *</label>
+                    <input id="adminName" type="text" placeholder="예: 루테인"
+                           style="width:100%; padding:9px 11px; border:1px solid #ddd;
+                              border-radius:7px; font-size:0.95em; box-sizing:border-box;">
+                </div>
+
+                <div>
+                    <label style="display:block; font-size:0.85em; font-weight:700;
+                               color:#555; margin-bottom:5px;">효능 *</label>
+                    <textarea id="adminEfficacy" placeholder="예: 눈 건강 보호 및 황반변성 예방"
+                              style="width:100%; padding:9px 11px; border:1px solid #ddd;
+                                 border-radius:7px; font-size:0.95em; box-sizing:border-box;
+                                 height:72px; resize:vertical;"></textarea>
+                </div>
+
+                <div>
+                    <label style="display:block; font-size:0.85em; font-weight:700;
+                               color:#555; margin-bottom:5px;">복용법</label>
+                    <input id="adminDosage" type="text" placeholder="예: 하루 1정 (20mg)"
+                           style="width:100%; padding:9px 11px; border:1px solid #ddd;
+                              border-radius:7px; font-size:0.95em; box-sizing:border-box;">
+                </div>
+
+                <div>
+                    <label style="display:block; font-size:0.85em; font-weight:700;
+                               color:#555; margin-bottom:5px;">복용 시기</label>
+                    <input id="adminTiming" type="text" placeholder="예: 식후 복용 권장"
+                           style="width:100%; padding:9px 11px; border:1px solid #ddd;
+                              border-radius:7px; font-size:0.95em; box-sizing:border-box;">
+                </div>
+
+                <div>
+                    <label style="display:block; font-size:0.85em; font-weight:700;
+                               color:#555; margin-bottom:5px;">주의사항</label>
+                    <textarea id="adminCaution" placeholder="예: 과다복용 시 피부 황변 가능"
+                              style="width:100%; padding:9px 11px; border:1px solid #ddd;
+                                 border-radius:7px; font-size:0.95em; box-sizing:border-box;
+                                 height:60px; resize:vertical;"></textarea>
+                </div>
+
+                <div>
+                    <label style="display:block; font-size:0.85em; font-weight:700;
+                               color:#555; margin-bottom:5px;">이미지 경로</label>
+                    <input id="adminImgPath" type="text" placeholder="예: images/supp/lutein.png"
+                           style="width:100%; padding:9px 11px; border:1px solid #ddd;
+                              border-radius:7px; font-size:0.95em; box-sizing:border-box;">
+                </div>
+
+                    <%-- 등록 시에만 신체 부위 선택 표시, 수정 시 JS로 숨김 --%>
+                <div id="adminBodyIdWrap">
+                    <label style="display:block; font-size:0.85em; font-weight:700;
+                               color:#555; margin-bottom:5px;">연결할 신체 부위</label>
+                    <select id="adminBodyId"
+                            style="width:100%; padding:9px 11px; border:1px solid #ddd;
+                               border-radius:7px; font-size:0.95em;">
+                        <option value="">선택 안함</option>
+                        <option value="1">👁️ 눈</option>
+                        <option value="2">🥩 간</option>
+                        <option value="3">💤 피로개선</option>
+                        <option value="4">🦴 뼈/관절</option>
+                    </select>
+                </div>
+
+            </div>
+                <%-- /flex column --%>
+
+                <%-- 하단 버튼 --%>
+            <div style="display:flex; gap:10px; margin-top:22px;">
+                <button onclick="submitAdminModal()"
+                        style="flex:1; padding:11px; background:#4CAF50; color:white;
+                           border:none; border-radius:8px; cursor:pointer;
+                           font-size:0.98em; font-weight:700;">
+                    저장하기
+                </button>
+                <button onclick="closeAdminModal()"
+                        style="padding:11px 22px; background:#f5f5f5; color:#666;
+                           border:1px solid #ddd; border-radius:8px; cursor:pointer; font-size:0.95em;">
+                    취소
+                </button>
+            </div>
+
+        </div>
+            <%-- /modal box --%>
+    </div><%-- /overlay --%>
+</c:if>
 <script src="js/body.js"></script>
 </body>
 </html>
