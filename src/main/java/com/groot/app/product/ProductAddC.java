@@ -47,6 +47,7 @@ public class ProductAddC extends HttpServlet {
         response.sendRedirect("product?insert=success");
 
 
+
     }
 
     public void destroy() {

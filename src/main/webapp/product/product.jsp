@@ -197,10 +197,5 @@
 </div>
 
 
-<script src="js/app.js"></script>
 <%--<script src="js/product.js"></script>--%>
 <script src="js/product.js?v=20260408"></script>
-
-
-
-

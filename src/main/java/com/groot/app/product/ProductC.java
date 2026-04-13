@@ -38,20 +38,11 @@ public class ProductC extends HttpServlet {
 
             return; // ★ 여기서 메서드를 종료하여 아래의 화면 포워딩 로직을 타지 않게 함
         }
-
-
-
+    // 경용님 코드병경
         ArrayList<NutrientDTO> nutrients = ProductDAO.PDAO.getAllNutrients(request);
         request.setAttribute("nutrients", nutrients);
-
-        // 변경된 코드 (수정 후)
-// 1. index.jsp의 <jsp:include> 영역에 삽입될 타겟 JSP 경로 지정
         request.setAttribute("content", "product/product.jsp");
-
-// 2. UI 처리를 위한 activeTab 플래그 전달 (선택 사항이나 권장됨)
         request.setAttribute("activeTab", "product");
-
-// 3. 최종적으로 레이아웃 템플릿인 index.jsp로 포워딩
         request.getRequestDispatcher("index.jsp").forward(request, response);
 
     }
