@@ -59,6 +59,9 @@ function addCart(productId, productName, brand, icon = '💊') {
             .then(d => {
                 if (d.success) {
                     updateCartBadge(d.cartCount);
+                    if (document.getElementById('cartPanel')?.classList.contains('open')) {
+                        loadServerCartPanel();
+                    }
                     showToast('장바구니에 담았어요 🛒');
                 } else showToast(d.message || '오류', 'error');
             }).catch(() => showToast('서버 연결 실패', 'error'));
@@ -84,6 +87,9 @@ function removeCart(cartId) {
                 if (d.success) {
                     removeCartItemDOM(cartId);
                     updateCartBadge(d.cartCount);
+                    if (document.getElementById('cartPanel')?.classList.contains('open')) {
+                        loadServerCartPanel();
+                    }
                 }
             });
     } else {
@@ -131,17 +137,38 @@ function renderLocalCartPanel() {
     const footer = document.querySelector('.cp-footer');
     if (footer) footer.innerHTML = `
         <div class="cp-note">로그인하면 장바구니가 저장돼요
-            <a href="login" style="color:#2563eb;font-weight:700;">로그인</a>
+            <a href="user-Login" style="color:#2563eb;font-weight:700;">로그인</a>
         </div>
         <a href="cart" class="btn btn-primary btn-full">장바구니 전체보기</a>`;
 }
 
 /* ── 배지 업데이트 ── */
 function updateCartBadge(count) {
+    ensureCartBadges();
     document.querySelectorAll('.nav-badge,.float-badge').forEach(b => {
         b.textContent = count;
         b.style.display = count > 0 ? 'flex' : 'none';
     });
+    const panelCount = document.querySelector('.cp-count');
+    if (panelCount) panelCount.textContent = String(count);
+}
+
+function ensureCartBadges() {
+    const navCart = document.querySelector('.nav-cart');
+    if (navCart && !navCart.querySelector('.nav-badge')) {
+        const badge = document.createElement('div');
+        badge.className = 'nav-badge';
+        badge.style.display = 'none';
+        navCart.appendChild(badge);
+    }
+
+    const floatCart = document.getElementById('floatCart');
+    if (floatCart && !floatCart.querySelector('.float-badge')) {
+        const badge = document.createElement('div');
+        badge.className = 'float-badge';
+        badge.style.display = 'none';
+        floatCart.appendChild(badge);
+    }
 }
 
 /* ── 찜 버튼 ── */
@@ -261,7 +288,7 @@ function appendLoginNudge() {
     nudge.innerHTML = `<span>🔑</span>
         <div><strong>로그인하면 분석 기록이 저장돼요!</strong>
              <span>나의 영양제 히스토리를 관리해보세요</span></div>
-        <a href="login" class="btn btn-outline" style="padding:8px 16px;font-size:13px;">로그인</a>`;
+        <a href="user-Login" class="btn btn-outline" style="padding:8px 16px;font-size:13px;">로그인</a>`;
     result.appendChild(nudge);
 }
 
@@ -273,15 +300,15 @@ function showAnalysisError(msg) {
 }
 
 /* ── 장바구니 패널 토글 ── */
-function toggleCart() {
-    const panel = document.getElementById('cartPanel');
-    const float = document.getElementById('floatCart');
-    const body = document.getElementById('siteBody');
-    const open = panel.classList.toggle('open');
-    float.classList.toggle('open', open);
-    if (window.innerWidth > 768) body.classList.toggle('shifted', open);
-    if (open && !isLogin) renderLocalCartPanel();
-}
+// function toggleCart() {
+//     const panel = document.getElementById('cartPanel');
+//     const float = document.getElementById('floatCart');
+//     const body = document.getElementById('siteBody');
+//     const open = panel.classList.toggle('open');
+//     float.classList.toggle('open', open);
+//     if (window.innerWidth > 768) body.classList.toggle('shifted', open);
+//     if (open && !isLogin) renderLocalCartPanel();
+// }
 
 document.addEventListener('click', function (e) {
     const panel = document.getElementById('cartPanel');
@@ -316,9 +343,97 @@ function showToast(msg, type = 'success') {
 
 /* ── 초기화 ── */
 document.addEventListener('DOMContentLoaded', () => {
+    ensureCartBadges();
     if (!isLogin) {
-        const count = LocalCart.count();
-        if (count > 0) updateCartBadge(count);
+        updateCartBadge(LocalCart.count());
         restoreWishState();
+    } else {
+        mergeCartOnLogin().finally(syncServerCartBadge);
     }
 });
+
+function syncServerCartBadge() {
+    fetch('cart/list')
+        .then(r => r.json())
+        .then(data => {
+            if (data && data.success) updateCartBadge(data.count || 0);
+        })
+        .catch(() => {});
+}
+function toggleCart() {
+    const panel = document.getElementById('cartPanel');
+    const float = document.getElementById('floatCart');
+    const body  = document.getElementById('siteBody');
+    if (!panel || !float) return;
+    const open  = panel.classList.toggle('open');
+    float.classList.toggle('open', open);
+    if (window.innerWidth > 768 && body) body.classList.toggle('shifted', open);
+
+    if (open) {
+        if (isLogin) loadServerCartPanel(); // ← 이거 추가
+        else renderLocalCartPanel();
+    }
+}
+
+// 로그인 유저 패널 로드
+function loadServerCartPanel() {
+    fetch('cart/list')
+        .then(r => r.json())
+        .then(data => {
+            const body  = document.querySelector('.cp-body');
+            const footer = document.querySelector('.cp-footer');
+            const count = document.querySelector('.cp-count');
+            if (!body) return;
+            if (!data.success) {
+                if (count) count.textContent = '0';
+                updateCartBadge(0);
+                body.innerHTML = `<div class="cp-empty"><span class="cp-empty-icon">🛒</span><p>장바구니가 비어있어요</p></div>`;
+                return;
+            }
+            if (count) count.textContent = data.count;
+            updateCartBadge(data.count);
+            if (footer) {
+                footer.innerHTML = `<div class="cp-note">결제 기능은 추후 추가 예정입니다</div>
+                    <a href="cart" class="btn btn-primary btn-full">장바구니 전체보기</a>`;
+            }
+            if (!data.list || data.list.length === 0) {
+                body.innerHTML = `<div class="cp-empty"><span class="cp-empty-icon">🛒</span><p>장바구니가 비어있어요</p></div>`;
+                return;
+            }
+            body.innerHTML = data.list.map(i => `
+                <div class="cart-item" data-cart-id="${i.favorite_id}">
+                    <div class="ci-icon" style="background:#eff6ff;">💊</div>
+                    <div class="ci-info">
+                        <div class="ci-name">${i.product_name}</div>
+                        <div class="ci-sub">${i.product_brand}</div>
+                    </div>
+                    <button class="ci-del" onclick="removeCart(${i.favorite_id})">✕</button>
+                </div>`).join('');
+        });
+}
+function mergeCartOnLogin() {
+    const localItems = LocalCart.getAll();
+    if (localItems.length === 0) return Promise.resolve(false);
+
+    return fetch('cart/merge', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ localCart: JSON.stringify(localItems) })
+    })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                LocalCart.clear(); // 로컬스토리지 비우기
+                updateCartBadge(data.cartCount);
+                showToast(data.message);
+                if (document.getElementById('cartPanel')?.classList.contains('open')) {
+                    loadServerCartPanel();
+                }
+                return true;
+            }
+            return false;
+        })
+        .catch(() => {
+            return false;
+        });
+}

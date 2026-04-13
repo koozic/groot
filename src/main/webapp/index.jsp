@@ -7,26 +7,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>약쟁이</title>
-    <link rel="stylesheet" href="css/app.css">
     <script>
         // loginUser가 있거나, isAdmin이 true이면 로그인 상태로 간주
         const IS_LOGIN = ${ (not empty sessionScope.loginUser) or (sessionScope.isAdmin == true) };
 
     </script>
-
     <script src="js/app.js"></script>
+
+    <link rel="stylesheet" href="css/app.css">
     <link rel="stylesheet" href="css/recommend.css">
     <link rel="stylesheet" href="css/home.css">
     <link rel="stylesheet" href="css/home.css">
+
 </head>
 <body>
+
 
 <!-- =============================================
      1. 헤더
      ============================================= -->
 <header class="site-header">
     <%-- 로고가 있어야 로그인이 오른쪽으로 밀려납니다 --%>
-    <div class="logo" onclick="location.href='index'">약<span>쟁이</span></div>
+    <div class="logo" onclick="location.href='hello-servlet'">약<span>쟁이</span></div>
 
     <%-- 직접 썼던 style은 지우고 클래스명만 유지! --%>
     <div class="hdr-right">
@@ -110,35 +112,22 @@
     <div class="cp-header">
         <div class="cp-title">
             장바구니
-            <c:if test="${not empty sessionScope.cartCount}">
-                <span class="cp-count">${sessionScope.cartCount}</span>
-            </c:if>
+            <span class="cp-count">
+                <c:choose>
+                    <c:when test="${not empty sessionScope.cartCount}">${sessionScope.cartCount}</c:when>
+                    <c:otherwise>0</c:otherwise>
+                </c:choose>
+            </span>
         </div>
         <button class="cp-close" onclick="toggleCart()">✕</button>
     </div>
 
     <div class="cp-body">
-        <c:choose>
-            <c:when test="${not empty sessionScope.cartList}">
-                <c:forEach var="item" items="${sessionScope.cartList}">
-                    <div class="cart-item">
-                        <div class="ci-icon" style="background: #eff6ff;">💊</div>
-                        <div class="ci-info">
-                            <div class="ci-name">${item.productName}</div>
-                            <div class="ci-sub">${item.brand}</div>
-                        </div>
-                        <button class="ci-del" onclick="removeCart(${item.cartId})">✕</button>
-                    </div>
-                </c:forEach>
-            </c:when>
-            <c:otherwise>
-                <div class="cp-empty">
-                    <span class="cp-empty-icon">🛒</span>
-                    <p>장바구니가 비어있어요</p>
-                    <span>마음에 드는 제품을 담아보세요!</span>
-                </div>
-            </c:otherwise>
-        </c:choose>
+        <div class="cp-empty">
+            <span class="cp-empty-icon">🛒</span>
+            <p>장바구니가 비어있어요</p>
+            <span>마음에 드는 제품을 담아보세요!</span>
+        </div>
     </div>
 
     <div class="cp-footer">
@@ -181,48 +170,6 @@
         </c:otherwise>
     </c:choose>
 </nav>
-
-<!-- =============================================
-     7. JavaScript
-     ============================================= -->
-<script>
-    // 장바구니 토글
-    function toggleCart() {
-        const panel = document.getElementById('cartPanel');
-        const floatBtn = document.getElementById('floatCart');
-        const body = document.getElementById('siteBody');
-        const isOpen = panel.classList.toggle('open');
-        floatBtn.classList.toggle('open', isOpen);
-        // 모바일에서는 본문 안 밀림
-        if (window.innerWidth > 768) {
-            body.classList.toggle('shifted', isOpen);
-        }
-    }
-
-    // 장바구니 삭제 (AJAX)
-    function removeCart(cartId) {
-        fetch('cart/remove?id=' + cartId, {method: 'POST'})
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) location.reload();
-            });
-    }
-
-    // 패널 바깥 클릭시 닫기
-    document.addEventListener('click', function (e) {
-        const panel = document.getElementById('cartPanel');
-        const floatBtn = document.getElementById('floatCart');
-        const navCart = document.querySelector('.nav-cart');
-        if (panel.classList.contains('open') &&
-            !panel.contains(e.target) &&
-            !floatBtn.contains(e.target) &&
-            !navCart.contains(e.target)) {
-            panel.classList.remove('open');
-            floatBtn.classList.remove('open');
-            document.getElementById('siteBody').classList.remove('shifted');
-        }
-    });
-</script>
 
 </body>
 </html>

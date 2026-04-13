@@ -21,8 +21,9 @@ public class ProductDetailC extends HttpServlet {
 // 🌟 추가! 포토 리뷰 갤러리용 데이터도 가방에 담아주기!
         request.setAttribute("allPhotoImages", com.groot.app.review.ReviewDAO.RDAO.getAllPhotoImages(productId));
 
-
-        request.getRequestDispatcher("product/product_detail.jsp").forward(request, response);
+        request.setAttribute("content", "product/product_detail.jsp");
+        request.setAttribute("activeTab", "product");
+        request.getRequestDispatcher("index.jsp").forward(request, response);
 
     }
 

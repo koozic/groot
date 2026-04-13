@@ -210,31 +210,31 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
-// 장바구니/찜 담기
-function addCart(productId, productName, brand) {
-    console.log('Adding to cart:', {productId, productName, brand});
-    
-    fetch('cart/add', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({productId, productName, brand})
-    })
-    .then(r => {
-        console.log('Response status:', r.status);
-        return r.json();
-    })
-    .then(data => {
-        console.log('Response data:', data);
-        showToast(data.message);
-        if (data.success) updateCartBadge(data.cartCount);
-    })
-    .catch(error => {
-        console.error('Cart add error:', error);
-        showToast('장바구니 담기 오류가 발생했습니다');
-    });
-}
+// // 장바구니/찜 담기
+// function addCart(productId, productName, brand) {
+//     console.log('Adding to cart:', {productId, productName, brand});
+//
+//     fetch('cart/add', {
+//         method: 'POST',
+//         headers: {'Content-Type': 'application/json'},
+//         body: JSON.stringify({productId, productName, brand})
+//     })
+//     .then(r => {
+//         console.log('Response status:', r.status);
+//         return r.json();
+//     })
+//     .then(data => {
+//         console.log('Response data:', data);
+//         showToast(data.message);
+//         if (data.success) updateCartBadge(data.cartCount);
+//     })
+//     .catch(error => {
+//         console.error('Cart add error:', error);
+//         showToast('장바구니 담기 오류가 발생했습니다');
+//     });
+// }
 
-function toggleWish(btn, productId) {
+function toggleWishLegacy(btn, productId) {
     fetch('cart/toggle', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -248,7 +248,7 @@ function toggleWish(btn, productId) {
     });
 }
 
-function updateCartBadge(count) {
+function updateCartBadgeLegacy(count) {
     var badge = document.querySelector('.nav-badge');
     if (badge) badge.textContent = count;
 }

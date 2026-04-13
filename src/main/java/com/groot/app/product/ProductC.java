@@ -22,11 +22,12 @@ public class ProductC extends HttpServlet {
         } else {
             ProductDAO.PDAO.showAllProducts(request);
         }
-
+    // 경용님 코드병경
         ArrayList<NutrientDTO> nutrients = ProductDAO.PDAO.getAllNutrients(request);
         request.setAttribute("nutrients", nutrients);
-
-        request.getRequestDispatcher("product/product.jsp").forward(request, response);
+        request.setAttribute("content","product/product.jsp");
+        request.getRequestDispatcher("index.jsp").forward(request, response);
+        //
 
     }
 
