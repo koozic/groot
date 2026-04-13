@@ -10,74 +10,71 @@
 
             <%-- SVG 신체 캐릭터 --%>
             <div class="svg-wrap">
-                <svg viewBox="0 0 200 380" xmlns="http://www.w3.org/2000/svg">
-                    <ellipse class="body-part" data-part="hair" cx="100" cy="36" rx="38" ry="24" fill="#C084FC"
-                             stroke="#9333EA" stroke-width="1.2"/>
-                    <text x="100" y="40" text-anchor="middle" font-size="8" fill="#581C87" pointer-events="none">머리카락
-                    </text>
-                    <ellipse class="body-part" data-part="brain" cx="100" cy="34" rx="26" ry="16" fill="#F9A8D4"
-                             stroke="#EC4899" stroke-width="1" opacity=".8"/>
-                    <text x="100" y="38" text-anchor="middle" font-size="7" fill="#831843" pointer-events="none">뇌
-                    </text>
-                    <ellipse class="body-part" data-part="skin" cx="100" cy="64" rx="28" ry="26" fill="#FCA5A5"
-                             stroke="#EF4444" stroke-width="1.2"/>
-                    <text x="100" y="68" text-anchor="middle" font-size="8" fill="#7F1D1D" pointer-events="none">피부
-                    </text>
-                    <ellipse class="body-part" data-part="eye" cx="88" cy="58" rx="6" ry="4" fill="#60A5FA"
-                             stroke="#2563EB" stroke-width="1"/>
-                    <ellipse class="body-part" data-part="eye" cx="112" cy="58" rx="6" ry="4" fill="#60A5FA"
-                             stroke="#2563EB" stroke-width="1"/>
-                    <text x="100" y="50" text-anchor="middle" font-size="7" fill="#1E3A8A" pointer-events="none">눈
-                    </text>
-                    <rect x="86" y="88" width="28" height="14" rx="5" fill="#FDE68A" stroke="#D97706"
-                          stroke-width=".8"/>
+                <svg viewBox="0 30 200 280" xmlns="http://www.w3.org/2000/svg">
+                    <ellipse class="body-part" data-part="hair" cx="100" cy="30" rx="38" ry="24" fill="transparent"
+                             stroke="none"/>
+
+                    <ellipse class="body-part" data-part="brain" cx="100" cy="30" rx="26" ry="16" fill="transparent"
+                             stroke="none"/>
+
+                    <ellipse class="body-part" data-part="skin" cx="100" cy="66" rx="30" ry="22" fill="transparent"
+                             stroke="none"/>
+
+                    <ellipse class="body-part" data-part="eye" cx="80" cy="64" rx="8" ry="8" fill="transparent"
+                             stroke="none"/>
+                    <ellipse class="body-part" data-part="eye" cx="118" cy="64" rx="8" ry="8" fill="transparent"
+                             stroke="none"/>
+
+                    <rect x="86" y="88" width="28" height="14" rx="5" fill="transparent"
+                          stroke="none"/>
                     <rect class="body-part" data-part="skin" x="62" y="100" width="76" height="88" rx="16"
-                          fill="#FCA5A5" stroke="#EF4444" stroke-width="1.2"/>
-                    <ellipse class="body-part" data-part="lung" cx="80" cy="125" rx="14" ry="18" fill="#93C5FD"
-                             stroke="#3B82F6" stroke-width="1"/>
-                    <text x="80" y="129" text-anchor="middle" font-size="7" fill="#1E3A8A" pointer-events="none">폐
-                    </text>
-                    <ellipse class="body-part" data-part="lung" cx="120" cy="125" rx="14" ry="18" fill="#93C5FD"
-                             stroke="#3B82F6" stroke-width="1"/>
+                          fill="transparent"
+                          stroke="none"/>
+                    <ellipse class="body-part" data-part="lung" cx="80" cy="125" rx="14" ry="18" fill="transparent"
+                             stroke="none"/>
+
+                    <ellipse class="body-part" data-part="lung" cx="120" cy="125" rx="14" ry="18" fill="transparent"
+                             stroke="none"/>
                     <path class="body-part" data-part="heart"
                           d="M100,116 C100,109 91,104 85,109 C79,114 81,121 89,127 L100,135 L111,127 C119,121 121,114 115,109 C109,104 100,109 100,116Z"
-                          fill="#F87171" stroke="#DC2626" stroke-width="1"/>
-                    <text x="100" y="125" text-anchor="middle" font-size="7" fill="#7F1D1D" pointer-events="none">심장
-                    </text>
-                    <ellipse class="body-part" data-part="liver" cx="116" cy="152" rx="16" ry="11" fill="#6EE7B7"
-                             stroke="#10B981" stroke-width="1"/>
-                    <text x="116" y="156" text-anchor="middle" font-size="7" fill="#065F46" pointer-events="none">간
-                    </text>
-                    <ellipse class="body-part" data-part="stomach" cx="86" cy="158" rx="13" ry="9" fill="#FDE68A"
-                             stroke="#F59E0B" stroke-width="1"/>
-                    <text x="86" y="162" text-anchor="middle" font-size="7" fill="#78350F" pointer-events="none">위
-                    </text>
-                    <ellipse class="body-part" data-part="intestine" cx="100" cy="176" rx="22" ry="13" fill="#DDD6FE"
-                             stroke="#7C3AED" stroke-width="1"/>
-                    <text x="100" y="180" text-anchor="middle" font-size="7" fill="#4C1D95" pointer-events="none">장
-                    </text>
-                    <rect class="body-part" data-part="muscle" x="42" y="104" width="18" height="62" rx="9"
-                          fill="#FCA5A5" stroke="#EF4444" stroke-width="1"/>
-                    <rect class="body-part" data-part="muscle" x="140" y="104" width="18" height="62" rx="9"
-                          fill="#FCA5A5" stroke="#EF4444" stroke-width="1"/>
-                    <rect class="body-part" data-part="muscle" x="68" y="192" width="26" height="54" rx="10"
-                          fill="#FCA5A5" stroke="#EF4444" stroke-width="1"/>
-                    <rect class="body-part" data-part="muscle" x="106" y="192" width="26" height="54" rx="10"
-                          fill="#FCA5A5" stroke="#EF4444" stroke-width="1"/>
-                    <text x="100" y="222" text-anchor="middle" font-size="7" fill="#7F1D1D" pointer-events="none">근육
-                    </text>
-                    <rect class="body-part" data-part="bone" x="73" y="250" width="18" height="70" rx="8" fill="#E2E8F0"
-                          stroke="#94A3B8" stroke-width="1"/>
-                    <rect class="body-part" data-part="bone" x="109" y="250" width="18" height="70" rx="8"
-                          fill="#E2E8F0" stroke="#94A3B8" stroke-width="1"/>
-                    <text x="100" y="292" text-anchor="middle" font-size="7" fill="#1E293B" pointer-events="none">뼈
-                    </text>
-                    <ellipse cx="82" cy="326" rx="14" ry="7" fill="#E2E8F0" stroke="#94A3B8" stroke-width=".8"/>
-                    <ellipse cx="118" cy="326" rx="14" ry="7" fill="#E2E8F0" stroke="#94A3B8" stroke-width=".8"/>
+                          fill="transparent"
+                          stroke="none"/>
+
+                    <ellipse class="body-part" data-part="liver" cx="94" cy="140" rx="16" ry="11" fill="transparent"
+                             stroke="none"/>
+
+                    <ellipse class="body-part" data-part="stomach" cx="110" cy="152" rx="13" ry="13" fill="transparent"
+                             stroke="none"/>
+
+                    <ellipse class="body-part" data-part="intestine" cx="100" cy="170" rx="22" ry="15"
+                             fill="transparent"
+                             stroke="none"/>
+
+                    <rect class="body-part" data-part="hair" x="52" y="75" width="28" height="27" rx="15"
+                          fill="transparent"
+                          stroke="none"/>
+                    <rect class="body-part" data-part="hair" x="120" y="75" width="28" height="27" rx="15"
+                          fill="transparent"
+                          stroke="none"/>
+                    <rect class="body-part" data-part="muscle" x="68" y="187" width="26" height="50" rx="10"
+                          fill="transparent"
+                          stroke="none"/>
+                    <rect class="body-part" data-part="bone" x="106" y="187" width="26" height="148" rx="10"
+                          fill="transparent"
+                          stroke="none"/>
+
+                    <rect class="body-part" data-part="bone" x="73" y="235" width="18" height="98" rx="8"
+                          fill="transparent"
+                          stroke="none"/>
+
                 </svg>
             </div>
 
             <%-- 체크박스 부위 선택 --%>
+        </div>
+
+        <%-- 오른쪽: 영양제 리스트 (웹) / 아래: 리스트 (앱) --%>
+        <div class="col-right">
             <div class="cb-section">
                 <div class="cb-title">부위 선택</div>
                 <div class="cb-grid" id="cb-grid"></div>
@@ -86,10 +83,7 @@
                     <button class="cb-btn primary" onclick="collectAll()">ALL</button>
                 </div>
             </div>
-        </div>
-
-        <%-- 오른쪽: 영양제 리스트 (웹) / 아래: 리스트 (앱) --%>
-        <div class="col-right">
+            <br>
             <div class="panel">
                 <div class="panel-top">
                     <span class="panel-title" id="panel-title">부위를 선택하세요</span>
