@@ -1,20 +1,20 @@
 const PER_PAGE = 6;
 
-// const isLogin = (typeof IS_LOGIN !== 'undefined' && IS_LOGIN === true);
-const isLogin = (window.IS_LOGIN === true);
-// DB의 body_id와 매핑 (body 테이블의 실제 ID로 수정)
+const logined = (typeof IS_LOGIN !== 'undefined' && IS_LOGIN === true);
+// const isLogin = (window.IS_LOGIN === true);
+// DB의 body_id와 매핑 — body 테이블 기준으로 전부 수정
 const PARTS = {
-    brain: {label: '뇌', color: '#EC4899', text: '#831843', body_id: null},
-    eye: {label: '눈', color: '#2563EB', text: '#1E3A8A', body_id: 1},
-    hair: {label: '머리카락', color: '#9333EA', text: '#581C87', body_id: null},
-    skin: {label: '피부', color: '#EF4444', text: '#7F1D1D', body_id: null},
-    bone: {label: '뼈', color: '#64748B', text: '#1E293B', body_id: 4},
-    muscle: {label: '근육', color: '#EF4444', text: '#7F1D1D', body_id: null},
-    heart: {label: '심장', color: '#DC2626', text: '#7F1D1D', body_id: null},
-    intestine: {label: '장', color: '#7C3AED', text: '#4C1D95', body_id: null},
-    liver: {label: '간', color: '#10B981', text: '#065F46', body_id: 2},
-    stomach: {label: '위', color: '#F59E0B', text: '#78350F', body_id: null},
-    lung: {label: '폐', color: '#3B82F6', text: '#1E3A8A', body_id: 3},
+    hair: {label: '머리카락', color: '#9333EA', text: '#581C87', body_id: 1},
+    skin: {label: '피부', color: '#EF4444', text: '#7F1D1D', body_id: 2},
+    eye: {label: '눈', color: '#2563EB', text: '#1E3A8A', body_id: 3},
+    brain: {label: '뇌', color: '#EC4899', text: '#831843', body_id: 4},
+    lung: {label: '폐', color: '#3B82F6', text: '#1E3A8A', body_id: 5},
+    heart: {label: '심장', color: '#DC2626', text: '#7F1D1D', body_id: 6},
+    liver: {label: '간', color: '#10B981', text: '#065F46', body_id: 7},
+    stomach: {label: '위', color: '#F59E0B', text: '#78350F', body_id: 8},
+    intestine: {label: '장', color: '#7C3AED', text: '#4C1D95', body_id: 9},
+    bone: {label: '뼈', color: '#64748B', text: '#1E293B', body_id: 10},
+    muscle: {label: '근육', color: '#EF4444', text: '#7F1D1D', body_id: 11},
 };
 
 let selected = new Set();   // 선택된 part key들
@@ -26,6 +26,7 @@ let modalId = null;
 let allMode = false;
 const isAdmin = (window.IS_ADMIN === true);
 let adminModeOn = false;
+console.log("is admin? => " + isAdmin);
 
 // ── 체크박스 렌더링 ──
 function buildCheckboxes() {
@@ -98,7 +99,7 @@ function fetchSupps(partKey) {
 // ── 좋아요 토글 (서버 연동) ──
 // ✅ 수정: alert 대신 로그인 모달 표시
 function toggleLike(id) {
-    if (!isLogin) {
+    if (!logined) {
         showLoginModal(); // 로그인 모달 띄우기
         return;
     }
@@ -156,7 +157,7 @@ function showLoginModal() {
           좋아요 기능은 로그인 후 이용 가능합니다.
         </p>
         <div style="display:flex; gap:8px; justify-content:center;">
-          <button onclick="location.href='user-Login'"
+          <button onclick="location.href='user-Login?redirect=' + encodeURIComponent(location.pathname + location.search)"
             style="padding:9px 20px; background:#3B82F6; color:#fff;
                    border:none; border-radius:8px; cursor:pointer; font-size:13px; font-weight:600;">
             로그인하기
@@ -192,7 +193,11 @@ function collectAll() {
     // 2. 체크박스 및 SVG UI 갱신
     syncCheckboxUI();
 
-    // bodyId 있는 모든 부위 fetch
+    // ALL 버튼 파란색으로 — 초기화 버튼은 원래대로
+    document.querySelectorAll('.cb-btn').forEach(b => b.classList.remove('on'));
+    const allBtn = document.querySelector('.cb-btn.primary');
+    if (allBtn) allBtn.classList.add('on');
+
     const missing = Object.keys(PARTS).filter(p => !suppCache[p] && PARTS[p].body_id);
     if (missing.length === 0) {
         renderList();
@@ -207,6 +212,11 @@ function resetAll() {
     allMode = false;
     page = 1;
     syncCheckboxUI();
+
+    // ALL 버튼 파란색 제거
+    const allBtn = document.querySelector('.cb-btn.primary');
+    if (allBtn) allBtn.classList.remove('on');
+
     renderList();
 }
 
@@ -468,19 +478,27 @@ function syncCheckboxUI() {
 }
 
 // SVG 클릭 이벤트
-document.querySelectorAll('.body-part').forEach(el => {
-    el.addEventListener('click', () => {
-        const p = el.dataset.part;
-        if (p) {
-            allMode = false;
-            togglePart(p);
-        }
-    });
-});
+// DOMContentLoaded로 감싸서 DOM 준비 후 실행 보장
+document.addEventListener('DOMContentLoaded', function () {
 
-/* =========================================================
-   관리자 모드 — body_view 화면 인라인 CRUD
-   ========================================================= */
+    // 체크박스 렌더링
+    buildCheckboxes();
+
+    // SVG 클릭 이벤트 등록
+    document.querySelectorAll('.body-part').forEach(el => {
+        el.addEventListener('click', () => {
+            const p = el.dataset.part;
+            if (p) {
+                allMode = false;
+                togglePart(p);
+            }
+        });
+    });
+
+    /* =========================================================
+       관리자 모드 — body_view 화면 인라인 CRUD
+       ========================================================= */
+});
 
 // ── 관리 모드 ON/OFF 토글 ──
 function toggleAdminMode() {
@@ -641,4 +659,4 @@ function deleteSupp(suppId, suppName) {
         .catch(() => alert('서버 연결 실패'));
 }
 
-buildCheckboxes();
+// buildCheckboxes();

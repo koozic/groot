@@ -36,7 +36,7 @@ body {
 /* SVG */
 .svg-wrap {
     width: 100%;
-    max-width: 200px; /* 원하는 최대 너비 */
+    max-width: 320px; /* 원하는 최대 너비 */
     margin: 0 auto;
     position: relative;
 
@@ -165,11 +165,15 @@ body {
     background: #fff;
 }
 
+/* primary는 기본 스타일 없음 — on 클래스 추가될 때만 파란색 */
 .cb-btn.primary {
+    font-weight: 500;
+}
+
+.cb-btn.on {
     background: #EBF5FF;
     border-color: #3B82F6;
     color: #1D4ED8;
-    font-weight: 500;
 }
 
 /* 패널 */
@@ -192,6 +196,39 @@ body {
 .panel-title {
     font-size: 15px;
     font-weight: 500;
+}
+
+/* 패널 상단 버튼 묶음 — 웹에서는 가로 */
+.panel-btn-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* 관리자 토글 버튼 */
+.admin-toggle-btn {
+    padding: 6px 14px;
+    background: #FF9800;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.82em;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+/* 관리자 추가 버튼 */
+.admin-add-btn {
+    padding: 6px 14px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.82em;
+    font-weight: 600;
 }
 
 .sort-bar {
@@ -475,9 +512,9 @@ body {
         grid-row: 3;
     }
 
-    /* 앱에서 SVG를 가운데 작게 */
+    /* 앱에서 SVG 크기 */
     .svg-wrap {
-        max-width: 200px;
+        max-width: 180px;
         margin: 0 auto;
     }
 
@@ -489,6 +526,37 @@ body {
     /* 카드 2컬럼 */
     .grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* 패널 상단 — 제목이랑 버튼 묶음 세로 배치 */
+    .panel-top {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    /* 버튼 묶음 — 모바일에서 세로 배치 */
+    .panel-btn-group {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+        width: 100%;
+    }
+
+    /* 정렬 버튼 바 */
+    .sort-bar {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    /* 관리자 버튼들 — 전체 너비 */
+    .admin-toggle-btn,
+    .admin-add-btn {
+        width: 100%;
+        text-align: center;
+        padding: 9px 14px;
+        font-size: 0.88em;
+        box-sizing: border-box;
     }
 }
 
