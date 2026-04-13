@@ -3,6 +3,12 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <input type="hidden" id="isAdmin" value="${sessionScope.isAdmin}">
+<script>
+    window.NUTRIENT_MAP = window.NUTRIENT_MAP || {};
+    <c:forEach items="${nutrients}" var="n">
+    window.NUTRIENT_MAP["${n.nutrientId}"] = "<c:out value='${n.nutrientName}' />";
+    </c:forEach>
+</script>
 
 <div class="action-bar-container">
     <div class="nutrient-filter-list">
@@ -198,4 +204,4 @@
 
 
 <%--<script src="js/product.js"></script>--%>
-<script src="js/product.js?v=20260408"></script>
+<script src="${pageContext.request.contextPath}/js/product.js?v=<%=System.currentTimeMillis()%>"></script>
