@@ -60,7 +60,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-// 맨 마지막에 남는 불필요한 '}' 가 없는지 꼭 확인하세요! ---
 async function loadProductList(nutrientId) {
     updateFilterUI(nutrientId);
 
@@ -87,9 +86,10 @@ function renderProducts(products) {
 
     let htmlString = "";
     products.forEach((p, index) => {
-        // 기존 동기식 삭제 모달을 띄우는 confirmDelete 함수 호출
+        // 기존 동기식 삭제 모달을 띄우는 confirmlocation.href = 'product-del?id=${deleteTargetId}';함수 호출
         const deleteBtnHtml = isAdmin ?
             `<button class="btn-delete" onclick="event.stopPropagation(); confirmDelete('${p.productId}')">&times;</button>` : '';
+        //event.stopPropagation() 버튼을 눌렀을 때 부모 요소인 카드의 클릭 이벤트(상세 페이지 이동)가 발생하는 것을 막습니다.
 
         const delay = index * 0.05;
 
