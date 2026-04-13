@@ -138,6 +138,72 @@
     .btn-del:hover {
         background: #D32F2F;
     }
+
+    /* ── 모바일 대응 (680px 이하) ── */
+    @media (max-width: 680px) {
+
+        .admin-wrap {
+            padding: 14px 12px;
+        }
+
+        /* 상단 바 세로 배치 */
+        .admin-top-bar {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        /* 정렬 + 등록버튼 묶음 세로 배치 */
+        .admin-top-bar > div:last-child {
+            flex-direction: column;
+            align-items: flex-start;
+            width: 100%;
+            gap: 8px;
+        }
+
+        /* 정렬 셀렉트 전체 너비 */
+        .sort-select-wrap {
+            width: 100%;
+        }
+
+        .sort-select-wrap select {
+            flex: 1;
+            width: 100%;
+        }
+
+        /* 등록 버튼 전체 너비 */
+        .btn-add {
+            width: 100%;
+            text-align: center;
+            padding: 10px;
+        }
+
+        /* 테이블 — 가로 스크롤 */
+        .admin-table-wrap {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .admin-table {
+            min-width: 560px; /* 최소 너비 — 이 이하로는 안 줄어들고 스크롤 */
+            font-size: 0.82em;
+        }
+
+        .admin-table th,
+        .admin-table td {
+            padding: 8px 8px;
+            white-space: nowrap;
+        }
+
+        /* 효능 컬럼 최대 너비 제한 */
+        .admin-table td:nth-child(3) {
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    }
 </style>
 
 <div class="admin-wrap">
@@ -188,77 +254,79 @@
     <%-- /admin-top-bar --%>
 
     <%-- ── 테이블 ── --%>
-    <table class="admin-table">
-        <thead>
-        <tr>
-            <%-- 현재 정렬 기준 컬럼에 sort-active 클래스 + 화살표 표시 --%>
-            <th class="${(sortBy == 'id_desc' || sortBy == 'id_asc' || empty sortBy) ? 'sort-active' : ''}">
-                ID
-                <c:choose>
-                    <c:when test="${sortBy == 'id_asc'}">▲</c:when>
-                    <c:otherwise>▼</c:otherwise><%-- 기본 id_desc --%>
-                </c:choose>
-            </th>
-            <th class="${sortBy == 'name_asc' ? 'sort-active' : ''}">
-                이름
-                <c:if test="${sortBy == 'name_asc'}">▲</c:if>
-            </th>
-            <th>효능</th>
-            <th>이미지</th>
-            <th>조회수</th>
-            <th class="${(sortBy == 'date_desc' || sortBy == 'date_asc') ? 'sort-active' : ''}">
-                등록일
-                <c:choose>
-                    <c:when test="${sortBy == 'date_asc'}">▲</c:when>
-                    <c:when test="${sortBy == 'date_desc'}">▼</c:when>
-                </c:choose>
-            </th>
-            <th>관리</th>
-        </tr>
-        </thead>
-        <tbody>
-        <c:choose>
-            <c:when test="${empty suppList}">
-                <tr>
-                    <td colspan="7"
-                        style="padding:30px; color:#999; font-size:0.95em;">
-                        등록된 영양소가 없습니다.
-                    </td>
-                </tr>
-            </c:when>
-            <c:otherwise>
-                <c:forEach var="s" items="${suppList}">
+    <div class="admin-table-wrap">
+        <table class="admin-table">
+            <thead>
+            <tr>
+                <%-- 현재 정렬 기준 컬럼에 sort-active 클래스 + 화살표 표시 --%>
+                <th class="${(sortBy == 'id_desc' || sortBy == 'id_asc' || empty sortBy) ? 'sort-active' : ''}">
+                    ID
+                    <c:choose>
+                        <c:when test="${sortBy == 'id_asc'}">▲</c:when>
+                        <c:otherwise>▼</c:otherwise><%-- 기본 id_desc --%>
+                    </c:choose>
+                </th>
+                <th class="${sortBy == 'name_asc' ? 'sort-active' : ''}">
+                    이름
+                    <c:if test="${sortBy == 'name_asc'}">▲</c:if>
+                </th>
+                <th>효능</th>
+                <th>이미지</th>
+                <th>조회수</th>
+                <th class="${(sortBy == 'date_desc' || sortBy == 'date_asc') ? 'sort-active' : ''}">
+                    등록일
+                    <c:choose>
+                        <c:when test="${sortBy == 'date_asc'}">▲</c:when>
+                        <c:when test="${sortBy == 'date_desc'}">▼</c:when>
+                    </c:choose>
+                </th>
+                <th>관리</th>
+            </tr>
+            </thead>
+            <tbody>
+            <c:choose>
+                <c:when test="${empty suppList}">
                     <tr>
-                        <td style="color:#999; font-size:0.85em;">${s.supplementId}</td>
-                        <td style="font-weight:600; text-align:left;">${s.supplementName}</td>
-                        <td style="text-align:left; max-width:220px;
-                                       overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
-                                ${s.supplementEfficacy}
-                        </td>
-                        <td>
-                            <img src="${s.supplementImagePath}" width="50" height="50"
-                                 style="object-fit:cover; border-radius:6px;"
-                                 onerror="this.style.display='none'">
-                        </td>
-                        <td style="color:#777;">${s.supplementViewCount}</td>
-                        <td style="color:#777; font-size:0.88em;">${s.supplementRegDate}</td>
-                        <td style="white-space:nowrap;">
-                            <a href="admin?action=form&suppId=${s.supplementId}">
-                                <button class="btn btn-edit">수정</button>
-                            </a>
-                            &nbsp;
-                            <form action="admin" method="post" style="display:inline"
-                                  onsubmit="return confirm('${s.supplementName}을(를) 삭제하시겠습니까?')">
-                                <input type="hidden" name="action" value="delete">
-                                <input type="hidden" name="suppId" value="${s.supplementId}">
-                                <button type="submit" class="btn btn-del">삭제</button>
-                            </form>
+                        <td colspan="7"
+                            style="padding:30px; color:#999; font-size:0.95em;">
+                            등록된 영양소가 없습니다.
                         </td>
                     </tr>
-                </c:forEach>
-            </c:otherwise>
-        </c:choose>
-        </tbody>
-    </table>
+                </c:when>
+                <c:otherwise>
+                    <c:forEach var="s" items="${suppList}">
+                        <tr>
+                            <td style="color:#999; font-size:0.85em;">${s.supplementId}</td>
+                            <td style="font-weight:600; text-align:left;">${s.supplementName}</td>
+                            <td style="text-align:left; max-width:220px;
+                                       overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                                    ${s.supplementEfficacy}
+                            </td>
+                            <td>
+                                <img src="${s.supplementImagePath}" width="50" height="50"
+                                     style="object-fit:cover; border-radius:6px;"
+                                     onerror="this.style.display='none'">
+                            </td>
+                            <td style="color:#777;">${s.supplementViewCount}</td>
+                            <td style="color:#777; font-size:0.88em;">${s.supplementRegDate}</td>
+                            <td style="white-space:nowrap;">
+                                <a href="admin?action=form&suppId=${s.supplementId}">
+                                    <button class="btn btn-edit">수정</button>
+                                </a>
+                                &nbsp;
+                                <form action="admin" method="post" style="display:inline"
+                                      onsubmit="return confirm('${s.supplementName}을(를) 삭제하시겠습니까?')">
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="hidden" name="suppId" value="${s.supplementId}">
+                                    <button type="submit" class="btn btn-del">삭제</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                </c:otherwise>
+            </c:choose>
+            </tbody>
+        </table>
+    </div>
 
 </div><%-- /admin-wrap --%>

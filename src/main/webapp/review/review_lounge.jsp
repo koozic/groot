@@ -44,10 +44,10 @@
                 const grid = document.querySelector('.lounge-grid');
 
                 if (!data || data.length === 0) {
-                    grid.innerHTML = '<div style="grid-column: 1/-1; padding: 60px; text-align: center; color: #777; font-size: 1.1em; background: #fff; border-radius: 12px; border: 1px dashed #ddd;">조건에 맞는 베스트 리뷰가 없습니다 🥲</div>';
+                    // 🌟 쪼개지지 않도록 column-span: all; 로 바꿨습니다! 🌟
+                    grid.innerHTML = '<div style="column-span: all; padding: 60px; text-align: center; color: #777; font-size: 1.1em; background: #fff; border-radius: 12px; border: 1px dashed #ddd;">조건에 맞는 베스트 리뷰가 없습니다 🥲</div>';
                     return;
                 }
-
                 let finalHtml = '';
 
                 // 🌟 [시상대 렌더링 - 탑 3]
@@ -115,6 +115,12 @@
                 }).join('');
 
                 grid.innerHTML = finalHtml;
+                // 🌟 [추가할 코드] 모든 카드(시상대 + 일반)를 다 찾아서 물결 딜레이 부여!
+                const allCards = grid.querySelectorAll('.podium-card, .lounge-card');
+                allCards.forEach((card, index) => {
+                    // index가 0, 1, 2... 순서대로 가니까 0.05초씩 밀리면서 시작됨!
+                    card.style.animationDelay = (index * 0.1) + 's';
+                });
             });
     }
 
@@ -122,10 +128,10 @@
     function loungeToggleLike(btnElement, reviewId) {
         // 로그인 안 한 유저는 컷!
         if (!currentLoginId || currentLoginId === '') {
-            alert('로그인이 필요한 기능입니다! 🔒');
+            showToast('로그인이 필요한 기능입니다! 🔒', 'error'); // 🌟 못생긴 alert 대신 토스트 호출!
             return;
         }
-
+        // ... 생략 ...
         const params = new URLSearchParams();
         params.append('review_id', reviewId);
         params.append('user_id', currentLoginId);

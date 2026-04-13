@@ -2,10 +2,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
+<input type="hidden" id="isAdmin" value="${sessionScope.isAdmin}">
+
 <div class="action-bar-container">
     <div class="nutrient-filter-list">
-        <button type="button" class="filter-btn ${empty param.nutrientId ? 'active' : ''}"
-                onclick="location.href='product'">
+        <button type="button" class="filter-btn active" id="filter-all" onclick="loadProductList('')">
             <span class="icon">🔍</span> 전체
         </button>
 
@@ -13,27 +14,50 @@
             <button type="button" class="filter-btn dropdown-toggle" onclick="toggleDropdown(this)">
                 <span class="icon">💊</span> 비타민 <span class="arrow">▼</span>
             </button>
-            <div class="dropdown-menu">
-                <c:forEach items="${nutrients}" var="n">
-                    <c:if test="${fn:contains(n.nutrientName, '비타민')}">
-                        <button type="button" class="dropdown-item ${param.nutrientId == n.nutrientId ? 'active' : ''}"
-                                onclick="location.href='product?nutrientId=${n.nutrientId}'">
-                                ${n.nutrientName}
-                        </button>
-                    </c:if>
-                </c:forEach>
-            </div>
 
+            <div class="dropdown-menu vitamin-mega-menu">
+
+                <div class="vitamin-section">
+                    <h4 class="section-header water-soluble">수용성 비타민 <small>Water-soluble</small></h4>
+                    <div class="vitamin-grid">
+                        <c:forEach items="${nutrients}" var="n">
+                            <c:if test="${fn:contains(n.nutrientName, '비타민 B') || fn:contains(n.nutrientName, '비타민 C') || fn:contains(n.nutrientName, '엽산') || fn:contains(n.nutrientName, '비오틴')}">
+                                <button type="button" class="v-item filter-item" data-id="${n.nutrientId}"
+                                        onclick="loadProductList('${n.nutrientId}')">
+                                        ${fn:replace(n.nutrientName, '비타민 ', '')}
+                                </button>
+                            </c:if>
+                        </c:forEach>
+                    </div>
+                </div>
+
+                <div class="vitamin-section">
+                    <h4 class="section-header fat-soluble">지용성 비타민 <small>Fat-soluble</small></h4>
+                    <div class="vitamin-grid">
+                        <c:forEach items="${nutrients}" var="n">
+                            <c:if test="${fn:contains(n.nutrientName, '비타민 A') || fn:contains(n.nutrientName, '비타민 D') || fn:contains(n.nutrientName, '비타민 E') || fn:contains(n.nutrientName, '비타민 K')}">
+                                <button type="button" class="v-item filter-item" data-id="${n.nutrientId}"
+                                        onclick="loadProductList('${n.nutrientId}')">
+                                        ${fn:replace(n.nutrientName, '비타민 ', '')}
+                                </button>
+                            </c:if>
+                        </c:forEach>
+                    </div>
+                </div>
+
+            </div>
         </div>
+
         <c:forEach items="${nutrients}" var="n">
-            <c:if test="${!fn:contains(n.nutrientName, '비타민')}">
-                <button type="button" class="filter-btn ${param.nutrientId == n.nutrientId ? 'active' : ''}"
-                        onclick="location.href='product?nutrientId=${n.nutrientId}'">
+            <c:if test="${!fn:contains(n.nutrientName, '비타민') && !fn:contains(n.nutrientName, '엽산') && !fn:contains(n.nutrientName, '비오틴')}">
+                <button type="button" class="filter-btn filter-item" data-id="${n.nutrientId}"
+                        onclick="loadProductList('${n.nutrientId}')">
                     <span class="icon">💊</span> ${n.nutrientName}
                 </button>
             </c:if>
         </c:forEach>
     </div>
+
     <div class="header-actions">
         <c:if test="${sessionScope.isAdmin == true}">
             <button type="button" class="btn-add-item" onclick="openModal()">
@@ -42,6 +66,9 @@
         </c:if>
     </div>
 </div>
+
+<div class="product-container" id="product-list-container"></div>
+
 
 <div id="productModal" class="modal">
     <div class="modal-content visual-enhanced">
@@ -147,48 +174,11 @@
 
 <div id="toast" class="toast">등록 완료!</div>
 
-<div class="product-container">
-    <c:forEach items="${products}" var="p">
-
-        <div class="product-card" onclick="location.href='product-detail?id=${p.productId}'">
 
 
-            <div class="product-image">
-                <img src="${p.productImage}"
-                     alt="상품 이미지" style="width:100%; height:100%; object-fit:cover;">
-                <c:if test="${sessionScope.isAdmin == true}">
-                    <button class="btn-delete"
-                            onclick="event.stopPropagation(); confirmDelete('${p.productId}')">&times;
-                    </button>
-                </c:if>
-            </div>
-            <div class="product-info">
-                <div class="product-name">${p.productName}</div>
-                <div class="product-brand">${p.productBrand}</div>
-                <div class="product-nutrient">
-                    <c:forEach items="${nutrients}" var="n">
-                        <c:if test="${p.productNutrient == n.nutrientId}">
-                            ${n.nutrientName}
-                        </c:if>
-                    </c:forEach>
-
-                </div>
-                <div class="product-price">${p.productPrice}원</div>
-                <div class="product-date">${p.productStartDate}</div>
-                <button class="btn-wish"
-                        onclick="event.stopPropagation(); toggleWish(this, ${p.productId})">🤍
-                </button>
-                <button class="btn-cart"
-                        onclick="event.stopPropagation(); addCart(${p.productId}, '${p.productName}', '${p.productBrand}')">
-                    🛒 담기
-                </button>
-
-            </div>
-        </div>
-
-    </c:forEach>
-</div>
-
+<%--삭제부분--%>
+<%--삭제부분--%>
+<%--삭제부분--%>
 <div id="deleteConfirmModal" class="modal">
     <div class="modal-content confirm-mini">
         <div class="modal-header">
@@ -207,10 +197,5 @@
 </div>
 
 
-<script src="js/app.js"></script>
 <%--<script src="js/product.js"></script>--%>
 <script src="js/product.js?v=20260408"></script>
-
-
-
-

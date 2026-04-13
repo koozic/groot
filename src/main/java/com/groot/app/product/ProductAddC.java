@@ -29,8 +29,9 @@ public class ProductAddC extends HttpServlet {
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "관리자만 접근 가능합니다.");
             return; // 로직 중단
         }
-// 아래는 실제 관리자 기능 로직...
 
+
+        // 아래는 실제 관리자 기능 로직...
 
         // 1. Cloudinary에 이미지 업로드 후 URL 반환
         String imgUrl = com.groot.app.common.CloudinaryUtil.uploadFromRequest(request, "productImage", "products");
@@ -44,6 +45,7 @@ public class ProductAddC extends HttpServlet {
 
         //어디로?
         response.sendRedirect("product?insert=success");
+
 
 
     }

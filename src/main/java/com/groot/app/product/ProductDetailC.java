@@ -20,18 +20,8 @@ public class ProductDetailC extends HttpServlet {
         com.groot.app.review.ReviewDAO.getReviewStats(request, productId);
 // 🌟 추가! 포토 리뷰 갤러리용 데이터도 가방에 담아주기!
         request.setAttribute("allPhotoImages", com.groot.app.review.ReviewDAO.RDAO.getAllPhotoImages(productId));
-
-
-//        request.getRequestDispatcher("product/product_detail.jsp").forward(request, response);
-
-        // 변경된 코드 (수정 후)
-// 1. index.jsp의 <jsp:include> 영역에 삽입될 타겟 JSP 경로 지정
         request.setAttribute("content", "product/product_detail.jsp");
-
-// 2. UI 처리를 위한 activeTab 플래그 전달 (선택 사항이나 권장됨)
         request.setAttribute("activeTab", "product");
-
-// 3. 최종적으로 레이아웃 템플릿인 index.jsp로 포워딩
         request.getRequestDispatcher("index.jsp").forward(request, response);
 
     }

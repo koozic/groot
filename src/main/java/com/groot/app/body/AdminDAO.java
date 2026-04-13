@@ -22,39 +22,7 @@ public class AdminDAO {
         }
         return false;
     }
-
-    // ── 전체 영양소 목록 (관리자용) ──
-//    public List<BodyDTO> getAllSupplements() throws Exception {
-//        List<BodyDTO> list = new ArrayList<>();
-//        String sql = "SELECT supplement_id, supplement_name, supplement_efficacy, " +
-//                "       supplement_dosage, supplement_timing, supplement_caution, " +
-//                "       supplement_image_path, supplement_view_count, " +
-//                "       TO_CHAR(supplement_reg_date, 'YYYY-MM-DD') AS supplement_reg_date " +
-//                "FROM supplements " +
-//                "ORDER BY supplement_id DESC";
-//
-//        try (Connection con = DBManager_new.connect();
-//             PreparedStatement ps = con.prepareStatement(sql);
-//             ResultSet rs = ps.executeQuery()) {
-//
-//            while (rs.next()) {
-//                BodyDTO dto = new BodyDTO();
-//                dto.setSupplementId(rs.getInt("supplement_id"));
-//                dto.setSupplementName(rs.getString("supplement_name"));
-//                dto.setSupplementEfficacy(rs.getString("supplement_efficacy"));
-//                dto.setSupplementDosage(rs.getString("supplement_dosage"));
-//                dto.setSupplementTiming(rs.getString("supplement_timing"));
-//                dto.setSupplementCaution(rs.getString("supplement_caution"));
-//                dto.setSupplementImagePath(rs.getString("supplement_image_path"));
-//                dto.setSupplementViewCount(rs.getInt("supplement_view_count"));
-//                dto.setSupplementRegDate(rs.getString("supplement_reg_date"));
-//                list.add(dto);
-//            }
-//        }
-//        return list;
-//    }
-
-    // 기존 메서드는 그대로 두고, 아래 메서드를 추가합니다.
+    
 
     /**
      * 정렬 조건을 받아 전체 영양소 목록을 반환합니다.

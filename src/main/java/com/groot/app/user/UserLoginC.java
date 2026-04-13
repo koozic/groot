@@ -1,5 +1,7 @@
 package com.groot.app.user;
 
+import com.groot.app.cart.CartUtil;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -13,25 +15,38 @@ public class UserLoginC extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        resp.sendRedirect("user/login.jsp");
+        // redirect 파라미터가 있으면 login.jsp로 포워딩해서 파라미터 유지
+        String redirect = req.getParameter("redirect");
+        if (redirect != null && !redirect.trim().isEmpty()) {
+            // sendRedirect 대신 forward → ${param.redirect} 그대로 유지됨
+            req.getRequestDispatcher("user/login.jsp").forward(req, resp);
+        } else {
+            resp.sendRedirect("user/login.jsp");
+        }
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
         boolean isSuccess = UserDAO.Login(request);
-        System.out.println(isSuccess);
+
         if (isSuccess) {
-            // ✅ 관리자 여부 확인 후 분기
-            Boolean isAdmin = (Boolean) request.getSession().getAttribute("isAdmin");
-//            if (Boolean.TRUE.equals(isAdmin)) {
-            response.sendRedirect("hello-servlet");
-//            }
+            UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
+            if (loginUser != null) {
+                CartUtil.refreshCartCount(request.getSession(), loginUser.getUser_id());
+            }
+
+            String redirect = request.getParameter("redirect");
+            if (redirect != null && !redirect.trim().isEmpty()
+                    && !redirect.contains("//")
+                    && !redirect.startsWith("http")) {
+                response.sendRedirect(redirect);
+            } else {
+                response.sendRedirect("hello-servlet");
+            }
+
         } else {
-            // 2-2. 로그인 실패: 다시 로그인 페이지로 포워딩 (Forward)
-            // request.setAttribute에 담긴 "loginMsg"가 유지되어 로그인 창에 에러 문구를 띄울 수 있음
             request.getRequestDispatcher("user/login.jsp").forward(request, response);
         }
-
     }
 
 

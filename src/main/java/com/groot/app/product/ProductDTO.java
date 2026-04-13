@@ -25,4 +25,7 @@ public class ProductDTO {
     private Date productStartDate;
     private int productCurrent;
 
+
+
+
 }
