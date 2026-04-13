@@ -1,17 +1,25 @@
 // ==========================================
-// 🌟 0. 전역 변수 & 초기화
+// 🌟 0. 전역 변수 & 공통 이미지 경로 판별기
 // ==========================================
-
+// 클라우드(http)면 그대로, 옛날거면 ../upload/ 붙여주는 마법의 함수!
+function getImgPath(img) {
+    if (!img || img === 'null' || img === '' || img === 'undefined') return '';
+    return img.startsWith('http') ? img : `../upload/${img}`;
+}
 
 document.addEventListener('DOMContentLoaded', function() {
-    const sortSelect = document.getElementById('sortType');
-    const starSelect = document.getElementById('starFilter');
-    const myReviewCheck = document.getElementById('myReviewCheck'); // 🌟 체크박스 찾기
 
-    if(sortSelect) sortSelect.addEventListener('change', fetchReviews);
-    if(starSelect) starSelect.addEventListener('change', fetchReviews);
-    if(myReviewCheck) myReviewCheck.addEventListener('change', fetchReviews); // 🌟 누르면 리스트 다시 부르기!
+    // 🌟 [핵심 해결책] 이벤트 위임(Event Delegation) 기법!
+    // 버튼들이 통째로 갈아끼워져도 절대 지워지지 않는 body에 센서를 달아둡니다.
+    document.body.addEventListener('change', function(event) {
+        // 폼 안에서 무언가 변경되었을 때, 그게 우리가 찾는 필터 버튼들이 맞는지 확인!
+        const id = event.target.id;
+        if (id === 'sortType' || id === 'starFilter' || id === 'myReviewCheck') {
+            fetchReviews();
+        }
+    });
 
+    // 화면 켜지자마자 리스트 1번 불러오기
     fetchReviews();
 });
 
@@ -21,8 +29,10 @@ window.onclick = function(event) {
     }
 }
 
+// ... (이하 코드들은 기존 그대로 두시면 됩니다!) ...
+
 // ==========================================
-// 📸 1. 포토 갤러리 슬라이드 & 모달 (정렬/필터 기능 완벽 이식!)
+// 📸 1. 포토 갤러리 모달
 // ==========================================
 function slideGallery(direction) {
     const slider = document.getElementById('photo-slider');
@@ -31,19 +41,15 @@ function slideGallery(direction) {
 
 function openPhotoGalleryModal() {
     document.getElementById('photoOnlyModal').style.display = 'block';
-    fetchModalPhotoReviews(); // 모달 열자마자 비동기로 데이터 한번 땡겨오기!
+    fetchModalPhotoReviews();
 }
 
 function closePhotoOnlyModal() {
     document.getElementById('photoOnlyModal').style.display = 'none';
 }
 
-// 🌟 모달 전용 비동기 호출 함수
 function fetchModalPhotoReviews() {
-    const urlParams = new URLSearchParams(window.location.search);
     let pId = currentProductId;
-
-    // 모달 안에 있는 select, checkbox 값 가져오기
     const sortType = document.getElementById('modalSortType').value;
     const starFilter = document.getElementById('modalStarFilter').value;
     const isMyReview = document.getElementById('modalMyReviewCheck').checked;
@@ -54,31 +60,25 @@ function fetchModalPhotoReviews() {
             const container = document.getElementById('photo-only-list-container');
             container.innerHTML = '';
 
-            // 1. 사진이 있는 리뷰만 1차 필터링
             let photoReviews = data.filter(r => r.r_img && r.r_img !== 'null' && r.r_img !== '');
-
-            // 2. 내가 쓴 글 체크박스 2차 필터링
-            if (isMyReview) {
-                photoReviews = photoReviews.filter(r => r.user_id && r.user_id.trim() === currentLoginId);
-            }
+            if (isMyReview) photoReviews = photoReviews.filter(r => r.user_id && r.user_id.trim() === currentLoginId);
 
             if (photoReviews.length === 0) {
                 container.innerHTML = '<p style="text-align:center; padding:50px; font-weight:bold; color:#777;">조건에 맞는 포토 리뷰가 없습니다.</p>';
                 return;
             }
 
-            // 3. 화면에 그리기
             photoReviews.forEach(r => {
+                // 🌟 마법의 함수 getImgPath() 적용!
                 container.innerHTML += `
                 <div class="photo-item" style="display:flex; gap:20px; padding:20px 10px; border-bottom:1px solid #eee; align-items:center;">
-                    <img src="../upload/${r.r_img}" style="width:130px; height:130px; object-fit:cover; border-radius:10px; border:1px solid #ddd;">
+                    <img src="${getImgPath(r.r_img)}" style="width:130px; height:130px; object-fit:cover; border-radius:10px; border:1px solid #ddd;">
                     <div style="flex-grow:1;">
                         <div style="font-weight:bold; font-size:1.15em; margin-bottom:5px;">${r.r_title}</div>
                         <div style="color:#777; font-size:0.9em; margin-bottom:10px;">
                            작성자: ${r.user_id} | ${makeStarHtml(r.r_score)} | ${formatKoreanDate(r.r_date)}
                         </div>
                         <div style="font-size:0.95em; line-height:1.5; margin-bottom: 15px;">${r.r_content}</div>
-                        
                         <button type="button" class="btn-like" onclick="toggleLike(${r.review_id}, '${currentLoginId}')" style="padding: 6px 12px; font-size: 0.85em;">
                             👍 도움돼요 <span id="like-count-modal-${r.review_id}">${r.r_like}</span>
                         </button>
@@ -89,19 +89,13 @@ function fetchModalPhotoReviews() {
 }
 
 // ==========================================
-// 🚀 2. 좋아요 비동기 처리 (메인/모달 동시 적용)
-// ==========================================
-// ==========================================
-// 🚀 2. 좋아요 비동기 처리 (메인/모달 동시 적용)
+// 🚀 2. 좋아요 처리
 // ==========================================
 function toggleLike(reviewId, userId) {
-
-    // 🌟 [수정] 촌스러운 alert() 지우고, 예쁜 토스트 알림으로 교체!
     if (!userId || userId === 'null' || userId === '') {
         showToast("로그인이 필요한 기능입니다! 🔒", "error");
         return;
     }
-
     const params = new URLSearchParams();
     params.append('review_id', reviewId);
     params.append('user_id', userId);
@@ -109,36 +103,32 @@ function toggleLike(reviewId, userId) {
     fetch('review-like', { method: 'POST', headers: { 'X-Requested-With': 'XMLHttpRequest' }, body: params })
         .then(res => res.text())
         .then(data => {
-            // 메인 화면 좋아요 숫자 업데이트
             const mainLike = document.getElementById(`like-count-${reviewId}`);
             if (mainLike) mainLike.innerText = data;
-
-            // 모달 화면 좋아요 숫자 업데이트
             const modalLike = document.getElementById(`like-count-modal-${reviewId}`);
             if (modalLike) modalLike.innerText = data;
         });
 }
-// =========================================================
-// 🎛️ 3. 비동기 정렬 리스트 & 하이브리드 페이징 (PC/모바일)
-// =========================================================
-let allReviewsData = [];       // 전체 데이터 백업
-let filteredReviewsData = [];  // 필터링(내가 쓴 글) 완료된 데이터
-let currentPage = 1;
-const itemsPerPage = 5;        // 한 번에 5개씩 보여주기!
-let isMobile = window.innerWidth <= 768; // 화면 크기 감지 (768px 이하면 모바일)
 
-// 🌟 프로의 디테일: 창 크기를 줄이거나 늘리면 실시간으로 PC/모바일 모드 전환!
+// ==========================================
+// 🎛️ 3. 비동기 하단 리스트 & 페이징
+// ==========================================
+let allReviewsData = [];
+let filteredReviewsData = [];
+let currentPage = 1;
+const itemsPerPage = 5;
+let isMobile = window.innerWidth <= 768;
+
 window.addEventListener('resize', () => {
     const checkMobile = window.innerWidth <= 768;
     if (isMobile !== checkMobile) {
         isMobile = checkMobile;
-        currentPage = 1; // 화면 바뀌면 1페이지로 깔끔하게 리셋
+        currentPage = 1;
         renderPaginatedReviews(false);
     }
 });
 
 function fetchReviews() {
-    const urlParams = new URLSearchParams(window.location.search);
     let pId = currentProductId;
     const sortType = document.getElementById('sortType').value;
     const starFilter = document.getElementById('starFilter').value;
@@ -147,19 +137,11 @@ function fetchReviews() {
         .then(res => res.json())
         .then(data => {
             allReviewsData = data;
+            const isMyReview = document.getElementById('myReviewCheck') ? document.getElementById('myReviewCheck').checked : false;
 
-            // '내가 쓴 글만 보기' 체크 확인
-            const myReviewCheck = document.getElementById('myReviewCheck');
-            const isMyReview = myReviewCheck ? myReviewCheck.checked : false;
-
-            if (isMyReview) {
-                filteredReviewsData = allReviewsData.filter(r => r.user_id && r.user_id.trim() === currentLoginId);
-            } else {
-                filteredReviewsData = allReviewsData;
-            }
-
-            currentPage = 1; // 새 데이터 가져오면 1페이지로 리셋
-            renderPaginatedReviews(false); // 🌟 화면 그리기 출동!
+            filteredReviewsData = isMyReview ? allReviewsData.filter(r => r.user_id && r.user_id.trim() === currentLoginId) : allReviewsData;
+            currentPage = 1;
+            renderPaginatedReviews(false);
         });
 }
 
@@ -171,47 +153,39 @@ function renderPaginatedReviews(isAppend = false) {
 
     if (!isAppend) container.innerHTML = '';
 
-    // 1️⃣ [완전 텅 빈 상태] 이 상품에 리뷰가 전 세계에 단 하나도 없을 때
-    if (allReviewsData.length === 0) {
-        if (emptyUi) {
-            emptyUi.style.display = 'block';
-            emptyUi.innerHTML = `
-                <div style="font-size: 3rem; margin-bottom: 15px;">🌿</div>
-                <h3 style="color: #495057; font-size: 1.3rem; margin-bottom: 10px;">아직 등록된 리뷰가 없습니다.</h3>
-                <p style="color: #868e96; margin-bottom: 25px;">이 제품의 첫 번째 리뷰어가 되어주세요! 경험을 공유해주시면 큰 도움이 됩니다.</p>
-                <button type="button" onclick="openWriteModal()" style="padding: 12px 24px; background: #6a8d3a; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1.1em;">
-                    ✍️ 첫 리뷰 작성하기
-                </button>
-            `;
-        }
-        if (fullUi) fullUi.style.display = 'none'; // 통계/필터 다 숨김
-        renderPaginationButtons();
+    // 🌟 현재 필터가 걸려있는지 눈치껏 확인 (별점 필터가 0이 아니거나, 내 글 보기 체크됨)
+    const starFilter = document.getElementById('starFilter') ? document.getElementById('starFilter').value : "0";
+    const isMyReview = document.getElementById('myReviewCheck') ? document.getElementById('myReviewCheck').checked : false;
+    const isFiltering = (starFilter !== "0") || isMyReview;
+
+    // 1️⃣ [진짜 텅 빈 상태] 아예 필터도 안 걸었는데 리뷰가 1개도 없을 때
+    if (allReviewsData.length === 0 && !isFiltering) {
+        if (emptyUi) emptyUi.style.display = 'block';
+        if (fullUi) fullUi.style.display = 'none';
+        const pageArea = document.getElementById('pagination-area');
+        if (pageArea) pageArea.innerHTML = ''; // 페이징 날리기
         return;
     }
 
-    // 2️⃣ [데이터는 있는데 필터 결과만 0개일 때] 예: '내 글 보기'를 눌렀는데 내가 쓴 게 없을 때
-    if (filteredReviewsData.length === 0) {
-        if (fullUi) fullUi.style.display = 'block'; // 🌟 중요: 필터(체크박스)는 계속 보여줘야 함!
+    // 2️⃣ [필터 결과 0개] 별점 3점을 눌렀는데 없거나, 내 글이 없을 때
+    if (filteredReviewsData.length === 0 || (allReviewsData.length === 0 && isFiltering)) {
+        if (fullUi) fullUi.style.display = 'block'; // 🌟 컨트롤 바(필터)는 무조건 살려둠!
         if (emptyUi) emptyUi.style.display = 'none';
 
-        // 대신 리스트가 들어갈 자리에 문구를 띄워줍니다.
-        const isMyReviewChecked = document.getElementById('myReviewCheck')?.checked;
-        const msg = isMyReviewChecked
-            ? "🔍 작성하신 리뷰가 없습니다. 첫 리뷰를 남겨보세요!"
-            : "🔍 조건에 맞는 리뷰가 없습니다.";
-
+        // 말씀하신 동그라미 친 영역에만 텍스트 띄우기
         container.innerHTML = `
-            <div style="text-align:center; padding:80px 20px; color:#777; background:#fff; border-radius:12px; border:1px solid #eee;">
+            <div style="text-align:center; padding:60px 20px; color:#777;">
                 <div style="font-size:2.5rem; margin-bottom:15px;">🔍</div>
-                <h3 style="margin-bottom:10px;">${msg}</h3>
-                <p>체크박스를 해제하시거나 새로운 리뷰를 작성해 보세요.</p>
-            </div>
-        `;
-        renderPaginationButtons();
+                <h3 style="margin-bottom:10px;">조건에 맞는 리뷰가 없습니다.</h3>
+                <p>필터를 해제하거나 다른 조건을 선택해 보세요.</p>
+            </div>`;
+
+        const pageArea = document.getElementById('pagination-area');
+        if (pageArea) pageArea.innerHTML = ''; // 🌟 페이징 버튼 깔끔하게 숨기기
         return;
     }
 
-    // 3️⃣ [정상 출력] 데이터가 1개라도 있을 때
+    // 3️⃣ [정상 출력] 데이터가 있을 때
     if (emptyUi) emptyUi.style.display = 'none';
     if (fullUi) fullUi.style.display = 'block';
 
@@ -221,22 +195,32 @@ function renderPaginatedReviews(isAppend = false) {
     const pageData = filteredReviewsData.slice(startIndex, endIndex);
 
     pageData.forEach(r => {
-        // ... (무영님의 기존 리뷰 카드 그리는 코드 그대로 넣어주세요) ...
-        let imgHtml = (r.r_img && r.r_img !== 'null') ? `<div class="review-img-box" style="margin: 15px 0;"><img src="../upload/${r.r_img}" style="width: 150px; border-radius: 8px;"></div>` : '';
-        const rUser = r.user_id ? r.user_id.trim() : "";
-        let menuHtml = '';
+        let imgHtml = (r.r_img && r.r_img !== 'null' && r.r_img !== '')
+            ? `<div class="review-img-box" style="margin: 15px 0;"><img src="${getImgPath(r.r_img)}" style="width: 150px; border-radius: 8px;"></div>`
+            : '';
 
-        if (currentLoginId !== "" && rUser === currentLoginId) {
-            menuHtml = `
+        const rUser = r.user_id ? r.user_id.trim() : "";
+        const safeLoginId = currentLoginId ? currentLoginId.trim() : "";
+
+        // 🌟 [하드코딩 확정] 팀에서 정한 관리자 4인방 명단 딱 고정!
+        const adminList = ['admin1', 'master', 'manager1', 'staff1'];
+
+        // 내 아이디가 저 명단 안에 포함되어 있으면 무조건 관리자 무적 권한(true) 획득!
+        const isAdmin = adminList.includes(safeLoginId);
+
+        // 내 글이거나 OR 관리자일 때만 점 3개(⋮) 메뉴 버튼을 보여줌!
+        let menuHtml = (safeLoginId !== "" && (rUser === safeLoginId || isAdmin)) ? `
             <div class="review-more-menu">
                 <button type="button" class="btn-more" onclick="toggleMenu(${r.review_id})">⋮</button>
                 <div id="menu-content-${r.review_id}" class="menu-content" style="display:none;">
-                    <a href="javascript:void(0)" onclick="openUpdateForm(${r.review_id})">수정하기</a>
+                    ${rUser === safeLoginId ? `<a href="javascript:void(0)" onclick="openUpdateForm(${r.review_id})">수정하기</a>` : ''}
+                    
                     <a href="javascript:void(0)" onclick="deleteReview(${r.review_id})" style="color:red;">삭제하기</a>
                 </div>
-            </div>`;
-        }
+            </div>` : '';
 
+        const safeTitle = r.r_title ? r.r_title.replace(/'/g, "\\'") : '';
+        const safeContent = r.r_content ? r.r_content.replace(/'/g, "\\'") : '';
         container.innerHTML += `
             <div class="review-card" style="position: relative;">
                 ${menuHtml}
@@ -247,7 +231,7 @@ function renderPaginatedReviews(isAppend = false) {
                 <div class="review-content">${r.r_content}</div>
                 <div class="review-action-box">
                     <button type="button" class="btn-like" onclick="toggleLike(${r.review_id}, '${currentLoginId}')">👍 <span id="like-count-${r.review_id}">${r.r_like}</span></button>
-                    <button type="button" class="btn-detail" onclick="openDetailModal('${r.r_title}', '${r.user_id}', '${r.r_score}', '${r.r_date}', '${r.r_content}', '${r.r_img}')">🔍 리뷰 상세보기</button>
+                    <button type="button" class="btn-detail" onclick="openDetailModal('${safeTitle}', '${r.user_id}', '${r.r_score}', '${formatKoreanDate(r.r_date)}', '${safeContent}', '${r.r_img}')">🔍 리뷰 상세보기</button>
                 </div>
             </div>`;
     });
@@ -255,7 +239,7 @@ function renderPaginatedReviews(isAppend = false) {
     renderPaginationButtons();
 }
 
-// 🌟 PC(번호판) / 모바일(더보기) 하단 버튼 자동 변환 마술
+// 하단 페이징 처리 (PC/모바일)
 function renderPaginationButtons() {
     let pageArea = document.getElementById('pagination-area');
     if(!pageArea) {
@@ -265,91 +249,30 @@ function renderPaginationButtons() {
         pageArea.style.margin = '30px 0 50px 0';
         document.getElementById('review-list-container').after(pageArea);
     }
-
     pageArea.innerHTML = '';
     const totalPages = Math.ceil(filteredReviewsData.length / itemsPerPage);
-
-    if (totalPages <= 1) return; // 1페이지만 있으면 숨김
+    if (totalPages <= 1) return;
 
     if (isMobile) {
-        // 📱 모바일 화면일 때: [올리브영 스타일 더보기]
         if (currentPage < totalPages) {
-            pageArea.innerHTML = `
-                <button type="button" onclick="loadMoreReviews()" style="width:100%; padding:15px; background:#fff; border:1px solid #ddd; border-radius:8px; font-weight:bold; font-size:1.1em; color:#333; cursor:pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-                    리뷰 더보기 (${currentPage * itemsPerPage} / ${filteredReviewsData.length}) ⬇️
-                </button>`;
+            pageArea.innerHTML = `<button type="button" onclick="loadMoreReviews()" style="width:100%; padding:15px; background:#fff; border:1px solid #ddd; border-radius:8px; font-weight:bold; font-size:1.1em; color:#333; cursor:pointer;">리뷰 더보기 ⬇️</button>`;
         }
     } else {
-        // 💻 PC 화면일 때: [아이허브 스타일 고급 번호판]
         let html = '';
-
-        // 1. 이전(<) 버튼 (1페이지가 아닐 때만 보임)
-        if (currentPage > 1) {
-            html += `<a href="javascript:void(0)" onclick="goToPage(${currentPage - 1})" style="display:inline-block; margin:0 8px; font-weight:bold; font-size:1.2em; color:#555; text-decoration:none;">&lt;</a>`;
+        if (currentPage > 1) html += `<a href="javascript:void(0)" onclick="goToPage(${currentPage - 1})" style="margin:0 8px; font-weight:bold; color:#555; text-decoration:none;">&lt;</a>`;
+        for (let i = Math.max(1, currentPage-2); i <= Math.min(totalPages, currentPage+2); i++) {
+            if (i === currentPage) html += `<span style="margin:0 5px; padding:6px 14px; background:#6a8d3a; color:#fff; border-radius:4px;">${i}</span>`;
+            else html += `<a href="javascript:void(0)" onclick="goToPage(${i})" style="margin:0 5px; padding:6px 14px; color:#555; text-decoration:none;">${i}</a>`;
         }
-
-        // 🌟 복잡한 페이징 번호 계산 (최대 5개 번호만 보여주기)
-        let start = Math.max(1, currentPage - 2);
-        let end = Math.min(totalPages, currentPage + 2);
-
-        if (currentPage <= 3) {
-            start = 1;
-            end = Math.min(5, totalPages);
-        } else if (currentPage + 2 >= totalPages) {
-            start = Math.max(1, totalPages - 4);
-            end = totalPages;
-        }
-
-        // 2. 번호 찍기
-        for (let i = start; i <= end; i++) {
-            if (i === currentPage) {
-                // 현재 페이지 (아이허브처럼 초록색 박스 칠하기)
-                html += `<span style="display:inline-block; margin:0 5px; padding: 6px 14px; background-color:#6a8d3a; color:white; font-weight:bold; border-radius:4px; font-size:1.1em; cursor:default;">${i}</span>`;
-            } else {
-                // 다른 페이지
-                html += `<a href="javascript:void(0)" onclick="goToPage(${i})" style="display:inline-block; margin:0 5px; padding: 6px 14px; color:#555; text-decoration:none; font-size:1.1em; border-radius:4px;">${i}</a>`;
-            }
-        }
-
-        // 3. 말줄임표(...) 와 마지막 페이지
-        if (end < totalPages) {
-            if (end < totalPages - 1) {
-                html += `<span style="display:inline-block; margin:0 5px; color:#777; font-size:1.1em;">...</span>`;
-            }
-            html += `<a href="javascript:void(0)" onclick="goToPage(${totalPages})" style="display:inline-block; margin:0 5px; padding: 6px 14px; color:#555; text-decoration:none; font-size:1.1em; border-radius:4px;">${totalPages}</a>`;
-        }
-
-        // 4. 다음(>) 버튼 (마지막 페이지가 아닐 때만 보임)
-        if (currentPage < totalPages) {
-            html += `<a href="javascript:void(0)" onclick="goToPage(${currentPage + 1})" style="display:inline-block; margin:0 8px; font-weight:bold; font-size:1.2em; color:#555; text-decoration:none;">&gt;</a>`;
-        }
-
+        if (currentPage < totalPages) html += `<a href="javascript:void(0)" onclick="goToPage(${currentPage + 1})" style="margin:0 8px; font-weight:bold; color:#555; text-decoration:none;">&gt;</a>`;
         pageArea.innerHTML = html;
     }
 }
+function loadMoreReviews() { currentPage++; renderPaginatedReviews(true); }
+function goToPage(page) { currentPage = page; renderPaginatedReviews(false); window.scrollTo({ top: document.querySelector('.review-control-bar').offsetTop - 110, behavior: 'smooth' }); }
 
-// 📱 모바일 전용: 더보기 버튼 누를 때
-function loadMoreReviews() {
-    currentPage++;
-    renderPaginatedReviews(true); // true = 기존 리스트 밑에 추가(Append)!
-}
-
-// 💻 PC 전용: 번호 누를 때
-function goToPage(page) {
-    currentPage = page;
-    renderPaginatedReviews(false);
-
-    // 🌟 상단 파란색 고정 메뉴바에 가려지지 않게 여백을 넉넉하게(-150) 뺍니다!
-    const controlBar = document.querySelector('.review-control-bar');
-    if (controlBar) {
-        const targetY = controlBar.getBoundingClientRect().top + window.scrollY - 110;
-        window.scrollTo({ top: targetY, behavior: 'smooth' });
-    } else {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-}
 // ==========================================
-// 🔍 4. 리뷰 상세보기
+// 🔍 4. 리뷰 상세보기 모달
 // ==========================================
 function openDetailModal(title, user, score, date, content, img) {
     document.getElementById('detailModal').style.display = 'block';
@@ -357,13 +280,14 @@ function openDetailModal(title, user, score, date, content, img) {
     document.getElementById('detail_user').innerText = user;
     document.getElementById('detail_score').innerHTML = makeStarHtml(score);
     document.getElementById('detail_date').innerText = date;
-    document.getElementById('detail_text').innerText = content;
+    document.getElementById('detail_text').innerHTML = content;
 
     const imgBox = document.getElementById('detail_img_box');
     const imgTag = document.getElementById('detail_img');
 
     if(img && img !== 'null' && img !== '' && img !== 'undefined') {
-        imgTag.src = '../upload/' + img;
+        // 🌟 마법의 함수 getImgPath() 적용!
+        imgTag.src = getImgPath(img);
         imgBox.style.display = 'block';
     } else {
         imgBox.style.display = 'none';
@@ -371,37 +295,24 @@ function openDetailModal(title, user, score, date, content, img) {
 }
 function closeDetailModal() { document.getElementById('detailModal').style.display = 'none'; }
 
-// 🗑️ 리뷰 삭제
+// ==========================================
+// 🗑️ 5. 리뷰 삭제
+// ==========================================
 function deleteReview(reviewId) {
     if (!confirm("정말 삭제하시겠습니까?")) return;
-
     fetch(`review-delete?review_id=${reviewId}`)
-        .then(res => res.text()) // 🌟 [복구] 이 줄이 실수로 지워졌었습니다! 이거 없으면 에러 납니다!
+        .then(res => res.text())
         .then(data => {
             if (data.trim() === "1") {
                 showToast("리뷰를 삭제했습니다. 🗑️");
-
-                // 🌟 스무스 삭제 애니메이션 부활!
-                const card = document.getElementById(`menu-content-${reviewId}`).closest('.review-card');
-                if(card) {
-                    card.style.transition = 'all 0.5s ease';
-                    card.style.opacity = '0';
-                    card.style.transform = 'translateX(100px)';
-
-                    setTimeout(() => {
-                        card.remove();
-                        refreshReviewUI(); // 상단 통계 샥! 업데이트
-                        fetchReviews();    // 하단 리스트 샥! 업데이트
-                    }, 500);
-                }
-            } else {
-                alert("삭제 실패!");
-            }
+                refreshReviewUI();
+                fetchReviews();
+            } else alert("삭제 실패!");
         });
 }
 
 // ==========================================
-// 🪄 6. 리뷰 수정 (미리보기 사진 추가 완료!)
+// 🪄 6. 리뷰 수정 (미리보기)
 // ==========================================
 function openUpdateForm(reviewId) {
     try {
@@ -411,54 +322,41 @@ function openUpdateForm(reviewId) {
         let scoreMatch = card.querySelector('.review-meta').innerText.match(/별점: (\d+)점/);
         let score = scoreMatch ? scoreMatch[1] : 5;
         let imgTag = card.querySelector('.review-img-box img');
-        let imgSrc = imgTag ? imgTag.src.split('/').pop() : "";
+
+        let fullSrc = imgTag ? imgTag.src : "";
 
         if(document.getElementById('upd_review_id')) document.getElementById('upd_review_id').value = reviewId;
         if(document.getElementById('upd_title')) document.getElementById('upd_title').value = title;
         if(document.getElementById('upd_score')) document.getElementById('upd_score').value = score;
-
-        if(document.getElementById('upd_content')) {
-            document.getElementById('upd_content').value = content;
-            updateCharCount(); // 글자 수 카운팅
-        }
-
-        if(document.getElementById('old_img_name')) document.getElementById('old_img_name').value = imgSrc;
-
-        // 🌟 주소창 찾을 필요 없이 우리가 전역으로 세팅해둔 currentProductId를 씁니다!
+        if(document.getElementById('upd_content')) { document.getElementById('upd_content').value = content; updateCharCount(); }
         if(document.getElementById('upd_p_id')) document.getElementById('upd_p_id').value = currentProductId;
-        // 사진 삭제 UI & 미리보기 셋팅
-        const existImgBox = document.getElementById('existing_img_box');
-        const delCheck = document.getElementById('delete_img_check');
-        const isDelHidden = document.getElementById('isImgDeleted');
-        const previewImg = document.getElementById('preview_old_img'); // 🌟 추가: 미리보기 태그
 
-        if (existImgBox && delCheck && isDelHidden) {
-            delCheck.checked = false;
+        const existImgBox = document.getElementById('existing_img_box');
+        const previewImg = document.getElementById('preview_old_img');
+        const isDelHidden = document.getElementById('isImgDeleted');
+        const oldImgInput = document.getElementById('old_img_name');
+
+        if (existImgBox && isDelHidden) {
+            document.getElementById('delete_img_check').checked = false;
             isDelHidden.value = "false";
 
-            // 기존 사진이 있으면 박스 보여주고, 미리보기 태그에 사진 경로 꽂아주기!
-            if (imgSrc && imgSrc !== 'null' && imgSrc !== '') {
+            if (fullSrc) {
                 existImgBox.style.display = 'block';
-                if(previewImg) previewImg.src = '../upload/' + imgSrc;
+                if(previewImg) previewImg.src = fullSrc;
+                // 🌟 클라우드 주소면 통째로 유지, 아니면 파일명만 따기
+                oldImgInput.value = fullSrc.includes('http') ? fullSrc : fullSrc.split('/').pop();
             } else {
                 existImgBox.style.display = 'none';
             }
         }
-
         setUpdateStars(score);
         document.getElementById('updateModal').style.display = 'block';
-    } catch (e) {
-        console.error(e);
-        alert("모달창을 여는 중 일시적인 오류가 발생했습니다. 새로고침(F5) 후 다시 시도해주세요!");
-    }
+    } catch (e) { alert("오류 발생!"); }
 }
 
 function setUpdateStars(score) {
-    document.querySelectorAll('.upd-star').forEach(s => {
-        s.style.color = (s.getAttribute('data-value') <= score) ? '#ffc107' : '#ddd';
-    });
+    document.querySelectorAll('.upd-star').forEach(s => { s.style.color = (s.getAttribute('data-value') <= score) ? '#ffc107' : '#ddd'; });
 }
-
 document.querySelectorAll('.upd-star').forEach(star => {
     star.addEventListener('click', function() {
         const s = this.getAttribute('data-value');
@@ -466,84 +364,54 @@ document.querySelectorAll('.upd-star').forEach(star => {
         setUpdateStars(s);
     });
 });
-
-function toggleImgDelete() {
-    const isChecked = document.getElementById('delete_img_check').checked;
-    document.getElementById('isImgDeleted').value = isChecked ? "true" : "false";
-}
-
+function toggleImgDelete() { document.getElementById('isImgDeleted').value = document.getElementById('delete_img_check').checked ? "true" : "false"; }
 function closeUpdateModal() { document.getElementById('updateModal').style.display = 'none'; }
 
-// 🪄 리뷰 수정
 function submitUpdate() {
-    const formData = new FormData(document.getElementById('updateForm'));
-    fetch('ReviewUpdateC', { method: 'POST', body: formData })
+    fetch('ReviewUpdateC', { method: 'POST', body: new FormData(document.getElementById('updateForm')) })
         .then(res => res.text())
         .then(data => {
             if (data.trim() === "1") {
                 showToast("리뷰 수정을 완료했습니다! 🪄");
                 closeUpdateModal();
-
-                // 🌟 딸깍(새로고침) 삭제!
                 refreshReviewUI();
                 fetchReviews();
-            } else {
-                alert("수정 실패!");
-            }
+            } else alert("수정 실패!");
         });
 }
 
 function toggleMenu(id) {
     const m = document.getElementById(`menu-content-${id}`);
-    document.querySelectorAll('.menu-content').forEach(el => {
-        if(el.id !== `menu-content-${id}`) el.style.display = 'none';
-    });
+    document.querySelectorAll('.menu-content').forEach(el => { if(el.id !== `menu-content-${id}`) el.style.display = 'none'; });
     m.style.display = (m.style.display === 'none') ? 'block' : 'none';
 }
+
 // ==========================================
-// 📝 7. 글자 수 카운팅 로직
+// 📝 7. 글자 수 카운팅 및 별점 조립
 // ==========================================
 function updateCharCount() {
-    const content = document.getElementById('upd_content').value;
     const charCount = document.getElementById('charCount');
-    if (charCount) {
-        charCount.innerText = content.length;
-    }
+    if (charCount) charCount.innerText = document.getElementById('upd_content').value.length;
 }
-// ==========================================
-//8.숫자 점수를 별 모양 HTML로 바꿔주는 함수
-// ==========================================
 
 function makeStarHtml(score) {
     let stars = '';
-    for (let i = 1; i <= 5; i++) {
-        // 현재 번호가 점수보다 작거나 같으면 꽉 찬 별, 아니면 빈 별
-        if (i <= score) {
-            stars += '<span class="star-gold">★</span>';
-        } else {
-            stars += '<span class="star-gray">☆</span>';
-        }
-    }
+    for (let i = 1; i <= 5; i++) stars += (i <= score) ? '<span class="star-gold">★</span>' : '<span class="star-gray">☆</span>';
     return stars;
-}// ==========================================
+}
+
+// ==========================================
 // ✍️ 8. 리뷰 작성 모달 제어
 // ==========================================
 function openWriteModal() {
-    // 🌟 문지기 출동: 로그인이 안 되어 있다면?
-    if (!currentLoginId || currentLoginId === "") {
-        showToast("로그인이 필요한 기능입니다! 🔒", "error");
-        return; // 여기서 함수를 끝내버려서 모달창이 안 뜨게 막음!
-    }
-    document.getElementById('writeForm').reset(); // 폼 초기화
-    setWriteStars(5); // 기본 별점 5점 세팅
+    if (!currentLoginId || currentLoginId === "") { showToast("로그인이 필요한 기능입니다! 🔒", "error"); return; }
+    document.getElementById('writeForm').reset();
+    setWriteStars(5);
     document.getElementById('writeModal').style.display = 'block';
 }
 
-function closeWriteModal() {
-    document.getElementById('writeModal').style.display = 'none';
-}
+function closeWriteModal() { document.getElementById('writeModal').style.display = 'none'; }
 
-// 별점 선택 로직
 document.querySelectorAll('.write-star').forEach(star => {
     star.addEventListener('click', function() {
         const val = this.getAttribute('data-value');
@@ -553,96 +421,54 @@ document.querySelectorAll('.write-star').forEach(star => {
 });
 
 function setWriteStars(score) {
-    document.querySelectorAll('.write-star').forEach(s => {
-        s.style.color = (s.getAttribute('data-value') <= score) ? '#ffc107' : '#ddd';
-    });
+    document.querySelectorAll('.write-star').forEach(s => { s.style.color = (s.getAttribute('data-value') <= score) ? '#ffc107' : '#ddd'; });
 }
 
-// 🚀 리뷰 등록
 function submitReview() {
-    const form = document.getElementById('writeForm');
-    const formData = new FormData(form);
-
-    fetch('review-write', { method: 'POST', body: formData })
+    fetch('review-write', { method: 'POST', body: new FormData(document.getElementById('writeForm')) })
         .then(res => res.text())
         .then(data => {
             if (data.trim() === "1") {
                 showToast("리뷰가 등록되었습니다! ✨");
                 closeWriteModal();
-
-                // 🌟 딸깍(새로고침) 삭제! 비동기로 화면 갈아끼우고 리스트 불러오기!
                 refreshReviewUI();
                 fetchReviews();
-            } else{
-                alert("리뷰 등록 실패 ㅠㅠ 다시 시도해주세요.");
-            }
+            } else alert("등록 실패!");
         });
 }
-// =========================================================
-// 🍞 토스트 알림 띄우기 함수 (경용씨 '가운데 빵!' UI 완벽 동기화)
-// =========================================================
-function showToast(message, type = "success") {
-    // 경용씨의 product_detail.jsp에 있는 toast 태그를 가져옵니다!
-    const toast = document.getElementById("toast");
 
+// ==========================================
+// 🍞 기타 유틸 (토스트, 날짜, 새로고침)
+// ==========================================
+function showToast(message, type = "success") {
+    const toast = document.getElementById("toast");
     if (toast) {
         toast.innerText = message;
-        toast.className = "toast";
-        toast.classList.add("show", type);
-
-        // 2초 뒤에 사라짐 (아까 무영님이 2초로 해달라고 하셨던 세팅!)
-        setTimeout(() => {
-            toast.classList.remove("show", type);
-        }, 1300);
-    } else {
-        alert(message);
-    }
+        toast.className = `toast show ${type}`;
+        setTimeout(() => toast.classList.remove("show"), 1300);
+    } else alert(message);
 }
-// ==========================================
-// 📅 9. 날짜 예쁘게 바꾸는 함수 (Gson 포맷 교정)
-// ==========================================
+
 function formatKoreanDate(dateStr) {
     if (!dateStr) return "";
-
-    // "4월 8, 2026" 같은 요상한 패턴을 찾아서 "2026년 4월 8일"로 변환
     const regex = /(\d+)\s*월\s+(\d+),\s+(\d+)/;
     const match = dateStr.match(regex);
-
-    if (match) {
-        // match[3] = 연도, match[1] = 월, match[2] = 일
-        return `${match[3]}년 ${match[1]}월 ${match[2]}일`;
-    }
-
-    // 만약 다른 형식이면 그냥 원래대로 출력 (에러 방지)
-    return dateStr;
+    return match ? `${match[3]}년 ${match[1]}월 ${match[2]}일` : dateStr;
 }
-// =========================================================
-// 🪄 10. 마법의 비동기 화면 갈아끼우기 (딸깍 방지용)
-// ==========================================
+
 function refreshReviewUI() {
-    // 1. 뒤에서 몰래 현재 주소로 서버에 한 번 더 다녀옵니다.
     fetch(window.location.href)
         .then(res => res.text())
         .then(html => {
-            // 2. 서버가 준 새 HTML을 자바스크립트가 읽을 수 있게 변환
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, 'text/html');
-
-            // 3. 새 HTML에서 '통계 헤더' 오려와서 내 화면에 덮어쓰기
-            const oldHeader = document.querySelector('.review-header');
-            const newHeader = doc.querySelector('.review-header');
-            if(oldHeader && newHeader) oldHeader.innerHTML = newHeader.innerHTML;
-
-            // 4. 새 HTML에서 '포토 갤러리' 오려와서 내 화면에 덮어쓰기 (숨김/보임 상태 포함)
-            const oldGallery = document.querySelector('.photo-gallery-container');
-            const newGallery = doc.querySelector('.photo-gallery-container');
-            if(oldGallery && newGallery) {
-                oldGallery.innerHTML = newGallery.innerHTML;
-                oldGallery.style.display = newGallery.style.display;
-            }
-
-            // 5. 텅 빈 화면(0개) / 풀세트 스위치 상태도 똑같이 복사
-            document.getElementById('empty-review-ui').style.display = doc.getElementById('empty-review-ui').style.display;
-            document.getElementById('full-review-ui').style.display = doc.getElementById('full-review-ui').style.display;
+            const doc = new DOMParser().parseFromString(html, 'text/html');
+            const selectors = ['.review-header', '.photo-gallery-container', '#empty-review-ui', '#full-review-ui'];
+            selectors.forEach(s => {
+                const oldEl = document.querySelector(s);
+                const newEl = doc.querySelector(s);
+                if(oldEl && newEl) {
+                    oldEl.innerHTML = newEl.innerHTML;
+                    if(s.includes('ui')) oldEl.style.display = newEl.style.display;
+                }
+            });
         });
 }

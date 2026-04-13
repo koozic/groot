@@ -1,5 +1,7 @@
 package com.groot.app.user;
 
+import com.groot.app.cart.CartUtil;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -37,6 +39,15 @@ public class UserLoginC extends HttpServlet {
             } else {
                 response.sendRedirect("hello-servlet");
             }
+            UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
+            if (loginUser != null) {
+                CartUtil.refreshCartCount(request.getSession(), loginUser.getUser_id());
+            }
+            // ✅ 관리자 여부 확인 후 분기
+            Boolean isAdmin = (Boolean) request.getSession().getAttribute("isAdmin");
+//            if (Boolean.TRUE.equals(isAdmin)) {
+            response.sendRedirect("hello-servlet");
+//            }
         } else {
             request.getRequestDispatcher("user/login.jsp").forward(request, response);
         }

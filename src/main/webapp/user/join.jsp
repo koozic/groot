@@ -48,8 +48,8 @@
             </div>
 
             <div class="login-img-box">
-                <img src="${pageContext.request.contextPath}/img/pill.png" alt="알약 이미지" class="login-pill-img">
-                <img src="${pageContext.request.contextPath}/img/bottle.png" alt="영양제 통 이미지" class="login-bottle-img">
+                <img src="${pageContext.request.contextPath}/userImg/pill.jfif" alt="알약 이미지" class="login-pill-img">
+                <img src="${pageContext.request.contextPath}/userImg/bottle.jfif" alt="영양제 통 이미지" class="login-bottle-img">
             </div>
         </div>
 
@@ -61,7 +61,7 @@
                     ${msg}
                 </div>
 
-                <form action="${pageContext.request.contextPath}/join" method="post" enctype="multipart/form-data">
+                <form action="${pageContext.request.contextPath}/join" method="post" enctype="multipart/form-data" onsubmit="return joinCheck()">
 
                     <div class="login-input-group">
                         <label for="user_id">아이디</label>
@@ -113,7 +113,12 @@
                                    style="width:60%; height:46px; border:1px solid #ddd; border-radius:8px; padding:0 10px;">
                         </div>
 
-                        <small id="emailAuthMsg"></small>
+                        <div class="input-group" style="margin-top: 10px;">
+                            <button type="button" id="verify_btn" onclick="checkEmailAuth()">인증완료</button>
+                        </div>
+
+                        <div id="emailAuthMsg" style="font-size: 13px; margin-top: 5px; min-height: 15px;"></div>
+
                         <input type="hidden" id="emailAuthPassed" value="false">
                     </div>
 
@@ -332,18 +337,16 @@
             return;
         }
 
-        fetch("email-auth-send?user_email=" + encodeURIComponent(emailInput.value.trim()))
+        fetch("${pageContext.request.contextPath}/user/email-auth-send?user_email=" + encodeURIComponent(emailInput.value.trim()))
             .then(res => res.json())
             .then(data => {
                 if (data.result === "success") {
-                    codeInput.value = data.authCode;   // 자동으로 인증번호 찍힘
                     msg.innerText = "인증번호가 전송되었습니다.";
                     msg.style.color = "green";
-                    passed.value = "true";   // 테스트용이니까 바로 true 처리
+                    msg.style.fontWeight = "bold";
                 } else {
                     msg.innerText = "인증번호 전송 실패";
                     msg.style.color = "red";
-                    passed.value = "false";
                 }
             })
             .catch(() => {
@@ -354,7 +357,53 @@
     }
 </script>
 
+<script>
+    function checkEmailAuth() {
+        const emailInput = document.getElementById("user_email");
+        const codeInput = document.getElementById("email_code");
+        const msg = document.getElementById("emailAuthMsg");
+        const passed = document.getElementById("emailAuthPassed");
 
+        if (!codeInput || codeInput.value.trim() === "") {
+            msg.innerText = "인증번호를 입력하세요.";
+            msg.style.color = "red";
+            return;
+        }
+
+        fetch("${pageContext.request.contextPath}/user/email-auth-verify?user_email=" + encodeURIComponent(emailInput.value.trim()) + "&auth_code=" + encodeURIComponent(codeInput.value.trim()))
+            .then(res => res.json())
+            .then(data => {
+                if (data.result === "success") {
+                    msg.innerText = "이메일 인증이 완료되었습니다.";
+                    msg.style.color = "green";
+                    msg.style.fontWeight = "bold";
+                    passed.value = "true";
+
+                    // 인증 완료 후 수정 못하게 막기
+                    emailInput.readOnly = true;
+                    codeInput.readOnly = true;
+                } else {
+                    msg.innerText = "인증번호가 일치하지 않습니다.";
+                    msg.style.color = "red";
+                    passed.value = "false";
+                }
+            })
+            .catch(() => {
+                msg.innerText = "오류가 발생했습니다.";
+                msg.style.color = "red";
+                passed.value = "false";
+            });
+    }
+
+    function joinCheck() {
+        const passed = document.getElementById("emailAuthPassed");
+        if (passed && passed.value !== "true") {
+            alert("이메일 인증을 완료해주세요.");
+            return false;
+        }
+        return true;
+    }
+</script>
 
 
 </body>
