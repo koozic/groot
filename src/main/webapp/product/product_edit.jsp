@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<link rel="stylesheet" href="css/product_edit.css">
 
 <form action="product-edit" method="post" enctype="multipart/form-data">
     <div class="app-container">
@@ -14,13 +15,9 @@
 
         <main class="content-wrapper">
             <section class="product-hero">
-                <div class="product-img-box" onclick="document.getElementById('productImage').click()"
-                     style="cursor: pointer;">
-                    <img src="${product.productImage}" class="product-img"
-                         id="previewImg">
-
-                    <input type="file" id="productImage" name="productImage" accept="image/*"
-                           style="display: none;" onchange="handleImagePreview(this)">
+                <div class="product-img-box" onclick="document.getElementById('productImage').click()" style="cursor: pointer;">
+                    <img src="${product.productImage}" class="product-img" id="previewImg">
+                    <input type="file" id="productImage" name="productImage" accept="image/*" style="display: none;" onchange="handleImagePreview(this)">
                 </div>
 
                 <div class="product-basic-info">
@@ -30,7 +27,6 @@
                     <h2 class="product-title"><input type="text" name="productName" value="${product.productName}"></h2>
                     <div class="detail-meta">
                         <p>영양소 식별 번호:
-
                             <select name="productNutrient">
                                 <c:forEach items="${nutrients}" var="n">
                                     <option value="${n.nutrientId}" ${n.nutrientId == product.productNutrient ? 'selected' : ''}>
@@ -38,15 +34,11 @@
                                     </option>
                                 </c:forEach>
                             </select>
-
                         </p>
-                        <p class="current-stock">
-                        </p>
+                        <p class="current-stock"></p>
                     </div>
                     <span>가격</span>
-                    <p class="product-price"><strong><input type="number" name="productPrice"
-                                                            value="${product.productPrice}">
-                    </strong>원</p>
+                    <p class="product-price"><strong><input type="number" name="productPrice" value="${product.productPrice}"></strong>원</p>
                 </div>
             </section>
 
@@ -55,14 +47,9 @@
             <section class="info-section">
                 <h3 class="section-title">복용 가이드</h3>
                 <ul class="guide-list">
-                    <li>총 용량 <span class="val"><input type="number" name="productTotal" value="${product.productTotal}"></span>정
-                    </li>
-                    <li>1회 섭취 <span class="val"><input type="number" name="productServe"
-                                                       value="${product.productServe}"></span>정
-                    </li>
-                    <li>1일 횟수 <span class="val"><input type="number"
-                                                       name="productPerDay" value="${product.productPerDay}"></span>회
-                    </li>
+                    <li>총 용량 <span class="val"><input type="number" name="productTotal" value="${product.productTotal}"></span>정</li>
+                    <li>1회 섭취 <span class="val"><input type="number" name="productServe" value="${product.productServe}"></span>정</li>
+                    <li>1일 횟수 <span class="val"><input type="number" name="productPerDay" value="${product.productPerDay}"></span>회</li>
                 </ul>
                 <div class="timing-box">
                     <strong>복용 시점:</strong>
@@ -80,15 +67,10 @@
             <hr class="divider">
 
             <section class="info-section">
-                <h3 class="section-title"><textarea name="productDescription" rows="10"
-                                                    cols="50">${product.productDescription}</textarea></h3>
-
-
+                <h3 class="section-title"><textarea name="productDescription" rows="10" cols="50">${product.productDescription}</textarea></h3>
             </section>
         </main>
     </div>
 </form>
 
-
-<%-- body 태그가 끝나기 직전에 삽입 --%>
 <script src="${pageContext.request.contextPath}/js/product.js?v=<%=System.currentTimeMillis()%>"></script>

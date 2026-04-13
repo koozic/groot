@@ -2,190 +2,106 @@ package com.groot.app.cart;
 
 import com.google.gson.Gson;
 import com.groot.app.user.UserDTO;
-import com.groot.app.user.UserDTO;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-/**
- * 관심제품(장바구니) Controller
- *
- * [GET]  /cart            → 장바구니 페이지 (로그인 필요)
- * [POST] /cart/add        → 담기 AJAX
- * [POST] /cart/remove     → 빼기 AJAX
- * [POST] /cart/toggle     → 찜 토글 AJAX (찜버튼용)
- * [GET]  /cart/list       → 내 목록 JSON 반환 AJAX
- */
-@WebServlet(urlPatterns = {"/cart", "/cart/add", "/cart/remove", "/cart/toggle", "/cart/list"})
+@WebServlet(urlPatterns = {"/cart","/cart/list","/cart/add","/cart/remove","/cart/toggle","/cart/merge"})
 public class FavoriteServlet extends HttpServlet {
-
     private final FavoriteService service = new FavoriteService();
     private final Gson gson = new Gson();
 
-    // ── GET 요청 ─────────────────────────────────
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
-
-        String uri = req.getRequestURI();
-
-        // /cart/list → JSON 반환
-        if (uri.endsWith("/cart/list")) {
-            handleList(req, resp);
-            return;
-        }
-
-        // /cart → 장바구니 페이지
-        // 비로그인이면 로그인 페이지로
-        HttpSession session  = req.getSession(false);
-        UserDTO loginUser = session != null ? (UserDTO) session.getAttribute("loginUser") : null;
-
-        if (loginUser == null) {
-            resp.sendRedirect("login");
-            return;
-        }
-
-        List<FavoriteVO> list = service.getMyFavorites(loginUser.getUser_id());
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        if (req.getRequestURI().endsWith("/cart/list")) { handleList(req, resp); return; }
+        UserDTO u = getLoginUser(req);
+        if (u == null) { resp.sendRedirect("user-Login"); return; }
+        List<FavoriteVO> list = service.getMyFavorites(u.getUser_id());
+        CartUtil.refreshCartCount(req.getSession(), u.getUser_id());
         req.setAttribute("favoriteList", list);
-        req.setAttribute("content",   "views/favorite/cartList.jsp");
+        req.setAttribute("content", "cart/cart.jsp");
         req.setAttribute("activeTab", "cart");
         req.getRequestDispatcher("index.jsp").forward(req, resp);
     }
 
-    // ── POST 요청 ────────────────────────────────
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
-
-        PrintWriter out = resp.getWriter();
-
-        // 로그인 확인
-        HttpSession session  = req.getSession(false);
-        UserDTO loginUser = session != null ? (UserDTO) session.getAttribute("loginUser") : null;
-
-        if (loginUser == null) {
-            out.print(gson.toJson(Map.of("success", false, "message", "로그인이 필요해요")));
-            return;
-        }
-
-        // 요청 body 파싱
-        Map<String, Object> body = parseBody(req);
-        String uri = req.getRequestURI();
-
-        try {
-            if (uri.endsWith("/cart/add")) {
-                handleAdd(loginUser.getUser_id(), body, out, req);
-
-            } else if (uri.endsWith("/cart/remove")) {
-                handleRemove(loginUser.getUser_id(), body, out, req);
-
-            } else if (uri.endsWith("/cart/toggle")) {
-                handleToggle(loginUser.getUser_id(), body, out, req);
-            }
-
-        } catch (Exception e) {
-            out.print(gson.toJson(Map.of("success", false, "message", "서버 오류")));
-            e.printStackTrace();
-        }
-    }
-
-    // ── 담기 ────────────────────────────────────
-    private void handleAdd(String userId, Map<String, Object> body, PrintWriter out, HttpServletRequest req) {
-        int productId = ((Number) body.get("productId")).intValue();
-
-        String result = service.addFavorite(userId, productId);
-        int    count  = service.getFavoriteCount(userId);
-
-        // 🌟 2. 추가: 세션의 장바구니 개수 최신화
-        req.getSession().setAttribute("cartCount", count);
-
-        Map<String, Object> res = new HashMap<>();
-        switch (result) {
-            case "added":
-                res.put("success", true);
-                res.put("message", "장바구니에 담았어요 🛒");
-                res.put("cartCount", count);
-                break;
-            case "already":
-                res.put("success", false);
-                res.put("message", "이미 담긴 제품이에요");
-                res.put("cartCount", count);
-                break;
-            default:
-                res.put("success", false);
-                res.put("message", "오류가 발생했어요");
-        }
-        out.print(gson.toJson(res));
-    }
-
-    // ── 빼기 ────────────────────────────────────
-    private void handleRemove(String userId, Map<String, Object> body, PrintWriter out, HttpServletRequest req) {
-        long favoriteId = ((Number) body.get("cartId")).longValue();
-
-        boolean ok    = service.removeFavorite(favoriteId, userId);
-        int     count = service.getFavoriteCount(userId);
-
-        // 🌟 추가: 세션의 장바구니 개수 최신화
-        req.getSession().setAttribute("cartCount", count);
-
-        Map<String, Object> res = new HashMap<>();
-        res.put("success",   ok);
-        res.put("cartCount", count);
-        res.put("message",   ok ? "삭제했어요" : "오류가 발생했어요");
-        out.print(gson.toJson(res));
-    }
-
-    // ── 찜 토글 ─────────────────────────────────
-    private void handleToggle(String userId, Map<String, Object> body, PrintWriter out, HttpServletRequest req) {
-        int    productId = ((Number) body.get("productId")).intValue();
-        String result    = service.toggleFavorite(userId, productId);
-        int    count     = service.getFavoriteCount(userId);
-
-        // 🌟 추가: 세션의 장바구니 개수 최신화
-        req.getSession().setAttribute("cartCount", count);
-
-        Map<String, Object> res = new HashMap<>();
-        res.put("success",   !result.equals("error"));
-        res.put("action",    result);   // "added" or "removed"
-        res.put("cartCount", count);
-        out.print(gson.toJson(res));
-    }
-
-    // ── 목록 JSON 반환 ───────────────────────────
-    private void handleList(HttpServletRequest req, HttpServletResponse resp)
-            throws IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json; charset=UTF-8");
         PrintWriter out = resp.getWriter();
+        String uri = req.getRequestURI();
+        if (uri.endsWith("/cart/merge")) { handleMerge(req, out); return; }
+        UserDTO u = getLoginUser(req);
+        if (u == null) { out.print(gson.toJson(Map.of("success",false,"message","로그인이 필요해요"))); return; }
+        Map<String,Object> body = parseBody(req);
+        try {
+            if      (uri.endsWith("/cart/add"))    handleAdd   (req, u.getUser_id(), body, out);
+            else if (uri.endsWith("/cart/remove")) handleRemove(req, u.getUser_id(), body, out);
+            else if (uri.endsWith("/cart/toggle")) handleToggle(req, u.getUser_id(), body, out);
+        } catch (Exception e) { out.print(gson.toJson(Map.of("success",false,"message","서버 오류"))); e.printStackTrace(); }
+    }
 
-        HttpSession session  = req.getSession(false);
-        UserDTO loginUser = session != null ? (UserDTO) session.getAttribute("loginUser") : null;
-
-        if (loginUser == null) {
-            out.print(gson.toJson(Map.of("success", false, "message", "로그인 필요")));
-            return;
+    private void handleAdd(HttpServletRequest req, String userId, Map<String,Object> body, PrintWriter out) {
+        int productId = ((Number) body.get("productId")).intValue();
+        String result = service.addFavorite(userId, productId);
+        CartUtil.refreshCartCount(req.getSession(), userId);
+        int count = service.getFavoriteCount(userId);
+        Map<String,Object> res = new HashMap<>();
+        res.put("cartCount", count);
+        switch(result) {
+            case "added":   res.put("success",true);  res.put("message","장바구니에 담았어요 🛒"); break;
+            case "already": res.put("success",false); res.put("message","이미 담긴 제품이에요"); break;
+            default:        res.put("success",false); res.put("message","오류가 발생했어요");
         }
-
-        List<FavoriteVO> list = service.getMyFavorites(loginUser.getUser_id());
-
-        Map<String, Object> res = new HashMap<>();
-        res.put("success", true);
-        res.put("list",    list);
-        res.put("count",   list.size());
         out.print(gson.toJson(res));
     }
 
-    // ── 요청 body JSON 파싱 ──────────────────────
-    private Map<String, Object> parseBody(HttpServletRequest req) throws IOException {
+    private void handleRemove(HttpServletRequest req, String userId, Map<String,Object> body, PrintWriter out) {
+        long favoriteId = ((Number) body.get("cartId")).longValue();
+        boolean ok = service.removeFavorite(favoriteId, userId);
+        CartUtil.refreshCartCount(req.getSession(), userId);
+        int count = service.getFavoriteCount(userId);
+        out.print(gson.toJson(Map.of("success",ok,"cartCount",count,"message",ok?"삭제했어요":"오류")));
+    }
+
+    private void handleToggle(HttpServletRequest req, String userId, Map<String,Object> body, PrintWriter out) {
+        int productId = ((Number) body.get("productId")).intValue();
+        String result = service.toggleFavorite(userId, productId);
+        CartUtil.refreshCartCount(req.getSession(), userId);
+        int count = service.getFavoriteCount(userId);
+        out.print(gson.toJson(Map.of("success",!result.equals("error"),"action",result,"cartCount",count)));
+    }
+
+    private void handleList(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        resp.setContentType("application/json; charset=UTF-8");
+        PrintWriter out = resp.getWriter();
+        UserDTO u = getLoginUser(req);
+        if (u == null) { out.print(gson.toJson(Map.of("success",false))); return; }
+        List<FavoriteVO> list = service.getMyFavorites(u.getUser_id());
+        out.print(gson.toJson(Map.of("success",true,"list",list,"count",list.size())));
+    }
+
+    private void handleMerge(HttpServletRequest req, PrintWriter out) {
+        UserDTO u = getLoginUser(req);
+        if (u == null) { out.print(gson.toJson(Map.of("success",false))); return; }
+        Map<String,Object> body = parseBody(req);
+        String localJson = (String) body.get("localCart");
+        CartUtil.mergeLocalCart(req.getSession(), localJson, u.getUser_id());
+        int count = service.getFavoriteCount(u.getUser_id());
+        out.print(gson.toJson(Map.of("success",true,"cartCount",count,"message","장바구니가 합쳐졌어요 🛒")));
+    }
+
+    private UserDTO getLoginUser(HttpServletRequest req) {
+        HttpSession s = req.getSession(false);
+        return s != null ? (UserDTO) s.getAttribute("loginUser") : null;
+    }
+
+    private Map<String,Object> parseBody(HttpServletRequest req) {
         StringBuilder sb = new StringBuilder();
-        String line;
-        try (BufferedReader br = req.getReader()) {
-            while ((line = br.readLine()) != null) sb.append(line);
-        }
-        return gson.fromJson(sb.toString(), Map.class);
+        try (BufferedReader br = req.getReader()) { String l; while((l=br.readLine())!=null) sb.append(l); }
+        catch (IOException e) { e.printStackTrace(); }
+        try { return gson.fromJson(sb.toString(), Map.class); }
+        catch (Exception e) { return new HashMap<>(); }
     }
 }
