@@ -31,6 +31,7 @@ public class UserJoinC extends HttpServlet {
 
         // 우리가 보낸 파일을 url형태로 바꿔줌.
         String imgUrl = com.groot.app.common.CloudinaryUtil.uploadFromRequest(req, "user_profile", "user");
+        System.out.println("[UserJoinC] imgUrl=" + imgUrl);
 //url 주소를 가져오는 행위
 
         if (imgUrl != null) { //널이 아니면 파일을 입력했다 > 그러면 싫어주겠다
