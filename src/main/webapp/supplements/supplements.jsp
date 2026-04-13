@@ -127,25 +127,25 @@
             location.href = 'updateSupplement?id=' + id;
         }
     }
-</script>
 
-<script>
-// 마이페이지에서 넘어왔을 때 자동으로 모달 열기
-window.onload = function() {
-// 주소창에서 ?openId= 번호 가져오기
-const urlParams = new URLSearchParams(window.location.search);
-const openId = urlParams.get('openId');
+    // =========================================================
+    // 💡 [여기 추가!] 마이페이지에서 넘어왔을 때 자동으로 모달 열기
+    // =========================================================
+    window.onload = function() {
+        // 주소창에서 ?openId= 번호 가져오기 (예: supplements?openId=3)
+        const urlParams = new URLSearchParams(window.location.search);
+        const openId = urlParams.get('openId');
 
-if (openId) {
-// openId와 일치하는 data-id를 가진 div(이미지 영역)를 찾음
-const targetDiv = document.querySelector(`.supp-img[data-id="${openId}"]`);
+        if (openId) {
+            // openId와 일치하는 data-id를 가진 div(이미지 영역)를 찾음
+            const targetDiv = document.querySelector(`.supp-img[data-id="${openId}"]`);
 
-if (targetDiv) {
-// 찾았다면 마치 사용자가 클릭한 것처럼 이벤트를 발생시킴!
-targetDiv.click();
-}
-}
-};
+            if (targetDiv) {
+                // 찾았다면 마치 사용자가 직접 사진을 클릭한 것처럼 이벤트를 발생시켜 모달을 엶!
+                targetDiv.click();
+            }
+        }
+    };
 </script>
 
 <script src="js/supplements.js"></script>

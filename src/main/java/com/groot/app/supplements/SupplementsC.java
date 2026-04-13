@@ -55,6 +55,7 @@ public class SupplementsC extends HttpServlet {
         SDAO.paging(p, request, allList);
 
         request.setAttribute("activeTab", "nutrition");
+
         request.setAttribute("content", "supplements/supplements.jsp");
         request.getRequestDispatcher("/index.jsp").forward(request, response);
     }
