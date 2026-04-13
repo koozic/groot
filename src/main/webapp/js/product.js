@@ -86,6 +86,9 @@ function renderProducts(products) {
 
     let htmlString = "";
     products.forEach((p, index) => {
+        const safeName = String(p.productName || '').replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+        const safeBrand = String(p.productBrand || '').replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+        const nutrientName = p.nutrientName || (window.NUTRIENT_MAP && window.NUTRIENT_MAP[String(p.productNutrient)]) || '';
         // 기존 동기식 삭제 모달을 띄우는 confirmlocation.href = 'product-del?id=${deleteTargetId}';함수 호출
         const deleteBtnHtml = isAdmin ?
             `<button class="btn-delete" onclick="event.stopPropagation(); confirmDelete('${p.productId}')">&times;</button>` : '';
@@ -102,9 +105,16 @@ function renderProducts(products) {
                 <div class="product-info">
                     <div class="product-name">${p.productName}</div>
                     <div class="product-brand">${p.productBrand}</div>
-                    <div class="product-nutrient">${p.nutrientName || ''}</div>
+                    <div class="product-nutrient">${nutrientName}</div>
                     <div class="product-price">${p.productPrice}원</div>
                     <div class="product-date">${p.productStartDate}</div>
+                    <button class="btn-wish" data-product-id="${p.productId}"
+                            onclick="event.stopPropagation(); toggleWish(this, ${p.productId})">🤍
+                    </button>
+                    <button class="btn-cart"
+                            onclick="event.stopPropagation(); addCart(${p.productId}, '${safeName}', '${safeBrand}')">
+                        🛒 담기
+                    </button>
                 </div>
             </div>
         `;
