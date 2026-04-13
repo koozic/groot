@@ -32,6 +32,7 @@ public class ProductC extends HttpServlet {
     }
 
 
+    
     public void destroy() {
     }
 }
