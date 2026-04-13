@@ -30,28 +30,23 @@ public class UserLoginC extends HttpServlet {
         boolean isSuccess = UserDAO.Login(request);
 
         if (isSuccess) {
-            // redirect 파라미터가 있으면 그쪽으로, 없으면 기본 홈으로
+            UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
+            if (loginUser != null) {
+                CartUtil.refreshCartCount(request.getSession(), loginUser.getUser_id());
+            }
+
             String redirect = request.getParameter("redirect");
             if (redirect != null && !redirect.trim().isEmpty()
-                    && !redirect.contains("//")      // 오픈 리다이렉트 방지
+                    && !redirect.contains("//")
                     && !redirect.startsWith("http")) {
                 response.sendRedirect(redirect);
             } else {
                 response.sendRedirect("hello-servlet");
             }
-            UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
-            if (loginUser != null) {
-                CartUtil.refreshCartCount(request.getSession(), loginUser.getUser_id());
-            }
-            // ✅ 관리자 여부 확인 후 분기
-            Boolean isAdmin = (Boolean) request.getSession().getAttribute("isAdmin");
-//            if (Boolean.TRUE.equals(isAdmin)) {
-            response.sendRedirect("hello-servlet");
-//            }
+
         } else {
             request.getRequestDispatcher("user/login.jsp").forward(request, response);
         }
-
     }
 
 
