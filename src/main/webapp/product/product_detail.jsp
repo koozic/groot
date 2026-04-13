@@ -52,6 +52,8 @@
 <div id="toast" class="toast"></div>
 
 <div class="review-section-wrapper" style="max-width: 800px; margin: 40px auto; padding: 0 20px;">
+<%--    여기에 이 파일을 끼워 넣어라 그때 사용하는 게 <jsp:param>입니다. 이건 일종의 **포스트잇(메모)**이에요.name="PRODUCT_ID": "이 메모의 제목은 PRODUCT_ID야." value="${product.productId}": "메모의 내용은 현재 보고 있는 제품의 번호(ID)야." 즉, 전체 코드를 해석하면 이렇습니다.
+"여기다 리뷰 블록(review.jsp)을 조립해 줘. 아! 그리고 조립할 때 '이건 106번 제품 리뷰용이야'라고 메모(PRODUCT_ID)해서 전달해 줘!"--%>
     <jsp:include page="../review/review.jsp">
         <jsp:param name="PRODUCT_ID" value="${product.productId}"/>
     </jsp:include>

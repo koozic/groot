@@ -172,7 +172,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const swiper = new Swiper('.best-review-swiper', {
-            slidesPerView: 1,      // 한 화면에 4개 딱 맞게
+            slidesPerView: 4,      // 한 화면에 4개 딱 맞게
             spaceBetween: 20,      // 카드 사이 여백
             loop: false,            // 무한 롤링
             autoplay: {
