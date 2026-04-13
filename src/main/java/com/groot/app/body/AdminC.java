@@ -1,8 +1,6 @@
 package com.groot.app.body;
 
 import com.google.gson.Gson;
-import com.groot.app.body.BodyDTO;
-
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,17 +9,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 
 /**
  * 관리자 서블릿
  * <p>
- * GET  /admin            → 관리자 메인 페이지 (영양소 목록)
- * GET  /admin?action=form&suppId=1  → 수정 폼 (suppId 없으면 신규 등록 폼)
- * POST /admin?action=insert  → 영양소 등록
- * POST /admin?action=update  → 영양소 수정
- * POST /admin?action=delete  → 영양소 삭제
+ * GET  /admin               → 관리자 메인 페이지 (영양소 목록, 정렬 지원)
+ * GET  /admin?action=form   → 신규 등록 폼
+ * GET  /admin?action=form&suppId=1 → 수정 폼
+ * POST /admin?action=insert → 영양소 등록
+ * POST /admin?action=update → 영양소 수정
+ * POST /admin?action=delete → 영양소 삭제
  */
 @WebServlet(name = "AdminC", value = "/admin")
 public class AdminC extends HttpServlet {
@@ -29,18 +27,14 @@ public class AdminC extends HttpServlet {
     private final AdminDAO dao = new AdminDAO();
     private final Gson gson = new Gson();
 
-
-    // ✅ 수정: admin 테이블 기준으로 세션 키 변경
+    /**
+     * 관리자 세션 검증
+     */
     private boolean isAdmin(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session == null) return false;
-
-        // UserDAO에서 관리자 로그인 시 setAttribute("isAdmin", true) 로 저장했으므로
-        // 그 값만 꺼내서 확인
-        Boolean isAdmin = (Boolean) session.getAttribute("isAdmin");
-        return Boolean.TRUE.equals(isAdmin);
+        return Boolean.TRUE.equals(session.getAttribute("isAdmin"));
     }
-
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -54,13 +48,22 @@ public class AdminC extends HttpServlet {
 
         String action = request.getParameter("action");
 
-        // action 없음 → 관리자 메인 (영양소 전체 목록)
+        // ── action 없음 → 관리자 메인 (영양소 전체 목록) ──
         if (action == null || action.isEmpty()) {
             try {
-                List<BodyDTO> list = dao.getAllSupplements();
+                // 정렬 파라미터 (없으면 기본값 "id_desc")
+                String sortBy = request.getParameter("sortBy");
+                if (sortBy == null || sortBy.isEmpty()) sortBy = "id_desc";
+
+                List<BodyDTO> list = dao.getAllSupplements(sortBy);
+
                 request.setAttribute("suppList", list);
-                request.getRequestDispatcher("body/admin_main.jsp")
-                        .forward(request, response);
+                request.setAttribute("sortBy", sortBy);   // JSP 셀렉트 selected 표시용
+                request.setAttribute("activeTab", "admin");
+                request.setAttribute("content", "body/admin_main.jsp");
+
+                request.getRequestDispatcher("index.jsp").forward(request, response);
+
             } catch (Exception e) {
                 e.printStackTrace();
                 response.sendError(500, "목록 조회 실패: " + e.getMessage());
@@ -68,7 +71,7 @@ public class AdminC extends HttpServlet {
             return;
         }
 
-        // action=form → 등록 or 수정 폼
+        // ── action=form → 등록 or 수정 폼 ──
         if ("form".equals(action)) {
             String suppIdParam = request.getParameter("suppId");
             try {
@@ -76,11 +79,15 @@ public class AdminC extends HttpServlet {
                     // 수정: 기존 데이터 불러오기
                     int suppId = Integer.parseInt(suppIdParam);
                     BodyDTO dto = dao.getSupplementById(suppId);
-                    request.setAttribute("supp", dto);   // 폼에서 ${supp.xxx} 로 사용
+                    request.setAttribute("supp", dto);  // 폼에서 ${supp.xxx} 로 사용
                 }
                 // 등록: supp=null → 폼에서 빈 칸으로 표시됨
-                request.getRequestDispatcher("body/admin_form.jsp")
-                        .forward(request, response);
+
+                request.setAttribute("activeTab", "admin");
+                request.setAttribute("content", "body/admin_form.jsp");
+
+                request.getRequestDispatcher("index.jsp").forward(request, response);
+
             } catch (Exception e) {
                 e.printStackTrace();
                 response.sendError(500, "폼 조회 실패: " + e.getMessage());
@@ -107,18 +114,15 @@ public class AdminC extends HttpServlet {
                 // ── 영양소 등록 ──
                 case "insert": {
                     BodyDTO dto = buildDtoFromRequest(request);
-                    dao.insertSupplement(dto); // 여기서 시퀀스로 생성된 ID가 dto에 세팅됨
+                    dao.insertSupplement(dto);
 
-                    // 등록 후 어떤 body에 연결할지 처리
                     String bodyIdParam = request.getParameter("bodyId");
-                    // bodyId가 '선택 안함'("")이 아닐 때만 연결
                     if (bodyIdParam != null && !bodyIdParam.isEmpty()) {
-                        int bodyId = Integer.parseInt(bodyIdParam);
-                        // 방금 등록한 supplement의 ID를 DAO에서 시퀀스로 가져와 연결
-                        dao.linkBodySupplement(bodyId, dto.getSupplementId());
+                        dao.linkBodySupplement(
+                                Integer.parseInt(bodyIdParam), dto.getSupplementId()
+                        );
                     }
-
-                    response.sendRedirect("admin"); // 목록으로 이동
+                    response.sendRedirect("admin");
                     break;
                 }
 
@@ -134,24 +138,16 @@ public class AdminC extends HttpServlet {
                 // ── 영양소 삭제 ──
                 case "delete": {
                     String suppIdStr = request.getParameter("suppId");
-
-                    // ✅ 방어 로직 추가: 값이 없으면 에러 처리 후 메서드 종료
                     if (suppIdStr == null || suppIdStr.isEmpty()) {
-                        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "삭제할 영양소 ID가 없습니다.");
+                        response.sendError(
+                                HttpServletResponse.SC_BAD_REQUEST, "삭제할 영양소 ID가 없습니다."
+                        );
                         return;
                     }
-
                     int suppId = Integer.parseInt(suppIdStr);
-
-                    // 연결 테이블 먼저 삭제 (FK 제약 때문에)
                     dao.deleteBodySupplementLinks(suppId);
-                    // 좋아요도 삭제
                     dao.deleteSupplementLikes(suppId);
-                    // 영양소 본체 삭제
                     dao.deleteSupplement(suppId);
-
-                    // 삭제 후 원래 있던 곳으로 돌아가기 위해 referer(이전 페이지)를 확인하거나
-                    // 추천 화면 주소로 직접 보냅니다.
                     response.sendRedirect("admin");
                     break;
                 }
@@ -166,7 +162,9 @@ public class AdminC extends HttpServlet {
         }
     }
 
-    // 폼 파라미터 → BodyDTO 변환 공통 메서드
+    /**
+     * 폼 파라미터 → BodyDTO 변환 공통 메서드
+     */
     private BodyDTO buildDtoFromRequest(HttpServletRequest request) {
         BodyDTO dto = new BodyDTO();
         dto.setSupplementName(request.getParameter("supplementName"));
@@ -178,4 +176,3 @@ public class AdminC extends HttpServlet {
         return dto;
     }
 }
-

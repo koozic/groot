@@ -1,13 +1,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
-<link rel="stylesheet" href="css/product_detail.css">
-
 <div class="app-container">
     <header class="app-header">
-        <button class="back-btn" onclick="history.back()">이전</button>
+        <button class="back-btn" onclick="location.href='product'">이전</button>
         <h1 class="header-title">제품 정보</h1>
-        <button class="back-btn" onclick="location.href='product-edit?id=${product.productId}'">수정</button>
+        <c:if test="${sessionScope.isAdmin == true}">
+            <button class="back-btn" onclick="location.href='product-edit?id=${product.productId}'">수정</button>
+        </c:if>
     </header>
 
     <main class="content-wrapper">
@@ -53,7 +53,7 @@
 
 <div class="review-section-wrapper" style="max-width: 800px; margin: 40px auto; padding: 0 20px;">
     <jsp:include page="../review/review.jsp">
-        <jsp:param name="PRODUCT_ID" value="${product.productId}" />
+        <jsp:param name="PRODUCT_ID" value="${product.productId}"/>
     </jsp:include>
 </div>
 

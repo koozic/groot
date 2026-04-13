@@ -25,9 +25,9 @@ public class ProductC extends HttpServlet {
     // 경용님 코드병경
         ArrayList<NutrientDTO> nutrients = ProductDAO.PDAO.getAllNutrients(request);
         request.setAttribute("nutrients", nutrients);
-        request.setAttribute("content","product/product.jsp");
+        request.setAttribute("content", "product/product.jsp");
+        request.setAttribute("activeTab", "product");
         request.getRequestDispatcher("index.jsp").forward(request, response);
-        //
 
     }
 
