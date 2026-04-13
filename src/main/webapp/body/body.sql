@@ -223,6 +223,141 @@ FROM body_supplement;
 DELETE
 FROM body;
 
+-- 1. supplements 테이블에 데이터 있는지 확인
+SELECT supplement_id, supplement_name
+FROM supplements
+ORDER BY supplement_id;
+
+-- 2. body_supplement 연결 데이터 있는지 확인
+SELECT *
+FROM body_supplement;
+
+-- 3. 연결이 제대로 됐는지 JOIN 확인
+SELECT b.body_id, b.body_name, s.supplement_id, s.supplement_name
+FROM body_supplement bs
+         JOIN body b ON bs.body_id = b.body_id
+         JOIN supplements s ON bs.supplement_id = s.supplement_id
+ORDER BY b.body_id;
+
+-- =============================================
+-- body_supplement 연결 데이터
+-- body_id 기준: 1=hair, 2=skin, 3=eye, 4=brain,
+--              5=lung, 6=heart, 7=liver, 8=stomach,
+--              9=intestine, 10=bone, 11=muscle
+-- =============================================
+
+-- 1. hair (머리카락) — 비오틴B7=7, 아연=13, 철분=15
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (1, 7);
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (1, 13);
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (1, 15);
+
+-- 2. skin (피부) — 비타민C=9, 비타민E=11, 히알루론산=28
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (2, 9);
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (2, 11);
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (2, 28);
+
+-- 3. eye (눈) — 루테인지아잔틴=27, 비타민A=1, 오메가3=25, 아연=13
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (3, 27);
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (3, 1);
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (3, 25);
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (3, 13);
+
+-- 4. brain (뇌) — 오메가3=25, 콜린=26, 비타민B6=6, 마그네슘=14
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (4, 25);
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (4, 26);
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (4, 6);
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (4, 14);
+
+-- 5. lung (폐) — 비타민C=9, NAC=38, 퀘르세틴=39, 오메가3=25
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (5, 9);
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (5, 38);
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (5, 39);
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (5, 25);
+
+-- 6. heart (심장) — 오메가3=25, 코엔자임Q10=17, 마그네슘=14, 식이섬유=35
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (6, 25);
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (6, 17);
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (6, 14);
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (6, 35);
+
+-- 7. liver (간) — 밀크씨슬=37, 비타민B2=3, 비타민B6=6, NAC=38
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (7, 37);
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (7, 3);
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (7, 6);
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (7, 38);
+
+-- 8. stomach (위) — 글루타민=36, 프로바이오틱스=33, 아연=13
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (8, 36);
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (8, 33);
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (8, 13);
+
+-- 9. intestine (장) — 프로바이오틱스=33, 프리바이오틱스=34, 식이섬유=35, 글루타민=36
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (9, 33);
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (9, 34);
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (9, 35);
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (9, 36);
+
+-- 10. bone (뼈) — 칼슘=16, 비타민D=10, MSM=29, 글루코사민콘드로이틴=30
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (10, 16);
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (10, 10);
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (10, 29);
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (10, 30);
+
+-- 11. muscle (근육) — 크레아틴=31, 마그네슘=14, 칼륨=32
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (11, 31);
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (11, 14);
+INSERT INTO body_supplement (body_id, supplement_id)
+VALUES (11, 32);
+
+COMMIT;
+
+-- =============================================
+-- 확인 쿼리
+-- =============================================
+SELECT b.body_id, b.body_name, s.supplement_id, s.supplement_name
+FROM body_supplement bs
+         JOIN body b ON bs.body_id = b.body_id
+         JOIN supplements s ON bs.supplement_id = s.supplement_id
+ORDER BY b.body_id, s.supplement_id;
 
 
 

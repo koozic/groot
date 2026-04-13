@@ -1,32 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Groot - 신체별 영양소 추천</title>
-    <link rel="stylesheet" href="css/body.css">
-</head>
-<body>
 
-<%-- 로그인 세션 정보를 JS로 전달 --%>
-<script>
-    // 1. loginUser 객체가 세션에 있으면 로그인된 상태입니다.
-    window.IS_LOGIN = ${sessionScope.loginUser != null ? "true" : "false"};
-
-    // 2. loginUser 객체 안에 있는 user_id를 가져옵니다.
-    // 관리자든 일반유저든 UserDAO에서 loginUser에 담아주므로 공통으로 쓸 수 있습니다.
-    window.LOGIN_USER_ID = "${sessionScope.loginUser != null ? sessionScope.loginUser.user_id : ''}";
-
-    // 3. 관리자 여부 (필요할 경우 사용)
-    window.IS_ADMIN = ${sessionScope.isAdmin == true ? "true" : "false"};
-
-    console.log("--- [Groot 세션 체크] ---");
-    // console.log("로그인 여부:", window.IS_LOGIN);
-    // console.log("사용자 아이디:", window.LOGIN_USER_ID);
-    // console.log("관리자 여부:", window.IS_ADMIN);
-</script>
 
 <div class="wrap">
     <div class="layout">
@@ -119,23 +93,18 @@
             <div class="panel">
                 <div class="panel-top">
                     <span class="panel-title" id="panel-title">부위를 선택하세요</span>
-                    <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                    <div class="panel-btn-group">   <%-- style 인라인 제거, 클래스로 교체 --%>
                         <div class="sort-bar">
                             <button class="sort-btn" onclick="setSort('view',this)">조회순</button>
                             <button class="sort-btn" onclick="setSort('like',this)">인기순</button>
                         </div>
-                        <%-- 관리자 세션일 때만 표시 --%>
                         <c:if test="${sessionScope.isAdmin == true}">
                             <button id="adminToggleBtn" onclick="toggleAdminMode()"
-                                    style="padding:6px 14px; background:#FF9800; color:white;
-                           border:none; border-radius:6px; cursor:pointer;
-                           font-size:0.82em; font-weight:600; transition:background 0.2s;">
+                                    class="admin-toggle-btn">
                                 🛠️ 관리 모드
                             </button>
                             <button id="adminAddBtn" onclick="openAdminModal('insert')"
-                                    style="display:none; padding:6px 14px; background:#4CAF50; color:white;
-                           border:none; border-radius:6px; cursor:pointer;
-                           font-size:0.82em; font-weight:600;">
+                                    class="admin-add-btn" style="display:none;">
                                 + 영양소 추가
                             </button>
                         </c:if>
@@ -277,5 +246,3 @@
             <%-- /modal box --%>
     </div><%-- /overlay --%>
 </c:if>
-</body>
-</html>

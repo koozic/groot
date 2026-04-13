@@ -1,66 +1,62 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
-<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<html>
-<head>
-    <title>${empty supp ? '영양소 등록' : '영양소 수정'}</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            padding: 30px;
-            max-width: 600px;
-        }
 
-        .form-group {
-            margin-bottom: 15px;
-        }
+<style>
+    body {
+        font-family: sans-serif;
+        padding: 30px;
+        max-width: 600px;
+    }
 
-        label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
+    .form-group {
+        margin-bottom: 15px;
+    }
 
-        input, textarea, select {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
+    label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
 
-        textarea {
-            height: 80px;
-            resize: vertical;
-        }
+    input, textarea, select {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
 
-        .btn-submit {
-            background: #4CAF50;
-            color: white;
-            padding: 10px 30px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-        }
+    textarea {
+        height: 80px;
+        resize: vertical;
+    }
 
-        .btn-cancel {
-            background: #9e9e9e;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-    </style>
-</head>
-<body>
+    .btn-submit {
+        background: #4CAF50;
+        color: white;
+        padding: 10px 30px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1em;
+    }
+
+    .btn-cancel {
+        background: #9e9e9e;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-left: 10px;
+    }
+</style>
+
 
 <%-- supp가 null이면 등록, 있으면 수정 --%>
 <h2>${empty supp ? '➕ 영양소 등록' : '✏️ 영양소 수정'}</h2>
 
-<form action="admin" method="post">
+<form action="admin/api" method="post">
     <%-- action 구분 --%>
     <input type="hidden" name="action"
            value="${empty supp ? 'insert' : 'update'}">
@@ -140,5 +136,3 @@
     </button>
 </form>
 
-</body>
-</html>

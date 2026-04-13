@@ -157,7 +157,7 @@ function showLoginModal() {
           좋아요 기능은 로그인 후 이용 가능합니다.
         </p>
         <div style="display:flex; gap:8px; justify-content:center;">
-          <button onclick="location.href='user-Login'"
+          <button onclick="location.href='user-Login?redirect=' + encodeURIComponent(location.pathname + location.search)"
             style="padding:9px 20px; background:#3B82F6; color:#fff;
                    border:none; border-radius:8px; cursor:pointer; font-size:13px; font-weight:600;">
             로그인하기
@@ -193,7 +193,11 @@ function collectAll() {
     // 2. 체크박스 및 SVG UI 갱신
     syncCheckboxUI();
 
-    // bodyId 있는 모든 부위 fetch
+    // ALL 버튼 파란색으로 — 초기화 버튼은 원래대로
+    document.querySelectorAll('.cb-btn').forEach(b => b.classList.remove('on'));
+    const allBtn = document.querySelector('.cb-btn.primary');
+    if (allBtn) allBtn.classList.add('on');
+
     const missing = Object.keys(PARTS).filter(p => !suppCache[p] && PARTS[p].body_id);
     if (missing.length === 0) {
         renderList();
@@ -208,6 +212,11 @@ function resetAll() {
     allMode = false;
     page = 1;
     syncCheckboxUI();
+
+    // ALL 버튼 파란색 제거
+    const allBtn = document.querySelector('.cb-btn.primary');
+    if (allBtn) allBtn.classList.remove('on');
+
     renderList();
 }
 
