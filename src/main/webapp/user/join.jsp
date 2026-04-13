@@ -148,7 +148,7 @@
                         <!-- 기본 프로필 6개 중 선택 -->
                         <div>
                             <label>
-                                <input type="radio" name="default_profile" value="Ayanokoji.jfif" checked>
+                                <input type="radio" name="default_profile" value="Ayanokoji.jfif" >
                                 <img src="${pageContext.request.contextPath}/user/userImg/Ayanokoji.jfif" width="80">
                             </label>
 
