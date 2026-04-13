@@ -14,7 +14,7 @@
         window.IS_ADMIN = ${sessionScope.isAdmin == true};
         window.LOGIN_USER_ID = "${not empty sessionScope.loginUser ? sessionScope.loginUser.user_id : ''}";
     </script>
-    <script src="js/app.js"></script>
+    <script src="${pageContext.request.contextPath}/js/app.js?v=<%=System.currentTimeMillis()%>"></script>
     <link rel="stylesheet" href="css/app.css">
     <link rel="stylesheet" href="css/recommend.css">
     <link rel="stylesheet" href="css/home.css">
@@ -174,47 +174,6 @@
     </c:choose>
 </nav>
 
-<!-- =============================================
-     7. JavaScript
-     ============================================= -->
-<script>
-    // 장바구니 토글
-    function toggleCart() {
-        const panel = document.getElementById('cartPanel');
-        const floatBtn = document.getElementById('floatCart');
-        const body = document.getElementById('siteBody');
-        const isOpen = panel.classList.toggle('open');
-        floatBtn.classList.toggle('open', isOpen);
-        // 모바일에서는 본문 안 밀림
-        if (window.innerWidth > 768) {
-            body.classList.toggle('shifted', isOpen);
-        }
-    }
-
-    // 장바구니 삭제 (AJAX)
-    function removeCart(cartId) {
-        fetch('cart/remove?id=' + cartId, {method: 'POST'})
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) location.reload();
-            });
-    }
-
-    // 패널 바깥 클릭시 닫기
-    document.addEventListener('click', function (e) {
-        const panel = document.getElementById('cartPanel');
-        const floatBtn = document.getElementById('floatCart');
-        const navCart = document.querySelector('.nav-cart');
-        if (panel.classList.contains('open') &&
-            !panel.contains(e.target) &&
-            !floatBtn.contains(e.target) &&
-            !navCart.contains(e.target)) {
-            panel.classList.remove('open');
-            floatBtn.classList.remove('open');
-            document.getElementById('siteBody').classList.remove('shifted');
-        }
-    });
-</script>
 <%--body.js는 body.jsp가 include된 경우에만, body 태그 닫히기 직전에 로드--%>
 <c:if test="${content == 'body/body.jsp'}">
     <script src="js/body.js"></script>
