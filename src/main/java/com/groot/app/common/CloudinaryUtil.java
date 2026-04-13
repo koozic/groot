@@ -27,6 +27,10 @@ public class CloudinaryUtil {
         byte[] fileBytes = filePart.getInputStream().readAllBytes();
 
         Cloudinary cloudinary = CloudinaryUtil.getCloudinary(); //얘가 회사랑 연결
+        if (cloudinary == null) {
+            System.out.println("[CloudinaryUtil] cloudinary is null - config not initialized");
+            return null;
+        }
 
 
         // folderName에 들어온 값("user", "product" 등)으로 폴더가 결정됨!
@@ -37,8 +41,12 @@ public class CloudinaryUtil {
                 "folder", folderName
         ));
 
-        // 업로드된 이미지의 '인터넷 주소(URL)'만 리턴
-        return (String) uploadResult.get("url"); //url = String
+        // secure_url 우선 사용, 없으면 url 사용
+        String secureUrl = (String) uploadResult.get("secure_url");
+        String url = (String) uploadResult.get("url");
+        String finalUrl = (secureUrl != null && !secureUrl.isEmpty()) ? secureUrl : url;
+        System.out.println("[CloudinaryUtil] upload success: " + finalUrl);
+        return finalUrl;
     }
 
     // 2. 🚀 [새로 추가] 서블릿 코드를 단 한 줄로 만들어주는 마법의 메서드
@@ -46,6 +54,9 @@ public class CloudinaryUtil {
         try {
             // request에서 파일을 꺼내서
             Part filePart = req.getPart(partName);
+            System.out.println("[CloudinaryUtil] partName=" + partName
+                    + ", submittedFileName=" + (filePart != null ? filePart.getSubmittedFileName() : "null")
+                    + ", size=" + (filePart != null ? filePart.getSize() : -1));
             // 위에 있는 uploadFile을 실행해서 URL을 바로 받아옴!
 
             return uploadFile(filePart, folderName);
