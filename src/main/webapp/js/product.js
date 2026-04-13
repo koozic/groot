@@ -12,6 +12,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 2. 동기식 처리에 따른 토스트 알림 로직 (기존 코드 유지)
     const urlParams = new URLSearchParams(window.location.search);
+    // new URLSearchParams(window.location.searc 웹 페이지가 이동할 때 주소 뒤에 ?key=value 형태로 붙는 데이터를 읽을 때 사용합니다.
+
     const toast = document.getElementById("toast");
 
     if (toast) {
@@ -67,6 +69,7 @@ async function loadProductList(nutrientId) {
     const url = nutrientId ? `product?cmd=list&nutrientId=${nutrientId}` : `product?cmd=list`;
 
     try {
+        // 👇 위에서 만든 url 변수를 fetch에 넣어서 실행합니다.
         const response = await fetch(url);
         if (!response.ok) throw new Error("네트워크 응답 오류");
         const products = await response.json();
