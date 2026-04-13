@@ -3,7 +3,7 @@
 <html>
 <head>
     <title>약쟁이 로그인</title>
-    
+
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/login.css">
 
 
@@ -34,6 +34,9 @@
                 </div>
 
                 <form action="${pageContext.request.contextPath}/user-Login" method="post">
+                    <%-- 로그인 후 돌아갈 페이지 유지 (body_view 등) --%>
+                    <input type="hidden" name="redirect" value="${param.redirect}">
+
                     <div class="login-input-group">
                         <label for="user_id">아이디</label>
                         <input type="text" id="user_id" name="user_id" placeholder="아이디를 입력하세요" required>

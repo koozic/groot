@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>${detail.supplementName} 상세정보</title>
+    <title>${d.supplementName} 상세정보</title>
 </head>
 <body>
 <h2>💊 영양소 상세 정보</h2>

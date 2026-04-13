@@ -501,7 +501,7 @@ public class MyPageDAO {
         // supplements 테이블과 supplements_like 테이블을 조인하여 로그인한 유저의 데이터만 추출
         String sql = "SELECT s.* FROM supplements s " +
                 "JOIN supplements_like sl ON s.supplement_id = sl.supplement_id " +
-                "WHERE sl.user_id = ? ORDER BY sl.supplement_like_date DESC";
+                "WHERE sl.user_id = ?";
 
         try {
             con = DBManager_new.connect();
@@ -511,6 +511,9 @@ public class MyPageDAO {
 
             while (rs.next()) {
                 SupplementsDTO dto = new SupplementsDTO();
+
+                dto.setSupplementId(rs.getInt("supplement_id"));
+
                 dto.setSupplementName(rs.getString("supplement_name"));
                 dto.setSupplementEfficacy(rs.getString("supplement_efficacy"));
                 dto.setSupplementDosage(rs.getString("supplement_dosage"));

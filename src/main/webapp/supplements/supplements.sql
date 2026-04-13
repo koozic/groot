@@ -1,4 +1,4 @@
--- [1단계] 기존에 잘못 만들어진 흔적들 깔끔하게 지우기 (먼저 실행)
+-- 기존에 잘못 만들어진 흔적들 깔끔하게 지우기 (먼저 실행)
 DROP TABLE supplements_like CASCADE CONSTRAINTS;
 DROP TABLE supplements CASCADE CONSTRAINTS;
 DROP SEQUENCE seq_supplements_id;
@@ -28,16 +28,16 @@ CREATE TABLE supplements_like (
     supplement_like_date DATE DEFAULT SYSDATE,        -- 찜한 날짜
 
     -- [유니크 제약조건 설정] 한 유저가 같은 성분을 중복해서 좋아요 할 수 없도록 방지
-    -- 💡 PRIMARY KEY 대신 UNIQUE를 사용하여 중복만 막아줍니다.
+    -- PRIMARY KEY 대신 UNIQUE를 사용하여 중복만 막아줍니다.
     CONSTRAINT uq_supplements_like UNIQUE (user_id, supplement_id),
 
     -- [외래키 및 삭제 옵션 설정]
-    -- 1. 유저가 탈퇴하면 해당 유저의 좋아요 기록도 함께 삭제
+    -- 1. 유저 테이블과의 연결 : 유저가 탈퇴하면 해당 유저의 좋아요 기록도 함께 삭제
         CONSTRAINT fk_like_user FOREIGN KEY (user_id)
         REFERENCES USERS(user_id)
         ON DELETE CASCADE,
 
-    -- 2. 영양성분 정보가 삭제되면 해당 성분에 달린 좋아요 기록도 함께 삭제
+    -- 2. 영양성분 테이블과의 연결 : 영양성분 정보가 삭제되면 해당 성분에 달린 좋아요 기록도 함께 삭제
         CONSTRAINT fk_like_supp FOREIGN KEY (supplement_id)
         REFERENCES supplements(supplement_id)
         ON DELETE CASCADE
@@ -45,7 +45,6 @@ CREATE TABLE supplements_like (
 
 CREATE SEQUENCE seq_supplements_like_id START WITH 1 INCREMENT BY 1;
 
-SELECT * FROM SUPPLEMENTS;
 -- 진짜 데이터
 -- 1. 비타민 A
 INSERT INTO supplements (supplement_id, supplement_name, supplement_efficacy, supplement_dosage, supplement_timing, supplement_caution, supplement_image_path)
@@ -116,7 +115,7 @@ INSERT INTO supplements (supplement_id, supplement_name, supplement_efficacy, su
 VALUES (seq_supplements_id.NEXTVAL, '코엔자임Q10', '세포 내 미토콘드리아에서 에너지 생성을 돕는 핵심 성분임. 혈압 조절, 심장 건강 증진 및 강력한 항산화 작용을 통해 노화를 억제하고 피로 회복을 도움.', '약 90~100mg', '식후', '지용성 성분이므로 공복 복용 시 흡수율이 떨어짐. 반드시 식후에 섭취해야 하며, 오메가3와 병용 시 흡수 효과가 더욱 높아짐.', 'https://weekly.chosun.com/news/photo/202305/26499_49726_360.gif');
 
 ------------------------------------------------------------------------------------------
--- 누리에게 필요한 데이터
+-- 누리에게 필요한 데이터(제대로 조사는x 제미나이 활용)
 -- 18. 오메가3 (DHA/EPA)
 INSERT INTO supplements (supplement_id, supplement_name, supplement_efficacy, supplement_dosage, supplement_timing, supplement_caution, supplement_image_path)
 VALUES (seq_supplements_id.NEXTVAL, '오메가3', '뇌세포막의 구성 성분으로 기억력 개선에 도움을 주며, 혈중 중성지질 개선 및 혈행을 원활하게 하여 심혈관 건강을 지원함.', 'EPA와 DHA의 합으로 500~2,000mg', '식후', '지용성이므로 지방이 포함된 식사 후에 복용해야 흡수가 잘 됨. 혈액 응고 억제 작용이 있으므로 수술 전에는 주의가 필요함.', 'https://weekly.chosun.com/news/photo/202305/26499_49726_360.gif');
