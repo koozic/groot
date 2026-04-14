@@ -1,7 +1,13 @@
 /**
  * 전역 변수 및 요소 참조
  */
+let currentPage = 1;
+let isFetching = false;
+let isLastPage = false;
+let currentNutrientId = '';
+
 let deleteTargetId = null;
+
 const regModal = document.getElementById("productModal");
 const delModal = document.getElementById("deleteConfirmModal");
 
@@ -9,6 +15,9 @@ const delModal = document.getElementById("deleteConfirmModal");
 document.addEventListener("DOMContentLoaded", function () {
     // 1. 초기 로드 시 전체 리스트 비동기 호출
     loadProductList('');
+
+    // 스크롤 감지 옵저버 설정
+    setupScrollObserver();
 
     // 2. 동기식 처리에 따른 토스트 알림 로직 (기존 코드 유지)
     const urlParams = new URLSearchParams(window.location.search);
@@ -62,27 +71,67 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-async function loadProductList(nutrientId) {
-    updateFilterUI(nutrientId);
+function setupScrollObserver() {
+    const observer = new IntersectionObserver((entries) => {
+        // scroll-anchor가 화면에 보이고, 데이터를 가져오는 중이 아니며, 마지막 페이지가 아닐 때
+        if (entries[0].isIntersecting && !isFetching && !isLastPage) {
+            currentPage++;
+            fetchProductData(currentNutrientId, currentPage);
+        }
+    }, { threshold: 0.5 }); // 50% 정도 보였을 때 트리거
 
-    // ★ URL에 cmd=list 파라미터 추가하여 백엔드의 비동기 로직(JSON 반환)을 타도록 수정
-    const url = nutrientId ? `product?cmd=list&nutrientId=${nutrientId}` : `product?cmd=list`;
+    const anchor = document.getElementById("scroll-anchor");
+    if (anchor) observer.observe(anchor);
+}
+
+// 실제 데이터를 가져오는 비동기 함수
+async function fetchProductData(nutrientId, page) {
+    isFetching = true;
+
+    // 백엔드로 page 파라미터 전달
+    const url = nutrientId
+        ? `product?cmd=list&nutrientId=${nutrientId}&page=${page}`
+        : `product?cmd=list&page=${page}`;
 
     try {
-        // 👇 위에서 만든 url 변수를 fetch에 넣어서 실행합니다.
         const response = await fetch(url);
         if (!response.ok) throw new Error("네트워크 응답 오류");
         const products = await response.json();
-        renderProducts(products); // JSON 데이터를 받아서 화면에 그리기
+
+        // 받아온 데이터가 10개 미만이면 마지막 페이지로 간주 (LIMIT 기준)
+        if (products.length < 9) {
+            isLastPage = true;
+        }
+
+        renderProducts(products, page);
     } catch (error) {
         console.error("데이터 로드 실패:", error);
+    } finally {
+        isFetching = false;
     }
 }
-function renderProducts(products) {
+
+async function loadProductList(nutrientId) {
+    updateFilterUI(nutrientId);
+
+
+    // 상태 초기화
+    currentNutrientId = nutrientId || '';
+    currentPage = 1;
+    isLastPage = false;
+    document.getElementById("product-list-container").innerHTML = "";
+
+    // 1페이지 데이터 로드
+    fetchProductData(currentNutrientId, currentPage);
+
+
+}
+function renderProducts(products, page) {
     const container = document.getElementById("product-list-container");
     const isAdmin = document.getElementById("isAdmin").value === "true";
 
-    if (products.length === 0) {
+    // 1페이지인데 데이터가 없는 경우
+    if (page === 1 && products.length === 0) {
         container.innerHTML = "<p style='text-align:center; width:100%;'>등록된 상품이 없습니다.</p>";
         return;
     }
@@ -97,8 +146,8 @@ function renderProducts(products) {
             `<button class="btn-delete" onclick="event.stopPropagation(); confirmDelete('${p.productId}')">&times;</button>` : '';
         //event.stopPropagation() 버튼을 눌렀을 때 부모 요소인 카드의 클릭 이벤트(상세 페이지 이동)가 발생하는 것을 막습니다.
 
-        const delay = index * 0.05;
-
+// append 방식이므로 index 딜레이는 고정값 사용 혹은 계산식 조정
+        const delay = (index % 9) * 0.05;
         htmlString += `
             <div class="product-card" style="animation-delay: ${delay}s" onclick="location.href='product-detail?id=${p.productId}'">
                 <div class="product-image">
@@ -122,7 +171,8 @@ function renderProducts(products) {
             </div>
         `;
     });
-    container.innerHTML = htmlString;
+    // 기존 데이터를 지우지 않고 뒤에 이어 붙임 (insertAdjacentHTML)
+    container.insertAdjacentHTML('beforeend', htmlString);
 }
 
 function updateFilterUI(selectedId) {

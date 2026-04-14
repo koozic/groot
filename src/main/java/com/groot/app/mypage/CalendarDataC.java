@@ -41,3 +41,4 @@ public class CalendarDataC extends HttpServlet {
         response.getWriter().write(new Gson().toJson(responseData));
     }
 }
+
