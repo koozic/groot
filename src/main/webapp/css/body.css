@@ -36,23 +36,23 @@ body {
 /* SVG */
 .svg-wrap {
     width: 100%;
-    max-width: 450px;
+    max-width: 380px;
     margin: 0 auto;
     position: relative;
 
-    background-image: url('../img/girl.png');
+    background-image: url('../img/longGirl.png');
     background-size: contain;
     background-repeat: no-repeat;
 
     /* 이미지 위로 올리기 — 숫자 조정하면서 맞추세요 */
-    background-position: center -5px;
+    background-position: center 5px;
 
     aspect-ratio: 200 / 380;
 
     /* clip-path 완전 제거 */
     /* overflow visible 불필요하므로 제거 */
 
-    margin-top: -40px; /* ← 숫자 조정 */
+    margin-top: -20px; /* ← 숫자 조정 */
 }
 
 .svg-wrap svg {
@@ -513,15 +513,15 @@ body {
     .col-right {
         grid-column: 1;
         grid-row: 3;
-        margin-top: -95px; /* background-position 값이랑 동일하게 */
+        margin-top: -40px; /* background-position 값이랑 동일하게 */
 
     }
 
     /* 앱에서 SVG 크기 */
     .svg-wrap {
-        max-width: 412px;
+        max-width: 380px;
         margin: 0 auto;
-        top: -50px; /* background-position 값이랑 동일하게 */
+        top: -20px; /* background-position 값이랑 동일하게 */
     }
 
     /* 체크박스는 SVG 아래 바로 */

@@ -11,59 +11,57 @@
             <%-- SVG 신체 캐릭터 --%>
             <div class="svg-wrap">
                 <svg viewBox="0 30 200 280" xmlns="http://www.w3.org/2000/svg">
-                    <ellipse class="body-part" data-part="hair" cx="100" cy="30" rx="38" ry="24" fill="transparent"
+                    <ellipse class="body-part" data-part="hair" cx="98" cy="16" rx="38" ry="24" fill="transparent"
                              stroke="none"/>
 
-                    <ellipse class="body-part" data-part="brain" cx="100" cy="30" rx="26" ry="16" fill="transparent"
+                    <ellipse class="body-part" data-part="brain" cx="98" cy="16" rx="26" ry="16" fill="transparent"
                              stroke="none"/>
 
-                    <ellipse class="body-part" data-part="skin" cx="100" cy="66" rx="30" ry="22" fill="transparent"
+                    <ellipse class="body-part" data-part="skin" cx="98" cy="52" rx="30" ry="22" fill="transparent"
                              stroke="none"/>
 
-                    <ellipse class="body-part" data-part="eye" cx="80" cy="64" rx="8" ry="8" fill="transparent"
+                    <ellipse class="body-part" data-part="eye" cx="78" cy="50" rx="8" ry="8" fill="transparent"
                              stroke="none"/>
-                    <ellipse class="body-part" data-part="eye" cx="118" cy="64" rx="8" ry="8" fill="transparent"
+                    <ellipse class="body-part" data-part="eye" cx="116" cy="50" rx="8" ry="8" fill="transparent"
                              stroke="none"/>
 
-                    <rect x="86" y="88" width="28" height="14" rx="5" fill="transparent"
-                          stroke="none"/>
-                    <rect class="body-part" data-part="skin" x="62" y="100" width="76" height="88" rx="16"
+
+                    <rect class="body-part" data-part="skin" x="60" y="86" width="76" height="88" rx="16"
                           fill="transparent"
                           stroke="none"/>
-                    <ellipse class="body-part" data-part="lung" cx="80" cy="125" rx="14" ry="18" fill="transparent"
+                    <ellipse class="body-part" data-part="lung" cx="80" cy="105" rx="14" ry="18" fill="transparent"
                              stroke="none"/>
 
-                    <ellipse class="body-part" data-part="lung" cx="120" cy="125" rx="14" ry="18" fill="transparent"
-                             stroke="none"/>
-                    <path class="body-part" data-part="heart"
-                          d="M100,116 C100,109 91,104 85,109 C79,114 81,121 89,127 L100,135 L111,127 C119,121 121,114 115,109 C109,104 100,109 100,116Z"
-                          fill="transparent"
-                          stroke="none"/>
-
-                    <ellipse class="body-part" data-part="liver" cx="94" cy="140" rx="16" ry="11" fill="transparent"
+                    <ellipse class="body-part" data-part="lung" cx="120" cy="105" rx="14" ry="18" fill="transparent"
                              stroke="none"/>
 
-                    <ellipse class="body-part" data-part="stomach" cx="110" cy="152" rx="13" ry="13" fill="transparent"
+                    <ellipse class="body-part" data-part="heart" cx="100" cy="105" rx="13" ry="13" fill="transparent"
                              stroke="none"/>
 
-                    <ellipse class="body-part" data-part="intestine" cx="100" cy="170" rx="22" ry="15"
+                    <ellipse class="body-part" data-part="liver" cx="90" cy="125" rx="16" ry="11" fill="transparent"
+                             stroke="none"/>
+
+                    <ellipse class="body-part" data-part="stomach" cx="108" cy="134" rx="13" ry="13" fill="transparent"
+                             stroke="none"/>
+
+                    <ellipse class="body-part" data-part="intestine" cx="100" cy="156" rx="22" ry="15"
                              fill="transparent"
                              stroke="none"/>
 
-                    <rect class="body-part" data-part="hair" x="52" y="75" width="28" height="27" rx="15"
+                    <rect class="body-part" data-part="hair" x="50" y="61" width="28" height="27" rx="15"
                           fill="transparent"
                           stroke="none"/>
-                    <rect class="body-part" data-part="hair" x="120" y="75" width="28" height="27" rx="15"
+                    <rect class="body-part" data-part="hair" x="118" y="61" width="28" height="27" rx="15"
                           fill="transparent"
                           stroke="none"/>
-                    <rect class="body-part" data-part="muscle" x="68" y="187" width="26" height="50" rx="10"
+                    <rect class="body-part" data-part="muscle" x="66" y="174" width="26" height="70" rx="10"
                           fill="transparent"
                           stroke="none"/>
-                    <rect class="body-part" data-part="bone" x="106" y="187" width="26" height="148" rx="10"
+                    <rect class="body-part" data-part="bone" x="102" y="173" width="26" height="187" rx="10"
                           fill="transparent"
                           stroke="none"/>
 
-                    <rect class="body-part" data-part="bone" x="73" y="235" width="18" height="98" rx="8"
+                    <rect class="body-part" data-part="bone" x="73" y="245" width="18" height="115" rx="8"
                           fill="transparent"
                           stroke="none"/>
 

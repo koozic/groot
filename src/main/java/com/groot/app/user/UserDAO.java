@@ -257,6 +257,7 @@ public class UserDAO {
 
             String uploadedProfile = (String) request.getAttribute("user_profile"); // UserJoinC에서 업로드한 URL
             String finalProfilePath="";
+            System.out.println("[UserDAO.join] selectedProfile=" + selectedProfile + ", uploadedProfile=" + uploadedProfile);
 
             // UserJoinC에서 Cloudinary 업로드한 URL이 있으면 우선 사용
             if (uploadedProfile != null && !uploadedProfile.trim().isEmpty()) {
@@ -271,7 +272,7 @@ public class UserDAO {
             }
             // 혹시 모를 예외 대비
             else {
-                finalProfilePath = "user/userImg/Ayanokoji.jpg";
+                finalProfilePath = "user/userImg/Ayanokoji.jfif";
                 System.out.println("기본값 적용: " + finalProfilePath);
             }
 
