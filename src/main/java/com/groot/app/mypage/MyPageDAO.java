@@ -492,17 +492,21 @@ public class MyPageDAO {
     // =============================================================================
     // 내가 좋아요(찜)한 영양성분 리스트 가져오기_여은사
     // ==============================================================================
-    public ArrayList<SupplementsDTO> getLikedSupplements(String userId) {
+    public ArrayList<SupplementsDTO> getLikedSupplements(String userId, String sort) {
         ArrayList<SupplementsDTO> list = new ArrayList<>();
         Connection con = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
 
-        // supplements 테이블과 supplements_like 테이블을 조인하여 로그인한 유저의 데이터만 추출
+        // recent=최신순(내림차순), oldest=오래된순(오름차순)
+        String orderBy = "oldest".equals(sort)
+                ? "sl.supplement_like_id ASC"
+                : "sl.supplement_like_id DESC";
+
         String sql = "SELECT s.* FROM supplements s " +
                 "JOIN supplements_like sl ON s.supplement_id = sl.supplement_id " +
                 "WHERE sl.user_id = ? " +
-                "ORDER BY sl.supplement_like_id DESC";  // date 대신 id 기준 정렬
+                "ORDER BY " + orderBy;
 
         try {
             con = DBManager_new.connect();
@@ -512,26 +516,22 @@ public class MyPageDAO {
 
             while (rs.next()) {
                 SupplementsDTO dto = new SupplementsDTO();
-
                 dto.setSupplementId(rs.getInt("supplement_id"));
-
                 dto.setSupplementName(rs.getString("supplement_name"));
                 dto.setSupplementEfficacy(rs.getString("supplement_efficacy"));
                 dto.setSupplementDosage(rs.getString("supplement_dosage"));
                 dto.setSupplementTiming(rs.getString("supplement_timing"));
                 dto.setSupplementCaution(rs.getString("supplement_caution"));
                 dto.setSupplementImagePath(rs.getString("supplement_image_path"));
-                // 필요한 정보만 담아서 리스트에 추가
                 list.add(dto);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             DBManager_new.close(con, pstmt, rs);
         }
-
         return list;
+
 
     }
 }

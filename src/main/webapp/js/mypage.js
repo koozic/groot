@@ -255,7 +255,7 @@ function buildCal(mappedAlerts, checkedDates, firstDay, lastDate, today) {
     // [추가] 넘어온 배열이 없으면 빈 배열 할당, 문자열이 섞여 있어도 무조건 숫자로 변환
     var safeCheckedDates = (checkedDates || []).map(Number);
 
-            // 1. 1일 이전의 빈 칸 그리기
+    // 1. 1일 이전의 빈 칸 그리기
     for (var i = 0; i < firstDay; i++) {
         html += '<div class="cal-day empty"></div>';
     }
@@ -324,4 +324,82 @@ function renderAlerts(alerts) {
             </div>
         `;
     });
+}
+
+// ── 찜한 영양성분 정렬 로드 ──
+function loadLikedSupplements(sort, btn) {
+    // 버튼 스타일 토글
+    document.querySelectorAll('#sort-recent, #sort-oldest').forEach(b => {
+        b.style.background = '#fff';
+        b.style.color = '#666';
+        b.style.borderColor = '#ccc';
+        b.style.fontWeight = 'normal';
+    });
+    btn.style.background = '#eff6ff';
+    btn.style.color = '#1d4ed8';
+    btn.style.borderColor = '#3b82f6';
+    btn.style.fontWeight = '500';
+
+    fetch(`mypage?action=myLikes&sort=${sort}`)
+        .then(r => r.json())
+        .then(data => {
+            const container = document.getElementById('liked-list');
+
+            if (!data || data.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column:1/-1; text-align:center; padding:40px 0;
+                                color:#9ca3af; font-size:14px;">
+                        <div style="font-size:3em; margin-bottom:10px;">🩶</div>
+                        아직 찜한 영양성분이 없습니다.
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = data.map(s => `
+                <div class="like-card"
+                     style="border:1px solid #eee; border-radius:10px; padding:15px;
+                            text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.05);
+                            background:#fff; display:flex; flex-direction:column;
+                            justify-content:space-between;">
+                    <div>
+                        <div style="width:100%; height:150px; border-radius:8px;
+                             overflow:hidden; background:#f8f9fa; margin-bottom:12px;">
+                            <img src="${getImgSrc(s.supplementImagePath)}"
+                                 style="width:100%; height:100%; object-fit:cover;"
+                                 onerror="this.src='images/default.png'">
+                        </div>
+                        <div style="font-weight:bold; font-size:1.1em; color:#333; margin-bottom:5px;">
+                            ${s.supplementName}
+                        </div>
+                        <div style="font-size:0.85em; color:#666; height:35px;
+                             overflow:hidden; line-height:1.4;">
+                            ${s.supplementEfficacy || ''}
+                        </div>
+                    </div>
+                    <button onclick="showSupplementDetail(
+                                '${s.supplementId}','${escHtml(s.supplementName)}',
+                                '${escHtml(s.supplementEfficacy)}','${escHtml(s.supplementDosage)}',
+                                '${escHtml(s.supplementTiming)}','${escHtml(s.supplementCaution)}',
+                                '${s.supplementImagePath}')"
+                        style="margin-top:15px; padding:8px 10px; background:#f0fdf4;
+                               border:1px solid #bbf7d0; color:#166534; border-radius:5px;
+                               cursor:pointer; font-size:0.9em; width:100%; font-weight:bold;">
+                        자세히 보기
+                    </button>
+                </div>`).join('');
+        })
+        .catch(() => showToast('불러오기 실패', 'error'));
+}
+
+// 이미지 경로 판별 헬퍼
+function getImgSrc(path) {
+    if (!path) return 'images/default.png';
+    if (path.startsWith('http')) return path;
+    return '/supplementImg/supplementImgFile/' + path;
+}
+
+// XSS 방지용 이스케이프
+function escHtml(str) {
+    if (!str) return '';
+    return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
 }

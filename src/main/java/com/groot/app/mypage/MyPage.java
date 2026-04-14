@@ -52,7 +52,7 @@ public class MyPage extends HttpServlet {
         // ======================================================================
         // 내가 찜한 영양성분 리스트 가져오기_여은사
         ArrayList<com.groot.app.supplements.SupplementsDTO> likedSupplements =
-                MyPageDAO.MDAO.getLikedSupplements(userId);
+                MyPageDAO.MDAO.getLikedSupplements(userId, "recent");
         // ======================================================================
 
         //데이터 바인딩
@@ -66,6 +66,23 @@ public class MyPage extends HttpServlet {
         request.setAttribute("activeTab", "home");
         request.getRequestDispatcher("index.jsp").forward(request, response);
 
+        // MyPage.java doGet 상단에 추가
+        String action = request.getParameter("action");
+
+// 정렬 AJAX 요청 처리
+        if ("myLikes".equals(action)) {
+            response.setContentType("application/json; charset=UTF-8");
+            String sort = request.getParameter("sort");
+            if (sort == null) sort = "recent";
+
+            ArrayList<com.groot.app.supplements.SupplementsDTO> list =
+                    MyPageDAO.MDAO.getLikedSupplements(userId, sort);
+
+            // Gson으로 JSON 직렬화
+            com.google.gson.Gson gson = new com.google.gson.Gson();
+            response.getWriter().print(gson.toJson(list));
+            return;
+        }
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
