@@ -71,6 +71,67 @@ public class ProductDAO {
 
     }
 
+    /**
+     * 2. 페이징 처리가 포함된 실제 로직 메서드
+     */
+    public void showAllProducts(HttpServletRequest request, int page) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        // Oracle ROWNUM 페이징 쿼리 및 올바른 테이블명(products) 적용
+        String sql = "SELECT * FROM ("
+                + "    SELECT ROWNUM AS rnum, a.* FROM ("
+                + "        SELECT * FROM products ORDER BY product_id DESC"
+                + "    ) a WHERE ROWNUM <= ?"
+                + ") WHERE rnum > ?";
+
+        int limit = 9;
+        int endRow = page * limit;
+        int startRow = (page - 1) * limit;
+
+        ArrayList<ProductDTO> products = new ArrayList<>();
+
+        try {
+            con = DBManager_new.connect();
+            pstmt = con.prepareStatement(sql);
+
+            // [수정] limit -> endRow 로 변경
+            pstmt.setInt(1, endRow);
+            pstmt.setInt(2, startRow);
+
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                ProductDTO dto = new ProductDTO(
+                        rs.getInt("product_id"),
+                        rs.getString("product_admin"),
+                        rs.getString("product_name"),
+                        rs.getString("product_brand"),
+                        rs.getInt("product_price"),
+                        rs.getInt("product_nutrient"),
+                        rs.getString("product_description"),
+                        rs.getString("product_image"),
+                        rs.getInt("product_total"),
+                        rs.getInt("product_serve"),
+                        rs.getInt("product_per_day"),
+                        rs.getString("product_time_info"),
+                        rs.getDate("product_start_date"),
+                        rs.getInt("product_current")
+                );
+                products.add(dto);
+            }
+
+            // 결과를 request 영역에 저장
+            request.setAttribute("products", products);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBManager_new.close(con, pstmt, rs);
+        }
+    }
+
     public void showProductsByNutrient(HttpServletRequest request, String nutrientId) {
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -114,6 +175,63 @@ public class ProductDAO {
         }
     }
 
+    public void showProductsByNutrient(HttpServletRequest request, String nutrientId, int page) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        // Oracle ROWNUM 페이징 + 카테고리 필터 조건 결합
+        String sql = "SELECT * FROM ("
+                + "    SELECT ROWNUM AS rnum, a.* FROM ("
+                + "        SELECT * FROM products WHERE product_nutrient = ? ORDER BY product_id DESC"
+                + "    ) a WHERE ROWNUM <= ?"
+                + ") WHERE rnum > ?";
+
+        int limit = 9;
+        int endRow = page * limit;
+        int startRow = (page - 1) * limit;
+
+        ArrayList<ProductDTO> products = new ArrayList<>();
+
+        try {
+            con = DBManager_new.connect();
+            pstmt = con.prepareStatement(sql);
+
+            // [수정] 파라미터 인덱스 주의 및 limit -> endRow 로 변경
+            pstmt.setString(1, nutrientId);
+            pstmt.setInt(2, endRow);
+            pstmt.setInt(3, startRow);
+
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                ProductDTO dto = new ProductDTO(
+                        rs.getInt("product_id"),
+                        rs.getString("product_admin"),
+                        rs.getString("product_name"),
+                        rs.getString("product_brand"),
+                        rs.getInt("product_price"),
+                        rs.getInt("product_nutrient"),
+                        rs.getString("product_description"),
+                        rs.getString("product_image"),
+                        rs.getInt("product_total"),
+                        rs.getInt("product_serve"),
+                        rs.getInt("product_per_day"),
+                        rs.getString("product_time_info"),
+                        rs.getDate("product_start_date"),
+                        rs.getInt("product_current")
+                );
+                products.add(dto);
+            }
+
+            request.setAttribute("products", products);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBManager_new.close(con, pstmt, rs);
+        }
+    }
 
     public void showProductDetail(HttpServletRequest request) {
         Connection con = null;
@@ -281,7 +399,8 @@ public class ProductDAO {
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 // ID와 이름을 담은 DTO 객체 생성 (SupplementsDTO가 별도로 있어야 함)
-                list.add(new NutrientDTO(rs.getInt("supplement_id"), rs.getString("supplement_name")));
+                list.add(new NutrientDTO(rs.getInt("supplement_id"),
+                        rs.getString("supplement_name")));
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,297 +1,304 @@
-/* =============================================
-   제품 상세 페이지 (product_detail.css)
-   ============================================= */
+/* ================================================
+   제품 상세 페이지 (Conflict-Free Version)
+   ================================================ */
 
-/* 1. 컨테이너 및 헤더 */
-.app-container {
-    max-width: 800px; /* 상세 페이지는 너무 넓어지지 않도록 제한 */
-    margin: 40px auto;
-    background-color: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    border: 1px solid #e9ecef;
+/* 1. 컨테이너 및 전체 레이아웃 */
+.product-detail-page {
+    width: 100%;
+    margin-top: -10px; /* app.css의 site-body 패딩 상쇄 */
+}
+
+.pd-container {
+    background: #ffffff;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
     overflow: hidden;
+    box-shadow: var(--shadow);
 }
 
-.app-header {
+/* 2. 상단 히어로 영역 (이미지 + 정보) */
+.pd-hero {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 24px;
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #e9ecef;
+    flex-wrap: wrap;
+    align-items: flex-start; /* 고정 높이 없이 내용에 맞춤 */
+    background: #fff;
 }
 
-.header-title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #212529;
-    margin: 0;
-}
-
-.back-btn {
-    padding: 8px 16px;
-    background-color: #ffffff;
-    border: 1px solid #ced4da;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #495057;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.back-btn:hover {
-    background-color: #e2e8f0;
-    color: #212529;
-}
-
-/* 2. 콘텐츠 래퍼 및 히어로(상단) 섹션 */
-.content-wrapper {
-    padding: 32px;
-}
-
-.product-hero {
+/* 좌측 이미지 박스 */
+.pd-img-box {
+    flex: 0 0 400px; /* 이미지 영역 너비 고정 */
+    background-color: #f9fafb;
     display: flex;
-    gap: 32px;
-    margin-bottom: 32px;
-}
-
-.product-img-box {
-    flex: 1;
-    aspect-ratio: 1;
-    background-color: #f1f3f5;
-    border: 1px solid #e9ecef;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
     justify-content: center;
-    overflow: hidden;
+    align-items: center;
+    padding: 20px;
+    border-right: 1px solid var(--border);
+    min-height: 400px; /* 이미지가 작아도 영역 유지 */
 }
 
-.product-img {
-    max-width: 100%;
-    max-height: 100%;
+.pd-main-img {
+    width: 100%;
+    height: auto;
+    max-width: 340px;
     object-fit: contain;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.08));
 }
 
-.product-basic-info {
-    flex: 1.2;
+/* 우측 정보 박스 */
+.pd-info-box {
+    flex: 1;
+    padding: 30px 40px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
 }
 
-.brand-name {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #6c757d;
+.pd-nutrient-tag {
+    display: inline-block;
+    width: fit-content;
+    background: var(--primary-lt);
+    color: var(--primary);
+    font-size: 13px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 12px;
+}
+
+.pd-brand {
+    font-size: 15px;
+    color: var(--text-sub);
     margin-bottom: 4px;
 }
 
-.product-title {
-    font-size: 1.75rem;
+.pd-title {
+    font-size: 26px;
     font-weight: 700;
-    color: #212529;
-    margin: 0 0 12px 0;
+    color: var(--text);
     line-height: 1.3;
-}
-
-.supplement-name {
-    display: inline-block;
-    padding: 4px 10px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #2b6cb0;
-    background-color: #ebf8ff;
-    border: 1px solid #bee3f8;
-    border-radius: 6px;
-    align-self: flex-start;
     margin-bottom: 24px;
 }
 
-.product-price {
-    margin-top: auto;
-    padding-top: 16px;
-    border-top: 1px dashed #e9ecef;
-    font-size: 1.1rem;
-    color: #212529;
+/* 가격 행 */
+.pd-price-row {
+    margin-top: auto; /* 가격을 중간에 띄우지 않고 아래로 적절히 배치 */
+    padding-top: 20px;
+    border-top: 1px dashed var(--border);
 }
 
-.product-price strong {
-    font-size: 1.8rem;
-    font-weight: 800;
-    color: #4A90E2;
+.pd-price-val {
+    font-size: 16px;
+    color: var(--text);
 }
 
-/* 3. 구분선 및 공통 섹션 타이틀 */
-.divider {
-    border: none;
-    border-top: 1px solid #e9ecef;
-    margin: 0 0 32px 0;
+.pd-price-val strong {
+    font-size: 32px;
+    color: var(--accent); /* app.css의 accent 컬러 사용 */
+    font-weight: 900;
+    margin-right: 4px;
 }
 
-.info-section {
-    margin-bottom: 32px;
+/* 3. 섹션 구분 및 상세 내용 */
+.pd-divider-line {
+    height: 1px;
+    background: var(--border);
+    margin: 0 30px;
 }
 
-.section-title {
-    font-size: 1.15rem;
+.pd-section {
+    padding: 35px 40px;
+}
+
+.pd-section-title {
+    font-size: 18px;
     font-weight: 700;
-    color: #212529;
-    margin: 0 0 16px 0;
+    margin-bottom: 20px;
+    color: var(--text);
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
-.section-title::before {
+.pd-section-title::before {
     content: '';
-    display: block;
     width: 4px;
-    height: 18px;
-    background-color: #4A90E2;
+    height: 16px;
+    background: var(--primary);
     border-radius: 2px;
 }
 
-/* 4. 복용 가이드 */
-.guide-list {
+/* 복용 가이드 그리드 */
+.pd-guide-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    padding: 0;
-    margin: 0 0 16px 0;
+    gap: 12px;
     list-style: none;
+    margin-bottom: 20px;
 }
 
-.guide-list li {
-    background-color: #f8f9fa;
-    border: 1px solid #e9ecef;
+.pd-guide-grid li {
+    background: var(--bg);
     padding: 16px;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     text-align: center;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #6c757d;
+    border: 1px solid var(--border);
 }
 
-.guide-list .val {
+.pd-guide-grid .label {
     display: block;
-    font-size: 1.25rem;
+    font-size: 12px;
+    color: var(--text-sub);
+    margin-bottom: 4px;
+}
+
+.pd-guide-grid .val {
+    font-size: 18px;
     font-weight: 700;
-    color: #212529;
-    margin-top: 4px;
+    color: var(--text);
 }
 
-.timing-box {
-    background-color: #ebf8ff;
-    border-left: 4px solid #4A90E2;
-    padding: 16px;
-    border-radius: 4px 8px 8px 4px;
-    font-size: 0.95rem;
-    color: #2b6cb0;
+.pd-timing-note {
+    background: var(--accent-lt);
+    color: var(--accent);
+    padding: 15px 20px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    border: 1px solid #fed7aa;
 }
 
-.timing-box strong {
-    color: #1d4ed8;
+/* 제품 설명 */
+.pd-description {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #4b5563;
+    background: #fcfcfc;
+    padding: 24px;
+    border-radius: var(--radius-sm);
+    white-space: pre-line;
 }
 
-/* 5. 제품 설명 및 메타 정보 */
-.description-text {
-    font-size: 0.95rem;
-    line-height: 1.6;
-    color: #495057;
-    background-color: #f8f9fa;
-    padding: 20px;
-    border-radius: 8px;
-    border: 1px solid #e9ecef;
-    margin-bottom: 24px;
-    white-space: pre-line; /* 줄바꿈 유지 */
+.pd-meta {
+    margin-top: 15px;
+    font-size: 12px;
+    color: var(--text-light);
+    text-align: right;
 }
 
-.detail-meta {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 16px;
-    background-color: #ffffff;
-    border: 1px solid #e9ecef;
-    padding: 16px 20px;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    color: #6c757d;
-}
-
-.detail-meta p {
-    margin: 0;
-}
-
-.detail-meta span {
-    color: #212529;
-    font-weight: 600;
-}
-
-.current-stock {
-    color: #212529;
-}
-
-.current-stock strong {
-    color: #ff4d4f; /* 잔여량 시각적 강조 */
-    font-weight: 700;
-}
-
-/* 6. 반응형 (모바일) */
-@media (max-width: 768px) {
-    .app-container {
-        margin: 20px 16px;
-        border-radius: 12px;
+/* 4. 반응형 대응 (Conflict-Resistant) */
+@media (max-width: 900px) {
+    .pd-img-box {
+        flex: 0 0 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
     }
+}
 
-    .product-hero {
-        flex-direction: column;
-        gap: 20px;
+@media (max-width: 600px) {
+    .pd-guide-grid {
+        grid-template-columns: 1fr;
     }
-
-    .guide-list {
-        grid-template-columns: 1fr; /* 모바일에서는 세로로 배치 */
+    .pd-info-box {
+        padding: 25px 20px;
     }
-
-    .detail-meta {
-        flex-direction: column;
-        gap: 8px;
+    .pd-section {
+        padding: 25px 20px;
     }
 }
 
 
-
-/* 토스트 공통 기본 스타일 */
-.toast {
-    visibility: hidden;
-    opacity: 0;
+/* 이미지 확대 모달 배경 */
+.pd-image-modal {
+    display: none;
     position: fixed;
+    z-index: 9999; /* 다른 요소보다 훨씬 높게 설정 */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9); /* 배경을 어둡게 */
+    cursor: pointer;
+}
+
+/* 모달 내부 이미지 */
+.pd-modal-content {
+    margin: auto;
+    display: block;
+    width: auto;
+    max-width: 90%;
+    max-height: 90%;
+    position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) scale(0.9);
-    padding: 16px 32px;
-    border-radius: 12px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    z-index: 10000;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    background-color: rgba(33, 37, 41, 0.9);
+    transform: translate(-50%, -50%); /* 정확히 정중앙 */
+    border-radius: 8px;
+    animation: pdZoom 0.25s ease-out;
+}
+
+/* 닫기 버튼 */
+.pd-modal-close {
+    position: absolute;
+    top: 20px;
+    right: 35px;
     color: #fff;
+    font-size: 50px;
+    font-weight: bold;
 }
 
-/* 활성화 상태 */
-.toast.show {
-    visibility: visible;
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
+@keyframes pdZoom {
+    from { transform: translate(-50%, -50%) scale(0.9); opacity: 0; }
+    to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 }
 
-/* 하늘색 (수정 완료) 테마 추가 */
-.toast.update {
-    background-color: rgba(14, 165, 233, 0.95); /* 맑은 하늘색 */
-    color: #ffffff;
+.pd-image-modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    cursor: pointer;
+    animation: fadeIn 0.3s ease;
+}
+
+.pd-modal-content {
+    margin: auto;
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 80%;
+    max-height: 80%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    animation: zoomIn 0.3s ease;
+    object-fit: contain;
+}
+
+.pd-modal-close {
+    position: absolute;
+    top: 30px;
+    right: 40px;
+    color: #fff;
+    font-size: 40px;
+    font-weight: bold;
+    transition: opacity 0.3s ease;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.pd-modal-close:hover {
+    opacity: 0.7;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes zoomIn {
+    from { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+    to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 }
