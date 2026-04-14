@@ -15,7 +15,7 @@ public class ProductC extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
-        String cmd = request.getParameter("cmd"); // 비동기 데이터 요청 판별용
+        String cmd = request.getParameter("cmd"); // 비동기 데이터 요청 판별용, list라는 글자가 들어가있음 물음표가 뒤가 파라미터
 
         // 1. [비동기 AJAX 요청] 순수 상품 데이터(JSON)만 필요할 때
         if ("list".equals(cmd)) {

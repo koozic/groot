@@ -199,25 +199,25 @@ function renderPaginatedReviews(isAppend = false) {
             ? `<div class="review-img-box" style="margin: 15px 0;"><img src="${getImgPath(r.r_img)}" style="width: 150px; border-radius: 8px;"></div>`
             : '';
 
-        const rUser = r.user_id ? r.user_id.trim() : "";
-        const safeLoginId = currentLoginId ? currentLoginId.trim() : "";
+        // 1. 신분증 확인 준비
+        const rUser = r.user_id ? r.user_id.trim() : "";           // 글 쓴 사람 신분증
+        const safeLoginId = currentLoginId ? currentLoginId.trim() : ""; // 폰 보고 있는 내 신분증
 
-        // 🌟 [하드코딩 확정] 팀에서 정한 관리자 4인방 명단 딱 고정!
+// 2. 🌟 V.I.P 프리패스 명단 (무영님의 센스!)
         const adminList = ['admin1', 'master', 'manager1', 'staff1'];
-
-        // 내 아이디가 저 명단 안에 포함되어 있으면 무조건 관리자 무적 권한(true) 획득!
         const isAdmin = adminList.includes(safeLoginId);
 
-        // 내 글이거나 OR 관리자일 때만 점 3개(⋮) 메뉴 버튼을 보여줌!
+// 3. 🚧 대망의 1차 검문소 (메뉴 버튼 자체를 달아줄까 말까?)
         let menuHtml = (safeLoginId !== "" && (rUser === safeLoginId || isAdmin)) ? `
-            <div class="review-more-menu">
-                <button type="button" class="btn-more" onclick="toggleMenu(${r.review_id})">⋮</button>
-                <div id="menu-content-${r.review_id}" class="menu-content" style="display:none;">
-                    ${rUser === safeLoginId ? `<a href="javascript:void(0)" onclick="openUpdateForm(${r.review_id})">수정하기</a>` : ''}
-                    
-                    <a href="javascript:void(0)" onclick="deleteReview(${r.review_id})" style="color:red;">삭제하기</a>
-                </div>
-            </div>` : '';
+    <div class="review-more-menu">
+        <button type="button" class="btn-more" onclick="toggleMenu(${r.review_id})">⋮</button>
+        <div id="menu-content-${r.review_id}" class="menu-content" style="display:none;">
+            
+            ${rUser === safeLoginId ? `<a href="javascript:void(0)" onclick="openUpdateForm(${r.review_id})">수정하기</a>` : ''}
+            
+            <a href="javascript:void(0)" onclick="deleteReview(${r.review_id})" style="color:red;">삭제하기</a>
+        </div>
+    </div>` : ''; // 조건 안 맞으면 얄짤없이 빈칸('') 처리!
 
         const safeTitle = r.r_title ? r.r_title.replace(/'/g, "\\'") : '';
         const safeContent = r.r_content ? r.r_content.replace(/'/g, "\\'") : '';

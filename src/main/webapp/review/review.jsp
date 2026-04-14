@@ -273,6 +273,7 @@
     <script>
         // 1. 도혁씨의 로그인 세션 연동 (UserDTO의 user_id 사용)
         const currentLoginId = "${empty sessionScope.loginUser ? '' : sessionScope.loginUser.user_id}";
+        //화면이 그려질떄 해당코드가 세션을 뒤짐 , 만약 비어있으면 ''  그 아이디에 맞는 유저면 id 불러옴
 
         // 2. 경용씨의 제품 ID 연동 (product_detail.jsp에서 넘겨준 값)
         const currentProductId = "${param.PRODUCT_ID != null ? param.PRODUCT_ID : '106'}";
