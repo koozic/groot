@@ -183,7 +183,7 @@ function closeConfirm() {
 function closeAndRefresh() {
     if (window.isDataChanged) {
         sessionStorage.setItem('activeTab', 'check');
-        location.reload();
+        location.reload();      //새로고침해서 리로드
     } else {
         closeProductModal();
     }

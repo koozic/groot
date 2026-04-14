@@ -42,7 +42,7 @@ public class MyPage extends HttpServlet {
         ArrayList<Integer> intakeList = MyPageDAO.MDAO.getTodayIntakeList(userId);
 
         // 3. 당월 복용 통계 데이터 로드 (JSP의 c:forEach용)
-        LocalDate now = LocalDate.now();
+        LocalDate now = LocalDate.now();    //시스템 현재 날짜를 뽑아오는 로직
         int currentYear = now.getYear();
         int currentMonth = now.getMonthValue();
 

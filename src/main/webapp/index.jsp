@@ -26,7 +26,6 @@
         <script src="js/body.js" defer></script>
     </c:if>
     <link rel="stylesheet" href="css/product.css">
-    <link rel="stylesheet" href="css/product_detail.css">
     <link rel="stylesheet" href="css/product_edit.css">
 </head>
 <body>
