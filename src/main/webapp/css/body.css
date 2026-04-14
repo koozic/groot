@@ -52,7 +52,7 @@ body {
     /* clip-path 완전 제거 */
     /* overflow visible 불필요하므로 제거 */
 
-    margin-top: -20px; /* ← 숫자 조정 */
+    margin-top: -6px; /* ← 숫자 조정 */
 }
 
 .svg-wrap svg {
@@ -60,7 +60,7 @@ body {
     width: 100%;
     height: 100%;
     position: absolute;
-    top: -5px; /* background-position 값이랑 동일하게 */
+    top: -12px; /* background-position 값이랑 동일하게 */
     left: 0;
 }
 
@@ -513,7 +513,7 @@ body {
     .col-right {
         grid-column: 1;
         grid-row: 3;
-        margin-top: -40px; /* background-position 값이랑 동일하게 */
+        margin-top: -8px; /* background-position 값이랑 동일하게 */
 
     }
 
@@ -521,7 +521,7 @@ body {
     .svg-wrap {
         max-width: 380px;
         margin: 0 auto;
-        top: -20px; /* background-position 값이랑 동일하게 */
+        top: -9px; /* background-position 값이랑 동일하게 */
     }
 
     /* 체크박스는 SVG 아래 바로 */

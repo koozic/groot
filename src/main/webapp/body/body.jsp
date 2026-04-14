@@ -26,9 +26,6 @@
                              stroke="none"/>
 
 
-                    <rect class="body-part" data-part="skin" x="60" y="86" width="76" height="88" rx="16"
-                          fill="transparent"
-                          stroke="none"/>
                     <ellipse class="body-part" data-part="lung" cx="80" cy="105" rx="14" ry="18" fill="transparent"
                              stroke="none"/>
 
@@ -54,7 +51,7 @@
                     <rect class="body-part" data-part="hair" x="118" y="61" width="28" height="27" rx="15"
                           fill="transparent"
                           stroke="none"/>
-                    <rect class="body-part" data-part="muscle" x="66" y="174" width="26" height="70" rx="10"
+                    <rect class="body-part" data-part="muscle" x="64" y="153" width="26" height="90" rx="15"
                           fill="transparent"
                           stroke="none"/>
                     <rect class="body-part" data-part="bone" x="102" y="173" width="26" height="187" rx="10"
