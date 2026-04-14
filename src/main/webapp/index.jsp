@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -35,16 +36,17 @@
      ============================================= -->
 <header class="site-header">
     <%-- 로고가 있어야 로그인이 오른쪽으로 밀려납니다 --%>
-    <div class="logo" onclick="location.href='hello-servlet'">약<span>쟁이</span></div>
+    <div class="logo" onclick="location.href='hello-servlet '">약<span>쟁이</span></div>
 
     <%-- 직접 썼던 style은 지우고 클래스명만 유지! --%>
     <div class="hdr-right">
         <c:choose>
             <%-- [1] 로그인 했을 때 --%>
             <c:when test="${not empty sessionScope.loginUser}">
+                <c:set var="profilePath" value="${fn:trim(sessionScope.loginUser.user_profile)}"/>
                 <span class="hdr-link">${sessionScope.loginUser.name}님 어서오세요. 당신의 건강을 챙기세요</span>
                 <img
-                        src="${pageContext.request.contextPath}/user/userImg/${sessionScope.loginUser.user_profile}"
+                        src="${(fn:startsWith(profilePath, 'http://') or fn:startsWith(profilePath, 'https://')) ? profilePath : pageContext.request.contextPath.concat('/').concat(profilePath)}"
                         alt="프로필"
                         style="width:40px; height:40px; border-radius:50%; object-fit:cover;"
                         onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/user/userImg/Ayanokoji.jfif';"
