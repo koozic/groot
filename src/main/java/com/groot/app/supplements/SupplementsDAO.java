@@ -85,16 +85,19 @@ public class SupplementsDAO {
                 con = DBManager_new.connect();
                 pstmt = con.prepareStatement(sql);
 
-                MultipartRequest mr = new MultipartRequest(request, path,
-                        1024 * 1024 * 20, "UTF-8", new DefaultFileRenamePolicy());
+//                MultipartRequest mr = new MultipartRequest(request, path,
+//                        1024 * 1024 * 20, "UTF-8", new DefaultFileRenamePolicy());
 
+                // 💡 더 이상 MultipartRequest를 쓰지 않습니다!
+                // @MultipartConfig 덕분에 일반 getParameter로도 한글 데이터를 잘 받아옵니다.
                 // jsp 인풋 파라미터 이름!
-                String supplementName = mr.getParameter("supplementName");
-                String supplementEfficacy = mr.getParameter("supplementEfficacy");
-                String supplementDosage = mr.getParameter("supplementDosage");
-                String supplementTiming = mr.getParameter("supplementTiming");
-                String supplementCaution = mr.getParameter("supplementCaution");
-                String supplementFile = mr.getFilesystemName("supplementFile");
+                String supplementName = request.getParameter("supplementName");
+                String supplementEfficacy = request.getParameter("supplementEfficacy");
+                String supplementDosage = request.getParameter("supplementDosage");
+                String supplementTiming = request.getParameter("supplementTiming");
+                String supplementCaution = request.getParameter("supplementCaution");
+                String supplementFile = request.getParameter("supplementFile");
+//              String supplementFile = mr.getFilesystemName("supplementFile");
 
                 System.out.println(supplementName);
                 System.out.println(supplementEfficacy);
@@ -107,19 +110,21 @@ public class SupplementsDAO {
                     supplementEfficacy = supplementEfficacy.replace("\r\n", "<br>");
                 }
 
+                // DB 쿼리에 글씨 데이터 세팅
                 pstmt.setString(1, supplementName);
                 pstmt.setString(2, supplementEfficacy);
                 pstmt.setString(3, supplementDosage);
                 pstmt.setString(4, supplementTiming);
                 pstmt.setString(5, supplementCaution);
 
-                // 순수한 파일명만 DB에 저장합니다!
-                if (supplementFile == null) {
-                    // 사진을 첨부하지 않은 경우 기본 이미지 파일명만 넣습니다.
+                // 💡 [핵심] 컨트롤러(SupplementsC)에서 클라우디너리에 올린 후 넘겨준 URL 꺼내기!
+                String newImageUrl = (String) request.getAttribute("newImageUrl");
+
+                // 사진을 안 올렸으면 우리가 만든 default.png 저장, 올렸으면 클라우드 URL 저장
+                if (newImageUrl == null || newImageUrl.isEmpty()) {
                     pstmt.setString(6, "default.png");
                 } else {
-                    // 사진을 첨부한 경우 순수 파일명 저장
-                    pstmt.setString(6, supplementFile);
+                    pstmt.setString(6, newImageUrl);
                 }
 
                 if (pstmt.executeUpdate() == 1) {
