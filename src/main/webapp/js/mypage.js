@@ -108,31 +108,46 @@ function toggleCheck(element, productId) {
 }
 
 let deleteTimeout = null;
+let confirmCallback = null;
+
+function openConfirm(message, onConfirm) {
+    const modal = document.getElementById('confirmModal');
+    const messageEl = document.getElementById('confirmMessage');
+    if (!modal || !messageEl) {
+        if (typeof onConfirm === 'function') onConfirm();
+        return;
+    }
+    messageEl.textContent = message || '정말 진행하시겠습니까?';
+    confirmCallback = onConfirm;
+    modal.style.display = 'block';
+}
 
 function removeSupplement(productId, btnElement) {
-    const item = btnElement.closest('.vit-item');
-    if (!item) return;
+    openConfirm('오늘의 영양제를 삭제할까요?', () => {
+        const item = btnElement.closest('.vit-item');
+        if (!item) return;
 
-    item.style.display = 'none';
-    updateProgress();
-
-    showUndoToast("영양제가 삭제되었습니다.", () => {
-        clearTimeout(deleteTimeout);
-        item.style.display = 'flex';
+        item.style.display = 'none';
         updateProgress();
-    });
 
-    deleteTimeout = setTimeout(() => {
-        fetch('mypage/remove-product', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body: 'productId=' + productId
-        }).catch(() => {
+        showUndoToast("영양제가 삭제되었습니다.", () => {
+            clearTimeout(deleteTimeout);
             item.style.display = 'flex';
             updateProgress();
-            showToast("삭제 실패", "error");
         });
-    }, 3000);
+
+        deleteTimeout = setTimeout(() => {
+            fetch('mypage/remove-product', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: 'productId=' + productId
+            }).catch(() => {
+                item.style.display = 'flex';
+                updateProgress();
+                showToast("삭제 실패", "error");
+            });
+        }, 3000);
+    });
 }
 
 /* ── UI 유틸리티 ── */
@@ -178,6 +193,7 @@ function closeProductModal() {
 function closeConfirm() {
     const m = document.getElementById('confirmModal');
     if (m) m.style.display = 'none';
+    confirmCallback = null;
 }
 
 function closeAndRefresh() {
