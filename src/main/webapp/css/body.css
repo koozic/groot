@@ -17,7 +17,7 @@ body {
 /* ── 웹 레이아웃 (기본: 2컬럼) ── */
 .layout {
     display: grid;
-    grid-template-columns: 280px 1fr;
+    grid-template-columns: 430px 1fr;
     gap: 16px;
     align-items: start;
 }
@@ -36,22 +36,23 @@ body {
 /* SVG */
 .svg-wrap {
     width: 100%;
-    max-width: 320px; /* 원하는 최대 너비 */
+    max-width: 380px;
     margin: 0 auto;
     position: relative;
 
-    background-image: url('../img/girl.png');
-
-    /* 🌟 1. 이미지가 박스 안에서 비율을 유지하며 다 보이게 함 */
+    background-image: url('../img/longGirl.png');
     background-size: contain;
     background-repeat: no-repeat;
-    background-position: center top;
 
-    /* 🌟 2. 이미지의 실제 가로/세로 비율을 입력 (중요!) */
-    /* 예: 이미지 실제 크기가 가로 200px, 세로 380px라면 200 / 380 */
+    /* 이미지 위로 올리기 — 숫자 조정하면서 맞추세요 */
+    background-position: center 5px;
+
     aspect-ratio: 200 / 380;
 
-    /* 만약 구형 브라우저 지원이 필요하다면 height: auto 대신 적절한 min-height를 줍니다. */
+    /* clip-path 완전 제거 */
+    /* overflow visible 불필요하므로 제거 */
+
+    margin-top: -6px; /* ← 숫자 조정 */
 }
 
 .svg-wrap svg {
@@ -59,7 +60,7 @@ body {
     width: 100%;
     height: 100%;
     position: absolute;
-    top: 0;
+    top: -12px; /* background-position 값이랑 동일하게 */
     left: 0;
 }
 
@@ -503,19 +504,24 @@ body {
 
     .col-left {
         grid-column: 1;
-        grid-row: 1 / 2;
+        display: flex;
         flex-direction: column;
+        gap: 12px;
+        overflow: visible; /* ← 추가 */
     }
 
     .col-right {
         grid-column: 1;
         grid-row: 3;
+        margin-top: -8px; /* background-position 값이랑 동일하게 */
+
     }
 
     /* 앱에서 SVG 크기 */
     .svg-wrap {
-        max-width: 180px;
+        max-width: 380px;
         margin: 0 auto;
+        top: -9px; /* background-position 값이랑 동일하게 */
     }
 
     /* 체크박스는 SVG 아래 바로 */
