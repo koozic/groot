@@ -1,4 +1,4 @@
-const PER_PAGE = 6;
+const PER_PAGE = 8;
 
 const logined = (typeof IS_LOGIN !== 'undefined' && IS_LOGIN === true);
 // const isLogin = (window.IS_LOGIN === true);

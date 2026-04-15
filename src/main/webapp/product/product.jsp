@@ -75,6 +75,7 @@
 
 <div class="product-container" id="product-list-container"></div>
 
+<div id="scroll-anchor" style="height: 20px;"></div>
 
 <div id="productModal" class="modal">
     <div class="modal-content visual-enhanced">

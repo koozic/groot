@@ -3,6 +3,7 @@ package com.groot.app.mypage;
 import com.groot.app.product.ProductDAO;
 import com.groot.app.product.ProductDTO;
 import com.groot.app.user.UserDTO;
+import com.google.gson.Gson;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,31 +18,36 @@ import java.util.Map;
 @WebServlet(name = "MyPage", value = "/mypage")
 public class MyPage extends HttpServlet {
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        // 사물함(세션)에서 "loginUser"라는 이름표가 붙은 상자(UserDTO)를 통째로 꺼냅니다.
-        UserDTO loginUser = (com.groot.app.user.UserDTO) request.getSession().getAttribute("loginUser");
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
 
-        // 상자가 비어있지 않다면(로그인 상태라면), 상자를 열어서 그 안의 ID 값을 꺼냅니다.
+        UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
         if (loginUser == null) {
-            response.sendRedirect("user-Login"); // 이동할 로그인 주소를 맞춰주세요.
-            return; // ★ 중요: 여기서 코드를 끝내버려서 밑으로 안 내려가게 막습니다.
+            response.sendRedirect("user-Login");
+            return;
         }
-        // 여기까지 내려왔다는 것은 100% 로그인이 되어있다는 뜻! 안전하게 ID를 꺼냅니다.
         String userId = loginUser.getUser_id();
 
-        // 전체 리스트 확인용
+        // ── AJAX 정렬 요청은 가장 먼저 처리하고 return ──
+        String action = request.getParameter("action");
+        if ("myLikes".equals(action)) {
+            response.setContentType("application/json; charset=UTF-8");
+            String sort = request.getParameter("sort");
+            if (sort == null) sort = "recent";
+
+            ArrayList<com.groot.app.supplements.SupplementsDTO> list =
+                    MyPageDAO.MDAO.getLikedSupplements(userId, sort);
+            response.getWriter().print(new Gson().toJson(list));
+            return; // ← 여기서 끝, 아래 페이지 렌더링 안 함
+        }
+
+        // ── 일반 페이지 렌더링 ──
         ProductDAO.PDAO.showAllProducts(request);
-
-        // ======================================================================
-        // 내가 찜한 영양성분 리스트 가져오기_여은사
         request.setAttribute("nutrients", ProductDAO.PDAO.getAllNutrients(request));
-        // ======================================================================
 
-        // 화면에 띄울 '내 영양제' (MyPageDAO에 새로 만들어야 함)
         ArrayList<ProductDTO> myProducts = MyPageDAO.MDAO.getUserProducts(userId);
         ArrayList<Integer> intakeList = MyPageDAO.MDAO.getTodayIntakeList(userId);
 
-        // 3. 당월 복용 통계 데이터 로드 (JSP의 c:forEach용)
         LocalDate now = LocalDate.now();
         int currentYear = now.getYear();
         int currentMonth = now.getMonthValue();
@@ -49,34 +55,22 @@ public class MyPage extends HttpServlet {
         ArrayList<Map<String, Object>> monthlyStats =
                 MyPageDAO.MDAO.getMonthlyIntakeStatistics(userId, currentYear, currentMonth);
 
-        // ======================================================================
-        // 내가 찜한 영양성분 리스트 가져오기_여은사
         ArrayList<com.groot.app.supplements.SupplementsDTO> likedSupplements =
-                MyPageDAO.MDAO.getLikedSupplements(userId);
-        // ======================================================================
+                MyPageDAO.MDAO.getLikedSupplements(userId, "recent");
 
-        //데이터 바인딩
         request.setAttribute("myProducts", myProducts);
-        request.setAttribute("intakeList", intakeList); // JSP에서 체크 여부 판단용
-        request.setAttribute("monthlyStats", monthlyStats); // 통계 데이터 전달
-        request.setAttribute("likedSupplements", likedSupplements); // 찜한 영양성분 전달
-
-        // HomeServlet.java 예시
+        request.setAttribute("intakeList", intakeList);
+        request.setAttribute("monthlyStats", monthlyStats);
+        request.setAttribute("likedSupplements", likedSupplements);
         request.setAttribute("content", "mypage/mypage.jsp");
         request.setAttribute("activeTab", "home");
         request.getRequestDispatcher("index.jsp").forward(request, response);
-
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         request.setAttribute("content", "mypage/mypage.jsp");
         request.setAttribute("activeTab", "home");
         request.getRequestDispatcher("index.jsp").forward(request, response);
-
-    }
-
-    public void destroy() {
     }
 }

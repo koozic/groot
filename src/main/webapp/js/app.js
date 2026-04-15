@@ -365,7 +365,7 @@ function toggleCart() {
     const float = document.getElementById('floatCart');
     const body  = document.getElementById('siteBody');
     if (!panel || !float) return;
-    const open  = panel.classList.toggle('open');
+    const open  = panel.classList.toggle('open');//open있으면 열리고 없으면 닫힌다
     float.classList.toggle('open', open);
     if (window.innerWidth > 768 && body) body.classList.toggle('shifted', open);
 

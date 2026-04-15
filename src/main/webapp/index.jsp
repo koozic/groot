@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -25,7 +26,6 @@
         <script src="js/body.js" defer></script>
     </c:if>
     <link rel="stylesheet" href="css/product.css">
-    <link rel="stylesheet" href="css/product_detail.css">
     <link rel="stylesheet" href="css/product_edit.css">
 </head>
 <body>
@@ -36,16 +36,28 @@
      ============================================= -->
 <header class="site-header">
     <%-- 로고가 있어야 로그인이 오른쪽으로 밀려납니다 --%>
-    <div class="logo" onclick="location.href='hello-servlet'">약<span>쟁이</span></div>
+    <%-- 왼쪽: 텍스트 로고 자리 (비워서 중앙 로고가 진짜 중앙에 오게) --%>
+    <div style="width:160px;"></div>
+
+    <%-- 중앙: 이미지 로고 --%>
+    <div style="position:absolute; left:50%; transform:translateX(-50%);">
+        <a href="hello-servlet">
+            <img src="img/logo.png"
+                 alt="Otter Care 로고"
+                 style="height:150px; width:auto; display:block;
+                        cursor:pointer; object-fit:contain;">
+        </a>
+    </div>
 
     <%-- 직접 썼던 style은 지우고 클래스명만 유지! --%>
     <div class="hdr-right">
         <c:choose>
             <%-- [1] 로그인 했을 때 --%>
             <c:when test="${not empty sessionScope.loginUser}">
+                <c:set var="profilePath" value="${fn:trim(sessionScope.loginUser.user_profile)}"/>
                 <span class="hdr-link">${sessionScope.loginUser.name}님 어서오세요. 당신의 건강을 챙기세요</span>
                 <img
-                        src="${pageContext.request.contextPath}/user/userImg/${sessionScope.loginUser.user_profile}"
+                        src="${(fn:startsWith(profilePath, 'http://') or fn:startsWith(profilePath, 'https://')) ? profilePath : pageContext.request.contextPath.concat('/').concat(profilePath)}"
                         alt="프로필"
                         style="width:40px; height:40px; border-radius:50%; object-fit:cover;"
                         onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/user/userImg/Ayanokoji.jfif';"

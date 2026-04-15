@@ -55,7 +55,7 @@ public class UserDAO {
                     request.setAttribute("loginMsg", "어서오세요. 당신의 건강을 챙기세요");
                     isLoginSuccess = true;
                 } else if (rs.getString("user_pw").equals("ADMIN_PROTECTED")) {
-                    // ── Step 2. users에 없으면 admin 테이블 조회 ──
+                    // ── Step 2. users에 ADMIN_PROTECTED 계정이면 admin 테이블로 검증 ──
                     // 중요: 다음 조회를 위해 기존 리소스 닫기
                     DBManager_new.close(null, pstmt, rs);
 
@@ -107,6 +107,46 @@ public class UserDAO {
                     // 비밀번호 불일치
                     incrementFailCount(request, id);
                     request.setAttribute("loginMsg", "아이디 또는 비밀번호가 일치하지 않습니다.");
+                }
+            } else {
+                // users에 없는 ID일 수 있으므로 admin 테이블도 조회
+                DBManager_new.close(null, pstmt, rs);
+
+                String adminSql = "SELECT * FROM admin WHERE admin_id=?";
+                pstmt = con.prepareStatement(adminSql);
+                pstmt.setString(1, id);
+                rs = pstmt.executeQuery();
+
+                if (rs.next()) {
+                    if (rs.getString("admin_pw").equals(pw)) {
+                        // [관리자 로그인 성공]
+                        UserDTO adminUser = new UserDTO();
+                        adminUser.setUser_id(rs.getString("admin_id"));
+                        adminUser.setName(rs.getString("admin_name"));
+                        adminUser.setEmail(rs.getString("admin_email"));
+                        adminUser.setUser_profile("admin_icon.png");
+
+                        try {
+                            syncAdminToUserTable(adminUser);
+                        } catch (Exception e) {
+                            System.out.println("⚠️ 동기화 중 오류가 났지만 로그인은 진행합니다: " + e.getMessage());
+                        }
+
+                        HttpSession session = request.getSession();
+                        session.setAttribute("loginUser", adminUser);
+                        session.setAttribute("isAdmin", true);
+                        session.removeAttribute("loginFailCount");
+
+                        request.setAttribute("loginMsg", "관리자로 로그인되었습니다.");
+                        isLoginSuccess = true;
+                    } else {
+                        incrementFailCount(request, id);
+                        request.setAttribute("loginMsg", "아이디 또는 비밀번호가 일치하지 않습니다.");
+                    }
+                } else {
+                    incrementFailCount(request, id);
+                    request.setAttribute("loginMsg", "존재하지 않는 아이디입니다. 회원가입 해주세요");
+                    request.setAttribute("needVerifyChoice", true);
                 }
             }
 
@@ -257,6 +297,7 @@ public class UserDAO {
 
             String uploadedProfile = (String) request.getAttribute("user_profile"); // UserJoinC에서 업로드한 URL
             String finalProfilePath="";
+            System.out.println("[UserDAO.join] selectedProfile=" + selectedProfile + ", uploadedProfile=" + uploadedProfile);
 
             // UserJoinC에서 Cloudinary 업로드한 URL이 있으면 우선 사용
             if (uploadedProfile != null && !uploadedProfile.trim().isEmpty()) {
@@ -271,7 +312,7 @@ public class UserDAO {
             }
             // 혹시 모를 예외 대비
             else {
-                finalProfilePath = "user/userImg/Ayanokoji.jpg";
+                finalProfilePath = "user/userImg/Ayanokoji.jfif";
                 System.out.println("기본값 적용: " + finalProfilePath);
             }
 

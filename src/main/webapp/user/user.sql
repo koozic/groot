@@ -253,6 +253,7 @@ insert into admin (
 insert into admin values (u_admin.nextval, 'master', '1111', '총관리자', 'master@test.com');
 insert into admin values (u_admin.nextval, 'manager1', '2222', '운영관리자', 'manager1@test.com');
 insert into admin values (u_admin.nextval, 'staff1', '3333', '스태프1', 'staff1@test.com');
+insert into admin values (u_admin.nextval, 'admin', '1234', '나야나', 'staff1@t1st.com');
 
 select *
 from admin;
