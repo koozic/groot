@@ -20,6 +20,7 @@ public class HelloServlet extends HttpServlet {
 
 
         // HomeServlet.java 예시
+//        request.setAttribute("contentR","review/bestreview.jsp");
         request.setAttribute("content", "views/home.jsp");
         request.setAttribute("activeTab", "home");
         request.getRequestDispatcher("index.jsp").forward(request, response);
