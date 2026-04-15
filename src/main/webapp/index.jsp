@@ -37,9 +37,26 @@
      1. 헤더
      ============================================= -->
 <header class="site-header">
-    <%-- 로고가 있어야 로그인이 오른쪽으로 밀려납니다 --%>
-    <%-- 왼쪽: 텍스트 로고 자리 (비워서 중앙 로고가 진짜 중앙에 오게) --%>
-    <div style="width:160px;"></div>
+
+    <%-- 왼쪽: 햄버거 메뉴 버튼 + 드롭다운 --%>
+    <div class="hdr-menu-wrap">
+        <button class="hdr-menu-btn" id="menuBtn" onclick="toggleMenu()" aria-label="메뉴">
+            <span class="menu-bar"></span>
+            <span class="menu-bar"></span>
+            <span class="menu-bar"></span>
+        </button>
+        <%-- 드롭다운 메뉴 --%>
+        <nav class="dropdown-menu" id="dropdownMenu">
+            <a href="product" class="dropdown-item ${activeTab == 'product'   ? 'active' : ''}">💊 제품</a>
+            <a href="supplements" class="dropdown-item ${activeTab == 'nutrition' ? 'active' : ''}">🧪 영양성분</a>
+            <a href="recommend" class="dropdown-item ${activeTab == 'recommend' ? 'active' : ''}">✨ 영양추천</a>
+            <c:if test="${sessionScope.isAdmin == true}">
+                <a href="admin" class="dropdown-item ${activeTab == 'admin'     ? 'active' : ''}">🛠️ 영양제 관리</a>
+            </c:if>
+            <div class="dropdown-divider"></div>
+            <a href="cart" class="dropdown-item">🛒 장바구니</a>
+        </nav>
+    </div>
 
     <%-- 중앙: 이미지 로고 --%>
     <div style="position:absolute; left:50%; transform:translateX(-50%);">
@@ -51,26 +68,20 @@
         </a>
     </div>
 
-    <%-- 직접 썼던 style은 지우고 클래스명만 유지! --%>
+    <%-- 오른쪽: 프로필/마이페이지/로그인 --%>
     <div class="hdr-right">
         <c:choose>
-            <%-- [1] 로그인 했을 때 --%>
             <c:when test="${not empty sessionScope.loginUser}">
                 <c:set var="profilePath" value="${fn:trim(sessionScope.loginUser.user_profile)}"/>
-                <span class="hdr-link">${sessionScope.loginUser.name}님 어서오세요. 당신의 건강을 챙기세요</span>
                 <img
                         src="${(fn:startsWith(profilePath, 'http://') or fn:startsWith(profilePath, 'https://')) ? profilePath : pageContext.request.contextPath.concat('/').concat(profilePath)}"
                         alt="프로필"
                         style="width:40px; height:40px; border-radius:50%; object-fit:cover;"
                         onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/user/userImg/Ayanokoji.jfif';"
                 >
-
-
                 <a href="mypage" class="hdr-link">마이페이지</a>
                 <a href="logout" class="btn-login" style="padding: 5px 12px;">로그아웃</a>
             </c:when>
-
-            <%-- [2] 로그인 안 했을 때 --%>
             <c:otherwise>
                 <a href="join" class="hdr-link">회원가입</a>
                 <a href="user-Login" class="btn-login">로그인</a>
@@ -78,28 +89,8 @@
         </c:choose>
     </div>
 </header>
-<!-- =============================================
-     2. 네비게이션
-     ============================================= -->
-<nav class="site-nav">
-    <div class="nav-left">
-        <a href="product" class="nav-item ${activeTab == 'product'   ? 'active' : ''}">제품</a>
-        <a href="supplements" class="nav-item ${activeTab == 'nutrition' ? 'active' : ''}">영양성분</a>
-        <a href="recommend" class="nav-item ${activeTab == 'recommend' ? 'active' : ''}">영양추천</a>
-        <%-- ✅ 추가: 관리자 세션일 때만 탭 표시 --%>
-        <c:if test="${sessionScope.isAdmin == true}">
-            <a href="admin" class="nav-item ${activeTab == 'admin' ? 'active' : ''}">🛠️ 영양제 관리</a>
-        </c:if>
 
-    </div>
-    <div class="nav-cart" onclick="toggleCart()">
-        <span class="nav-cart-icon">🛒</span>
-        <span>장바구니</span>
-        <c:if test="${not empty sessionScope.cartCount and sessionScope.cartCount > 0}">
-            <div class="nav-badge">${sessionScope.cartCount}</div>
-        </c:if>
-    </div>
-</nav>
+
 <!-- =============================================
      3. 메인 콘텐츠 (여기만 바뀜)
      ============================================= -->
@@ -192,5 +183,22 @@
 <c:if test="${content == 'body/body.jsp'}">
     <script src="js/body.js"></script>
 </c:if>
+<script>
+    function toggleMenu() {
+        const menu = document.getElementById('dropdownMenu');
+        const btn = document.getElementById('menuBtn');
+        menu.classList.toggle('open');
+        btn.classList.toggle('open');
+    }
+
+    // 메뉴 외부 클릭 시 닫기
+    document.addEventListener('click', function (e) {
+        const wrap = document.querySelector('.hdr-menu-wrap');
+        if (wrap && !wrap.contains(e.target)) {
+            document.getElementById('dropdownMenu').classList.remove('open');
+            document.getElementById('menuBtn').classList.remove('open');
+        }
+    });
+</script>
 </body>
 </html>
