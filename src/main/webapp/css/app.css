@@ -54,7 +54,21 @@ a {
     top: 0;
     z-index: 200;
     height: var(--header-h);
-    background: #fff;
+    background: transparent;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    overflow: visible; /* ← 추가 (absolute 자식이 잘리지 않게) */
+}
+
+.site-header.scrolled {
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    height: var(--header-h);
+    background: transparent;
     border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;

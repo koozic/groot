@@ -23,11 +23,12 @@ import java.util.Map;
  * GET  /body?action=detail&suppId=5   → 영양소 상세 (JSON)
  * GET  /body?action=myLikes           → 마이페이지 좋아요 목록 (JSON)
  * POST /body?action=like&suppId=5     → 좋아요 토글 (JSON)
+ * Get  /body?action=liked             → 로그인 유저가 좋아요한 supps (JSON)
  */
 @WebServlet(name = "BodyApiC", value = "/body")
 public class BodyApiC extends HttpServlet {
 
-    private final BodyDAO dao = new BodyDAO();
+    private final BodyDAO dao = BodyDAO.BODY_DAO;
     private final Gson gson = new Gson();
 
     @Override
@@ -105,10 +106,24 @@ public class BodyApiC extends HttpServlet {
                     out.print(gson.toJson(liked));
                     break;
                 }
+                case "liked": {
+                    HttpSession session = request.getSession(false);
+                    UserDTO user = (session != null)
+                            ? (UserDTO) session.getAttribute("loginUser") : null;
+                    if (user == null) {
+                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                        out.print("{\"error\":\"login required\"}");
+                        break;
+                    }
+                    List<Integer> liked = dao.getLikedSupplementsIds(user.getUser_id());
+                    out.print(gson.toJson(liked));
 
+                    break;
+                }
                 default:
                     response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                     out.print("{\"error\":\"unknown action\"}");
+
             }
 
         } catch (Exception e) {

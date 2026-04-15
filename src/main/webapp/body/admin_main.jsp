@@ -247,7 +247,10 @@
                 </select>
             </div>
 
-            <a href="admin?action=form" class="btn-add">+ 새 영양소 등록</a>
+            <button type="button" class="btn-add"
+                    onclick="openAdminModal('insert')">
+                + 새 영양소 등록
+            </button>
         </div>
 
     </div>
@@ -310,16 +313,15 @@
                             <td style="color:#777;">${s.supplementViewCount}</td>
                             <td style="color:#777; font-size:0.88em;">${s.supplementRegDate}</td>
                             <td style="white-space:nowrap;">
-                                <a href="admin?action=form&suppId=${s.supplementId}">
-                                    <button class="btn btn-edit">수정</button>
-                                </a>
+                                <button type="button" class="btn btn-edit"
+                                        onclick="openAdminModal('update', ${s.supplementId})">
+                                    수정
+                                </button>
                                 &nbsp;
-                                <form action="admin" method="post" style="display:inline"
-                                      onsubmit="return confirm('${s.supplementName}을(를) 삭제하시겠습니까?')">
-                                    <input type="hidden" name="action" value="delete">
-                                    <input type="hidden" name="suppId" value="${s.supplementId}">
-                                    <button type="submit" class="btn btn-del">삭제</button>
-                                </form>
+                                <button type="button" class="btn btn-del"
+                                        onclick="deleteSupp(${s.supplementId}, '${s.supplementName}', this)">
+                                    삭제
+                                </button>
                             </td>
                         </tr>
                     </c:forEach>
@@ -330,3 +332,180 @@
     </div>
 
 </div><%-- /admin-wrap --%>
+<%-- ===== 관리자 모달 (admin_main.jsp 전용) ===== --%>
+<div id="adminModalOverlay"
+     style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6);
+            z-index:99999; justify-content:center; align-items:center; padding:20px;"
+     onclick="if(event.target===this) closeAdminModal()">
+    <div style="background:#fff; border-radius:14px; padding:30px; width:100%;
+                max-width:550px; max-height:90vh; overflow-y:auto; position:relative;
+                box-shadow:0 15px 35px rgba(0,0,0,0.3);">
+
+        <button onclick="closeAdminModal()"
+                style="position:absolute; top:16px; right:16px; background:none;
+                       border:none; font-size:1.5em; cursor:pointer; color:#bbb;">✕
+        </button>
+
+        <h3 id="adminModalTitle" style="margin-top:0; margin-bottom:25px;">➕ 영양소 등록</h3>
+
+        <input type="hidden" id="adminAction" value="insert">
+        <input type="hidden" id="adminSuppId" value="">
+
+        <div style="display:flex; flex-direction:column; gap:16px;">
+            <div>
+                <label style="display:block; font-weight:700; margin-bottom:6px; font-size:0.9em;">영양소 이름 *</label>
+                <input id="adminName" type="text"
+                       style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;">
+            </div>
+            <div>
+                <label style="display:block; font-weight:700; margin-bottom:6px; font-size:0.9em;">효능 *</label>
+                <textarea id="adminEfficacy"
+                          style="width:100%; height:80px; padding:10px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box; resize:none;"></textarea>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <div>
+                    <label style="display:block; font-weight:700; margin-bottom:6px; font-size:0.9em;">복용법</label>
+                    <input id="adminDosage" type="text"
+                           style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;">
+                </div>
+                <div>
+                    <label style="display:block; font-weight:700; margin-bottom:6px; font-size:0.9em;">복용 시기</label>
+                    <input id="adminTiming" type="text"
+                           style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;">
+                </div>
+            </div>
+            <div>
+                <label style="display:block; font-weight:700; margin-bottom:6px; font-size:0.9em;">주의사항</label>
+                <textarea id="adminCaution"
+                          style="width:100%; height:60px; padding:10px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box; resize:none;"></textarea>
+            </div>
+            <div>
+                <label style="display:block; font-weight:700; margin-bottom:6px; font-size:0.9em;">이미지 경로</label>
+                <input id="adminImgPath" type="text"
+                       style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;">
+            </div>
+            <div id="adminBodyIdWrap">
+                <label style="display:block; font-weight:700; margin-bottom:6px; font-size:0.9em;">연결할 신체 부위</label>
+                <select id="adminBodyId"
+                        style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
+                    <option value="">선택 안함</option>
+                    <option value="1">💇 머리카락</option>
+                    <option value="2">🧴 피부</option>
+                    <option value="3">👁️ 눈</option>
+                    <option value="4">🧠 뇌</option>
+                    <option value="5">🫁 폐</option>
+                    <option value="6">❤️ 심장</option>
+                    <option value="7">🫀 간</option>
+                    <option value="8">🫃 위</option>
+                    <option value="9">🌀 장</option>
+                    <option value="10">🦴 뼈</option>
+                    <option value="11">💪 근육</option>
+                </select>
+            </div>
+        </div>
+
+        <div style="display:flex; gap:12px; margin-top:30px;">
+            <button onclick="submitAdminModal()"
+                    style="flex:1; padding:13px; background:#4CAF50; color:white;
+                           border:none; border-radius:8px; font-weight:700; cursor:pointer;">저장하기
+            </button>
+            <button onclick="closeAdminModal()"
+                    style="padding:13px 25px; background:#eee; border:none;
+                           border-radius:8px; cursor:pointer;">취소
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openAdminModal(mode, suppId) {
+        const overlay = document.getElementById('adminModalOverlay');
+        overlay.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+
+        document.getElementById('adminAction').value = mode;
+        document.getElementById('adminSuppId').value = suppId || '';
+
+        const bodyIdWrap = document.getElementById('adminBodyIdWrap');
+
+        if (mode === 'update') {
+            document.getElementById('adminModalTitle').textContent = '✏️ 영양소 수정';
+            if (bodyIdWrap) bodyIdWrap.style.display = 'none'; // 수정 시 부위 선택 숨김
+
+            fetch('admin?action=getOne&suppId=' + suppId)
+                .then(res => res.json())
+                .then(res => {
+                    if (!res.success) {
+                        alert(res.message);
+                        return;
+                    }
+                    const d = res.data;
+                    document.getElementById('adminName').value = d.supplementName || '';
+                    document.getElementById('adminEfficacy').value = d.supplementEfficacy || '';
+                    document.getElementById('adminDosage').value = d.supplementDosage || '';
+                    document.getElementById('adminTiming').value = d.supplementTiming || '';
+                    document.getElementById('adminCaution').value = d.supplementCaution || '';
+                    document.getElementById('adminImgPath').value = d.supplementImagePath || '';
+                });
+        } else {
+            document.getElementById('adminModalTitle').textContent = '➕ 새 영양소 등록';
+            if (bodyIdWrap) bodyIdWrap.style.display = 'block';
+            ['adminName', 'adminEfficacy', 'adminDosage', 'adminTiming', 'adminCaution', 'adminImgPath']
+                .forEach(id => document.getElementById(id).value = '');
+        }
+    }
+
+    function closeAdminModal() {
+        document.getElementById('adminModalOverlay').style.display = 'none';
+        document.body.style.overflow = '';
+    }
+
+    function submitAdminModal() {
+        const action = document.getElementById('adminAction').value;
+        const suppId = document.getElementById('adminSuppId').value;
+        const bodyIdEl = document.getElementById('adminBodyId');
+
+        const payload = {
+            action: action,
+            suppId: suppId,
+            supplementName: document.getElementById('adminName').value.trim(),
+            supplementEfficacy: document.getElementById('adminEfficacy').value.trim(),
+            supplementDosage: document.getElementById('adminDosage').value.trim(),
+            supplementTiming: document.getElementById('adminTiming').value.trim(),
+            supplementCaution: document.getElementById('adminCaution').value.trim(),
+            supplementImagePath: document.getElementById('adminImgPath').value.trim(),
+            bodyId: bodyIdEl ? bodyIdEl.value : ''
+        };
+
+        fetch('admin', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json; charset=UTF-8'},
+            body: JSON.stringify(payload)
+        })
+            .then(r => r.json())
+            .then(data => {
+                alert(data.message);
+                if (data.success) location.reload();
+            })
+            .catch(err => alert('오류: ' + err));
+    }
+
+    function deleteSupp(suppId, suppName, btn) {
+        if (!confirm('"' + suppName + '"을(를) 삭제하시겠습니까?')) return;
+
+        fetch('admin', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json; charset=UTF-8'},
+            body: JSON.stringify({action: 'delete', suppId: suppId})
+        })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    btn.closest('tr').remove();
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(err => alert('오류: ' + err));
+    }
+</script>

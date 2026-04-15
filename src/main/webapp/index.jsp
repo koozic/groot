@@ -9,7 +9,7 @@
           href="${pageContext.request.contextPath}/img/favicon.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>약쟁이</title>
+    <title>OTTERCARE</title>
 
     <script>
         let IS_LOGIN = ${(not empty sessionScope.loginUser) or (sessionScope.isAdmin == true)};
@@ -24,9 +24,9 @@
     <c:if test="${content == 'body/body.jsp'}">
         <link rel="stylesheet" href="css/body.css">
     </c:if>
-    <c:if test="${content == 'body/body.jsp'}">
-        <script src="js/body.js" defer></script>
-    </c:if>
+    <%--    <c:if test="${content == 'body/body.jsp'}">--%>
+    <%--        <script src="js/body.js" charset="UTF-8" defer></script>--%>
+    <%--    </c:if>--%>
     <link rel="stylesheet" href="css/product.css">
     <link rel="stylesheet" href="css/product_edit.css">
 </head>
