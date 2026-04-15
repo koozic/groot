@@ -36,7 +36,18 @@
      ============================================= -->
 <header class="site-header">
     <%-- 로고가 있어야 로그인이 오른쪽으로 밀려납니다 --%>
-    <div class="logo" onclick="location.href='hello-servlet '">약<span>쟁이</span></div>
+    <%-- 왼쪽: 텍스트 로고 자리 (비워서 중앙 로고가 진짜 중앙에 오게) --%>
+    <div style="width:160px;"></div>
+
+    <%-- 중앙: 이미지 로고 --%>
+    <div style="position:absolute; left:50%; transform:translateX(-50%);">
+        <a href="hello-servlet">
+            <img src="img/logo.png"
+                 alt="Otter Care 로고"
+                 style="height:150px; width:auto; display:block;
+                        cursor:pointer; object-fit:contain;">
+        </a>
+    </div>
 
     <%-- 직접 썼던 style은 지우고 클래스명만 유지! --%>
     <div class="hdr-right">
