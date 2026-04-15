@@ -5,6 +5,8 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+    <link rel="icon" type="image/png"
+          href="${pageContext.request.contextPath}/img/favicon.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>약쟁이</title>
@@ -44,7 +46,7 @@
         <a href="hello-servlet">
             <img src="img/logo.png"
                  alt="Otter Care 로고"
-                 style="height:150px; width:auto; display:block;
+                 style="height:160px; width:auto; display:block;
                         cursor:pointer; object-fit:contain;">
         </a>
     </div>
