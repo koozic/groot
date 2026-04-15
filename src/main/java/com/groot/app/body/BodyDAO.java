@@ -179,8 +179,8 @@ public class BodyDAO {
         // ✅ DB에 seq_supplement_like 시퀀스가 없다면 아래 SQL로 먼저 생성:
         //    CREATE SEQUENCE seq_supplement_like START WITH 1 INCREMENT BY 1;
         String insertSql = "INSERT INTO supplements_like " +
-                "(supplement_like_id, user_id, supplement_id, supplement_like_date) " +
-                "VALUES (seq_supplements_like_id.NEXTVAL, ?, ?, SYSDATE)";
+                "(supplement_like_id, user_id, supplement_id) " +  // supplement_like_date 제거
+                "VALUES (seq_supplements_like_id.NEXTVAL, ?, ?)";  // SYSDATE 제거
 
         try (Connection con = DBManager_new.connect();
              PreparedStatement checkPs = con.prepareStatement(checkSql)) {
