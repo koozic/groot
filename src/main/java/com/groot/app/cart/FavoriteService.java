@@ -10,7 +10,6 @@ import java.util.List;
 public class FavoriteService {
 
     private final FavoriteDAO dao = new FavoriteDAO();
-
     // ──────────────────────────────────────────────
     // 장바구니 담기 (INSERT)
     // 반환: "added" | "already" | "error"
