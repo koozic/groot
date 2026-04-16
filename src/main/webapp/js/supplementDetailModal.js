@@ -46,6 +46,18 @@ function showSupplementDetail(suppId, name, efficacy, dosage, timing, caution, i
                     <div style="padding: 10px 0;">
                         <strong style="color: #2c3e50;">5. Caution:</strong> ${escapedCaution}
                     </div>
+                    
+                    <div style="display: flex; gap: 10px; margin-top: 30px;">
+                        <button onclick="closeSupplementDetailModal()" 
+                                style="flex: 1; padding: 12px; background: #95a5a6; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 15px; font-weight: bold;">
+                            목록으로 돌아가기
+                        </button>
+                        <button onclick="removeLikedSupplement(${suppId})" 
+                                style="flex: 1; padding: 12px; background: #ff4d4f; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 15px; font-weight: bold;">
+                            찜 목록에서 삭제하기
+                        </button>
+                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -87,3 +99,41 @@ document.addEventListener('keydown', function(event) {
         closeSupplementDetailModal();
     }
 });
+
+// ==============================================================================
+// ★ 여기에 찜 삭제 함수를 추가합니다! ★
+// ==============================================================================
+function removeLikedSupplement(supplementId) {
+    if (!confirm("정말 찜 목록에서 삭제하시겠습니까?")) return;
+
+    fetch('supplementsLike', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'supplementId=' + supplementId
+    })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 'unliked') {
+                closeSupplementDetailModal();
+
+                // 💡 1단계에서 추가한 id를 통해 요소를 정확히 찾습니다.
+                const card = document.getElementById(`liked-card-${supplementId}`);
+
+                if (card) {
+                    card.style.opacity = '0';
+                    card.style.transition = '0.3s';
+
+                    setTimeout(() => {
+                        card.remove();
+                        // 옵션: 만약 지운 후에 리스트를 완전히 새로 갱신하고 싶다면
+                        // loadLikedSupplements('recent'); 를 호출해도 됩니다.
+                    }, 300);
+                } else {
+                    loadLikedSupplements('recent');
+                }
+            } else {
+                alert('오류가 발생했습니다. 다시 시도해주세요.');
+            }
+        })
+        .catch(err => console.error('삭제 오류:', err));
+}
