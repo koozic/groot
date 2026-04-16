@@ -199,25 +199,25 @@ function renderPaginatedReviews(isAppend = false) {
             ? `<div class="review-img-box" style="margin: 15px 0;"><img src="${getImgPath(r.r_img)}" style="width: 150px; border-radius: 8px;"></div>`
             : '';
 
-        const rUser = r.user_id ? r.user_id.trim() : "";
-        const safeLoginId = currentLoginId ? currentLoginId.trim() : "";
+        // 1. 신분증 확인 준비
+        const rUser = r.user_id ? r.user_id.trim() : "";           // 글 쓴 사람 신분증
+        const safeLoginId = currentLoginId ? currentLoginId.trim() : ""; // 폰 보고 있는 내 신분증
 
-        // 🌟 [하드코딩 확정] 팀에서 정한 관리자 4인방 명단 딱 고정!
+// 2. 🌟 V.I.P 프리패스 명단 (무영님의 센스!)
         const adminList = ['admin1', 'master', 'manager1', 'staff1'];
-
-        // 내 아이디가 저 명단 안에 포함되어 있으면 무조건 관리자 무적 권한(true) 획득!
         const isAdmin = adminList.includes(safeLoginId);
 
-        // 내 글이거나 OR 관리자일 때만 점 3개(⋮) 메뉴 버튼을 보여줌!
+// 3. 🚧 대망의 1차 검문소 (메뉴 버튼 자체를 달아줄까 말까?)
         let menuHtml = (safeLoginId !== "" && (rUser === safeLoginId || isAdmin)) ? `
-            <div class="review-more-menu">
-                <button type="button" class="btn-more" onclick="toggleMenu(${r.review_id})">⋮</button>
-                <div id="menu-content-${r.review_id}" class="menu-content" style="display:none;">
-                    ${rUser === safeLoginId ? `<a href="javascript:void(0)" onclick="openUpdateForm(${r.review_id})">수정하기</a>` : ''}
-                    
-                    <a href="javascript:void(0)" onclick="deleteReview(${r.review_id})" style="color:red;">삭제하기</a>
-                </div>
-            </div>` : '';
+    <div class="review-more-menu">
+        <button type="button" class="btn-more" onclick="toggleMenu(${r.review_id})">⋮</button>
+        <div id="menu-content-${r.review_id}" class="menu-content" style="display:none;">
+            
+            ${rUser === safeLoginId ? `<a href="javascript:void(0)" onclick="openUpdateForm(${r.review_id})">수정하기</a>` : ''}
+            
+            <a href="javascript:void(0)" onclick="deleteReview(${r.review_id})" style="color:red;">삭제하기</a>
+        </div>
+    </div>` : ''; // 조건 안 맞으면 얄짤없이 빈칸('') 처리!
 
         const safeTitle = r.r_title ? r.r_title.replace(/'/g, "\\'") : '';
         const safeContent = r.r_content ? r.r_content.replace(/'/g, "\\'") : '';
@@ -296,21 +296,47 @@ function openDetailModal(title, user, score, date, content, img) {
 function closeDetailModal() { document.getElementById('detailModal').style.display = 'none'; }
 
 // ==========================================
-// 🗑️ 5. 리뷰 삭제
+// 🗑️ 5. 리뷰 삭제 (커스텀 모달 버전)
 // ==========================================
+let targetReviewIdToDelete = null;
+
+// 모달 열기
 function deleteReview(reviewId) {
-    if (!confirm("정말 삭제하시겠습니까?")) return;
-    fetch(`review-delete?review_id=${reviewId}`)
+    targetReviewIdToDelete = reviewId;
+    document.getElementById('custom-delete-modal').style.display = 'flex';
+}
+
+// 모달 닫기 (취소 버튼)
+function closeDeleteModal() {
+    document.getElementById('custom-delete-modal').style.display = 'none';
+    targetReviewIdToDelete = null;
+}
+
+// 찐으로 삭제 실행 (삭제하기 버튼)
+function executeDeleteReview() {
+    if (!targetReviewIdToDelete) return;
+
+    // 🔥 1. 서버 응답 기다리지 말고 누르자마자 모달창부터 강제로 꺼버려!!!
+    document.getElementById('custom-delete-modal').style.display = 'none';
+
+    // 2. 창 닫아놓고 뒤에서 조용히 서버 통신 진행
+    fetch(`review-delete?review_id=${targetReviewIdToDelete}`)
         .then(res => res.text())
         .then(data => {
             if (data.trim() === "1") {
-                showToast("리뷰를 삭제했습니다. 🗑️");
+                showToast("리뷰가 깔끔하게 삭제되었습니다. 🗑️");
                 refreshReviewUI();
-                fetchReviews();
-            } else alert("삭제 실패!");
+                fetchReviews(); // 화면 리스트 새로고침
+            } else {
+                alert("삭제 실패!");
+            }
+            targetReviewIdToDelete = null; // 아이디 초기화
+        })
+        .catch(err => {
+            console.error("삭제 통신 에러:", err);
+            targetReviewIdToDelete = null;
         });
 }
-
 // ==========================================
 // 🪄 6. 리뷰 수정 (미리보기)
 // ==========================================

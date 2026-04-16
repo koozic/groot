@@ -9,6 +9,7 @@ DROP TABLE reviews CASCADE CONSTRAINTS;
 DROP SEQUENCE reviews_seq;
 DROP SEQUENCE review_likes_seq;
 
+SELECT * FROM REVIEWS Order By r_score desc ;
 
 -- ==========================================
 -- 1. 번호표 자동 발급 기계 (시퀀스) 생성
