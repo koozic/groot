@@ -74,6 +74,7 @@
         <c:choose>
             <c:when test="${not empty sessionScope.loginUser}">
                 <c:set var="profilePath" value="${fn:trim(sessionScope.loginUser.user_profile)}"/>
+                <span class="hdr-link">${sessionScope.loginUser.name}님 어서오세요. 당신의 건강을 챙기세요</span>
                 <img
                         src="${(fn:startsWith(profilePath, 'http://') or fn:startsWith(profilePath, 'https://')) ? profilePath : pageContext.request.contextPath.concat('/').concat(profilePath)}"
                         alt="프로필"
