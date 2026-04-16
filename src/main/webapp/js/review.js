@@ -79,7 +79,7 @@ function fetchModalPhotoReviews() {
                            작성자: ${r.user_id} | ${makeStarHtml(r.r_score)} | ${formatKoreanDate(r.r_date)}
                         </div>
                         <div style="font-size:0.95em; line-height:1.5; margin-bottom: 15px;">${r.r_content}</div>
-                        <button type="button" class="btn-like" onclick="toggleLike(${r.review_id}, '${currentLoginId}')" style="padding: 6px 12px; font-size: 0.85em;">
+                        <button type="button" class="btn-like" onclick="reviewToggleLike(${r.review_id}, '${currentLoginId}')" style="padding: 6px 12px; font-size: 0.85em;">
                             👍 도움돼요 <span id="like-count-modal-${r.review_id}">${r.r_like}</span>
                         </button>
                     </div>
@@ -89,9 +89,9 @@ function fetchModalPhotoReviews() {
 }
 
 // ==========================================
-// 🚀 2. 좋아요 처리
+// 🚀 2. 좋아요 처리 (함수명 변경 완료)
 // ==========================================
-function toggleLike(reviewId, userId) {
+function reviewToggleLike(reviewId, userId) {
     if (!userId || userId === 'null' || userId === '') {
         showToast("로그인이 필요한 기능입니다! 🔒", "error");
         return;
@@ -210,7 +210,7 @@ function renderPaginatedReviews(isAppend = false) {
 // 3. 🚧 대망의 1차 검문소 (메뉴 버튼 자체를 달아줄까 말까?)
         let menuHtml = (safeLoginId !== "" && (rUser === safeLoginId || isAdmin)) ? `
     <div class="review-more-menu">
-        <button type="button" class="btn-more" onclick="toggleMenu(${r.review_id})">⋮</button>
+        <button type="button" class="btn-more" onclick="reviewToggleMenu(${r.review_id})">⋮</button>
         <div id="menu-content-${r.review_id}" class="menu-content" style="display:none;">
             
             ${rUser === safeLoginId ? `<a href="javascript:void(0)" onclick="openUpdateForm(${r.review_id})">수정하기</a>` : ''}
@@ -230,7 +230,7 @@ function renderPaginatedReviews(isAppend = false) {
                 <hr style="border:0; border-top:1px solid #eee;">
                 <div class="review-content">${r.r_content}</div>
                 <div class="review-action-box">
-                    <button type="button" class="btn-like" onclick="toggleLike(${r.review_id}, '${currentLoginId}')">👍 <span id="like-count-${r.review_id}">${r.r_like}</span></button>
+                    <button type="button" class="btn-like" onclick="reviewToggleLike(${r.review_id}, '${currentLoginId}')">👍 <span id="like-count-${r.review_id}">${r.r_like}</span></button>
                     <button type="button" class="btn-detail" onclick="openDetailModal('${safeTitle}', '${r.user_id}', '${r.r_score}', '${formatKoreanDate(r.r_date)}', '${safeContent}', '${r.r_img}')">🔍 리뷰 상세보기</button>
                 </div>
             </div>`;
@@ -408,7 +408,10 @@ function submitUpdate() {
         });
 }
 
-function toggleMenu(id) {
+// ==========================================
+// 🚨 (함수명 변경 완료) 메뉴 토글
+// ==========================================
+function reviewToggleMenu(id) {
     const m = document.getElementById(`menu-content-${id}`);
     document.querySelectorAll('.menu-content').forEach(el => { if(el.id !== `menu-content-${id}`) el.style.display = 'none'; });
     m.style.display = (m.style.display === 'none') ? 'block' : 'none';
@@ -471,16 +474,24 @@ function submitReview() {
 // 🍞 기타 유틸 (토스트, 날짜, 새로고침)
 // ==========================================
 function showToast(message, type = "success") {
-    let toast = document.getElementById("toast");
-    if (!toast) {
-        toast = document.createElement("div");
-        toast.id = "toast";
-        toast.className = "toast";
-        document.body.appendChild(toast);
+    // 1. 컨테이너가 없으면 알아서 껍데기를 만든다!
+    let container = document.getElementById("toast-container");
+    if (!container) {
+        container = document.createElement("div");
+        container.id = "toast-container";
+        document.body.appendChild(container);
     }
+
+    // 2. 토스트 메시지 알맹이 만들기
+    const toast = document.createElement("div");
+    toast.className = "toast-message";
+
+    if(type === "error") toast.style.backgroundColor = "#e74c3c";
     toast.innerText = message;
-    toast.className = `toast show ${type}`;
-    setTimeout(() => toast.classList.remove("show"), 1300);
+
+    // 3. 화면에 띄우고 3초 뒤에 깔끔하게 삭제
+    container.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
 }
 
 function formatKoreanDate(dateStr) {
