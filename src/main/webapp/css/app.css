@@ -54,27 +54,34 @@ a {
     z-index: 200;
     height: var(--header-h);
     background: transparent;
-    border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0 40px;
-    overflow: visible; /* ← 추가 (absolute 자식이 잘리지 않게) */
+    overflow: visible;
+    transition: height .5s cubic-bezier(.4, 0, .2, 1),
+    background .5s ease,
+    box-shadow .5s ease,
+    transform .38s cubic-bezier(.4, 0, .2, 1);
 }
 
-.site-header.scrolled {
-    position: sticky;
-    top: 0;
-    z-index: 200;
-    height: var(--header-h);
-    background: transparent;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 40px;
-    overflow: visible; /* ← 추가 (absolute 자식이 잘리지 않게) */
+/* 스크롤 내릴 때: 헤더 위로 숨김 */
+.site-header.hide {
+    transform: translateY(-100%);
 }
+
+/* 스크롤 올릴 때: 작게 복귀 */
+.site-header.scrolled {
+    height: 64px;
+    background: transparent;
+    box-shadow: none;
+}
+
+/* 스크롤 시 로고 축소 */
+.site-header.scrolled .logo-img {
+    height: 46px !important;
+}
+
 
 .logo {
     font-family: 'Black Han Sans', cursive;
@@ -213,6 +220,28 @@ a {
     height: 1px;
     background: var(--border);
     margin: 4px 0;
+}
+
+/* ── 로고 이미지 애니메이션 ── */
+@keyframes logoFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.logo-img {
+    animation: logoFadeIn .7s cubic-bezier(.22, .68, 0, 1.2) both;
+    transition: height .35s ease, transform .3s ease, filter .3s ease;
+}
+
+.logo-img:hover {
+    transform: translateY(-4px) scale(1.04);
+    transition: height .5s ease, transform .45s ease, filter .45s ease;
 }
 
 /* ================================================

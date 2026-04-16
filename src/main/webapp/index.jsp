@@ -63,8 +63,9 @@
         <a href="hello-servlet">
             <img src="img/logo.png"
                  alt="Otter Care 로고"
-                 style="height:160px; width:auto; display:block;
-                        cursor:pointer; object-fit:contain;">
+                 class="logo-img"
+                 style="height:160px; width:auto; display:block; cursor:pointer; object-fit:contain;
+            transition: height .35s ease;">
         </a>
     </div>
 
@@ -184,21 +185,95 @@
     <script src="js/body.js"></script>
 </c:if>
 <script>
+    /* ── 1. 햄버거 드롭다운 ── */
     function toggleMenu() {
         const menu = document.getElementById('dropdownMenu');
         const btn = document.getElementById('menuBtn');
+        if (!menu || !btn) return;
         menu.classList.toggle('open');
         btn.classList.toggle('open');
     }
 
-    // 메뉴 외부 클릭 시 닫기
     document.addEventListener('click', function (e) {
         const wrap = document.querySelector('.hdr-menu-wrap');
         if (wrap && !wrap.contains(e.target)) {
-            document.getElementById('dropdownMenu').classList.remove('open');
-            document.getElementById('menuBtn').classList.remove('open');
+            const menu = document.getElementById('dropdownMenu');
+            const btn = document.getElementById('menuBtn');
+            if (menu) menu.classList.remove('open');
+            if (btn) btn.classList.remove('open');
         }
     });
+
+    /* ── 2. 스크롤 헤더 동작 ── */
+    (function () {
+        var header = document.querySelector('.site-header');
+        var root = document.documentElement;
+        var H_FULL = 170;
+        var H_SMALL = 64;
+        var TOP_ZONE = 100;
+        var DEAD = 12;        /* 12px 이상 움직여야 반응 */
+
+        /* lastTriggerY: 마지막으로 상태가 바뀐 시점의 Y값
+           → 여기서 DEAD px 이상 차이나야 다음 판단 실행
+           → 이 방식이면 TOP_ZONE 근처 진동이 원천 차단됨 */
+        var lastTriggerY = window.scrollY;
+        var state = window.scrollY <= TOP_ZONE ? 'full' : 'small';
+
+        function go(next) {
+            if (next === state) return;
+            state = next;
+
+            if (next === 'full') {
+                header.classList.remove('hide', 'scrolled');
+                root.style.setProperty('--header-h', H_FULL + 'px');
+
+            } else if (next === 'small') {
+                header.classList.add('scrolled');
+                root.style.setProperty('--header-h', H_SMALL + 'px');
+                /* rAF 두 번 중첩: 첫 번째 프레임에 scrolled 반영,
+                   두 번째 프레임에 hide 제거 → 반드시 작은 크기로 나옴 */
+                requestAnimationFrame(function () {
+                    requestAnimationFrame(function () {
+                        header.classList.remove('hide');
+                    });
+                });
+
+            } else { /* hidden */
+                /* scrolled는 그대로 두고 hide만 추가
+                   → 풀사이즈 상태에서 처음 내릴 땐 풀 채로 올라가고
+                   → 이미 small이면 작은 채로 올라감 */
+                header.classList.add('hide');
+            }
+        }
+
+        window.addEventListener('scroll', function () {
+            var y = window.scrollY;
+            var diff = y - lastTriggerY;   /* lastY가 아닌 lastTriggerY 기준 */
+
+            if (Math.abs(diff) < DEAD) return;
+
+            /* 상태 판단 */
+            var next;
+            if (y <= TOP_ZONE) {
+                next = 'full';
+            } else if (diff > 0) {
+                next = 'hidden';
+            } else {
+                next = 'small';
+            }
+
+            /* 상태가 실제로 바뀔 때만 lastTriggerY 갱신
+               → 바뀌지 않으면 기준점 유지 → 진동 원천 차단 */
+            if (next !== state) {
+                lastTriggerY = y;
+                go(next);
+            }
+
+        }, {passive: true});
+
+        /* 초기 상태 */
+        if (window.scrollY > TOP_ZONE) go('small');
+    })();
 </script>
 </body>
 </html>
