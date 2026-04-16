@@ -187,37 +187,35 @@
 <script>
     /* ── 1. 햄버거 드롭다운 ── */
     function toggleMenu() {
-        const menu = document.getElementById('dropdownMenu');
-        const btn = document.getElementById('menuBtn');
+        var menu = document.getElementById('dropdownMenu');
+        var btn = document.getElementById('menuBtn');
         if (!menu || !btn) return;
         menu.classList.toggle('open');
         btn.classList.toggle('open');
     }
 
     document.addEventListener('click', function (e) {
-        const wrap = document.querySelector('.hdr-menu-wrap');
+        var wrap = document.querySelector('.hdr-menu-wrap');
         if (wrap && !wrap.contains(e.target)) {
-            const menu = document.getElementById('dropdownMenu');
-            const btn = document.getElementById('menuBtn');
+            var menu = document.getElementById('dropdownMenu');
+            var btn = document.getElementById('menuBtn');
             if (menu) menu.classList.remove('open');
             if (btn) btn.classList.remove('open');
         }
     });
 
-    /* ── 2. 스크롤 헤더 동작 ── */
+    /* ── 2. 스크롤 헤더 ── */
     (function () {
         var header = document.querySelector('.site-header');
         var root = document.documentElement;
+
         var H_FULL = 170;
         var H_SMALL = 64;
         var TOP_ZONE = 100;
-        var DEAD = 12;        /* 12px 이상 움직여야 반응 */
+        var DEAD = 10; // 스크롤 반응성을 위해 15에서 10으로 살짝 줄였습니다.
 
-        /* lastTriggerY: 마지막으로 상태가 바뀐 시점의 Y값
-           → 여기서 DEAD px 이상 차이나야 다음 판단 실행
-           → 이 방식이면 TOP_ZONE 근처 진동이 원천 차단됨 */
-        var lastTriggerY = window.scrollY;
-        var state = window.scrollY <= TOP_ZONE ? 'full' : 'small';
+        var lastScrollY = window.scrollY; // 이름 변경: 항상 최신 스크롤 값을 담음
+        var state = 'full';
 
         function go(next) {
             if (next === state) return;
@@ -226,53 +224,49 @@
             if (next === 'full') {
                 header.classList.remove('hide', 'scrolled');
                 root.style.setProperty('--header-h', H_FULL + 'px');
-
             } else if (next === 'small') {
                 header.classList.add('scrolled');
                 root.style.setProperty('--header-h', H_SMALL + 'px');
-                /* rAF 두 번 중첩: 첫 번째 프레임에 scrolled 반영,
-                   두 번째 프레임에 hide 제거 → 반드시 작은 크기로 나옴 */
-                requestAnimationFrame(function () {
-                    requestAnimationFrame(function () {
-                        header.classList.remove('hide');
-                    });
-                });
-
+                header.classList.remove('hide');
             } else { /* hidden */
-                /* scrolled는 그대로 두고 hide만 추가
-                   → 풀사이즈 상태에서 처음 내릴 땐 풀 채로 올라가고
-                   → 이미 small이면 작은 채로 올라감 */
                 header.classList.add('hide');
             }
         }
 
         window.addEventListener('scroll', function () {
             var y = window.scrollY;
-            var diff = y - lastTriggerY;   /* lastY가 아닌 lastTriggerY 기준 */
+            var diff = y - lastScrollY;
 
+            // 스크롤 변화량이 DEAD보다 작으면 무시 (너무 민감한 반응 방지)
             if (Math.abs(diff) < DEAD) return;
 
-            /* 상태 판단 */
             var next;
             if (y <= TOP_ZONE) {
-                next = 'full';
+                next = 'full';    // 맨 위 구간: 큰 헤더
             } else if (diff > 0) {
-                next = 'hidden';
+                next = 'hidden';  // 아래로 내릴 때: 숨김
             } else {
-                next = 'small';
+                next = 'small';   // 위로 올릴 때: 작은 헤더
             }
 
-            /* 상태가 실제로 바뀔 때만 lastTriggerY 갱신
-               → 바뀌지 않으면 기준점 유지 → 진동 원천 차단 */
+            // [핵심 수정 포인트]
+            // 상태 변화(next !== state)와 상관없이 항상 기준점을 현재 y값으로 갱신해야
+            // 다음 스크롤 시 올렸는지 내렸는지 정확히 판별할 수 있습니다.
+            lastScrollY = y;
+
             if (next !== state) {
-                lastTriggerY = y;
                 go(next);
             }
 
         }, {passive: true});
 
-        /* 초기 상태 */
-        if (window.scrollY > TOP_ZONE) go('small');
+        /* 초기 상태 설정 */
+        if (window.scrollY > TOP_ZONE) {
+            state = 'hidden';
+            header.classList.add('scrolled', 'hide');
+            root.style.setProperty('--header-h', H_SMALL + 'px');
+            lastScrollY = window.scrollY;
+        }
     })();
 </script>
 </body>

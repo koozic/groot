@@ -49,8 +49,10 @@ a {
    1. 헤더
    ================================================ */
 .site-header {
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    right: 0;
     z-index: 200;
     height: var(--header-h);
     background: transparent;
@@ -59,25 +61,43 @@ a {
     justify-content: space-between;
     padding: 0 40px;
     overflow: visible;
-    transition: height .5s cubic-bezier(.4, 0, .2, 1),
+    transform: translateY(0);
+    opacity: 1;
+    /* transition 시간을 0.45초 -> 0.7초로 늘려서 부드럽게 스르륵 사라지도록 수정 */
+    transition: height .7s cubic-bezier(.4, 0, .2, 1),
+    transform .5s cubic-bezier(.4, 0, .2, 1),
+    opacity .7s ease,
     background .5s ease,
-    box-shadow .5s ease,
-    transform .38s cubic-bezier(.4, 0, .2, 1);
+    border-bottom .5s ease;
 }
 
-/* 스크롤 내릴 때: 헤더 위로 숨김 */
+/* 본문 공간 확보 */
+body::before {
+    content: '';
+    display: block;
+    height: var(--header-h);
+    transition: height .5s cubic-bezier(.4, 0, .2, 1);
+}
+
+/* 숨김: 위로 올라가면서 페이드 아웃 */
 .site-header.hide {
     transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
 }
 
-/* 스크롤 올릴 때: 작게 복귀 */
+/* 작은 헤더: 그라데이션 배경 */
 .site-header.scrolled {
     height: 64px;
-    background: transparent;
-    box-shadow: none;
+    background: #ffffff; /* 기존 그라데이션 제거하고 퓨어 화이트 적용 */
+    border-bottom: 1px solid var(--border); /* 미리 정의해두신 연한 회색 테두리 사용 */
+
+    /* 기존에 있던 blur 필터들은 제거 (단색 배경이므로 불필요) */
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
 }
 
-/* 스크롤 시 로고 축소 */
+/* 작은 헤더일 때 로고 축소 */
 .site-header.scrolled .logo-img {
     height: 46px !important;
 }
