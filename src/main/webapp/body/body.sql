@@ -360,4 +360,18 @@ FROM body_supplement bs
 ORDER BY b.body_id, s.supplement_id;
 
 
+--=================================================
+-- 영양소 등록 안돼서
+
+-- 1. 현재 테이블에 있는 가장 큰 ID 값을 확인합니다.
+SELECT MAX(supplement_id)
+FROM supplements;
+
+-- 2. 기존 시퀀스를 삭제합니다.
+DROP SEQUENCE seq_supplements;
+
+-- 3. 위 1번에서 나온 최대값에 +1을 한 숫자로 시퀀스를 다시 만듭니다.
+-- (예: 최대값이 50이었다면 START WITH 51)
+CREATE SEQUENCE seq_supplements START WITH 40 INCREMENT BY 1;
+
 

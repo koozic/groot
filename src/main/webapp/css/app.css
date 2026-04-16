@@ -22,8 +22,7 @@
     --radius: 10px;
     --radius-sm: 6px;
     --radius-pill: 999px;
-    --header-h: 52px;
-    --nav-h: 46px;
+    --header-h: 170px;
     --tab-h: 58px;
 }
 
@@ -54,7 +53,21 @@ a {
     top: 0;
     z-index: 200;
     height: var(--header-h);
-    background: #fff;
+    background: transparent;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    overflow: visible; /* ← 추가 (absolute 자식이 잘리지 않게) */
+}
+
+.site-header.scrolled {
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    height: var(--header-h);
+    background: transparent;
     border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
@@ -109,87 +122,97 @@ a {
 }
 
 /* ================================================
-   2. 네비게이션
+   2. 햄버거 메뉴 & 드롭다운
    ================================================ */
-.site-nav {
-    position: sticky;
-    top: var(--header-h);
-    z-index: 190;
-    height: var(--nav-h);
-    background: var(--primary);
-    display: flex;
-    align-items: center;
-    padding: 0 40px;
+.hdr-menu-wrap {
+    position: relative;
+    z-index: 300;
+    width: 160px; /* hdr-right와 균형 맞춤 */
 }
 
-.nav-left {
-    display: flex;
-    flex: 1;
-    height: 100%;
-}
-
-.nav-item {
-    display: flex;
-    align-items: center;
-    color: rgba(255, 255, 255, 0.75);
-    font-size: 14px;
-    font-weight: 500;
-    padding: 0 18px;
+.hdr-menu-btn {
+    background: none;
+    border: none;
     cursor: pointer;
-    border-bottom: 3px solid transparent;
-    transition: all .2s;
-    white-space: nowrap;
-    text-decoration: none;
-}
-
-.nav-item:hover {
-    color: #fff;
-    background: rgba(255, 255, 255, 0.08);
-}
-
-.nav-item.active {
-    color: #fff;
-    border-bottom-color: var(--accent);
-}
-
-/* nav 장바구니 버튼 */
-.nav-cart {
+    padding: 8px;
     display: flex;
-    align-items: center;
-    gap: 6px;
-    color: #fff;
-    font-size: 13px;
-    font-weight: 700;
-    padding: 7px 16px;
+    flex-direction: column;
+    gap: 5px;
     border-radius: var(--radius-sm);
-    background: rgba(255, 255, 255, 0.15);
-    border: 1.5px solid rgba(255, 255, 255, 0.3);
-    cursor: pointer;
-    white-space: nowrap;
     transition: background .2s;
 }
 
-.nav-cart:hover {
-    background: rgba(255, 255, 255, 0.25);
+.hdr-menu-btn:hover {
+    background: var(--primary-lt);
 }
 
-.nav-cart-icon {
-    font-size: 16px;
-    line-height: 1;
+.menu-bar {
+    display: block;
+    width: 24px;
+    height: 2.5px;
+    background: var(--text);
+    border-radius: 2px;
+    transition: all .3s;
+    transform-origin: center;
 }
 
-.nav-badge {
-    background: var(--accent);
-    color: #fff;
-    border-radius: var(--radius-pill);
-    font-size: 11px;
-    font-weight: 900;
-    min-width: 18px;
-    height: 18px;
-    padding: 0 5px;
+/* 열렸을 때 X 모양 */
+.hdr-menu-btn.open .menu-bar:nth-child(1) {
+    transform: translateY(7.5px) rotate(45deg);
+}
+
+.hdr-menu-btn.open .menu-bar:nth-child(2) {
+    opacity: 0;
+}
+
+.hdr-menu-btn.open .menu-bar:nth-child(3) {
+    transform: translateY(-7.5px) rotate(-45deg);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    min-width: 180px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    display: none;
+    flex-direction: column;
+    padding: 6px 0;
+    z-index: 500;
+}
+
+.dropdown-menu.open {
     display: flex;
-    align-items: center;
-    justify-content: center;
+}
+
+.dropdown-item {
+    padding: 11px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    text-decoration: none;
+    transition: background .15s, color .15s;
+    white-space: nowrap;
+}
+
+.dropdown-item:hover {
+    background: var(--primary-lt);
+    color: var(--primary);
+}
+
+.dropdown-item.active {
+    color: var(--primary);
+    font-weight: 700;
+    background: var(--primary-lt);
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 4px 0;
 }
 
 /* ================================================
@@ -265,9 +288,9 @@ a {
 .cart-panel {
     position: fixed;
     right: -300px;
-    top: 0;
+    top: var(--header-h); /* ← 헤더 아래부터 시작 */
     width: 300px;
-    height: 100vh;
+    height: calc(100vh - var(--header-h)); /* ← 헤더 높이만큼 빼기 */
     background: #fff;
     border-left: 1px solid var(--border);
     box-shadow: -4px 0 20px rgba(0, 0, 0, 0.10);
@@ -755,9 +778,6 @@ a {
         padding: 0 24px;
     }
 
-    .site-nav {
-        padding: 0 24px;
-    }
 
     .site-body {
         padding: 20px 24px 60px;
@@ -791,11 +811,6 @@ a {
     }
 
     .hdr-link {
-        display: none;
-    }
-
-    /* nav → 숨김, 하단탭으로 대체 */
-    .site-nav {
         display: none;
     }
 

@@ -8,6 +8,13 @@ import java.util.List;
 
 public class BodyDAO {
 
+    public static final BodyDAO BODY_DAO = new BodyDAO();
+
+    private BodyDAO() {
+
+    }
+
+
     // ─────────────────────────────────────────
     // 1. 모든 신체 부위 목록 조회
     // ─────────────────────────────────────────
@@ -255,6 +262,21 @@ public class BodyDAO {
             }
         }
         return list;
+    }
+
+    public List<Integer> getLikedSupplementsIds(String userId) throws Exception {
+        String sql = "select SUPPLEMENT_ID from SUPPLEMENTS_LIKE where USER_ID = ?";
+        try (Connection con = DBManager_new.connect();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, userId);
+            ResultSet rs = ps.executeQuery();
+            List<Integer> ids = new ArrayList<>();
+            while (rs.next()) {
+                ids.add(rs.getInt(1));
+            }
+            return ids;
+        }
+
     }
 }
 
