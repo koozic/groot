@@ -104,6 +104,9 @@ async function openDetailModal(div) {
     // 모달의 수정 버튼에게 고유번호(id) 쥐어주기!
     const btns = document.querySelectorAll(".btn-group .btn-list");
     // btns[0]은 목록으로 버튼, btns[1]이 수정 버튼입니다.
+    // "두 번째 버튼(수정 버튼)아! 너한테 '클릭하면(onclick)
+    // 영양제 번호(id)를 들고 updateSupplement 함수를 실행해라!'라는 명령어를 강제로 주입할게!"
+    // .setAttribute("속성이름", "넣을 값")
     btns[1].setAttribute("onclick", `updateSupplement('${id}')`);
 }
 
@@ -113,7 +116,9 @@ async function openDetailModal(div) {
 function toggleLike(btn, supplementId) {
     fetch('supplementsLike', {
         method: 'POST',
+        // 이거 일반 폼(form) 데이터 형식이야!라고 명찰(headers)을 붙임
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        // post에 supplementId=15 같은 값을 넣어 보냄
         body: 'supplementId=' + supplementId
     })
         .then(res => res.json())
@@ -139,6 +144,7 @@ function toggleLike(btn, supplementId) {
         .catch(err => console.error('좋아요 비동기 통신 오류:', err));
 }
 
+// 리스트 보여주는 효과...
 document.addEventListener("DOMContentLoaded", function() {
     const cards = document.querySelectorAll('.supp-wrap');
     cards.forEach((card, index) => {
