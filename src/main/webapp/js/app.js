@@ -225,6 +225,10 @@ function restoreWishState() {
 }
 
 /* ── 영양제 분석 ── */
+window.latestAnalysisData = null;
+window.currentResultTab = 'good';
+window.analysisCompleted = false;
+
 function analyzeSupplements(type = 'my') {
     const checked = Array.from(document.querySelectorAll('input[name="supp"]:checked')).map(e => e.value);
     if (checked.length === 0) {
@@ -240,63 +244,224 @@ function analyzeSupplements(type = 'my') {
         .then(r => r.json())
         .then(d => {
             if (d.success) {
+                window.latestAnalysisData = d;
+                window.analysisCompleted = true;
                 showAnalysisResult(d);
                 if (!isLogin) appendLoginNudge();
+                if (typeof window.onAnalysisRendered === 'function') {
+                    window.onAnalysisRendered(d);
+                }
             } else showAnalysisError(d.message || '분석 오류');
         }).catch(() => showAnalysisError('서버 연결에 실패했어요'));
 }
 
 function showAnalysisLoading() {
     const box = document.getElementById('analysisResult');
+    const reviewSection = document.getElementById('bestReviewsSection');
     if (!box) return;
+    window.analysisCompleted = false;
     box.style.display = 'block';
     box.innerHTML = `<div class="analysis-loading"><div class="loading-spinner"></div><p>분석 중이에요...</p></div>`;
+    if (reviewSection) reviewSection.style.display = 'none';
     box.scrollIntoView({behavior: 'smooth', block: 'nearest'});
+}
+
+function renderResultList(items, template, emptyText) {
+    if (!items || items.length === 0) {
+        return `<div class="result-empty">${emptyText}</div>`;
+    }
+    return `<div class="result-list">${items.map(template).join('')}</div>`;
+}
+
+function renderResultBlock(title, description, content) {
+    return `<div class="result-block">
+        <div class="result-block-head">
+            <strong>${title}</strong>
+            <span>${description}</span>
+        </div>
+        ${content}
+    </div>`;
+}
+
+function setResultTab(tabName, shouldRefresh = true) {
+    window.currentResultTab = tabName;
+
+    document.querySelectorAll('.result-tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tab === tabName);
+    });
+
+    document.querySelectorAll('.result-panel').forEach(panel => {
+        panel.classList.toggle('active', panel.dataset.panel === tabName);
+    });
+
+    if (shouldRefresh && window.analysisCompleted && typeof window.refreshReviewSection === 'function') {
+        window.refreshReviewSection();
+    }
 }
 
 function showAnalysisResult(data) {
     const box = document.getElementById('analysisResult');
     if (!box) return;
-    const mk = (items, cls, icon, title, tpl) =>
-        items && items.length ? `<div class="result-section"><div class="result-title">${icon} ${title}</div>
-            ${items.map(tpl).join('')}</div>` : '';
 
-    box.innerHTML = `<div class="analysis-result">
-        ${mk(data.missing, 'result-missing', '⚠️', '부족할 수 있는 영양소',
-        m => `<div class="result-item result-missing"><span class="result-icon">${m.icon}</span>
-                  <div class="result-info"><strong>${m.name}</strong><span>${m.reason}</span></div></div>`)}
-        ${mk(data.goodCombo, 'result-good', '💚', '좋은 조합',
-        g => `<div class="result-item result-good"><span class="result-icon">✅</span>
-                  <div class="result-info"><strong>${g.combo}</strong><span>${g.effect}</span></div></div>`)}
-        ${mk(data.compatibility, 'result-compat', '🔄', '상성 분석',
-        c => `<div class="result-item ${c.status === 'bad' ? 'result-missing' : 'result-good'}">
-                  <span class="result-icon">${c.status === 'bad' ? '⚠️' : '💚'}</span>
-                  <div class="result-info"><strong>${c.suppA} + ${c.suppB}</strong><span>${c.reason}</span></div></div>`)}
-        ${mk(data.timing, 'result-time', '⏰', '복용 시간 추천',
-        t => `<div class="result-item result-time"><span class="result-icon">${t.icon}</span>
-                  <div class="result-info"><strong>${t.name}</strong><span>${t.when}</span></div></div>`)}
-        <a href="recommend" class="btn btn-primary btn-full" style="margin-top:16px;">자세한 분석 보기 →</a>
+    const checkedNames = Array.from(document.querySelectorAll('input[name="supp"]:checked'))
+        .map(input => input.dataset.reviewKey)
+        .filter(Boolean);
+    const goodCombos = Array.isArray(data.goodCombo) ? data.goodCombo : [];
+    const recommendedSupps = Array.isArray(data.missing) ? data.missing : [];
+    const timingItems = Array.isArray(data.timing) ? data.timing : [];
+    const warningCombos = Array.isArray(data.compatibility)
+        ? data.compatibility.filter(item => item.status === 'bad')
+        : [];
+
+    const previewNames = checkedNames.slice(0, 4).join(', ');
+    const summaryText = checkedNames.length === 0
+        ? '선택한 영양제를 기준으로 결과를 정리했어요.'
+        : `${previewNames}${checkedNames.length > 4 ? ` 외 ${checkedNames.length - 4}개` : ''} 기준으로 결과를 정리했어요.`;
+
+    box.innerHTML = `<div class="analysis-workspace">
+        <div class="analysis-summary-card">
+            <div class="analysis-summary-copy">
+                <span class="selection-badge">STEP 2</span>
+                <strong>${checkedNames.length}개 영양제 분석 완료</strong>
+                <p>${summaryText}</p>
+            </div>
+            <div class="analysis-summary-stats">
+                <div class="summary-stat">
+                    <span>좋은 조합</span>
+                    <strong>${goodCombos.length}</strong>
+                </div>
+                <div class="summary-stat">
+                    <span>추가 추천</span>
+                    <strong>${recommendedSupps.length}</strong>
+                </div>
+                <div class="summary-stat">
+                    <span>주의/시간</span>
+                    <strong>${warningCombos.length + timingItems.length}</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="result-tab-bar">
+            <button type="button" class="result-tab-btn active" data-tab="good" onclick="setResultTab('good')">
+                좋은 조합
+                <span>${goodCombos.length}</span>
+            </button>
+            <button type="button" class="result-tab-btn" data-tab="recommend" onclick="setResultTab('recommend')">
+                추가 추천
+                <span>${recommendedSupps.length}</span>
+            </button>
+            <button type="button" class="result-tab-btn" data-tab="caution" onclick="setResultTab('caution')">
+                주의/복용시간
+                <span>${warningCombos.length + timingItems.length}</span>
+            </button>
+        </div>
+
+        <div class="result-panels">
+            <section class="result-panel active" data-panel="good">
+                ${renderResultBlock(
+                    '같이 먹으면 좋은 조합',
+                    '선택한 영양제 안에서 시너지가 나는 조합만 모아봤어요.',
+                    renderResultList(
+                        goodCombos,
+                        g => `<div class="result-item result-good">
+                                <span class="result-icon">✅</span>
+                                <div class="result-info">
+                                    <strong>${g.combo}</strong>
+                                    <span>${g.effect}</span>
+                                </div>
+                              </div>`,
+                        '선택한 영양제끼리 등록된 좋은 조합은 아직 없어요.'
+                    )
+                )}
+            </section>
+
+            <section class="result-panel" data-panel="recommend">
+                ${renderResultBlock(
+                    '함께 고려하면 좋은 영양제',
+                    '현재 선택한 영양제를 기준으로 추가로 보면 좋은 항목이에요.',
+                    renderResultList(
+                        recommendedSupps,
+                        m => `<div class="result-item result-missing">
+                                <span class="result-icon">${m.icon}</span>
+                                <div class="result-info">
+                                    <strong>${m.name}</strong>
+                                    <span>${m.reason}</span>
+                                </div>
+                              </div>`,
+                        '추가로 추천할 영양제가 없어요.'
+                    )
+                )}
+            </section>
+
+            <section class="result-panel" data-panel="caution">
+                ${renderResultBlock(
+                    '같이 먹을 때 주의할 조합',
+                    '같은 시간에 함께 먹지 않는 편이 좋은 조합이에요.',
+                    renderResultList(
+                        warningCombos,
+                        c => `<div class="result-item result-caution">
+                                <span class="result-icon">⚠️</span>
+                                <div class="result-info">
+                                    <strong>${c.suppA} + ${c.suppB}</strong>
+                                    <span>${c.reason}</span>
+                                </div>
+                              </div>`,
+                        '선택한 영양제끼리 큰 주의 조합은 없어요.'
+                    )
+                )}
+                ${renderResultBlock(
+                    '영양제별 복용 시간',
+                    '아침, 저녁, 식후 여부처럼 섭취 루틴을 한 번에 볼 수 있어요.',
+                    renderResultList(
+                        timingItems,
+                        t => `<div class="result-item result-time">
+                                <span class="result-icon">${t.icon}</span>
+                                <div class="result-info">
+                                    <strong>${t.name}</strong>
+                                    <span>${t.when}</span>
+                                </div>
+                              </div>`,
+                        '복용 시간 정보가 아직 준비되지 않았어요.'
+                    )
+                )}
+            </section>
+        </div>
+
+        <div class="analysis-actions">
+            <a href="reco" class="btn btn-primary btn-full">다른 영양제 다시 보기 →</a>
+        </div>
     </div>`;
+
+    setResultTab('good', false);
     box.scrollIntoView({behavior: 'smooth', block: 'nearest'});
 }
 
 function appendLoginNudge() {
-    const result = document.querySelector('.analysis-result');
-    if (!result) return;
+    const result = document.querySelector('.analysis-workspace');
+    const actions = document.querySelector('.analysis-actions');
+    if (!result || result.querySelector('.login-nudge')) return;
     const nudge = document.createElement('div');
     nudge.className = 'login-nudge';
     nudge.innerHTML = `<span>🔑</span>
         <div><strong>로그인하면 분석 기록이 저장돼요!</strong>
              <span>나의 영양제 히스토리를 관리해보세요</span></div>
         <a href="user-Login" class="btn btn-outline" style="padding:8px 16px;font-size:13px;">로그인</a>`;
-    result.appendChild(nudge);
+    if (actions) {
+        result.insertBefore(nudge, actions);
+    } else {
+        result.appendChild(nudge);
+    }
 }
 
 function showAnalysisError(msg) {
     const box = document.getElementById('analysisResult');
+    const reviewSection = document.getElementById('bestReviewsSection');
     if (!box) return;
+    window.latestAnalysisData = null;
+    window.analysisCompleted = false;
     box.style.display = 'block';
     box.innerHTML = `<div class="analysis-error"><span>⚠️</span><p>${msg}</p></div>`;
+    if (reviewSection) reviewSection.style.display = 'none';
 }
 
 /* ── 장바구니 패널 토글 ── */

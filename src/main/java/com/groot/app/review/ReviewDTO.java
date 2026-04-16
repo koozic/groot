@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+
 public class ReviewDTO {
     private int review_id;      // PK
     private String user_id;     // 작성자
