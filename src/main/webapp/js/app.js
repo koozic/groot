@@ -37,7 +37,8 @@ const LocalCart = {
         return true;
     },
     remove(cartId) {
-        this.save(this.getAll().filter(i => i.cartId !== cartId));
+        this.save(this.getAll().filter(i => i.cartId !== cartId));``
+
     },
     count() {
         return this.getAll().length;
@@ -115,7 +116,7 @@ function renderLocalCartPanel() {
     const body = document.querySelector('.cp-body');
     const count = document.querySelector('.cp-count');
     if (!body) return;
-    const items = LocalCart.getAll();
+    const items = LocalCart.getAll(); //[]
     if (count) count.textContent = items.length;
 
     if (items.length === 0) {
@@ -299,17 +300,6 @@ function showAnalysisError(msg) {
     box.innerHTML = `<div class="analysis-error"><span>⚠️</span><p>${msg}</p></div>`;
 }
 
-/* ── 장바구니 패널 토글 ── */
-// function toggleCart() {
-//     const panel = document.getElementById('cartPanel');
-//     const float = document.getElementById('floatCart');
-//     const body = document.getElementById('siteBody');
-//     const open = panel.classList.toggle('open');
-//     float.classList.toggle('open', open);
-//     if (window.innerWidth > 768) body.classList.toggle('shifted', open);
-//     if (open && !isLogin) renderLocalCartPanel();
-// }
-
 document.addEventListener('click', function (e) {
     const panel = document.getElementById('cartPanel');
     const float = document.getElementById('floatCart');
@@ -365,7 +355,7 @@ function toggleCart() {
     const float = document.getElementById('floatCart');
     const body  = document.getElementById('siteBody');
     if (!panel || !float) return;
-    const open  = panel.classList.toggle('open');//open있으면 열리고 없으면 닫힌다
+    const open  = panel.classList.toggle('open');//토큰open있으면 열리고 없으면 닫힌다
     float.classList.toggle('open', open);
     if (window.innerWidth > 768 && body) body.classList.toggle('shifted', open);
 

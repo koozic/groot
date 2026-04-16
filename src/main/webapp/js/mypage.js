@@ -113,9 +113,17 @@ function toggleCheck(element, productId) {
 }
 
 
-function removeSupplement(productId, btnElement) {
-    const item = btnElement.closest('.vit-item');
-    if (!item) return;
+function openConfirm(message, onConfirm) {
+    const modal = document.getElementById('confirmModal');
+    const messageEl = document.getElementById('confirmMessage');
+    if (!modal || !messageEl) {
+        if (typeof onConfirm === 'function') onConfirm();
+        return;
+    }
+    messageEl.textContent = message || '정말 진행하시겠습니까?';
+    confirmCallback = onConfirm;
+    modal.style.display = 'block';
+}
 
     // 1. 화면에서 즉시 숨김 처리 (사용자 체감 속도 향상)
     item.style.display = 'none';
@@ -132,7 +140,6 @@ function removeSupplement(productId, btnElement) {
             // 서버 오류 시 원상 복구
             item.style.display = 'flex';
             updateProgress();
-            showToast("삭제 실패", "error");
         });
     }, 3000);
 
@@ -200,6 +207,7 @@ function closeProductModal() {
 function closeConfirm() {
     const m = document.getElementById('confirmModal');
     if (m) m.style.display = 'none';
+    confirmCallback = null;
 }
 
 function closeAndRefresh() {
