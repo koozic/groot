@@ -379,6 +379,7 @@ function openModal(id) {
                 if (s) s.views = data.supplementViewCount;
             }
             refreshModal(id);
+            renderList(); // ✅ 이 한 줄 추가 - 리스트 카드 조회수도 갱신
         })
         .catch(() => refreshModal(id));
 
@@ -392,7 +393,7 @@ function refreshModal(id) {
         if (s) break;
     }
     if (!s) return;
-
+//
     const on = likedIds.has(id);
     const pt = PARTS[s.part];
 
