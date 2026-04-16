@@ -457,64 +457,51 @@ public class ReviewDAO {
     }
 
     // ==========================================
-// 🪄 리뷰 수정 (보안 필터 및 이미지 로직 통합!)
+// 🪄 [V2 클라우드 패치 완료!] 리뷰 수정 로직
 // ==========================================
     public boolean updateReview(HttpServletRequest request) {
         Connection con = null;
         PreparedStatement pstmt = null;
 
         try {
-            // 1. 사진 저장 경로 잡기 및 MultipartRequest 생성 (언박싱 시작)
-            String path = request.getServletContext().getRealPath("upload");
-            MultipartRequest mr = new MultipartRequest(request, path, 10 * 1024 * 1024, "utf-8", new DefaultFileRenamePolicy());
+            // ❌ 골치 아픈 MultipartRequest(mr) 완전 삭제!
+            // ✅ 컨트롤러의 @MultipartConfig 덕분에 일반 request.getParameter() 쌉가능!
+            int r_id = Integer.parseInt(request.getParameter("upd_review_id"));
+            String title = request.getParameter("upd_title");
+            String content = request.getParameter("upd_content");
+            int score = Integer.parseInt(request.getParameter("upd_score"));
 
-            // 2. 파라미터 꺼내기
-            int r_id = Integer.parseInt(mr.getParameter("upd_review_id"));
-            String title = mr.getParameter("upd_title");
-            String content = mr.getParameter("upd_content");
-            int score = Integer.parseInt(mr.getParameter("upd_score"));
+            String oldImg = request.getParameter("old_img_name");       // 기존 사진 (URL 혹은 파일명)
+            String isImgDeleted = request.getParameter("isImgDeleted"); // 삭제 여부(true/false)
 
-            String newImg = mr.getFilesystemName("upd_file");   // 새로 올린 사진 이름
-            String oldImg = mr.getParameter("old_img_name");   // 기존 사진 이름
-            String isImgDeleted = mr.getParameter("isImgDeleted"); // 삭제 여부(true/false)
+            // 🌟 [핵심] 클라우드 업로드 유틸리티 호출! (사진이 없으면 알아서 null 반환)
+            String newImgUrl = com.groot.app.common.CloudinaryUtil.uploadFromRequest(request, "upd_file", "review");
 
             // ------------------------------------------
-            // 🌟 [보안 및 필터링 구간] - 여기서 싹 세탁합니다!
+            // 🧼 [보안 및 필터링 구간] - 꿍디 세탁기 가동!
             // ------------------------------------------
-
-            // ① XSS 방어 (스크립트 공격 무력화)
             title = title.replace("<", "&lt;").replace(">", "&gt;");
             content = content.replace("<", "&lt;").replace(">", "&gt;");
 
-            // ② 욕설 필터링 (비속어를 '꿍디'로!)
             String[] badWords = {"시발", "존나", "개새끼", "ㅅㅂ"};
             for (String word : badWords) {
                 title = title.replaceAll(word, "꿍디");
                 content = content.replaceAll(word, "꿍디");
             }
-
-            // ③ 줄바꿈 처리 (모든 필터링 후에 <br>로 바꿔야 안전!)
             content = content.replaceAll("\r\n", "<br>");
-
             // ------------------------------------------
 
-            // 3. [이미지 로직] 최종적으로 DB에 넣을 이미지 이름 결정하기
+            // 🖼️ 3. [이미지 로직] 클라우드에 맞게 3지 선다 재설정!
             String finalImg = oldImg; // 기본은 기존 사진 유지
 
-            if (newImg != null) {
-                // 상황 A: 새 사진을 올린 경우 (기존 사진 있으면 서버에서 삭제)
-                finalImg = newImg;
-                if (oldImg != null && !oldImg.isEmpty()) {
-                    File f = new File(path + "/" + oldImg);
-                    if (f.exists()) f.delete();
-                }
+            if (newImgUrl != null && !newImgUrl.isEmpty()) {
+                // 🅰️ 상황 1: 새 사진을 클라우드에 성공적으로 올린 경우
+                finalImg = newImgUrl; // DB에 새 클라우드 주소 넣기!
+                // (참고: 클라우드에 있는 옛날 사진을 지우는 API가 없다면, 그냥 덮어씌우기만 해도 무방합니다!)
+
             } else if ("true".equals(isImgDeleted)) {
-                // 상황 B: 삭제 버튼(체크박스)을 눌러서 이미지를 없앤 경우
-                finalImg = null;
-                if (oldImg != null && !oldImg.isEmpty()) {
-                    File f = new File(path + "/" + oldImg);
-                    if (f.exists()) f.delete();
-                }
+                // 🅱️ 상황 2: 삭제 버튼(체크박스)을 눌러서 이미지를 없앤 경우
+                finalImg = null; // DB에 널(null) 값 넣어서 사진 날리기!
             }
 
             // 4. DB 업데이트 실행
@@ -523,12 +510,12 @@ public class ReviewDAO {
             pstmt = con.prepareStatement(sql);
             pstmt.setString(1, title);
             pstmt.setString(2, content);
-            pstmt.setInt(3, score);
+            pstmt.setString(3, String.valueOf(score));
             pstmt.setString(4, finalImg);
             pstmt.setInt(5, r_id);
 
             // 5. 컨트롤러용 상품 ID 담기
-            request.setAttribute("PRODUCT_ID", mr.getParameter("upd_p_id")); // JSP의 upd_p_id와 이름 맞춰주기!
+            request.setAttribute("PRODUCT_ID", request.getParameter("upd_p_id"));
 
             return pstmt.executeUpdate() == 1;
 

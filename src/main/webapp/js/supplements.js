@@ -47,8 +47,12 @@ function openAddModal() {
 
 // 2. 상세 모달 열기
 async function openDetailModal(div) {
+
+    // JSP에서 data 주머니에 채운 정보를 주라는 코드
     const divData = div.dataset;
     console.log(divData)
+
+    // 그 내용을 자바스크립트가 각각 기억해 둠.
     const id = divData.id;
     const name = divData.name;
     const efficacy = divData.efficacy;
@@ -57,19 +61,39 @@ async function openDetailModal(div) {
     const caution = divData.caution;
     const imgPath = divData.imgpath;
 
-    const response = await fetch('/detailSupplements') // 등록용 JSP를 반환하는 서블릿 경로
+    // 서버야, '/detailSupplements' 주소에 있는 빈 껍데기 HTML 좀 줘!
+    const response = await fetch('/detailSupplements')
+    // 서버가 준 응답을 html 변수에 담음.
     const html = await response.text();
+
+    // 서버한테 받은 빈 모달창을 화면에 짠! 하고 띄움.
+    // content(빈 공간), innerHTML(지정한 빈 공간에 들어갈 html 코드를 조작할 수 있는 자바스크립트 명령어), html(서버가 준 뼈대
     content.innerHTML = html;
     modal.showModal();
 
-    const imgEl =  document.querySelector(".detail-img-area").children[0];
-    console.log(imgEl)
-    imgEl.src = imgPath;
+    // const imgEl =  document.querySelector(".detail-img-area").children[0];
+    // console.log(imgEl)
+    // imgEl.src = imgPath;
 
-    // 명재샘...!
+    // 💡 [이미지 띄우기 로직]
+    // 모달창 안의 img 태그를 찾습니다.
+    const imgEl = document.querySelector(".detail-img-area img");
+
+    if (imgEl && imgPath) {
+        // 이미지가 http로 시작하면(클라우디너리 외부 링크) 그대로 씀
+        if (imgPath.startsWith('http')) {
+            imgEl.src = imgPath;
+        }
+        // http가 없으면(default.png 등 순수 파일명) 내 폴더 경로를 앞에 붙여줌!
+        else {
+            imgEl.src = '/supplementImg/supplementImgFile/' + imgPath;
+        }
+    }
+
+    // 모달창 안의 빈칸들을 찾아서, 아까 기억해 둔 글자들을 채워 넣음.
     const rows = document.querySelectorAll(".detail-row");
-    rows[0].children[1].innerText = id;
-    rows[1].children[1].innerText = name;
+    rows[0].children[1].innerText = id; // "첫 번째 빈칸에 아까 기억한 번호 적어!"
+    rows[1].children[1].innerText = name; // "두 번째 빈칸에 아까 기억한 이름 적어!"
     rows[2].children[1].innerText = efficacy;
     rows[3].children[1].innerText = dosage;
     rows[4].children[1].innerText = timing;

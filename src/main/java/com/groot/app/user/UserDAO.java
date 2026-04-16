@@ -312,10 +312,14 @@ public class UserDAO {
                 System.out.println("기본 프로필 선택: " + finalProfilePath);
             }
             // 혹시 모를 예외 대비
+
+
+
             else {
                 finalProfilePath = "user/userImg/Ayanokoji.jfif";
                 System.out.println("기본값 적용: " + finalProfilePath);
             }
+
 
             // DB에는 문자열 경로 저장
             pstmt.setString(6, finalProfilePath);
