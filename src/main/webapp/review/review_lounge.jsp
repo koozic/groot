@@ -3,7 +3,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <%-- 🌟 CSS 파일 연결 --%>
-<link rel="stylesheet" href="../css/review_lounge.css">
+<link rel="stylesheet" href="../css/review_lounge.css?v=2">
 
 <div class="lounge-wrap">
     <div class="lounge-header">
@@ -104,8 +104,6 @@
 
     // 🌟 1. 메인 데이터 통신 (DB에서 데이터 가져와서 창고에 넣기)
     function fetchLoungeData(category) {
-        // 로딩바 & 끝 메시지 초기화
-       // document.getElementById('loading-spinner').style.display = 'block';
         document.getElementById('end-message').style.display = 'none';
 
         fetch(`lounge-api?category=\${category}`)
@@ -115,10 +113,9 @@
                 grid.innerHTML = ''; // 화면 리셋
 
                 if (!data || data.length === 0) {
-                  //  document.getElementById('loading-spinner').style.display = 'none';
                     grid.innerHTML = '<div style="column-span: all; padding: 60px; text-align: center; color: #777; font-size: 1.1em; background: #fff; border-radius: 12px; border: 1px dashed #ddd;">조건에 맞는 베스트 리뷰가 없습니다 🥲</div>';
 
-                    // 🚨🚨🚨 [여기 3줄 추가!!] 좀비 데이터 박멸 부적!!! 🚨🚨🚨
+                    // 좀비 데이터 박멸 부적!!!
                     allLoungeData = [];
                     currentRenderIndex = 0;
                     if (scrollObserver) scrollObserver.disconnect();
@@ -174,9 +171,9 @@
 
                 grid.innerHTML = initialHtml;
 
-                // 🌟 센서 켜기 & 첫 번째 8개 카드 장전!
+                // 🌟 센서 켜기 & 첫 번째 8개 카드 장전! (함수명 변경 완료)
                 initScrollObserver();
-                loadMoreReviews();
+                loungeLoadMoreReviews();
             })
             .catch(err => {
                 console.error("데이터 불러오기 에러:", err);
@@ -184,8 +181,8 @@
             });
     }
 
-    // 🌟 2. 8개씩 잘라서 화면에 갖다 붙이는 로직 (핵심!)
-    function loadMoreReviews() {
+    // 🌟 2. 8개씩 잘라서 화면에 갖다 붙이는 로직 (함수명 loungeLoadMoreReviews로 변경 완료!)
+    function loungeLoadMoreReviews() {
         // 이미 창고에 있는 데이터를 다 털어 썼다면?
         if (currentRenderIndex >= allLoungeData.length) {
             document.getElementById('loading-spinner').style.display = 'none';
@@ -193,8 +190,6 @@
             if (scrollObserver) scrollObserver.disconnect(); // 센서 끄기
             return;
         }
-
-       // document.getElementById('loading-spinner').style.display = 'flex';
 
         // 🌟 너무 빠르면 무한 스크롤의 쫀득한 맛이 없으니 일부러 0.3초 딜레이를 줍니다 (감성 한 스푼)
         setTimeout(() => {
@@ -252,7 +247,7 @@
         scrollObserver = new IntersectionObserver((entries) => {
             // 바닥 센서가 화면에 나타나면?!
             if (entries[0].isIntersecting) {
-                loadMoreReviews(); // 다음 8개 가져와!!
+                loungeLoadMoreReviews(); // 다음 8개 가져와!! (함수명 변경 완료)
             }
         }, { rootMargin: '100px' }); // 바닥에 닿기 100px 전에 미리 발동! (끊김 없는 스크롤)
 
@@ -321,5 +316,5 @@
     fetchLoungeData('all');
 </script>
 
-
-
+<%-- 🌟 외부 JS 파일 연결 (v=2 붙임!) --%>
+<script src="../js/review.js?v=2"></script>
