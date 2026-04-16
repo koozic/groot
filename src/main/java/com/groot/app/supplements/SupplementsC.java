@@ -7,12 +7,19 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 import java.io.IOException;
 import java.util.List;
 
 import static com.groot.app.supplements.SupplementsDAO.SDAO;
 
 @WebServlet(name = "SupplementsC", value = "/supplements")
+
+// 파일 업로드를 위해 반드시 추가해야 하는 설정
+@MultipartConfig(
+        maxFileSize = 1024 * 1024 * 5,       // 5MB
+        maxRequestSize = 1024 * 1024 * 10    // 10MB
+)
 
 public class SupplementsC extends HttpServlet {
 
@@ -62,12 +69,30 @@ public class SupplementsC extends HttpServlet {
 
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        // DAO의 등록 메서드 실행
-        SDAO.addSupplement                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   (request);
+        // 1. 한글 깨짐 방지
+        request.setCharacterEncoding("UTF-8");
 
-        // 등록이 끝나면 다시 리스트 화면(doGet)으로 새로고침
+        // 2. 모달 폼에서 전송한 사진 파일(supplementFile) 꺼내기
+        Part filePart = request.getPart("supplementFile");
+
+        // 3. Cloudinary를 사용해 업로드하고, 완성된 이미지 링크(URL) 받아오기
+        String imageUrl = null;
+        if (filePart != null && filePart.getSize() > 0) {
+            imageUrl = com.groot.app.common.CloudinaryUtil.uploadFile(filePart, "supplements");
+        }
+
+        // 4. 받아온 링크를 주방(DAO)에 전달하기 위해 request 상자에 담기
+        if (imageUrl != null) {
+            request.setAttribute("newImageUrl", imageUrl);
+        }
+
+        // 5. DAO의 등록 메서드 실행 (DB 저장)
+        SDAO.addSupplement(request);
+
+        // 6. 등록이 끝나면 다시 리스트 화면(doGet)으로 새로고침
         response.sendRedirect("supplements");
     }
+
 
     public void destroy() { }
 

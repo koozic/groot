@@ -54,9 +54,10 @@ public class CloudinaryUtil {
         try {
             // request에서 파일을 꺼내서
             Part filePart = req.getPart(partName);
-            System.out.println("[CloudinaryUtil] partName=" + partName
+     System.out.println("[CloudinaryUtil] partName=" + partName
                     + ", submittedFileName=" + (filePart != null ? filePart.getSubmittedFileName() : "null")
                     + ", size=" + (filePart != null ? filePart.getSize() : -1));
+
             // 위에 있는 uploadFile을 실행해서 URL을 바로 받아옴!
 
             return uploadFile(filePart, folderName);
