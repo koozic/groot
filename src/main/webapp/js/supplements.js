@@ -9,19 +9,25 @@ document.addEventListener('keydown', function(event) {
         modal.close();
         content.innerHTML = '';
     }
+// document : 우리가 보고 있는 웹페이지 전체
+// addEventListener('keydown', ...) : "사용자가 키보드 자판(key)을 밑으로 누르는(down) 순간을 항상 감시하고 있다는 코드
+// 어떤 키를 눌렀는지에 대한 정보가 event라는 바구니에 담겨서 함수 안으로 전달됨
+// content.innerHTML = '' : 아까 fetch로 꽉꽉 채워 넣었던 모달창 안의 알맹이(HTML 껍데기와 데이터)를 싹 지움
 });
 
 // 1. 등록 모달 열기
+// 일반 사용자가 주소창을 조작해서 억지로 '등록' 버튼을 눌렀을 때,
+// 텅 빈 에러 화면이 뜨는 것을 막아주는 방어 코드
 function openAddModal() {
     fetch('/supplementAdd', {
-        // 💡 서버(필터)가 비동기 요청임을 알아챌 수 있도록 헤더를 추가
+        // 💡 서버(필터)가 비동기 요청임을 알아챌 수 있도록 디테일 포인트 (headers)를 추가
         headers: {
             'X-Requested-With': 'fetch'
         }
         }) // 등록용 JSP를 반환하는 서블릿 경로
 
         .then(res => {
-            // 서버에서 403 에러 코드를 보냈다면 권한이 없다는 뜻입니다.
+            // 403 에러 : 서버가 클라이언트의 요청을 이해했지만, 권한 부족 등의 이유로 접근을 거부할 때 발생하는 HTTP 상태 코드
             if (res.status === 403) {
                 alert('관리자만 접근할 수 있는 기능입니다!');
                 // throw 에러를 발생시켜서 아래의 .then(html => ...) 부분이 실행되지 않게 막습니다.
@@ -61,7 +67,7 @@ async function openDetailModal(div) {
     const caution = divData.caution;
     const imgPath = divData.imgpath;
 
-    // 서버야, '/detailSupplements' 주소에 있는 빈 껍데기 HTML 좀 줘!
+    // 서버야, '/detailSupplements' 주소에 있는 빈 껍데기 HTML 좀 줘! (받을 때까지 기다림)
     const response = await fetch('/detailSupplements')
     // 서버가 준 응답을 html 변수에 담음.
     const html = await response.text();
@@ -75,7 +81,7 @@ async function openDetailModal(div) {
     // console.log(imgEl)
     // imgEl.src = imgPath;
 
-    // 💡 [이미지 띄우기 로직]
+    // [이미지 띄우기 로직]
     // 모달창 안의 img 태그를 찾습니다.
     const imgEl = document.querySelector(".detail-img-area img");
 
@@ -102,8 +108,13 @@ async function openDetailModal(div) {
     // 모달의 수정 버튼에게 고유번호(id) 쥐어주기!
     const btns = document.querySelectorAll(".btn-group .btn-list");
     // btns[0]은 목록으로 버튼, btns[1]이 수정 버튼입니다.
+    // "두 번째 버튼(수정 버튼)아! 너한테 '클릭하면(onclick)
+    // 영양제 번호(id)를 들고 updateSupplement 함수를 실행해라!'라는 명령어를 강제로 주입할게!"
+    // .setAttribute("속성이름", "넣을 값")
     btns[1].setAttribute("onclick", `updateSupplement('${id}')`);
 }
+
+
 
 //---------------------------------------------------------------------------------------------
 // 버튼을 클릭했을 때 화면 새로고침 없이 하트를 바꿔주고 서버(컨트롤러)로 데이터를 보내는 자바스크립트
@@ -111,7 +122,9 @@ async function openDetailModal(div) {
 function toggleLike(btn, supplementId) {
     fetch('supplementsLike', {
         method: 'POST',
+        // 이거 일반 폼(form) 데이터 형식이야!라고 명찰(headers)을 붙임
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        // post에 supplementId=15 같은 값을 넣어 보냄
         body: 'supplementId=' + supplementId
     })
         .then(res => res.json())
@@ -137,6 +150,7 @@ function toggleLike(btn, supplementId) {
         .catch(err => console.error('좋아요 비동기 통신 오류:', err));
 }
 
+// 리스트 보여주는 효과...
 document.addEventListener("DOMContentLoaded", function() {
     const cards = document.querySelectorAll('.supp-wrap');
     cards.forEach((card, index) => {

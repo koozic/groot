@@ -1,5 +1,5 @@
 .mypage-wrap {
-    max-width: 760px;
+    max-width: 2000px;
     margin: 0 auto;
 }
 
@@ -74,7 +74,9 @@
 
 .mp-tab-content.active {
     display: block;
+    animation: pdFadeIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); /* 부드러운 페이드인 추가 */
 }
+
 
 /* 카드 */
 .mp-card {
@@ -467,105 +469,6 @@
     flex-shrink: 0;
 }
 
-/* 캘린더 */
-.cal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 12px;
-}
-
-.cal-month-title {
-    font-size: 14px;
-    font-weight: 700;
-}
-
-.cal-nav {
-    display: flex;
-    gap: 6px;
-}
-
-.cal-nav button {
-    background: #f3f4f6;
-    border: none;
-    border-radius: 6px;
-    width: 28px;
-    height: 28px;
-    cursor: pointer;
-    font-size: 15px;
-}
-
-.cal-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 3px;
-}
-
-.cal-day-name {
-    text-align: center;
-    font-size: 11px;
-    font-weight: 700;
-    color: #9ca3af;
-    padding: 4px 0;
-}
-
-.cal-day {
-    text-align: center;
-    padding: 7px 2px;
-    border-radius: 8px;
-    font-size: 12px;
-    cursor: pointer;
-}
-
-.cal-day.today {
-    background: #2563eb;
-    color: #fff;
-    font-weight: 700;
-}
-
-.cal-day.warn {
-    background: #fef2f2;
-    color: #dc2626;
-    font-weight: 700;
-}
-
-.cal-day.buy-day {
-    background: #fffbeb;
-    color: #d97706;
-    font-weight: 700;
-}
-
-.cal-day.checked {
-    background: #eff6ff;
-    color: #2563eb;
-}
-
-.cal-day.empty {
-    opacity: 0;
-    pointer-events: none;
-}
-
-.cal-legend {
-    display: flex;
-    gap: 14px;
-    margin-top: 12px;
-    flex-wrap: wrap;
-}
-
-.leg {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 11px;
-    color: #6b7280;
-}
-
-.leg-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 3px;
-    flex-shrink: 0;
-}
 
 /* 반응형 */
 @media (max-width: 600px) {
@@ -582,10 +485,7 @@
         font-size: 12px;
     }
 
-    .cal-day {
-        font-size: 11px;
-        padding: 5px 1px;
-    }
+
 }
 
 /* 모달 배경 */
@@ -740,124 +640,196 @@
 
 
 
-.cal-day {
-    display: flex;
-    flex-direction: column;
-    min-height: 80px; /* 정보가 들어갈 수 있도록 높이 확보 */
-    padding: 4px;
-    border: 1px solid #e5e7eb;
-}
-.day-num {
-    font-weight: bold;
-    margin-bottom: 4px;
-}
-.day-status {
-    font-size: 11px;
-    padding: 2px 4px;
-    border-radius: 4px;
-    margin-bottom: 2px;
-    text-align: center;
-}
-.status-ok { background-color: #dcfce7; color: #166534; }
-.status-miss { background-color: #fee2e2; color: #991b1b; }
+/* ================================================
+   마이페이지 - 복용 캘린더 탭 전용 (Otter Care Style)
+   ================================================ */
 
-.day-alerts {
-    margin-top: auto;
-    display: flex;
+/* 1. 캘린더 탭 컨테이너 전체 크기 및 여백 최적화 */
+#tab-cal {
+    /* 기본 상태에서 display 속성 제거 (상위 클래스의 display: none 유지) */
     flex-direction: column;
-    gap: 2px;
+    gap: 24px;
+    animation: pdFadeIn 0.5s ease;
 }
-.alert-item {
-    font-size: 10px;
-    padding: 2px;
-    border-radius: 2px;
-    white-space: nowrap;
+
+/* 탭이 활성화(active) 되었을 때만 화면에 노출 (flex 속성 부여) */
+#tab-cal.active {
+    display: flex;
+}
+/* 2. 구매 알림 & 통계 카드 디자인 개선 */
+#tab-cal .mp-card {
+    border-radius: 24px;
+    border: 3px solid #e0f2fe; /* otter-water-light */
+    box-shadow: 0 10px 25px rgba(125, 211, 252, 0.15);
+    padding: 24px;
+}
+
+/* 3. 이번 달 복용 통계 (아코디언) 스타일링 */
+#tab-cal .mp-stat-details {
+    background: #f8fafc;
+    border-radius: 20px;
     overflow: hidden;
-    text-overflow: ellipsis;
+    border: 2px solid #e0f2fe;
 }
-.badge-warn { background-color: #ffedd5; color: #9a3412; }
-.badge-buy { background-color: #dbeafe; color: #1e40af; }
 
-
-/* =========================================
-   마이페이지 - 이번 달 복용 통계 (아코디언)
-   ========================================= */
-
-/* details 전체 영역 */
-.mp-stat-details {
+#tab-cal .mp-accordion-summary {
+    padding: 18px 24px;
     cursor: pointer;
-}
-
-/* summary (클릭 가능한 제목 영역) */
-.mp-accordion-summary {
+    font-size: 18px;
+    font-weight: 800;
+    color: #334155;
+    list-style: none; /* 기본 화살표 제거 */
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 0;
-    list-style: none; /* 브라우저 기본 화살표 숨김 */
 }
 
-/* 웹킷 기반 브라우저(크롬, 사파리) 기본 화살표 숨김 */
-.mp-accordion-summary::-webkit-details-marker {
-    display: none;
-}
-
-/* '▼ 펼쳐보기' 텍스트 */
-.mp-accordion-toggle {
+#tab-cal .mp-accordion-toggle {
     font-size: 12px;
-    color: #6b7280;
-    font-weight: normal;
+    background: #7dd3fc;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-weight: 600;
 }
 
-/* 펼쳐졌을 때 내용 컨테이너 */
-.mp-stat-content {
-    margin-top: 12px;
-    border-top: 1px solid #f3f4f6;
-    padding-top: 8px;
-}
-
-/* 통계 리스트 (ul) */
-.mp-stat-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-/* 통계 리스트 개별 아이템 (li) */
-.mp-stat-item {
+/* 4. ★ 메인 캘린더 영역 확대 스타일 ★ */
+#tab-cal .cal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 16px;
-    border-bottom: 1px solid #f3f4f6;
+    margin-bottom: 25px;
+    padding: 0 10px;
 }
 
-/* 마지막 리스트는 밑줄 제거 (깔끔한 UI용) */
-.mp-stat-item:last-child {
-    border-bottom: none;
+#tab-cal .cal-month-title {
+    font-size: 26px; /* 크기 확대 */
+    font-weight: 900;
+    color: #0284c7; /* otter-water-dark */
+    letter-spacing: -1px;
 }
 
-/* 영양제 이름 (span) */
-.mp-stat-name {
-    font-size: 14px;
-    font-weight: 500;
-    color: #374151;
+#tab-cal .cal-nav button {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    background: #7dd3fc;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(125, 211, 252, 0.3);
+    transition: all 0.2s ease;
 }
 
-/* 복용 횟수 배지 (span) */
-.mp-stat-count {
-    font-size: 13px;
-    font-weight: 600;
-    color: #2563eb;
-    background-color: #eff6ff;
-    padding: 4px 8px;
-    border-radius: 12px;
+#tab-cal .cal-nav button:hover {
+    transform: scale(1.1);
+    background: #0284c7;
 }
 
-/* 데이터가 없을 때 안내 문구 (p) */
-.mp-stat-empty {
+/* 캘린더 그리드 대형화 */
+#tab-cal .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 12px; /* 셀 간격 확대 */
     text-align: center;
-    color: #9ca3af;
-    padding: 10px;
-    margin: 0;
+}
+
+/* 날짜 셀 스타일 (3D 느낌) */
+#tab-cal .cal-day {
+    min-height: 100px; /* 셀 높이 대폭 확대 */
+    padding: 12px;
+    background: #ffffff;
+    border: 2px solid #f1f5f9;
+    border-radius: 18px;
+    position: relative;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+#tab-cal .cal-day:hover {
+    border-color: #7dd3fc;
+    background: #f0f9ff;
+    transform: translateY(-3px);
+}
+
+/* 오늘 날짜 강조 */
+#tab-cal .cal-day.today {
+    border: 3px solid #f472b6; /* otter-pink-main */
+    background: #fdf2f8;
+}
+
+/* 복용 상태 표시 점(Dot) 디자인 변경 */
+#tab-cal .cal-dot-wrap {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    justify-content: center;
+}
+
+#tab-cal .cal-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* 5. 범례(Legend) 대형화 및 가독성 개선 */
+#tab-cal .cal-legend {
+    margin-top: 30px;
+    background: #f8fafc;
+    padding: 20px;
+    border-radius: 20px;
+    justify-content: space-around !important;
+}
+
+#tab-cal .leg {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px !important;
+    font-weight: 700;
+    color: #64748b;
+}
+
+#tab-cal .leg-dot {
+    width: 14px !important;
+    height: 14px !important;
+    border-radius: 4px !important; /* 약간 각진 조약돌 모양 */
+}
+
+/* 구매 알림 리스트 아이템 디자인 */
+#tab-cal .alert-item {
+    background: #fffbeb;
+    border: 2px solid #fde047;
+    padding: 16px;
+    border-radius: 16px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 600;
+    color: #854d0e;
+}
+
+@keyframes pdFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 반응형 모바일 대응 */
+@media (max-width: 768px) {
+    #tab-cal .cal-day {
+        min-height: 70px;
+        padding: 6px;
+        font-size: 12px;
+    }
+    #tab-cal .cal-month-title {
+        font-size: 20px;
+    }
 }

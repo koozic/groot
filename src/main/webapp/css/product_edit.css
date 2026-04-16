@@ -1,179 +1,264 @@
-/* 폼 컨테이너 및 기본 설정 */
-.app-container {
-    max-width: 800px;
-    margin: 0 auto;
-    background: #ffffff;
-    padding: 20px;
+@import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+
+/* ================================================
+   제품 편집 (Web Layout) 전용 스타일
+   ================================================ */
+
+.pe-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 60px 20px;
+    background-image: linear-gradient(135deg, #e0f7fa 0%, #fce4ec 100%);
+    border-radius: var(--radius, 10px);
+    margin: 20px auto;
+    max-width: 1200px;
+    font-family: 'Jua', 'Noto Sans KR', sans-serif;
 }
 
-/* 헤더 영역 정렬 */
-.app-header {
+.pe-container {
+    width: 100%;
+    max-width: 960px; /* 웹 환경에 맞게 컨테이너 너비 확장 */
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 40px;
+    box-shadow: 0 15px 35px rgba(100, 150, 250, 0.2);
+    padding: 50px 60px;
+    border: 2px solid #ffffff;
+    color: #5c6bc0;
+}
+
+/* Header & Buttons */
+.pe-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 40px;
+    border-bottom: 2px dashed #b2ebf2;
     padding-bottom: 20px;
-    border-bottom: 1px solid #f0f0f0;
-    margin-bottom: 30px;
 }
 
-.header-title {
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: #333;
+.pe-title {
+    color: #ff8a80;
+    font-size: 28px;
+    margin: 0;
+    text-shadow: 1px 1px 2px rgba(255, 138, 128, 0.3);
 }
 
-/* 히어로 섹션 (이미지 + 기본정보) 정렬 */
-.product-hero {
+.pe-btn {
+    border: none;
+    padding: 12px 28px;
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pe-btn-back {
+    background-color: #e1f5fe;
+    color: #0288d1;
+}
+
+.pe-btn-save {
+    background: linear-gradient(45deg, #ffab91, #f48fb1);
+    color: white;
+    box-shadow: 0 4px 10px rgba(244, 143, 177, 0.4);
+}
+
+.pe-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Content & Hero Section (좌우 2단 분할) */
+.pe-content {
     display: flex;
+    flex-direction: column;
     gap: 30px;
-    align-items: flex-start;
-    margin-bottom: 30px;
 }
 
-.product-img-box {
-    flex: 0 0 200px;
-    height: 200px;
-    background: #f8f9fa;
-    border-radius: 12px;
-    overflow: hidden;
+.pe-hero {
+    display: grid;
+    grid-template-columns: 280px 1fr; /* 좌측: 이미지, 우측: 폼 요소 */
+    gap: 50px;
+    align-items: start;
+}
+
+.pe-img-box {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 35%;
+    background-color: #f0f4f8;
+    border: 4px dashed #81d4fa;
     display: flex;
-    align-items: center;
     justify-content: center;
-    border: 1px solid #eee;
+    align-items: center;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+    box-shadow: inset 0 4px 10px rgba(0,0,0,0.05);
 }
 
-.product-img {
-    max-width: 100%;
+.pe-img-box:hover {
+    border-color: #ff8a80;
+}
+
+.pe-img {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
 }
 
-/* 기본 정보 입력 필드 그룹 */
-.product-basic-info {
-    flex: 1;
+/* Basic Info Forms */
+.pe-basic-info {
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
 
-.product-basic-info span {
-    font-size: 0.85rem;
-    color: #888;
-    margin-bottom: -8px;
-    font-weight: 600;
+.pe-basic-info span {
+    font-size: 15px;
+    margin-top: 8px;
+    color: #7986cb;
 }
 
-/* 입력 필드 공통 스타일 */
-.product-basic-info input,
-.info-section input,
-.info-section textarea {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 12px;
-    font-size: 1rem;
-    transition: all 0.2s ease-in-out;
-    background-color: #fff;
+.pe-container input[type="text"],
+.pe-container input[type="number"],
+.pe-container select,
+.pe-container textarea {
     width: 100%;
+    padding: 14px 18px;
+    border: 2px solid #e1bee7;
+    border-radius: 18px;
+    background-color: #fafafa;
+    font-family: inherit;
+    font-size: 16px;
+    color: #3949ab;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.product-basic-info input:focus,
-.info-section textarea:focus {
-    border-color: #4A90E2;
-    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+.pe-container input:focus,
+.pe-container select:focus,
+.pe-container textarea:focus {
     outline: none;
+    border-color: #4dd0e1;
+    box-shadow: 0 0 8px rgba(77, 208, 225, 0.4);
 }
 
-/* 제목 및 가격 강조 입력창 */
-.product-title input {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #222;
+.pe-meta p {
+    margin: 10px 0;
+    color: #7986cb;
+    font-size: 15px;
 }
 
-.product-price input {
-    width: 120px;
-    display: inline-block;
-    font-weight: 700;
-    color: #4A90E2;
-    text-align: right;
-    margin-right: 5px;
-}
-
-/* 복용 가이드 리스트 정렬 */
-.guide-list {
-    list-style: none;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-    margin-top: 15px;
-}
-
-.guide-list li {
-    background: #fdfdfd;
-    padding: 15px;
-    border-radius: 10px;
-    border: 1px solid #f0f0f0;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    font-size: 0.9rem;
-    color: #555;
-}
-
-.guide-list .val input {
-    width: 100%;
-    text-align: center;
-    font-weight: 600;
-}
-
-/* 복용 시점 섹션 */
-.timing-box {
-    margin-top: 20px;
-    padding: 15px;
-    background: #f8faff;
-    border-radius: 10px;
+.pe-price-row {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 12px;
 }
 
-.timing-box input {
-    flex: 1;
+.pe-price-row input {
+    max-width: 200px;
 }
 
-/* 제품 설명 Textarea */
-.section-title textarea {
-    width: 100%;
-    min-height: 180px;
-    line-height: 1.6;
-    resize: none;
-    margin-top: 10px;
+.pe-price-row strong {
+    color: #5c6bc0;
+    font-size: 18px;
 }
 
-/* 저장 버튼 스타일 */
-.back-btn {
-    padding: 8px 18px;
+/* Dividers & Sections */
+.pe-divider {
+    border: none;
+    border-top: 3px dotted #b2ebf2;
+    margin: 10px 0;
+}
+
+.pe-section-title {
+    color: #ffb74d;
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+/* Guides (가로 3단 그리드 배치) */
+.pe-guide-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.pe-guide-list li {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    background: #fff9c4;
+    padding: 15px;
     border-radius: 20px;
-    border: 1px solid #ddd;
-    background: #fff;
-    cursor: pointer;
-    font-weight: 500;
-    transition: 0.2s;
+    color: #f57f17;
+    font-size: 16px;
 }
 
-.back-btn:last-child { /* 저장 버튼 전용 */
-    background: #333;
-    color: #fff;
-    border-color: #333;
+.pe-guide-list input[type="number"] {
+    width: 80px;
+    text-align: center;
+    padding: 10px;
+    background: white;
+    border: none;
+    border-radius: 12px;
 }
 
-.back-btn:hover {
-    opacity: 0.8;
+.pe-timing-box {
+    background: #e8eaf6;
+    padding: 20px 25px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }
 
-.divider {
-    border: 0;
-    height: 1px;
-    background: #eee;
-    margin: 30px 0;
+.pe-timing-box strong {
+    font-size: 16px;
+    color: #7986cb;
+    white-space: nowrap;
 }
+
+.pe-timing-box select {
+    max-width: 300px;
+}
+
+.pe-container textarea {
+    resize: vertical;
+    min-height: 160px;
+}
+
+/* Responsive: 태블릿/모바일 축소 시 레이아웃 변환 */
+@media (max-width: 768px) {
+    .pe-hero {
+        grid-template-columns: 1fr; /* 단일 컬럼으로 변경 */
+        gap: 30px;
+    }
+
+    .pe-img-box {
+        max-width: 250px;
+        margin: 0 auto;
+    }
+
+    .pe-guide-list {
+        grid-template-columns: 1fr; /* 세로 정렬로 변경 */
+    }
+
+    .pe-timing-box {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .pe-timing-box select {
+        max-width: 100%;
+    }
+}
+

@@ -331,7 +331,8 @@ function buildCal(mappedAlerts, checkedDates, firstDay, lastDate, today) {
             mappedAlerts[d].forEach(alert => {
                 let badgeClass = alert.status === 'warn' ? 'badge-warn' : 'badge-buy';
                 let icon = alert.status === 'warn' ? '소진임박' : '재구매';
-                html += `<div class="alert-item ${badgeClass}">🛒 ${alert.productName} ${icon}</div>`;
+                // alert.productName 변수를 '비타민'이라는 고정 텍스트로 변경
+                html += `<div class="alert-item ${badgeClass}">🛒 비타민 ${icon}</div>`;
             });
             html += `</div>`;
         }
@@ -416,7 +417,7 @@ function renderLikedPage() {
     const pageData = likedData.slice(start, start + PAGE_SIZE);
 
     container.innerHTML = pageData.map(s => `
-        <div class="like-card"
+        <div id="liked-card-${s.supplementId}" class="like-card"
              style="border:1px solid #eee; border-radius:10px; padding:15px;
                     text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.05);
                     background:#fff; display:flex; flex-direction:column;
