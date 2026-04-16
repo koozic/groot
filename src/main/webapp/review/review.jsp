@@ -290,8 +290,8 @@
             </div>
         </div>
     </div>
-    <%-- 🌟 외부 JS 파일 연결은 무조건 맨 마지막에! --%>
-    <script src="../js/review.js"></script>
+    <%-- 🌟 외부 JS 파일 연결은 무조건 맨 마지막에! (v=3 추가!) --%>
+    <script src="../js/review.js?v=3"></script>
 
     </body>
     </html>
