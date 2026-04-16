@@ -15,10 +15,11 @@ public class DetailSupplementsC extends HttpServlet {
     // 화면 조회 (리스트 보기)
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         // [비즈니스 로직] 클릭한 영양성분 '하나'만 조회하는 일 시키기
-        // (아직 DAO에 이 메서드가 없다면 바로 다음에 만들 것입니다!)
-//        SupplementsDAO.SDAO.getSupplementDetail(request);
-        request.getRequestDispatcher("supplements/supplements_detail.jsp").forward(request, response);
+        // 자바스크립트, 모달 활용해서 보여줄 거라서 주석처리
+        // SupplementsDAO.SDAO.getSupplementDetail(request);
 
+        // getRequestDispatcher() : request를 지정된 경로의 파일로 전달하기 위해 목적지를 설정하는 메서드
+        request.getRequestDispatcher("supplements/supplements_detail.jsp").forward(request, response);
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
