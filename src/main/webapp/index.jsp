@@ -211,8 +211,8 @@
 
         var H_FULL = 170;
         var H_SMALL = 64;
-        var TOP_ZONE = 100;
-        var DEAD = 10; // 스크롤 반응성을 위해 15에서 10으로 살짝 줄였습니다.
+        var TOP_ZONE = 130;
+        var DEAD = 15; // 스크롤 반응성을 위해 15에서 10으로 살짝 줄였습니다.
 
         var lastScrollY = window.scrollY; // 이름 변경: 항상 최신 스크롤 값을 담음
         var state = 'full';

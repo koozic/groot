@@ -911,3 +911,10 @@ body::before {
     }
 }
 
+/* app.css 맨 아래에 추가 */
+.modal,
+#detailModal,
+.modal-backdrop {
+    z-index: 9999 !important;
+}
+
