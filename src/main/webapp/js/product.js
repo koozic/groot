@@ -160,9 +160,7 @@ function renderProducts(products, page) {
                     <div class="product-nutrient">${nutrientName}</div>
                     <div class="product-price">${p.productPrice}원</div>
                     <div class="product-date">${p.productStartDate}</div>
-                    <button class="btn-wish" data-product-id="${p.productId}"
-                            onclick="event.stopPropagation(); toggleWish(this, ${p.productId})">🤍
-                    </button>
+               
                     <button class="btn-cart"
                             onclick="event.stopPropagation(); addCart(${p.productId}, '${safeName}', '${safeBrand}')">
                         🛒 담기
