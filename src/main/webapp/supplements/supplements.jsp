@@ -140,7 +140,7 @@
     window.onload = function() {
         // 주소창에서 ?openId= 번호 가져오기 (예: supplements?openId=3)
         // window.location.search: 현재 우리가 접속해 있는 웹페이지의 전체 주소 중에서, 물음표(?)와 그 뒤에 붙은 모든 글자만 떼어옴
-        
+
         const urlParams = new URLSearchParams(window.location.search);
         const openId = urlParams.get('openId');
 
