@@ -9,6 +9,10 @@ document.addEventListener('keydown', function(event) {
         modal.close();
         content.innerHTML = '';
     }
+// document : 우리가 보고 있는 웹페이지 전체
+// addEventListener('keydown', ...) : "사용자가 키보드 자판(key)을 밑으로 누르는(down) 순간을 항상 감시하고 있다는 코드
+// 어떤 키를 눌렀는지에 대한 정보가 event라는 바구니에 담겨서 함수 안으로 전달됨
+// content.innerHTML = '' : 아까 fetch로 꽉꽉 채워 넣었던 모달창 안의 알맹이(HTML 껍데기와 데이터)를 싹 지움
 });
 
 // 1. 등록 모달 열기
@@ -109,6 +113,8 @@ async function openDetailModal(div) {
     // .setAttribute("속성이름", "넣을 값")
     btns[1].setAttribute("onclick", `updateSupplement('${id}')`);
 }
+
+
 
 //---------------------------------------------------------------------------------------------
 // 버튼을 클릭했을 때 화면 새로고침 없이 하트를 바꿔주고 서버(컨트롤러)로 데이터를 보내는 자바스크립트
