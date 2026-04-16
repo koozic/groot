@@ -279,7 +279,17 @@
         const currentProductId = "${param.PRODUCT_ID != null ? param.PRODUCT_ID : '106'}";
     </script>
 
-
+    <%-- 🗑️ 5. 커스텀 삭제 확인 모달 추가! --%>
+    <div id="custom-delete-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center;">
+        <div style="background: #fff; padding: 30px; border-radius: 16px; width: 320px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+            <h3 style="margin-top: 0; color: #333; font-size: 1.3em;">🗑️ 리뷰 삭제</h3>
+            <p style="color: #777; margin-bottom: 25px; font-size: 0.95em;">정말로 이 리뷰를 삭제하시겠습니까?<br>삭제 후에는 복구할 수 없습니다.</p>
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button type="button" onclick="closeDeleteModal()" style="flex: 1; padding: 10px; border: none; border-radius: 8px; background: #f1f3f5; color: #555; font-weight: bold; cursor: pointer;">취소</button>
+                <button type="button" onclick="executeDeleteReview()" style="flex: 1; padding: 10px; border: none; border-radius: 8px; background: #ff4757; color: #fff; font-weight: bold; cursor: pointer;">삭제하기</button>
+            </div>
+        </div>
+    </div>
     <%-- 🌟 외부 JS 파일 연결은 무조건 맨 마지막에! --%>
     <script src="../js/review.js"></script>
 

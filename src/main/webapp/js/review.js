@@ -296,21 +296,47 @@ function openDetailModal(title, user, score, date, content, img) {
 function closeDetailModal() { document.getElementById('detailModal').style.display = 'none'; }
 
 // ==========================================
-// 🗑️ 5. 리뷰 삭제
+// 🗑️ 5. 리뷰 삭제 (커스텀 모달 버전)
 // ==========================================
+let targetReviewIdToDelete = null;
+
+// 모달 열기
 function deleteReview(reviewId) {
-    if (!confirm("정말 삭제하시겠습니까?")) return;
-    fetch(`review-delete?review_id=${reviewId}`)
+    targetReviewIdToDelete = reviewId;
+    document.getElementById('custom-delete-modal').style.display = 'flex';
+}
+
+// 모달 닫기 (취소 버튼)
+function closeDeleteModal() {
+    document.getElementById('custom-delete-modal').style.display = 'none';
+    targetReviewIdToDelete = null;
+}
+
+// 찐으로 삭제 실행 (삭제하기 버튼)
+function executeDeleteReview() {
+    if (!targetReviewIdToDelete) return;
+
+    // 🔥 1. 서버 응답 기다리지 말고 누르자마자 모달창부터 강제로 꺼버려!!!
+    document.getElementById('custom-delete-modal').style.display = 'none';
+
+    // 2. 창 닫아놓고 뒤에서 조용히 서버 통신 진행
+    fetch(`review-delete?review_id=${targetReviewIdToDelete}`)
         .then(res => res.text())
         .then(data => {
             if (data.trim() === "1") {
-                showToast("리뷰를 삭제했습니다. 🗑️");
+                showToast("리뷰가 깔끔하게 삭제되었습니다. 🗑️");
                 refreshReviewUI();
-                fetchReviews();
-            } else alert("삭제 실패!");
+                fetchReviews(); // 화면 리스트 새로고침
+            } else {
+                alert("삭제 실패!");
+            }
+            targetReviewIdToDelete = null; // 아이디 초기화
+        })
+        .catch(err => {
+            console.error("삭제 통신 에러:", err);
+            targetReviewIdToDelete = null;
         });
 }
-
 // ==========================================
 // 🪄 6. 리뷰 수정 (미리보기)
 // ==========================================
