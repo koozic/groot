@@ -279,8 +279,8 @@
     const allMainBtns = document.querySelectorAll('.pill-btn:not(.dropdown-toggle)');
     const vitaminMainBtn = document.getElementById('vitamin-main-btn');
     const allSubBtns = document.querySelectorAll('.sub-pill-btn');
-    const dropMenu = document.querySelector('.dropdown-menu');
-
+    // 앞에 .dropdown-container를 붙여서 우리 비타민 박스 안에 있는 메뉴만 잡도록 고칩니다!
+    const dropMenu = document.querySelector('.dropdown-container .dropdown-menu');
     vitaminMainBtn.addEventListener('click', function(e) { e.stopPropagation(); dropMenu.classList.toggle('show'); });
     document.addEventListener('click', function(e) { if (!e.target.closest('.dropdown-container')) dropMenu.classList.remove('show'); });
 
