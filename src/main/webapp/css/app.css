@@ -61,7 +61,7 @@ a {
     justify-content: space-between;
     padding: 0 40px;
     overflow: visible;
-    transform: translateY(0);
+    /*transform: translateY(0);*/
     opacity: 1;
     /* transition 시간을 0.45초 -> 0.7초로 늘려서 부드럽게 스르륵 사라지도록 수정 */
     transition: height .7s cubic-bezier(.4, 0, .2, 1),
@@ -81,7 +81,7 @@ body::before {
 
 /* 숨김: 위로 올라가면서 페이드 아웃 */
 .site-header.hide {
-    transform: translateY(-100%);
+    top: calc(-1 * var(--header-h)); /* transform 대신 top으로 처리 */
     opacity: 0;
     pointer-events: none;
 }
@@ -910,3 +910,4 @@ body::before {
         grid-template-columns: 1fr;
     }
 }
+
