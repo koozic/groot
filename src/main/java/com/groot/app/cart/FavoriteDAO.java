@@ -176,8 +176,7 @@ public class FavoriteDAO {
             ps  = con.prepareStatement(sql);
             ps.setString(1, userId);
             rs  = ps.executeQuery();
-            if (rs.next())
-                return rs.getInt(1);
+            if (rs.next()) return rs.getInt(1);
 
         } catch (SQLException e) {
             e.printStackTrace();
