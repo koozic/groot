@@ -4,11 +4,10 @@ import com.groot.app.main.DBManager_new;
 import com.groot.app.product.ProductDTO;
 import com.groot.app.supplements.SupplementsDTO;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MyPageDAO {
@@ -534,5 +533,75 @@ public class MyPageDAO {
 
 
     }
-}
 
+
+    // ── 스티커 조회 ──
+    public List<Map<String, Object>> getStickers(String userId, int year, int month) {
+        List<Map<String, Object>> list = new ArrayList<>();
+        String sql = "SELECT sticker_id, sticker_type, cal_year, cal_month, " +
+                "cal_day, pos_x, pos_y FROM calendar_stickers " +
+                "WHERE user_id=? AND cal_year=? AND cal_month=?";
+        try (Connection con = DBManager_new.connect();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, userId);
+            ps.setInt(2, year);
+            ps.setInt(3, month);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Map<String, Object> row = new HashMap<>();
+                row.put("sticker_id", rs.getInt("sticker_id"));
+                row.put("sticker_type", rs.getString("sticker_type"));
+                row.put("cal_year", rs.getInt("cal_year"));
+                row.put("cal_month", rs.getInt("cal_month"));
+                row.put("cal_day", rs.getInt("cal_day"));
+                row.put("pos_x", rs.getFloat("pos_x"));
+                row.put("pos_y", rs.getFloat("pos_y"));
+                list.add(row);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    // ── 스티커 삽입 ──
+    public int insertSticker(String userId, String type,
+                             int year, int month, int day,
+                             float posX, float posY) {
+        String sql = "INSERT INTO calendar_stickers " +
+                "(user_id, sticker_type, cal_year, cal_month, cal_day, pos_x, pos_y) " +
+                "VALUES (?,?,?,?,?,?,?)";
+        try (Connection con = DBManager_new.connect();
+             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, userId);
+            ps.setString(2, type);
+            ps.setInt(3, year);
+            ps.setInt(4, month);
+            ps.setInt(5, day);
+            ps.setFloat(6, posX);
+            ps.setFloat(7, posY);
+            ps.executeUpdate();
+            ResultSet keys = ps.getGeneratedKeys();
+            if (keys.next()) return keys.getInt(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    // ── 해당 월 스티커 전체 삭제 ──
+    public void deleteStickers(String userId, int year, int month) {
+        String sql = "DELETE FROM calendar_stickers " +
+                "WHERE user_id=? AND cal_year=? AND cal_month=?";
+        try (Connection con = DBManager_new.connect();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, userId);
+            ps.setInt(2, year);
+            ps.setInt(3, month);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+}
