@@ -10,26 +10,24 @@
     </c:forEach>
 </script>
 
-<div class="action-bar-container">
-    <div class="nutrient-filter-list">
-        <button type="button" class="filter-btn active" id="filter-all" onclick="loadProductList('')">
+<div class="prd-action-bar">
+    <div class="prd-filter-list">
+        <button type="button" class="prd-filter-btn active" id="filter-all" onclick="loadProductList('')">
             <span class="icon">🔍</span> 전체
         </button>
 
-        <div class="filter-dropdown">
-            <button type="button" class="filter-btn dropdown-toggle" onclick="toggleDropdown(this)">
+        <div class="prd-filter-dropdown">
+            <button type="button" class="prd-filter-btn dropdown-toggle" onclick="toggleDropdown(this)">
                 <span class="icon">💊</span> 비타민 <span class="arrow">▼</span>
             </button>
 
-            <div class="dropdown-menu vitamin-mega-menu">
-
-                <div class="vitamin-section">
-                    <h4 class="section-header water-soluble">수용성 비타민 <small>Water-soluble</small></h4>
-                    <div class="vitamin-grid">
+            <div class="prd-mega-menu">
+                <div class="prd-mega-section">
+                    <h4 class="prd-mega-header water-soluble">수용성 비타민 <small>Water-soluble</small></h4>
+                    <div class="prd-mega-grid">
                         <c:forEach items="${nutrients}" var="n">
                             <c:if test="${fn:contains(n.nutrientName, '비타민 B') || fn:contains(n.nutrientName, '비타민 C') || fn:contains(n.nutrientName, '엽산') || fn:contains(n.nutrientName, '비오틴')}">
-                                <button type="button" class="v-item filter-item" data-id="${n.nutrientId}"
-                                        onclick="loadProductList('${n.nutrientId}')">
+                                <button type="button" class="prd-mega-item filter-item" data-id="${n.nutrientId}" onclick="loadProductList('${n.nutrientId}')">
                                         ${fn:replace(n.nutrientName, '비타민 ', '')}
                                 </button>
                             </c:if>
@@ -37,37 +35,34 @@
                     </div>
                 </div>
 
-                <div class="vitamin-section">
-                    <h4 class="section-header fat-soluble">지용성 비타민 <small>Fat-soluble</small></h4>
-                    <div class="vitamin-grid">
+                <div class="prd-mega-section">
+                    <h4 class="prd-mega-header fat-soluble">지용성 비타민 <small>Fat-soluble</small></h4>
+                    <div class="prd-mega-grid">
                         <c:forEach items="${nutrients}" var="n">
                             <c:if test="${fn:contains(n.nutrientName, '비타민 A') || fn:contains(n.nutrientName, '비타민 D') || fn:contains(n.nutrientName, '비타민 E') || fn:contains(n.nutrientName, '비타민 K')}">
-                                <button type="button" class="v-item filter-item" data-id="${n.nutrientId}"
-                                        onclick="loadProductList('${n.nutrientId}')">
+                                <button type="button" class="prd-mega-item filter-item" data-id="${n.nutrientId}" onclick="loadProductList('${n.nutrientId}')">
                                         ${fn:replace(n.nutrientName, '비타민 ', '')}
                                 </button>
                             </c:if>
                         </c:forEach>
                     </div>
                 </div>
-
             </div>
         </div>
 
         <c:forEach items="${nutrients}" var="n">
             <c:if test="${!fn:contains(n.nutrientName, '비타민') && !fn:contains(n.nutrientName, '엽산') && !fn:contains(n.nutrientName, '비오틴')}">
-                <button type="button" class="filter-btn filter-item" data-id="${n.nutrientId}"
-                        onclick="loadProductList('${n.nutrientId}')">
+                <button type="button" class="prd-filter-btn filter-item" data-id="${n.nutrientId}" onclick="loadProductList('${n.nutrientId}')">
                     <span class="icon">💊</span> ${n.nutrientName}
                 </button>
             </c:if>
         </c:forEach>
     </div>
 
-    <div class="header-actions">
+    <div class="prd-header-actions">
         <c:if test="${sessionScope.isAdmin == true}">
             <button type="button" class="btn-add-item" onclick="openModal()">
-                <span class="icon">+</span> 영양제 등록
+                <span class="icon">영양제 추가</span>
             </button>
         </c:if>
     </div>
