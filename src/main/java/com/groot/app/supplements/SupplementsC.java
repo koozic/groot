@@ -24,39 +24,54 @@ import static com.groot.app.supplements.SupplementsDAO.SDAO;
 public class SupplementsC extends HttpServlet {
 
     // 화면 조회 (리스트 보기)
-    // 화면 조회 (리스트 보기)
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
-        // 1. 페이지 번호 처리 (기본 코드)
+        // ---------------------------------------------------------
+        // 페이지 번호 처리 (기본 코드)
+        // ---------------------------------------------------------
         int p = 1;
-        String pParam = request.getParameter("p");
+        String pParam = request.getParameter("p"); // 출처 : JSP 화면의 페이징 버튼
         if (pParam != null) {
+            // "글자(String)"로 된 숫자를 진짜 "숫자(int)"로 번역
             p = Integer.parseInt(pParam);
         }
 
-        // 2. 전체 영양제 리스트 가져오기 (기본 코드)
+
+
+        // 전체 영양제 리스트 가져오기 - 일 시키기
         List<SupplementsDTO> allList = SDAO.getSupplementsList();
 
+
+
         // ---------------------------------------------------------
-        // 💡 [수정된 로직] 로그인한 유저의 좋아요 목록 가져오기
+        // 로그인한 유저의 좋아요 목록 가져오기
+            // 현재 접속한 사람이 누구인지 확인하고, 그 사람이 과거에 '좋아요(하트)'를 눌렀던 영양제 번호들을 싹 다 긁어와서 화면(JSP)에 넘겨주는 역할
+            // 이 로직이 없으면 모든 사용자의 화면에 하트가 텅 빈 상태로 나오게 됨
         // ---------------------------------------------------------
+
+        // 세션(Session) 확인하기
         javax.servlet.http.HttpSession session = request.getSession(false);
 
-        // 1) "loginUser"라는 이름으로 UserDTO 객체를 통째로 꺼냅니다.
+        // 사물함에서 유저 정보 꺼내기 (삼항 연산자)
         com.groot.app.user.UserDTO loginUser = (session != null) ? (com.groot.app.user.UserDTO) session.getAttribute("loginUser") : null;
 
-        // 2) 객체가 있다면 그 안에서 진짜 아이디를 꺼냅니다.
+        // 진짜 '아이디(ID)'만 쏙 뽑아내기
         String userId = (loginUser != null) ? loginUser.getUser_id() : null;
 
+        // '좋아요' 번호를 담을 텅 빈 바구니 준비
         java.util.List<Integer> likedIds = new java.util.ArrayList<>();
 
+        // 로그인한 유저라면? DB에서 데이터 긁어오기
         if (userId != null) {
             // 로그인한 유저라면 DAO를 실행해서 좋아요 누른 번호들을 가져옵니다.
             likedIds = SDAO.getLikedIdsByUser(userId);
         }
 
+        // 완성된 바구니를 화면(JSP)으로 배달하기
         request.setAttribute("likedIds", likedIds);
         // ---------------------------------------------------------
+
+
 
         // 3. 페이징 처리 및 화면 포워딩
         SDAO.paging(p, request, allList);
