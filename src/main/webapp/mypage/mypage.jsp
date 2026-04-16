@@ -25,7 +25,10 @@
     <%-- ── 탭 메뉴 ── --%>
     <div class="mp-tabs">
         <button class="mp-tab active" onclick="switchTab('info',   this)">👤 회원정보</button>
-        <button class="mp-tab" onclick="switchTab('check',  this)">💊 오늘의 영양제</button>
+        <button class="mp-tab" onclick="switchTab('check',  this)"><img style="width: 20px;" class="icon"
+                                                                        src="https://media.discordapp.net/attachments/1487987147876208640/1494235295657361458/Jonathan_Adler_Large_Purple_Acrylic_Pill_248_liked_on_Polyvore_featuring_home_home_decor_misc_drugs_filler_other_purple_purple_home_accessories_pop_art_and_acrylic_sculpture-Photoroom.png?ex=69e1de90&is=69e08d10&hm=77401de240de77414723fe3085eb19b828e97c376252eef6deb2033221471176&=&format=webp&quality=lossless&width=683&height=683"
+                                                                        alt=""> 오늘의 영양제
+        </button>
         <button class="mp-tab" onclick="switchTab('cal',    this)">📅 복용 캘린더</button>
         <c:if test="${empty sessionScope.isAdmin}">
             <button class="mp-tab" onclick="switchTab('like', this)">❤️ 찜한 영양성분</button>
@@ -143,7 +146,8 @@
                             <div class="vit-item ${isTaken ? 'checked' : ''}"
                                  onclick="toggleCheck(this, '${p.productId}')">
                                     <%-- 1. 좌측: 아이콘 --%>
-                                <div class="vit-icon">💊</div>
+                                <div class="vit-icon"><img style="width: 20px;" class="icon" src="https://media.discordapp.net/attachments/1487987147876208640/1494235295657361458/Jonathan_Adler_Large_Purple_Acrylic_Pill_248_liked_on_Polyvore_featuring_home_home_decor_misc_drugs_filler_other_purple_purple_home_accessories_pop_art_and_acrylic_sculpture-Photoroom.png?ex=69e1de90&is=69e08d10&hm=77401de240de77414723fe3085eb19b828e97c376252eef6deb2033221471176&=&format=webp&quality=lossless&width=683&height=683" alt="">
+                                </div>
 
                                     <%-- 2. 중앙 좌측: 핵심 제품 정보 --%>
                                 <div class="vit-content">
@@ -281,7 +285,9 @@
                                 <c:forEach var="stat" items="${monthlyStats}">
                                     <li class="mp-stat-item">
                                 <span class="mp-stat-name">
-                                    💊 ${stat.productName}
+                                    <img style="width: 20px;" class="icon"
+                                         src="https://media.discordapp.net/attachments/1487987147876208640/1494235295657361458/Jonathan_Adler_Large_Purple_Acrylic_Pill_248_liked_on_Polyvore_featuring_home_home_decor_misc_drugs_filler_other_purple_purple_home_accessories_pop_art_and_acrylic_sculpture-Photoroom.png?ex=69e1de90&is=69e08d10&hm=77401de240de77414723fe3085eb19b828e97c376252eef6deb2033221471176&=&format=webp&quality=lossless&width=683&height=683"
+                                         alt=""> ${stat.productName}
                                 </span>
                                         <span class="mp-stat-count">
                                     ${stat.intakeCount}회 복용
