@@ -63,7 +63,7 @@ async function openDetailModal(div) {
     const caution = divData.caution;
     const imgPath = divData.imgpath;
 
-    // 서버야, '/detailSupplements' 주소에 있는 빈 껍데기 HTML 좀 줘!
+    // 서버야, '/detailSupplements' 주소에 있는 빈 껍데기 HTML 좀 줘! (받을 때까지 기다림)
     const response = await fetch('/detailSupplements')
     // 서버가 준 응답을 html 변수에 담음.
     const html = await response.text();
@@ -77,7 +77,7 @@ async function openDetailModal(div) {
     // console.log(imgEl)
     // imgEl.src = imgPath;
 
-    // 💡 [이미지 띄우기 로직]
+    // [이미지 띄우기 로직]
     // 모달창 안의 img 태그를 찾습니다.
     const imgEl = document.querySelector(".detail-img-area img");
 
