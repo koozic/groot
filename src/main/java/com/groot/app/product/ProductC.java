@@ -21,14 +21,18 @@ public class ProductC extends HttpServlet {
         if ("list".equals(cmd)) {
             String nutrientId = request.getParameter("nutrientId");
 
-            // 기존 DAO 그대로 사용 (request 영역에 "products"로 담김)
+            // 1. 프론트엔드에서 넘어온 page 파라미터를 읽고 정수로 변환 (값이 없으면 기본값 1)
+            String pageStr = request.getParameter("page");
+            int page = (pageStr != null && !pageStr.isEmpty()) ? Integer.parseInt(pageStr) : 1;
+
+            // 2. DAO 호출 시 생성된 page 변수 전달
             if (nutrientId != null && !nutrientId.isEmpty()) {
-                ProductDAO.PDAO.showProductsByNutrient(request, nutrientId);
+                // 주의: 이 메서드 내부에도 페이징 처리가 필요합니다.
+                ProductDAO.PDAO.showProductsByNutrient(request, nutrientId, page);
             } else {
-                ProductDAO.PDAO.showAllProducts(request);
+                ProductDAO.PDAO.showAllProducts(request, page);
             }
 
-            // request에서 꺼내서 JSON으로 변환 후 바로 응답 (화면 포워딩 X)
             Object products = request.getAttribute("products");
 
             response.setContentType("application/json; charset=UTF-8");
@@ -36,7 +40,7 @@ public class ProductC extends HttpServlet {
             Gson gson = new Gson();
             response.getWriter().write(gson.toJson(products));
 
-            return; // ★ 여기서 메서드를 종료하여 아래의 화면 포워딩 로직을 타지 않게 함
+            return;
         }
     // 경용님 코드병경
         ArrayList<NutrientDTO> nutrients = ProductDAO.PDAO.getAllNutrients(request);

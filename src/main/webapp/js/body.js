@@ -1,8 +1,8 @@
-const PER_PAGE = 6;
+let PER_PAGE = 8;
 
 const logined = (typeof IS_LOGIN !== 'undefined' && IS_LOGIN === true);
 // const isLogin = (window.IS_LOGIN === true);
-// DB의 body_id와 매핑 — body 테이블 기준으로 전부 수정
+// DB의 body_id와 매핑 ? body 테이블 기준으로 전부 수정
 const PARTS = {
     hair: {label: '머리카락', color: '#9333EA', text: '#581C87', body_id: 1},
     skin: {label: '피부', color: '#EF4444', text: '#7F1D1D', body_id: 2},
@@ -16,7 +16,9 @@ const PARTS = {
     bone: {label: '뼈', color: '#64748B', text: '#1E293B', body_id: 10},
     muscle: {label: '근육', color: '#EF4444', text: '#7F1D1D', body_id: 11},
 };
+console.log('한글 나오니~~?')
 
+let likedLoaded = false;
 let selected = new Set();   // 선택된 part key들
 let likedIds = new Set();   // 좋아요한 supplementId들
 let suppCache = {};         // { partKey: [BodyDTO, ...] } 캐시
@@ -27,6 +29,20 @@ let allMode = false;
 const isAdmin = (window.IS_ADMIN === true);
 let adminModeOn = false;
 console.log("is admin? => " + isAdmin);
+console.log(likedIds)
+
+// 로그인한 id로 좋아요 한것들 likedIds에 setting
+async function setLikedIds() {
+    if (likedLoaded) return;   // 🔥 추가
+
+    await fetch('/body?action=liked')
+        .then(res => res.json())
+        .then(data => {
+            likedIds = new Set(data);
+            likedLoaded = true;   // 🔥 추가
+        });
+
+}
 
 // ── 체크박스 렌더링 ──
 function buildCheckboxes() {
@@ -74,7 +90,7 @@ function fetchSupps(partKey) {
         return Promise.resolve();
     }
 
-    return fetch(`body?action=supps&bodyId=${bodyId}&sort=recent`)
+    return fetch(`/body?action=supps&bodyId=${bodyId}&sort=${sort}`)
         .then(r => r.json())
         .then(data => {
             // 서버 BodyDTO 필드명 그대로 사용
@@ -97,13 +113,13 @@ function fetchSupps(partKey) {
 }
 
 // ── 좋아요 토글 (서버 연동) ──
-// ✅ 수정: alert 대신 로그인 모달 표시
+// ? 수정: alert 대신 로그인 모달 표시
 function toggleLike(id) {
     if (!logined) {
         showLoginModal(); // 로그인 모달 띄우기
         return;
     }
-    fetch(`body?action=like&suppId=${id}`, {method: 'POST'})
+    fetch(`/body?action=like&suppId=${id}`, {method: 'POST'})
         .then(r => r.json())
         .then(data => {
             if (data.liked) likedIds.add(id); else likedIds.delete(id);
@@ -119,7 +135,7 @@ function toggleLike(id) {
         });
 }
 
-// ✅ 추가: 로그인 유도 모달 함수
+// ? 추가: 로그인 유도 모달 함수
 function showLoginModal() {
     // 1. 기존에 이미 떠 있는 모달이 있으면 제거
     const existing = document.getElementById('login-modal-overlay');
@@ -149,7 +165,7 @@ function showLoginModal() {
                   box-shadow: 0 10px 25px rgba(0,0,0,0.2);
                   border:1px solid #e0e0e0;"
            onclick="event.stopPropagation()">
-        <div style="font-size:22px; margin-bottom:8px">🔒</div>
+        <div style="font-size:22px; margin-bottom:8px">?</div>
         <p style="font-size:15px; font-weight:600; margin-bottom:6px; color:#333;">
           로그인이 필요합니다
         </p>
@@ -185,15 +201,19 @@ function closeLoginModal() {
 function collectAll() {
     allMode = true;
     page = 1;
-
+    console.log('너는 한글 나오니~~')
     // 1. 모든 PARTS의 키를 selected Set에 추가 (이게 핵심!)
     selected.clear();
-    Object.keys(PARTS).forEach(k => selected.add(k));
+    Object.keys(PARTS).forEach(k => {
+
+        // console.log(k);
+        selected.add(k)
+    });
 
     // 2. 체크박스 및 SVG UI 갱신
     syncCheckboxUI();
 
-    // ALL 버튼 파란색으로 — 초기화 버튼은 원래대로
+    // ALL 버튼 파란색으로 ? 초기화 버튼은 원래대로
     document.querySelectorAll('.cb-btn').forEach(b => b.classList.remove('on'));
     const allBtn = document.querySelector('.cb-btn.primary');
     if (allBtn) allBtn.classList.add('on');
@@ -255,7 +275,9 @@ function getSortedList() {
 }
 
 // ── 리스트 렌더링 ──
-function renderList() {
+async function renderList() {
+    if (logined) await setLikedIds();
+    // console.log(likedIds)
     const la = document.getElementById('list-area');
     const pa = document.getElementById('paging-area');
     const ta = document.getElementById('tag-area');
@@ -280,6 +302,7 @@ function renderList() {
     });
 
     const all = getSortedList();
+    // console.log(all)
     const total = all.length;
     const totalPages = Math.max(1, Math.ceil(total / PER_PAGE));
     if (page > totalPages) page = 1;
@@ -305,11 +328,12 @@ function renderList() {
       </div>
       <div class="card-eff">${s.efficacy}</div>
       <div class="card-foot">
-        <span class="card-stats">&#128065; ${s.views} · &#9829; ${s.likes + (likedIds.has(s.id) ? 1 : 0)}</span>
+        <span class="card-stats">&#128065; ${s.views} · &#9829; ${s.likes}</span>
+        ${!isAdmin ? `
         <button class="like-btn ${likedIds.has(s.id) ? 'on' : ''}"
           onclick="event.stopPropagation();toggleLike(${s.id})">
           ${likedIds.has(s.id) ? '&#9829; 취소' : '&#9825; 좋아요'}
-        </button>
+        </button> ` : ''}
       </div>
       ${adminModeOn && isAdmin ? `
       <div style="display:flex;gap:6px;margin-top:8px;padding-top:8px;border-top:1px solid #f0f0f0;"
@@ -317,12 +341,12 @@ function renderList() {
         <button onclick="openAdminModal('update',${s.id})"
                 style="flex:1;padding:5px 0;background:#2196F3;color:white;
                        border:none;border-radius:5px;cursor:pointer;font-size:0.8em;font-weight:600;">
-          ✏️ 수정
+          ?? 수정
         </button>
         <button onclick="deleteSupp(${s.id},'${s.name.replace(/'/g, "\\'")}')"
                 style="flex:1;padding:5px 0;background:#f44336;color:white;
                        border:none;border-radius:5px;cursor:pointer;font-size:0.8em;font-weight:600;">
-          🗑️ 삭제
+          ?? 삭제
         </button>
       </div>` : ''}
     </div>`).join('') + '</div>';
@@ -347,7 +371,7 @@ function openModal(id) {
     modalId = id;
 
     // 조회수 증가 fetch
-    fetch(`body?action=detail&suppId=${id}`)
+    fetch(`/body?action=detail&suppId=${id}`)
         .then(r => r.json())
         .then(data => {
             for (const p in suppCache) {
@@ -397,8 +421,8 @@ function refreshModal(id) {
 
     // 2. 모달 컨텐츠 작성 (이미지 경로 처리 추가)
     const imgHtml = s.imgPath
-        ? `<img src="${s.imgPath}" style="width:52px; height:52px; border-radius:10px; object-fit:cover;" onerror="this.onerror=null; this.src='images/default.png';">` // ✅ 수정: onerror 로직 보강
-        : `<div style="width:52px; height:52px; border-radius:10px; background:${pt.color}22; display:flex; align-items:center; justify-content:center; font-size:22px;">💊</div>`;
+        ? `<img src="${s.imgPath}" style="width:52px; height:52px; border-radius:10px; object-fit:cover;" onerror="this.onerror=null; this.src='images/default.png';">` // ? 수정: onerror 로직 보강
+        : `<div style="width:52px; height:52px; border-radius:10px; background:${pt.color}22; display:flex; align-items:center; justify-content:center; font-size:22px;">?</div>`;
 
     overlay.innerHTML = `
       <div style="background:#fff; border-radius:14px; padding:24px;
@@ -429,21 +453,22 @@ function refreshModal(id) {
         </div>
         <div style="font-size:11px; color:#A32D2D; background:#FCEBEB;
                     border-radius:8px; padding:8px 10px; margin-top:4px;">
-          ⚠ ${s.caution || '해당 없음'}
+          ? ${s.caution || '해당 없음'}
         </div>
         <div style="display:flex; justify-content:space-between; align-items:center;
                     margin-top:16px; padding-top:12px; border-top:1px solid #f0f0f0;">
           <span style="font-size:12px; color:#999;">
-            👁 ${s.views} &nbsp; ♥ ${s.likes + (on ? 1 : 0)}
+            ? ${s.views} &nbsp; ♥ ${s.likes + (on ? 1 : 0)}
           </span>
           <div style="display:flex; gap:8px;">
-            <button onclick="toggleLike(${id})"
-              style="font-size:12px; padding:5px 14px; border-radius:8px; cursor:pointer;
-                     border:1px solid ${on ? '#D4537E' : '#ccc'};
-                     background:${on ? '#FFF0F5' : 'transparent'};
-                     color:${on ? '#9B2257' : '#666'}; transition: all 0.2s;">
-              ${on ? '♥ 취소' : '♡ 좋아요'}
-            </button>
+            ${!isAdmin ? `
+<button onclick="toggleLike(${id})"
+  style="font-size:12px; padding:5px 14px; border-radius:8px; cursor:pointer;
+         border:1px solid ${on ? '#D4537E' : '#ccc'};
+         background:${on ? '#FFF0F5' : 'transparent'};
+         color:${on ? '#9B2257' : '#666'}; transition: all 0.2s;">
+  ${on ? '♥ 취소' : '♡ 좋아요'}
+</button>` : ''}
             <button onclick="closeModal()"
               style="font-size:12px; padding:5px 14px; border:1px solid #ccc;
                      border-radius:8px; background:transparent; cursor:pointer; color:#666;">
@@ -496,7 +521,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     /* =========================================================
-       관리자 모드 — body_view 화면 인라인 CRUD
+       관리자 모드 ? body_view 화면 인라인 CRUD
        ========================================================= */
 });
 
@@ -507,10 +532,10 @@ function toggleAdminMode() {
     const addBtn = document.getElementById('adminAddBtn');
 
     if (adminModeOn) {
-        toggleBtn.textContent = '🛠️ 관리 모드 ON';
+        toggleBtn.textContent = '?? 관리 모드 ON';
         toggleBtn.style.background = '#e53935';
     } else {
-        toggleBtn.textContent = '🛠️ 관리 모드';
+        toggleBtn.textContent = '?? 관리 모드';
         toggleBtn.style.background = '#FF9800';
     }
 
@@ -523,31 +548,36 @@ function toggleAdminMode() {
 
 // ── 관리자 모달 열기 ──
 // mode: 'insert' | 'update'
+// 관리자 모달 열기
 function openAdminModal(mode, suppId) {
+
+    // 🔥 이거 추가 (혹시 모를 submit 방지)
+    if (window.event) event.preventDefault();
+
     const overlay = document.getElementById('adminModalOverlay');
     if (!overlay) return;
 
-    // 공통 초기화
+    overlay.style.display = 'flex'; // flex로 설정해야 정중앙 정렬됨
+    document.body.classList.add('modal-open'); // 배경 스크롤 차단 및 레이아웃 보호
+
+    // 기존 데이터 초기화 및 모드 설정
     document.getElementById('adminAction').value = mode;
     document.getElementById('adminSuppId').value = suppId || '';
-    ['adminName', 'adminEfficacy', 'adminDosage',
-        'adminTiming', 'adminCaution', 'adminImgPath'].forEach(id => {
-        document.getElementById(id).value = '';
-    });
-    // 신체 부위 선택: 등록 시에만 표시
-    document.getElementById('adminBodyIdWrap').style.display =
-        mode === 'insert' ? 'block' : 'none';
 
-    if (mode === 'update' && suppId) {
+    if (mode === 'update') {
         document.getElementById('adminModalTitle').textContent = '✏️ 영양소 수정';
-        // 기존 데이터 불러와서 폼 채우기
-        fetch(`admin/api?action=get&suppId=${suppId}`)
-            .then(r => r.json())
-            .then(data => {
-                if (data.error) {
-                    alert('데이터 조회 실패');
+
+        // 👉 수정 데이터 불러오기
+        fetch(`admin?action=getOne&suppId=${suppId}`)
+            .then(res => res.json())
+            .then(res => {
+                if (!res.success) {
+                    alert(res.message);
                     return;
                 }
+
+                const data = res.data; // 🔥 핵심
+
                 document.getElementById('adminName').value = data.supplementName || '';
                 document.getElementById('adminEfficacy').value = data.supplementEfficacy || '';
                 document.getElementById('adminDosage').value = data.supplementDosage || '';
@@ -555,108 +585,94 @@ function openAdminModal(mode, suppId) {
                 document.getElementById('adminCaution').value = data.supplementCaution || '';
                 document.getElementById('adminImgPath').value = data.supplementImagePath || '';
             });
-    } else {
-        document.getElementById('adminModalTitle').textContent = '➕ 영양소 등록';
-        document.getElementById('adminBodyId').value = '';
-    }
 
-    overlay.style.display = 'flex';
-    document.body.style.overflow = 'hidden'; // 배경 스크롤 잠금
+
+        // fetch 데이터 로드 로직...
+    } else {
+        document.getElementById('adminModalTitle').textContent = '➕ 새 영양소 등록';
+
+        // 👉 초기화
+        document.getElementById('adminName').value = '';
+        document.getElementById('adminEfficacy').value = '';
+        document.getElementById('adminDosage').value = '';
+        document.getElementById('adminTiming').value = '';
+        document.getElementById('adminCaution').value = '';
+        document.getElementById('adminImgPath').value = '';
+        // input 초기화 로직...
+    }
 }
 
-// ── 관리자 모달 닫기 ──
+// 관리자 모달 닫기
 function closeAdminModal() {
     const overlay = document.getElementById('adminModalOverlay');
-    if (overlay) overlay.style.display = 'none';
-    document.body.style.overflow = '';
+    if (overlay) {
+        overlay.style.display = 'none';
+        document.body.classList.remove('modal-open'); // 배경 스크롤 복구
+    }
 }
 
 // ── 저장 버튼 (insert / update AJAX) ──
+// [수정 전] fetch('/api/admin', { ... body: JSON.stringify(...) })
+// [수정 후]
 function submitAdminModal() {
     const action = document.getElementById('adminAction').value;
     const suppId = document.getElementById('adminSuppId').value;
-    const name = document.getElementById('adminName').value.trim();
-    const efficacy = document.getElementById('adminEfficacy').value.trim();
 
-    if (!name) {
-        alert('영양소 이름을 입력해주세요.');
-        return;
-    }
-    if (!efficacy) {
-        alert('효능을 입력해주세요.');
-        return;
-    }
+    // 🔥 전송할 데이터를 객체로 생성
+    const payload = {
+        action: action,
+        suppId: suppId,
+        supplementName: document.getElementById('adminName').value.trim(),
+        supplementEfficacy: document.getElementById('adminEfficacy').value.trim(),
+        supplementDosage: document.getElementById('adminDosage').value.trim(),
+        supplementTiming: document.getElementById('adminTiming').value.trim(),
+        supplementCaution: document.getElementById('adminCaution').value.trim(),
+        supplementImagePath: document.getElementById('adminImgPath').value.trim(),
+        bodyId: document.getElementById('adminBodyId') ? document.getElementById('adminBodyId').value : ''
+    };
 
-    const params = new URLSearchParams();
-    params.append('action', action);
-    params.append('supplementName', name);
-    params.append('supplementEfficacy', efficacy);
-    params.append('supplementDosage', document.getElementById('adminDosage').value.trim());
-    params.append('supplementTiming', document.getElementById('adminTiming').value.trim());
-    params.append('supplementCaution', document.getElementById('adminCaution').value.trim());
-    params.append('supplementImagePath', document.getElementById('adminImgPath').value.trim());
-
-    if (action === 'update') {
-        params.append('suppId', suppId);
-    }
-    if (action === 'insert') {
-        const bodyId = document.getElementById('adminBodyId').value;
-        if (bodyId) params.append('bodyId', bodyId);
-    }
-
-    fetch('admin/api', {
+    fetch('/admin', { // URL 확인 필요 (AdminC 매핑 경로)
         method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: params.toString()
+        headers: {
+            'Content-Type': 'application/json; charset=UTF-8'
+        },
+        body: JSON.stringify(payload)
     })
         .then(r => r.json())
         .then(data => {
             if (data.success) {
-                closeAdminModal();
                 alert(data.message);
-                // ── 캐시 초기화 후 현재 선택 부위 재로드 ──
-                const savedSelected = [...selected];
-                suppCache = {};
-                selected.clear();
-                savedSelected.forEach(p => selected.add(p));
-                Promise.all(
-                    savedSelected
-                        .filter(p => PARTS[p].body_id)
-                        .map(p => fetchSupps(p))
-                ).then(() => renderList());
+                location.reload();
             } else {
-                alert('오류: ' + (data.message || '알 수 없는 오류'));
+                alert(data.message);
             }
         })
-        .catch(() => alert('서버 연결 실패'));
+        .catch(err => alert("오류 발생: " + err));
 }
 
 // ── 삭제 AJAX ──
 function deleteSupp(suppId, suppName) {
-    if (!confirm(`"${suppName}"을(를) 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) return;
+    if (!confirm(`"${suppName}"을(를) 삭제하시겠습니까?`)) return;
 
-    const params = new URLSearchParams();
-    params.append('action', 'delete');
-    params.append('suppId', suppId);
-
-    fetch('admin/api', {
+    fetch('/admin', {
         method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: params.toString()
+        headers: {'Content-Type': 'application/json; charset=UTF-8'},
+        body: JSON.stringify({action: 'delete', suppId: suppId})
     })
         .then(r => r.json())
         .then(data => {
             if (data.success) {
-                // 캐시에서도 해당 항목 즉시 제거
+                // 캐시에서 해당 영양소 제거 후 리스트 다시 렌더
                 for (const p in suppCache) {
-                    suppCache[p] = suppCache[p].filter(s => s.id !== suppId);
+                    suppCache[p] = suppCache[p].filter(x => x.id !== suppId);
                 }
+                closeModal();   // 혹시 모달이 열려있으면 닫기
                 renderList();
             } else {
-                alert('삭제 실패: ' + data.message);
+                alert(data.message);
             }
         })
-        .catch(() => alert('서버 연결 실패'));
+        .catch(err => alert('오류: ' + err));
 }
 
 // buildCheckboxes();

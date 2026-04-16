@@ -8,6 +8,13 @@ import java.util.List;
 
 public class BodyDAO {
 
+    public static final BodyDAO BODY_DAO = new BodyDAO();
+
+    private BodyDAO() {
+
+    }
+
+
     // ─────────────────────────────────────────
     // 1. 모든 신체 부위 목록 조회
     // ─────────────────────────────────────────
@@ -179,8 +186,8 @@ public class BodyDAO {
         // ✅ DB에 seq_supplement_like 시퀀스가 없다면 아래 SQL로 먼저 생성:
         //    CREATE SEQUENCE seq_supplement_like START WITH 1 INCREMENT BY 1;
         String insertSql = "INSERT INTO supplements_like " +
-                "(supplement_like_id, user_id, supplement_id, supplement_like_date) " +
-                "VALUES (seq_supplements_like_id.NEXTVAL, ?, ?, SYSDATE)";
+                "(supplement_like_id, user_id, supplement_id) " +  // supplement_like_date 제거
+                "VALUES (seq_supplements_like_id.NEXTVAL, ?, ?)";  // SYSDATE 제거
 
         try (Connection con = DBManager_new.connect();
              PreparedStatement checkPs = con.prepareStatement(checkSql)) {
@@ -255,6 +262,21 @@ public class BodyDAO {
             }
         }
         return list;
+    }
+
+    public List<Integer> getLikedSupplementsIds(String userId) throws Exception {
+        String sql = "select SUPPLEMENT_ID from SUPPLEMENTS_LIKE where USER_ID = ?";
+        try (Connection con = DBManager_new.connect();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, userId);
+            ResultSet rs = ps.executeQuery();
+            List<Integer> ids = new ArrayList<>();
+            while (rs.next()) {
+                ids.add(rs.getInt(1));
+            }
+            return ids;
+        }
+
     }
 }
 
