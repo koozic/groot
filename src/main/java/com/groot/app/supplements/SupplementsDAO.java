@@ -302,18 +302,21 @@ public class SupplementsDAO {
             int totalPage = (int) Math.ceil((double) total / cnt);
             request.setAttribute("totalPage", totalPage);
 
-            // 2. 역순 출력을 위한 인덱스 계산 (최신 등록된 것이 먼저 나오도록)
-            int start = total - (cnt * (pageNum - 1));
-            int end = (pageNum == totalPage) ? -1 : start - (cnt + 1);
 
-            // 3. 계산된 인덱스만큼 전체 리스트에서 잘라내어 새 바구니(items)에 담기
+            // 2. 정방향 인덱스 계산 (앞에서부터 자르기)
+            // 예: 1페이지면 0번 인덱스부터, 2페이지면 6번 인덱스부터 시작
+            int startIdx = (pageNum - 1) * cnt;
+            int endIdx = startIdx + cnt;
+
+            // 만약 마지막 페이지라서 딱 안 떨어지고 리스트 범위를 넘어가면, 끝 번호로 맞춰줌
+            if (endIdx > total) {
+                endIdx = total;
+            }
+
+            // 3. 앞에서부터 순서대로 바구니(items)에 담기 (i++ 사용)
             List<SupplementsDTO> items = new ArrayList<>();
-
-            for (int i = start - 1; i > end; i--) {
-                // IndexOutOfBounds 에러 방지를 위한 안전 장치
-                if (i >= 0 && i < total) {
-                    items.add(allList.get(i));
-                }
+            for (int i = startIdx; i < endIdx; i++) {
+                items.add(allList.get(i));
             }
 
             // 4. 잘라낸 리스트를 화면에 보내기 위해 세팅

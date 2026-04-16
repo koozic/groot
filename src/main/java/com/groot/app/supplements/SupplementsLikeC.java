@@ -13,13 +13,17 @@ import java.io.PrintWriter;
 @WebServlet("/supplementsLike")
 public class SupplementsLikeC extends HttpServlet {
 
+    // 화면을 휙휙 넘길 때는 forward나 sendRedirect를 썼었죠? 하지만 이 서블릿은 완전히 다릅니다.
+    // "화면은 그대로 두고, 뒤에서 조용히 하트 색깔만 바꿀 데이터(JSON 쪽지)만 주고받자!"
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         // 1. JSON 응답 세팅을 가장 먼저 합니다.
+        // 이번엔 HTML 화면 안 줄 거야! 딱 필요한 '데이터 쪽지(JSON)'만 줄 테니까 그렇게 알아
         response.setContentType("application/json;charset=UTF-8");
-        PrintWriter out = response.getWriter();
+        PrintWriter out = response.getWriter(); // 일종의 펜
 
         // 2. 세션에서 로그인 유저 정보 꺼내기
         HttpSession session = request.getSession(false);
@@ -35,6 +39,7 @@ public class SupplementsLikeC extends HttpServlet {
         String userId = loginUser.getUser_id();
 
         // 5. 프론트에서 보낸 영양제 번호 받기
+        // 자바 스크립트에 있음 => body: 'supplementId=' + supplementId
         String idParam = request.getParameter("supplementId");
 
         if (idParam == null || idParam.trim().isEmpty()) {
