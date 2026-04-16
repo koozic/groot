@@ -328,7 +328,7 @@ function executeDeleteReview() {
                 refreshReviewUI();
                 fetchReviews(); // 화면 리스트 새로고침
             } else {
-                alert("삭제 실패!");
+                showToast("삭제에 실패했습니다.", "error");
             }
             targetReviewIdToDelete = null; // 아이디 초기화
         })
@@ -377,7 +377,7 @@ function openUpdateForm(reviewId) {
         }
         setUpdateStars(score);
         document.getElementById('updateModal').style.display = 'block';
-    } catch (e) { alert("오류 발생!"); }
+    } catch (e) { showToast("수정 폼을 여는 중 오류가 발생했습니다.", "error"); }
 }
 
 function setUpdateStars(score) {
@@ -402,7 +402,9 @@ function submitUpdate() {
                 closeUpdateModal();
                 refreshReviewUI();
                 fetchReviews();
-            } else alert("수정 실패!");
+            } else {
+                showToast("리뷰 수정에 실패했습니다.", "error");
+            }
         });
 }
 
@@ -462,7 +464,9 @@ function submitReview() {
                 closeWriteModal();
                 refreshReviewUI();
                 fetchReviews();
-            } else alert("등록 실패!");
+            } else {
+                showToast("리뷰 등록에 실패했습니다.", "error");
+            }
         });
 }
 
