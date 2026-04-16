@@ -7,7 +7,7 @@
 
 <div class="lounge-wrap">
     <div class="lounge-header">
-        <h1>🏆 약쟁이 명예의 전당</h1>
+        <h1>🏆 OTTERCARE 명예의 전당</h1>
         <p>유저들이 인정한 가장 도움되는 찐 후기들을 모아봤어요!</p>
     </div>
 
@@ -29,7 +29,7 @@
     const currentLoginId = '${sessionScope.loginUser.user_id}';
 
     document.querySelectorAll('.pill-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
             document.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
             const category = this.getAttribute('data-category');
@@ -62,7 +62,7 @@
                         let imgSrc = r.r_img && r.r_img !== 'null' ? (r.r_img.startsWith('http') ? r.r_img : '../upload/' + r.r_img) : '';
                         let imgHtml = imgSrc ? `<div class="review-img-box"><img src="\${imgSrc}" alt="리뷰사진"></div>` : '';
                         let pImgSrc = r.p_img ? r.p_img : '../images/default.jpg';
-                        let safeUser = r.user_id ? r.user_id.substring(0,3) + '***' : '익명';
+                        let safeUser = r.user_id ? r.user_id.substring(0, 3) + '***' : '익명';
 
                         finalHtml += `
                         <div class="podium-card \${rankClasses[index]}">
@@ -93,7 +93,7 @@
                     let imgSrc = r.r_img && r.r_img !== 'null' ? (r.r_img.startsWith('http') ? r.r_img : '../upload/' + r.r_img) : '';
                     let imgHtml = imgSrc ? `<div class="review-img-box"><img src="\${imgSrc}" alt="리뷰사진"></div>` : '';
                     let pImgSrc = r.p_img ? r.p_img : '../images/default.jpg';
-                    let safeUser = r.user_id ? r.user_id.substring(0,3) + '***' : '익명';
+                    let safeUser = r.user_id ? r.user_id.substring(0, 3) + '***' : '익명';
 
                     return `
                     <div class="lounge-card">
@@ -139,7 +139,7 @@
         // 기존 상품 상세 페이지에서 쓰던 좋아요 컨트롤러 찌르기!
         fetch('review-like', {
             method: 'POST',
-            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            headers: {'X-Requested-With': 'XMLHttpRequest'},
             body: params
         })
             .then(res => res.text())

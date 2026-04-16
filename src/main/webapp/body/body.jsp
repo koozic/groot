@@ -1,7 +1,15 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
-
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <link rel="icon" type="image/png"
+          href="${pageContext.request.contextPath}/img/favicon.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTTERCARE</title>
+</head>
+<body>
 <div class="wrap">
     <div class="layout">
 
@@ -115,90 +123,60 @@
 </div>
 <%-- ===== 관리자 CRUD 모달 (isAdmin일 때만 렌더) ===== --%>
 <c:if test="${sessionScope.isAdmin == true}">
-    <div id="adminModalOverlay"
-         style="display:none; position:fixed; inset:0;
-            background:rgba(0,0,0,0.55); z-index:10001;
-            justify-content:center; align-items:center; padding:16px;"
-         onclick="if(event.target===this) closeAdminModal()">
-
-        <div style="background:#fff; border-radius:14px; padding:28px 24px;
-                width:min(500px,95vw); max-height:88vh; overflow-y:auto;
-                position:relative; box-shadow:0 12px 30px rgba(0,0,0,0.2);">
+    <div id="adminModalOverlay" class="admin-modal-overlay" onclick="if(event.target===this) closeAdminModal()">
+        <div class="admin-modal-content">
 
                 <%-- 닫기 버튼 --%>
             <button onclick="closeAdminModal()"
-                    style="position:absolute; top:14px; right:16px;
-                       background:none; border:none; font-size:1.5em;
-                       cursor:pointer; color:#999; line-height:1;">✕
+                    style="position:absolute; top:20px; right:20px; background:none; border:none; font-size:1.5em; cursor:pointer; color:#bbb;">
+                ✕
             </button>
 
-            <h3 id="adminModalTitle"
-                style="margin:0 0 20px; font-size:1.1em; color:#333;">➕ 영양소 등록</h3>
+            <h3 id="adminModalTitle" style="margin-top:0; margin-bottom:25px; font-size:1.2em;">➕ 영양소 등록</h3>
 
-                <%-- hidden 값 --%>
             <input type="hidden" id="adminAction" value="insert">
             <input type="hidden" id="adminSuppId" value="">
 
-            <div style="display:flex; flex-direction:column; gap:14px;">
-
+            <div style="display:flex; flex-direction:column; gap:16px;">
                 <div>
-                    <label style="display:block; font-size:0.85em; font-weight:700;
-                               color:#555; margin-bottom:5px;">영양소 이름 *</label>
-                    <input id="adminName" type="text" placeholder="예: 루테인"
-                           style="width:100%; padding:9px 11px; border:1px solid #ddd;
-                              border-radius:7px; font-size:0.95em; box-sizing:border-box;">
+                    <label style="display:block; font-size:0.9em; font-weight:700; margin-bottom:6px;">영양소 이름 *</label>
+                    <input id="adminName" type="text"
+                           style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;">
                 </div>
 
                 <div>
-                    <label style="display:block; font-size:0.85em; font-weight:700;
-                               color:#555; margin-bottom:5px;">효능 *</label>
-                    <textarea id="adminEfficacy" placeholder="예: 눈 건강 보호 및 황반변성 예방"
-                              style="width:100%; padding:9px 11px; border:1px solid #ddd;
-                                 border-radius:7px; font-size:0.95em; box-sizing:border-box;
-                                 height:72px; resize:vertical;"></textarea>
+                    <label style="display:block; font-size:0.9em; font-weight:700; margin-bottom:6px;">효능 *</label>
+                    <textarea id="adminEfficacy"
+                              style="width:100%; height:80px; padding:10px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box; resize:none;"></textarea>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                    <div>
+                        <label style="display:block; font-size:0.9em; font-weight:700; margin-bottom:6px;">복용법</label>
+                        <input id="adminDosage" type="text"
+                               style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;">
+                    </div>
+                    <div>
+                        <label style="display:block; font-size:0.9em; font-weight:700; margin-bottom:6px;">복용 시기</label>
+                        <input id="adminTiming" type="text"
+                               style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;">
+                    </div>
                 </div>
 
                 <div>
-                    <label style="display:block; font-size:0.85em; font-weight:700;
-                               color:#555; margin-bottom:5px;">복용법</label>
-                    <input id="adminDosage" type="text" placeholder="예: 하루 1정 (20mg)"
-                           style="width:100%; padding:9px 11px; border:1px solid #ddd;
-                              border-radius:7px; font-size:0.95em; box-sizing:border-box;">
+                    <label style="display:block; font-size:0.9em; font-weight:700; margin-bottom:6px;">주의사항</label>
+                    <textarea id="adminCaution"
+                              style="width:100%; height:60px; padding:10px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box; resize:none;"></textarea>
                 </div>
 
-                <div>
-                    <label style="display:block; font-size:0.85em; font-weight:700;
-                               color:#555; margin-bottom:5px;">복용 시기</label>
-                    <input id="adminTiming" type="text" placeholder="예: 식후 복용 권장"
-                           style="width:100%; padding:9px 11px; border:1px solid #ddd;
-                              border-radius:7px; font-size:0.95em; box-sizing:border-box;">
-                </div>
-
-                <div>
-                    <label style="display:block; font-size:0.85em; font-weight:700;
-                               color:#555; margin-bottom:5px;">주의사항</label>
-                    <textarea id="adminCaution" placeholder="예: 과다복용 시 피부 황변 가능"
-                              style="width:100%; padding:9px 11px; border:1px solid #ddd;
-                                 border-radius:7px; font-size:0.95em; box-sizing:border-box;
-                                 height:60px; resize:vertical;"></textarea>
-                </div>
-
-                <div>
-                    <label style="display:block; font-size:0.85em; font-weight:700;
-                               color:#555; margin-bottom:5px;">이미지 경로</label>
-                    <input id="adminImgPath" type="text" placeholder="예: images/supp/lutein.png"
-                           style="width:100%; padding:9px 11px; border:1px solid #ddd;
-                              border-radius:7px; font-size:0.95em; box-sizing:border-box;">
-                </div>
-
-                    <%-- 등록 시에만 신체 부위 선택 표시, 수정 시 JS로 숨김 --%>
                 <div id="adminBodyIdWrap">
-                    <label style="display:block; font-size:0.85em; font-weight:700;
-                               color:#555; margin-bottom:5px;">연결할 신체 부위</label>
+                    <label style="display:block; font-size:0.9em; font-weight:700; margin-bottom:6px;">연결할 신체 부위</label>
                     <select id="adminBodyId"
-                            style="width:100%; padding:9px 11px; border:1px solid #ddd;
-               border-radius:7px; font-size:0.95em;">
+                            style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
                         <option value="">선택 안함</option>
+                        <c:forEach var="part" items="${partsMap}"> <%-- 기존 로직에 맞춰 option 유지 --%>
+                            <option value="${part.value}">${part.label}</option>
+                        </c:forEach>
                         <option value="1">💇 머리카락 (hair)</option>
                         <option value="2">🧴 피부 (skin)</option>
                         <option value="3">👁️ 눈 (eye)</option>
@@ -212,26 +190,20 @@
                         <option value="11">💪 근육 (muscle)</option>
                     </select>
                 </div>
-
             </div>
-                <%-- /flex column --%>
 
-                <%-- 하단 버튼 --%>
-            <div style="display:flex; gap:10px; margin-top:22px;">
+            <div style="display:flex; gap:12px; margin-top:30px;">
                 <button onclick="submitAdminModal()"
-                        style="flex:1; padding:11px; background:#4CAF50; color:white;
-                           border:none; border-radius:8px; cursor:pointer;
-                           font-size:0.98em; font-weight:700;">
+                        style="flex:1; padding:13px; background:#4CAF50; color:white; border:none; border-radius:8px; font-weight:700; cursor:pointer;">
                     저장하기
                 </button>
                 <button onclick="closeAdminModal()"
-                        style="padding:11px 22px; background:#f5f5f5; color:#666;
-                           border:1px solid #ddd; border-radius:8px; cursor:pointer; font-size:0.95em;">
-                    취소
+                        style="padding:13px 25px; background:#eee; border:none; border-radius:8px; cursor:pointer;">취소
                 </button>
             </div>
-
         </div>
-            <%-- /modal box --%>
-    </div><%-- /overlay --%>
+    </div>
+    <%-- /overlay --%>
 </c:if>
+</body>
+</html>

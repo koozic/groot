@@ -55,7 +55,7 @@ public class UserDAO {
                     request.setAttribute("loginMsg", "어서오세요. 당신의 건강을 챙기세요");
                     isLoginSuccess = true;
                 } else if (rs.getString("user_pw").equals("ADMIN_PROTECTED")) {
-                    // ── Step 2. users에 없으면 admin 테이블 조회 ──
+                    // ── Step 2. users에 ADMIN_PROTECTED 계정이면 admin 테이블로 검증 ──
                     // 중요: 다음 조회를 위해 기존 리소스 닫기
                     DBManager_new.close(null, pstmt, rs);
 
@@ -108,6 +108,46 @@ public class UserDAO {
                     incrementFailCount(request, id);
                     request.setAttribute("loginMsg", "아이디 또는 비밀번호가 일치하지 않습니다.");
                 }
+            } else {
+                // users에 없는 ID일 수 있으므로 admin 테이블도 조회
+                DBManager_new.close(null, pstmt, rs);
+
+                String adminSql = "SELECT * FROM admin WHERE admin_id=?";
+                pstmt = con.prepareStatement(adminSql);
+                pstmt.setString(1, id);
+                rs = pstmt.executeQuery();
+
+                if (rs.next()) {
+                    if (rs.getString("admin_pw").equals(pw)) {
+                        // [관리자 로그인 성공]
+                        UserDTO adminUser = new UserDTO();
+                        adminUser.setUser_id(rs.getString("admin_id"));
+                        adminUser.setName(rs.getString("admin_name"));
+                        adminUser.setEmail(rs.getString("admin_email"));
+                        adminUser.setUser_profile("admin_icon.png");
+
+                        try {
+                            syncAdminToUserTable(adminUser);
+                        } catch (Exception e) {
+                            System.out.println("⚠️ 동기화 중 오류가 났지만 로그인은 진행합니다: " + e.getMessage());
+                        }
+
+                        HttpSession session = request.getSession();
+                        session.setAttribute("loginUser", adminUser);
+                        session.setAttribute("isAdmin", true);
+                        session.removeAttribute("loginFailCount");
+
+                        request.setAttribute("loginMsg", "관리자로 로그인되었습니다.");
+                        isLoginSuccess = true;
+                    } else {
+                        incrementFailCount(request, id);
+                        request.setAttribute("loginMsg", "아이디 또는 비밀번호가 일치하지 않습니다.");
+                    }
+                } else {
+                    incrementFailCount(request, id);
+                    request.setAttribute("loginMsg", "존재하지 않는 아이디입니다. 회원가입 해주세요");
+                    request.setAttribute("needVerifyChoice", true);
+                }
             }
 
 
@@ -131,8 +171,10 @@ public class UserDAO {
         String checkSql = "SELECT user_id FROM users WHERE user_id = ?";
 
         // 컬럼명을 명시하여 순서 꼬임을 방지합니다.
-        String insertSql = "INSERT INTO users (user_id, user_pw, user_name, user_age, user_gender, user_profile, user_email, user_address, user_agree, user_join_path, user_point, user_grade) " +
-                "VALUES (?, 'ADMIN_PROTECTED', ?, 0, 'N', ?, ?, 'ADMIN_ADDR', 'Y', 'ADMIN', '0', 'A')";
+        // 수정 (user_grade 제거)
+        // 수정 (user_point도 제거)
+        String insertSql = "INSERT INTO users (user_id, user_pw, user_name, user_age, user_gender, user_profile, user_email, user_address, user_agree, user_join_path) " +
+                "VALUES (?, 'ADMIN_PROTECTED', ?, 0, 'N', ?, ?, 'ADMIN_ADDR', 'Y', 'ADMIN')";
 
         try {
             con = DBManager_new.connect();
@@ -256,7 +298,7 @@ public class UserDAO {
             String selectedProfile = request.getParameter("default_profile");   // 라디오 선택값
 
             String uploadedProfile = (String) request.getAttribute("user_profile"); // UserJoinC에서 업로드한 URL
-            String finalProfilePath="";
+            String finalProfilePath = "";
             System.out.println("[UserDAO.join] selectedProfile=" + selectedProfile + ", uploadedProfile=" + uploadedProfile);
 
             // UserJoinC에서 Cloudinary 업로드한 URL이 있으면 우선 사용
@@ -264,8 +306,7 @@ public class UserDAO {
                 finalProfilePath = uploadedProfile;
                 System.out.println("Cloudinary 업로드 이미지: " + finalProfilePath);
 
-            }
-            else if (selectedProfile != null && !selectedProfile.trim().isEmpty()) {
+            } else if (selectedProfile != null && !selectedProfile.trim().isEmpty()) {
 
                 finalProfilePath = "user/userImg/" + selectedProfile;
                 System.out.println("기본 프로필 선택: " + finalProfilePath);
