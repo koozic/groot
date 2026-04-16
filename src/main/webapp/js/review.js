@@ -328,7 +328,7 @@ function executeDeleteReview() {
                 refreshReviewUI();
                 fetchReviews(); // 화면 리스트 새로고침
             } else {
-                alert("삭제 실패!");
+                showToast("삭제에 실패했습니다.", "error");
             }
             targetReviewIdToDelete = null; // 아이디 초기화
         })
@@ -377,7 +377,7 @@ function openUpdateForm(reviewId) {
         }
         setUpdateStars(score);
         document.getElementById('updateModal').style.display = 'block';
-    } catch (e) { alert("오류 발생!"); }
+    } catch (e) { showToast("수정 폼을 여는 중 오류가 발생했습니다.", "error"); }
 }
 
 function setUpdateStars(score) {
@@ -402,7 +402,9 @@ function submitUpdate() {
                 closeUpdateModal();
                 refreshReviewUI();
                 fetchReviews();
-            } else alert("수정 실패!");
+            } else {
+                showToast("리뷰 수정에 실패했습니다.", "error");
+            }
         });
 }
 
@@ -459,7 +461,9 @@ function submitReview() {
                 closeWriteModal();
                 refreshReviewUI();
                 fetchReviews();
-            } else alert("등록 실패!");
+            } else {
+                showToast("리뷰 등록에 실패했습니다.", "error");
+            }
         });
 }
 
@@ -467,12 +471,16 @@ function submitReview() {
 // 🍞 기타 유틸 (토스트, 날짜, 새로고침)
 // ==========================================
 function showToast(message, type = "success") {
-    const toast = document.getElementById("toast");
-    if (toast) {
-        toast.innerText = message;
-        toast.className = `toast show ${type}`;
-        setTimeout(() => toast.classList.remove("show"), 1300);
-    } else alert(message);
+    let toast = document.getElementById("toast");
+    if (!toast) {
+        toast = document.createElement("div");
+        toast.id = "toast";
+        toast.className = "toast";
+        document.body.appendChild(toast);
+    }
+    toast.innerText = message;
+    toast.className = `toast show ${type}`;
+    setTimeout(() => toast.classList.remove("show"), 1300);
 }
 
 function formatKoreanDate(dateStr) {
