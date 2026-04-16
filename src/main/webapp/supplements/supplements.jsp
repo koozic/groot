@@ -15,12 +15,12 @@
 </head>
 
 <body>
-<%-- ✅ 세션에서 isAdmin 값을 꺼내 변수로 저장 --%>
+<%-- 세션에서 isAdmin 값을 꺼내 변수로 저장 --%>
 <c:set var="isAdmin" value="${sessionScope.isAdmin}" />
 
 <h1 style="text-align: center;">영양성분 리스트</h1>
 
-<%-- ✅ 관리자만 등록 버튼 보임 --%>
+<%-- 관리자만 등록 버튼 보임 --%>
 <c:if test="${isAdmin == true}">
     <button class="supp-btn" onclick="openAddModal()">새 영양성분 등록</button>
 </c:if>
@@ -40,41 +40,42 @@
 <%--                 <img src="${supp.supplementImagePath}" alt="${supp.supplementName}">--%>
 
                     <%-- 💡 똑똑한 이미지 출력 로직 --%>
-                <c:choose>
-                    <%-- 1. DB 값이 'http'로 시작하면? (인터넷 주소면) -> 경로 안 붙이고 그대로 출력! --%>
-                    <c:when test="${fn:startsWith(supp.supplementImagePath, 'http')}">
-                        <img src="${supp.supplementImagePath}" alt="${supp.supplementName}">
-                    </c:when>
+                        <c:choose>
+                            <%-- 1. DB 값이 'http'로 시작하면? (인터넷 주소면) -> 경로 안 붙이고 그대로 출력! --%>
+                            <c:when test="${fn:startsWith(supp.supplementImagePath, 'http')}">
+                                <img src="${supp.supplementImagePath}" alt="${supp.supplementName}">
+                            </c:when>
 
-                    <%-- 2. 그게 아니면? (직접 올린 'test.png' 같은 파일이면) -> 앞에 폴더 경로를 싹 붙여서 출력! --%>
-                    <c:otherwise>
-                        <img src="/supplementImg/supplementImgFile/${supp.supplementImagePath}" alt="${supp.supplementName}">
-                    </c:otherwise>
-                </c:choose>
-
+                            <%-- 2. 그게 아니면? (직접 올린 'test.png' 같은 파일이면) -> 앞에 폴더 경로를 싹 붙여서 출력! --%>
+                            <c:otherwise>
+                                <img src="/supplementImg/supplementImgFile/${supp.supplementImagePath}" alt="${supp.supplementName}">
+                            </c:otherwise>
+                        </c:choose>
                 </div>
 
                 <div class="supp-name">${supp.supplementName}</div>
                 <div class="supp-efficacy">${supp.supplementEfficacy}</div>
 
-                    <%-- ★ 좋아요 버튼 부분 수정 --%>
+                <%-- ★ 좋아요 버튼 부분 수정 --%>
+                <%-- 삼항연산자 --%>
+                <%-- this : 지금 클릭 당한 하트 버튼 바로 나 자신 --%>
                 <button class="like-btn ${likedIds.contains(supp.supplementId) ? 'liked' : ''}"
                         onclick="toggleLike(this, ${supp.supplementId})">
                     ♥
                 </button>
 
-                    <%-- ✅ 관리자만 수정/삭제 버튼 보임 --%>
+                <%-- 관리자만 수정/삭제 버튼 보임 --%>
                 <c:if test="${isAdmin == true}">
                     <div style="margin-top: 10px;">
                         <button class="supp-btn" onclick="delSupplement('${supp.supplementId}')">삭제</button>
                         <button class="supp-btn" onclick="updateSupplement('${supp.supplementId}')">수정</button>
                     </div>
                 </c:if>
-
             </div>
         </c:forEach>
     </div>
 
+    <%-- 페이징 --%>
     <div class="page-container">
         <c:choose>
             <c:when test="${currentPage != 1}">
@@ -105,13 +106,10 @@
             </c:otherwise>
         </c:choose>
     </div>
-
 </div>
 
         <dialog id="commonModal">
-<%--            <button id="closeBtn">x</button>--%>
-            <div id="modalContent">
-            </div>
+            <div id="modalContent"></div>
         </dialog>
 
 </body>
@@ -136,19 +134,21 @@
     }
 
     // =========================================================
-    // 💡 [여기 추가!] 마이페이지에서 넘어왔을 때 자동으로 모달 열기
+    // 마이페이지에서 넘어왔을 때 자동으로 모달 열기
     // =========================================================
+    // window.onload = function() {} 웹페이지의 모든 요소(HTML, 이미지 등)가 화면에 완전히 로드된 후에 이 안의 코드를 실행하라
     window.onload = function() {
         // 주소창에서 ?openId= 번호 가져오기 (예: supplements?openId=3)
         const urlParams = new URLSearchParams(window.location.search);
         const openId = urlParams.get('openId');
 
+        // 주소창에서 openId 값을 성공적으로 가져왔다면
         if (openId) {
             // openId와 일치하는 data-id를 가진 div(이미지 영역)를 찾음
             const targetDiv = document.querySelector(`.supp-img[data-id="${openId}"]`);
 
             if (targetDiv) {
-                // 찾았다면 마치 사용자가 직접 사진을 클릭한 것처럼 이벤트를 발생시켜 모달을 엶!
+                // 찾았다면 자바스크립트가 사용자를 대신해서 마우스로 클릭해 줍니다.
                 targetDiv.click();
             }
         }
