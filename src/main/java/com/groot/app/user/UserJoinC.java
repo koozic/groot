@@ -42,6 +42,7 @@ public class UserJoinC extends HttpServlet {
 
 
         Boolean redirectJoin = (Boolean) req.getAttribute("redirectJoin");
+        System.out.println(redirectJoin);
         if (redirectJoin != null && redirectJoin) {
             resp.sendRedirect("user/join.jsp");//실패하면 그 화면 그대로
         } else {

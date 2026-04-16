@@ -1,0 +1,14 @@
+Rollback backup for supplements redesign changes.
+
+Backup timestamp:
+- 2026-04-15
+
+Files backed up:
+- supplements.jsp
+- supplements.js
+- supplements.css
+
+Restore (PowerShell):
+Copy-Item "C:\es\groot\backups\20260415-rollback-supplements\supplements.jsp" "C:\es\groot\src\main\webapp\supplements\supplements.jsp" -Force
+Copy-Item "C:\es\groot\backups\20260415-rollback-supplements\supplements.js" "C:\es\groot\src\main\webapp\js\supplements.js" -Force
+Copy-Item "C:\es\groot\backups\20260415-rollback-supplements\supplements.css" "C:\es\groot\src\main\webapp\css\supplements.css" -Force

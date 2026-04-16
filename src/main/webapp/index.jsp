@@ -35,17 +35,10 @@
      1. 헤더
      ============================================= -->
 <header class="site-header">
-    <%-- 로고가 있어야 로그인이 오른쪽으로 밀려납니다 --%>
-    <%-- 왼쪽: 텍스트 로고 자리 (비워서 중앙 로고가 진짜 중앙에 오게) --%>
-    <div style="width:160px;"></div>
-
-    <%-- 중앙: 이미지 로고 --%>
-    <div style="position:absolute; left:50%; transform:translateX(-50%);">
-        <a href="hello-servlet">
-            <img src="img/logo.png"
-                 alt="Otter Care 로고"
-                 style="height:150px; width:auto; display:block;
-                        cursor:pointer; object-fit:contain;">
+    <div class="header-spacer"></div>
+    <div class="brand-center">
+        <a href="hello-servlet" class="brand-link">
+            <img src="img/logo.png" alt="Otter Care 로고" class="brand-logo">
         </a>
     </div>
 
