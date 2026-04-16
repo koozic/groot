@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>약쟁이 회원가입</title>
+    <title>OTTERCARE 회원가입</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/app.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/login.css">
     <style>
@@ -30,8 +30,6 @@
         }
 
 
-
-
     </style>
 
 
@@ -43,13 +41,14 @@
 
         <div class="login-left">
             <div class="login-title-box">
-                <h1 class="login-title">약쟁이</h1>
+                <h1 class="login-title">OTTERCARE</h1>
                 <p class="login-subtitle">건강한 습관의 시작, 회원가입 후 다양한 기능을 이용해보세요.</p>
             </div>
 
             <div class="login-img-box">
                 <img src="${pageContext.request.contextPath}/userImg/pill.jfif" alt="알약 이미지" class="login-pill-img">
-                <img src="${pageContext.request.contextPath}/userImg/bottle.jfif" alt="영양제 통 이미지" class="login-bottle-img">
+                <img src="${pageContext.request.contextPath}/userImg/bottle.jfif" alt="영양제 통 이미지"
+                     class="login-bottle-img">
             </div>
         </div>
 
@@ -61,7 +60,8 @@
                     ${msg}
                 </div>
 
-                <form action="${pageContext.request.contextPath}/join" method="post" enctype="multipart/form-data" onsubmit="return joinCheck()">
+                <form action="${pageContext.request.contextPath}/join" method="post" enctype="multipart/form-data"
+                      onsubmit="return joinCheck()">
 
                     <div class="login-input-group">
                         <label for="user_id">아이디</label>
@@ -88,7 +88,6 @@
                                 required
                         >
                     </div>
-
 
 
                     <div class="login-input-group">
@@ -145,39 +144,41 @@
                     </div>
 
 
-                        <!-- 기본 프로필 6개 중 선택 -->
-                        <div>
-                            <label>
-                                <input type="radio" name="default_profile" value="Ayanokoji.jfif" >
-                                <img src="${pageContext.request.contextPath}/user/userImg/Ayanokoji.jfif" width="80">
-                            </label>
+                    <!-- 기본 프로필 6개 중 선택 -->
+                    <div>
+                        <label>
+                            <input type="radio" name="default_profile" value="Ayanokoji.jfif" checked>
+                            <img src="${pageContext.request.contextPath}/user/userImg/Ayanokoji.jfif" width="80">
+                        </label>
 
-                            <label>
-                                <input type="radio" name="default_profile" value="Ryuen.jfif">
-                                <img src="${pageContext.request.contextPath}/user/userImg/Ryuen.jfif" width="80">
-                            </label>
+                        <label>
+                            <input type="radio" name="default_profile" value="Ryuen.jfif">
+                            <img src="${pageContext.request.contextPath}/user/userImg/Ryuen.jfif" width="80">
+                        </label>
 
-                            <label>
-                                <input type="radio" name="default_profile" value="Horikita.jfif">
-                                <img src="${pageContext.request.contextPath}/user/userImg/Horikita.jfif" width="80">
-                            </label>
+                        <label>
+                            <input type="radio" name="default_profile" value="Horikita.jfif">
+                            <img src="${pageContext.request.contextPath}/user/userImg/Horikita.jfif" width="80">
+                        </label>
 
-                            <!-- 나머지 3개도 동일 -->
-                        </div>
+                        <!-- 나머지 3개도 동일 -->
+                    </div>
 
-                        <!-- 직접 업로드 -->
-                        <div>
-                            <p>직접 업로드(선택사항)</p>
-                            <input type="file" name="user_profile" accept="image/*">
-                        </div>
+                    <!-- 직접 업로드 -->
+                    <div>
+                        <p>직접 업로드(선택사항)</p>
+                        <input type="file" name="user_profile" accept="image/*">
+                    </div>
 
 
-                        <!-- 주소 -->
+                    <!-- 주소 -->
                     <div class="login-input-group">
                         <label for="user_zipcode">우편번호</label>
                         <div style="display:flex; gap:8px;">
-                            <input type="text" id="user_zipcode" name="user_zipcode" placeholder="우편번호" readonly style="width:60%;">
-                            <input type="button" value="주소찾기" class="login-btn" style="width:40%; height:46px;" onclick="execDaumPostcode()">
+                            <input type="text" id="user_zipcode" name="user_zipcode" placeholder="우편번호" readonly
+                                   style="width:60%;">
+                            <input type="button" value="주소찾기" class="login-btn" style="width:40%; height:46px;"
+                                   onclick="execDaumPostcode()">
                         </div>
                     </div>
 
@@ -188,17 +189,20 @@
 
                     <div class="login-input-group">
                         <label for="user_detail_address">상세주소</label>
-                        <input type="text" id="user_detail_address" name="user_detail_address" placeholder="상세주소를 입력하세요">
+                        <input type="text" id="user_detail_address" name="user_detail_address"
+                               placeholder="상세주소를 입력하세요">
                     </div>
 
                     <div class="login-input-group">
                         <label for="user_extra_address">참고항목</label>
-                        <input type="text" id="user_extra_address" name="user_extra_address" placeholder="참고항목" readonly>
+                        <input type="text" id="user_extra_address" name="user_extra_address" placeholder="참고항목"
+                               readonly>
                     </div>
 
                     <div class="login-input-group">
                         <label for="user_join_path">이 사이트를 알게 된 경로</label>
-                        <select id="user_join_path" name="user_join_path" style="width:100%; height:46px; border:1px solid #ddd; border-radius:8px; padding:0 10px;">
+                        <select id="user_join_path" name="user_join_path"
+                                style="width:100%; height:46px; border:1px solid #ddd; border-radius:8px; padding:0 10px;">
                             <option value="">선택하세요</option>
                             <option value="GOOGLE">구글 검색</option>
                             <option value="YOUTUBE">유튜브</option>
@@ -229,7 +233,7 @@
 </div>
 <script>
     // 문서의 모든 HTML 요소가 로드된 후 실행되도록 감싸기
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         // 1. 요소 찾기 (안전하게 변수에 담기)
         const fileInput = document.querySelector('input[name="user_profile"]');
         const defaultProfiles = document.querySelectorAll('input[name="default_profile"]');
@@ -238,10 +242,10 @@
         if (fileInput && defaultProfiles.length > 0) {
 
             // 2. 사용자가 '파일 업로드'에 사진을 넣었을 때!
-            fileInput.addEventListener('change', function() {
+            fileInput.addEventListener('change', function () {
                 if (this.value) { // 파일이 선택되었다면
                     // 라디오 버튼들의 체크를 전부 해제!
-                    defaultProfiles.forEach(function(radio) {
+                    defaultProfiles.forEach(function (radio) {
                         radio.checked = false;
                     });
                 } else {
@@ -254,8 +258,8 @@
             });
 
             // 3. 사용자가 다시 '기본 이미지(라디오 버튼)'를 클릭했을 때!
-            defaultProfiles.forEach(function(radio) {
-                radio.addEventListener('click', function() {
+            defaultProfiles.forEach(function (radio) {
+                radio.addEventListener('click', function () {
                     // 올려뒀던 파일 입력을 초기화!
                     fileInput.value = '';
                 });

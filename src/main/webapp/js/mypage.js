@@ -40,7 +40,11 @@ document.addEventListener('DOMContentLoaded', function () {
             if (typeof confirmCallback === 'function') confirmCallback();
             closeConfirm();
         };
+
     }
+    const sortRecentBtn = document.getElementById('sort-recent');
+    if (sortRecentBtn) loadLikedSupplements('recent', sortRecentBtn);
+
 });
 
 /* ── 기능 로직 ── */
@@ -327,6 +331,12 @@ function renderAlerts(alerts) {
 }
 
 // ── 찜한 영양성분 정렬 로드 ──
+// ── 찜한 영양성분 전역 상태 ──
+let likedData = [];       // 전체 데이터 캐시
+let currentPage = 1;
+const PAGE_SIZE = 6;      // 한 페이지에 보여줄 카드 수
+
+// ── 찜한 영양성분 정렬 로드 ──
 function loadLikedSupplements(sort, btn) {
     // 버튼 스타일 토글
     document.querySelectorAll('#sort-recent, #sort-oldest').forEach(b => {
@@ -343,52 +353,114 @@ function loadLikedSupplements(sort, btn) {
     fetch(`mypage?action=myLikes&sort=${sort}`)
         .then(r => r.json())
         .then(data => {
-            const container = document.getElementById('liked-list');
-
-            if (!data || data.length === 0) {
-                container.innerHTML = `
-                    <div style="grid-column:1/-1; text-align:center; padding:40px 0;
-                                color:#9ca3af; font-size:14px;">
-                        <div style="font-size:3em; margin-bottom:10px;">🩶</div>
-                        아직 찜한 영양성분이 없습니다.
-                    </div>`;
-                return;
-            }
-
-            container.innerHTML = data.map(s => `
-                <div class="like-card"
-                     style="border:1px solid #eee; border-radius:10px; padding:15px;
-                            text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.05);
-                            background:#fff; display:flex; flex-direction:column;
-                            justify-content:space-between;">
-                    <div>
-                        <div style="width:100%; height:150px; border-radius:8px;
-                             overflow:hidden; background:#f8f9fa; margin-bottom:12px;">
-                            <img src="${getImgSrc(s.supplementImagePath)}"
-                                 style="width:100%; height:100%; object-fit:cover;"
-                                 onerror="this.src='images/default.png'">
-                        </div>
-                        <div style="font-weight:bold; font-size:1.1em; color:#333; margin-bottom:5px;">
-                            ${s.supplementName}
-                        </div>
-                        <div style="font-size:0.85em; color:#666; height:35px;
-                             overflow:hidden; line-height:1.4;">
-                            ${s.supplementEfficacy || ''}
-                        </div>
-                    </div>
-                    <button onclick="showSupplementDetail(
-                                '${s.supplementId}','${escHtml(s.supplementName)}',
-                                '${escHtml(s.supplementEfficacy)}','${escHtml(s.supplementDosage)}',
-                                '${escHtml(s.supplementTiming)}','${escHtml(s.supplementCaution)}',
-                                '${s.supplementImagePath}')"
-                        style="margin-top:15px; padding:8px 10px; background:#f0fdf4;
-                               border:1px solid #bbf7d0; color:#166534; border-radius:5px;
-                               cursor:pointer; font-size:0.9em; width:100%; font-weight:bold;">
-                        자세히 보기
-                    </button>
-                </div>`).join('');
+            likedData = data || [];
+            currentPage = 1;         // 정렬 변경 시 1페이지로 리셋
+            renderLikedPage();
         })
         .catch(() => showToast('불러오기 실패', 'error'));
+}
+
+// ── 현재 페이지 카드 렌더링 ──
+function renderLikedPage() {
+    const container = document.getElementById('liked-list');
+    const pagination = document.getElementById('liked-pagination');
+
+    if (!likedData || likedData.length === 0) {
+        container.innerHTML = `
+            <div style="grid-column:1/-1; text-align:center; padding:40px 0;
+                        color:#9ca3af; font-size:14px;">
+                <div style="font-size:3em; margin-bottom:10px;">🩶</div>
+                아직 찜한 영양성분이 없습니다.
+            </div>`;
+        if (pagination) pagination.innerHTML = '';
+        return;
+    }
+
+    const totalPages = Math.ceil(likedData.length / PAGE_SIZE);
+    const start = (currentPage - 1) * PAGE_SIZE;
+    const pageData = likedData.slice(start, start + PAGE_SIZE);
+
+    container.innerHTML = pageData.map(s => `
+        <div class="like-card"
+             style="border:1px solid #eee; border-radius:10px; padding:15px;
+                    text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.05);
+                    background:#fff; display:flex; flex-direction:column;
+                    justify-content:space-between;">
+            <div>
+                <div style="width:100%; height:150px; border-radius:8px;
+                     overflow:hidden; background:#f8f9fa; margin-bottom:12px;">
+                    <img src="${getImgSrc(s.supplementImagePath)}"
+                         style="width:100%; height:100%; object-fit:cover;"
+                         onerror="this.src='images/default.png'">
+                </div>
+                <div style="font-weight:bold; font-size:1.1em; color:#333; margin-bottom:5px;">
+                    ${s.supplementName}
+                </div>
+                <div style="font-size:0.85em; color:#666; height:35px;
+                     overflow:hidden; line-height:1.4;">
+                    ${s.supplementEfficacy || ''}
+                </div>
+            </div>
+            <button onclick="showSupplementDetail(
+                        '${s.supplementId}','${escHtml(s.supplementName)}',
+                        '${escHtml(s.supplementEfficacy)}','${escHtml(s.supplementDosage)}',
+                        '${escHtml(s.supplementTiming)}','${escHtml(s.supplementCaution)}',
+                        '${s.supplementImagePath}')"
+                style="margin-top:15px; padding:8px 10px; background:#f0fdf4;
+                       border:1px solid #bbf7d0; color:#166534; border-radius:5px;
+                       cursor:pointer; font-size:0.9em; width:100%; font-weight:bold;">
+                자세히 보기
+            </button>
+        </div>`).join('');
+
+    // ── 페이지네이션 버튼 렌더링 ──
+    renderPagination(totalPages);
+}
+
+function renderPagination(totalPages) {
+    const pagination = document.getElementById('liked-pagination');
+    if (!pagination) return;
+
+    let html = '';
+
+    // 이전 버튼
+    html += `<button onclick="goLikedPage(${currentPage - 1})"
+        ${currentPage === 1 ? 'disabled' : ''}
+        style="padding:6px 12px; border:1px solid #ddd; border-radius:6px;
+               background:${currentPage === 1 ? '#f3f4f6' : '#fff'};
+               color:${currentPage === 1 ? '#9ca3af' : '#374151'};
+               cursor:${currentPage === 1 ? 'default' : 'pointer'};">‹</button>`;
+
+    // 페이지 번호 버튼
+    for (let i = 1; i <= totalPages; i++) {
+        html += `<button onclick="goLikedPage(${i})"
+            style="padding:6px 12px; border:1px solid ${i === currentPage ? '#3b82f6' : '#ddd'};
+                   border-radius:6px; margin:0 2px;
+                   background:${i === currentPage ? '#3b82f6' : '#fff'};
+                   color:${i === currentPage ? '#fff' : '#374151'};
+                   cursor:pointer; font-weight:${i === currentPage ? 'bold' : 'normal'};">
+            ${i}
+        </button>`;
+    }
+
+    // 다음 버튼
+    html += `<button onclick="goLikedPage(${currentPage + 1})"
+        ${currentPage === totalPages ? 'disabled' : ''}
+        style="padding:6px 12px; border:1px solid #ddd; border-radius:6px;
+               background:${currentPage === totalPages ? '#f3f4f6' : '#fff'};
+               color:${currentPage === totalPages ? '#9ca3af' : '#374151'};
+               cursor:${currentPage === totalPages ? 'default' : 'pointer'};">›</button>`;
+
+    pagination.innerHTML = html;
+}
+
+function goLikedPage(page) {
+    const totalPages = Math.ceil(likedData.length / PAGE_SIZE);
+    if (page < 1 || page > totalPages) return;
+    currentPage = page;
+    renderLikedPage();
+    // 탭 상단으로 스크롤
+    document.getElementById('tab-like')?.scrollIntoView({behavior: 'smooth', block: 'start'});
 }
 
 // 이미지 경로 판별 헬퍼
