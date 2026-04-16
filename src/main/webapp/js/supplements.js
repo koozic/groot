@@ -12,16 +12,18 @@ document.addEventListener('keydown', function(event) {
 });
 
 // 1. 등록 모달 열기
+// 일반 사용자가 주소창을 조작해서 억지로 '등록' 버튼을 눌렀을 때,
+// 텅 빈 에러 화면이 뜨는 것을 막아주는 방어 코드
 function openAddModal() {
     fetch('/supplementAdd', {
-        // 💡 서버(필터)가 비동기 요청임을 알아챌 수 있도록 헤더를 추가
+        // 💡 서버(필터)가 비동기 요청임을 알아챌 수 있도록 디테일 포인트 (headers)를 추가
         headers: {
             'X-Requested-With': 'fetch'
         }
         }) // 등록용 JSP를 반환하는 서블릿 경로
 
         .then(res => {
-            // 서버에서 403 에러 코드를 보냈다면 권한이 없다는 뜻입니다.
+            // 403 에러 : 서버가 클라이언트의 요청을 이해했지만, 권한 부족 등의 이유로 접근을 거부할 때 발생하는 HTTP 상태 코드
             if (res.status === 403) {
                 alert('관리자만 접근할 수 있는 기능입니다!');
                 // throw 에러를 발생시켜서 아래의 .then(html => ...) 부분이 실행되지 않게 막습니다.
