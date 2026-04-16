@@ -4,94 +4,72 @@ import com.google.gson.Gson;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.*;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-/**
- * 관리자 서블릿
- * <p>
- * GET  /admin               → 관리자 메인 페이지 (영양소 목록, 정렬 지원)
- * GET  /admin?action=form   → 신규 등록 폼
- * GET  /admin?action=form&suppId=1 → 수정 폼
- * POST /admin?action=insert → 영양소 등록
- * POST /admin?action=update → 영양소 수정
- * POST /admin?action=delete → 영양소 삭제
- */
 @WebServlet(name = "AdminC", value = "/admin")
 public class AdminC extends HttpServlet {
 
     private final AdminDAO dao = new AdminDAO();
     private final Gson gson = new Gson();
 
-    /**
-     * 관리자 세션 검증
-     */
     private boolean isAdmin(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session == null) return false;
         return Boolean.TRUE.equals(session.getAttribute("isAdmin"));
     }
 
+    // ✅ JSON 응답 공통 메서드
+    private void sendJson(HttpServletResponse response, Map<String, Object> result) throws IOException {
+        response.setContentType("application/json;charset=UTF-8");
+        response.getWriter().write(gson.toJson(result));
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // 관리자 아닌 경우 차단
         if (!isAdmin(request)) {
-            response.sendRedirect("login_view");
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
         String action = request.getParameter("action");
 
-        // ── action 없음 → 관리자 메인 (영양소 전체 목록) ──
-        if (action == null || action.isEmpty()) {
+        // ✅ 단건 조회 (모달용)
+        if ("getOne".equals(action)) {
+            Map<String, Object> result = new HashMap<>();
             try {
-                // 정렬 파라미터 (없으면 기본값 "id_desc")
-                String sortBy = request.getParameter("sortBy");
-                if (sortBy == null || sortBy.isEmpty()) sortBy = "id_desc";
+                int suppId = Integer.parseInt(request.getParameter("suppId"));
+                BodyDTO dto = dao.getSupplementById(suppId);
 
-                List<BodyDTO> list = dao.getAllSupplements(sortBy);
-
-                request.setAttribute("suppList", list);
-                request.setAttribute("sortBy", sortBy);   // JSP 셀렉트 selected 표시용
-                request.setAttribute("activeTab", "admin");
-                request.setAttribute("content", "body/admin_main.jsp");
-
-                request.getRequestDispatcher("index.jsp").forward(request, response);
+                result.put("success", true);
+                result.put("data", dto);
 
             } catch (Exception e) {
-                e.printStackTrace();
-                response.sendError(500, "목록 조회 실패: " + e.getMessage());
+                result.put("success", false);
+                result.put("message", e.getMessage());
             }
+            sendJson(response, result);
             return;
         }
 
-        // ── action=form → 등록 or 수정 폼 ──
-        if ("form".equals(action)) {
-            String suppIdParam = request.getParameter("suppId");
-            try {
-                if (suppIdParam != null && !suppIdParam.isEmpty()) {
-                    // 수정: 기존 데이터 불러오기
-                    int suppId = Integer.parseInt(suppIdParam);
-                    BodyDTO dto = dao.getSupplementById(suppId);
-                    request.setAttribute("supp", dto);  // 폼에서 ${supp.xxx} 로 사용
-                }
-                // 등록: supp=null → 폼에서 빈 칸으로 표시됨
+        // 👉 기존 JSP 이동은 유지 (관리자 페이지)
+        try {
+            String sortBy = request.getParameter("sortBy");
+            if (sortBy == null) sortBy = "id_desc";
 
-                request.setAttribute("activeTab", "admin");
-                request.setAttribute("content", "body/admin_form.jsp");
+            List<BodyDTO> list = dao.getAllSupplements(sortBy);
 
-                request.getRequestDispatcher("index.jsp").forward(request, response);
+            request.setAttribute("suppList", list);
+            request.setAttribute("content", "body/admin_main.jsp");
+            request.getRequestDispatcher("index.jsp").forward(request, response);
 
-            } catch (Exception e) {
-                e.printStackTrace();
-                response.sendError(500, "폼 조회 실패: " + e.getMessage());
-            }
+        } catch (Exception e) {
+            response.sendError(500);
         }
     }
 
@@ -99,80 +77,76 @@ public class AdminC extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // 관리자 아닌 경우 차단
+        request.setCharacterEncoding("UTF-8"); // 반드시 getParameter 호출 전에 수행
+        response.setCharacterEncoding("UTF-8");
+
+        Map<String, Object> result = new HashMap<>();
+
         if (!isAdmin(request)) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            result.put("success", false);
+            result.put("message", "관리자 권한 없음");
+            sendJson(response, result);
             return;
         }
 
-        request.setCharacterEncoding("UTF-8");
-        String action = request.getParameter("action");
-
         try {
-            switch (action == null ? "" : action) {
+            // 🔥 JSON 데이터를 Map으로 변환
+            Gson gson = new Gson();
+            Map<String, Object> jsonMap = gson.fromJson(request.getReader(), Map.class);
 
-                // ── 영양소 등록 ──
+            String action = (String) jsonMap.get("action");
+
+            switch (action) {
                 case "insert": {
-                    BodyDTO dto = buildDtoFromRequest(request);
+                    BodyDTO dto = buildDtoFromMap(jsonMap);
                     dao.insertSupplement(dto);
 
-                    String bodyIdParam = request.getParameter("bodyId");
-                    if (bodyIdParam != null && !bodyIdParam.isEmpty()) {
-                        dao.linkBodySupplement(
-                                Integer.parseInt(bodyIdParam), dto.getSupplementId()
-                        );
+                    if (jsonMap.get("bodyId") != null && !jsonMap.get("bodyId").toString().isEmpty()) {
+                        int bodyId = (int) Double.parseDouble(jsonMap.get("bodyId").toString());
+                        dao.linkBodySupplement(bodyId, dto.getSupplementId());
                     }
-                    response.sendRedirect("admin");
+                    result.put("success", true);
+                    result.put("message", "등록 완료");
                     break;
                 }
 
-                // ── 영양소 수정 ──
                 case "update": {
-                    BodyDTO dto = buildDtoFromRequest(request);
-                    dto.setSupplementId(Integer.parseInt(request.getParameter("suppId")));
+                    BodyDTO dto = buildDtoFromMap(jsonMap);
+                    int suppId = (int) Double.parseDouble(jsonMap.get("suppId").toString());
+                    dto.setSupplementId(suppId);
                     dao.updateSupplement(dto);
-                    response.sendRedirect("admin");
+                    result.put("success", true);
+                    result.put("message", "수정 완료");
                     break;
                 }
 
-                // ── 영양소 삭제 ──
                 case "delete": {
-                    String suppIdStr = request.getParameter("suppId");
-                    if (suppIdStr == null || suppIdStr.isEmpty()) {
-                        response.sendError(
-                                HttpServletResponse.SC_BAD_REQUEST, "삭제할 영양소 ID가 없습니다."
-                        );
-                        return;
-                    }
-                    int suppId = Integer.parseInt(suppIdStr);
+                    int suppId = (int) Double.parseDouble(jsonMap.get("suppId").toString());
                     dao.deleteBodySupplementLinks(suppId);
                     dao.deleteSupplementLikes(suppId);
                     dao.deleteSupplement(suppId);
-                    response.sendRedirect("admin");
+                    result.put("success", true);
+                    result.put("message", "삭제 완료");
                     break;
                 }
-
-                default:
-                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             }
-
         } catch (Exception e) {
-            e.printStackTrace();
-            response.sendError(500, "처리 실패: " + e.getMessage());
+            result.put("success", false);
+            result.put("message", e.getMessage());
         }
+        sendJson(response, result);
     }
 
-    /**
-     * 폼 파라미터 → BodyDTO 변환 공통 메서드
-     */
-    private BodyDTO buildDtoFromRequest(HttpServletRequest request) {
+    // 🔥 Helper 메서드 추가
+    private BodyDTO buildDtoFromMap(Map<String, Object> map) {
         BodyDTO dto = new BodyDTO();
-        dto.setSupplementName(request.getParameter("supplementName"));
-        dto.setSupplementEfficacy(request.getParameter("supplementEfficacy"));
-        dto.setSupplementDosage(request.getParameter("supplementDosage"));
-        dto.setSupplementTiming(request.getParameter("supplementTiming"));
-        dto.setSupplementCaution(request.getParameter("supplementCaution"));
-        dto.setSupplementImagePath(request.getParameter("supplementImagePath"));
+        dto.setSupplementName((String) map.get("supplementName"));
+        dto.setSupplementEfficacy((String) map.get("supplementEfficacy"));
+        dto.setSupplementDosage((String) map.get("supplementDosage"));
+        dto.setSupplementTiming((String) map.get("supplementTiming"));
+        dto.setSupplementCaution((String) map.get("supplementCaution"));
+        dto.setSupplementImagePath((String) map.get("supplementImagePath"));
         return dto;
     }
 }

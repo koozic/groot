@@ -171,8 +171,10 @@ public class UserDAO {
         String checkSql = "SELECT user_id FROM users WHERE user_id = ?";
 
         // 컬럼명을 명시하여 순서 꼬임을 방지합니다.
-        String insertSql = "INSERT INTO users (user_id, user_pw, user_name, user_age, user_gender, user_profile, user_email, user_address, user_agree, user_join_path, user_point, user_grade) " +
-                "VALUES (?, 'ADMIN_PROTECTED', ?, 0, 'N', ?, ?, 'ADMIN_ADDR', 'Y', 'ADMIN', '0', 'A')";
+        // 수정 (user_grade 제거)
+        // 수정 (user_point도 제거)
+        String insertSql = "INSERT INTO users (user_id, user_pw, user_name, user_age, user_gender, user_profile, user_email, user_address, user_agree, user_join_path) " +
+                "VALUES (?, 'ADMIN_PROTECTED', ?, 0, 'N', ?, ?, 'ADMIN_ADDR', 'Y', 'ADMIN')";
 
         try {
             con = DBManager_new.connect();
@@ -296,7 +298,7 @@ public class UserDAO {
             String selectedProfile = request.getParameter("default_profile");   // 라디오 선택값
 
             String uploadedProfile = (String) request.getAttribute("user_profile"); // UserJoinC에서 업로드한 URL
-            String finalProfilePath="";
+            String finalProfilePath = "";
             System.out.println("[UserDAO.join] selectedProfile=" + selectedProfile + ", uploadedProfile=" + uploadedProfile);
 
             // UserJoinC에서 Cloudinary 업로드한 URL이 있으면 우선 사용
@@ -304,8 +306,7 @@ public class UserDAO {
                 finalProfilePath = uploadedProfile;
                 System.out.println("Cloudinary 업로드 이미지: " + finalProfilePath);
 
-            }
-            else if (selectedProfile != null && !selectedProfile.trim().isEmpty()) {
+            } else if (selectedProfile != null && !selectedProfile.trim().isEmpty()) {
 
                 finalProfilePath = "user/userImg/" + selectedProfile;
                 System.out.println("기본 프로필 선택: " + finalProfilePath);

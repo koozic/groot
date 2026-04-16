@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>약쟁이 로그인</title>
+    <title>OTTERCARE 로그인</title>
 
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/login.css">
 
@@ -15,7 +15,7 @@
 
         <div class="login-left">
             <div class="login-title-box">
-                <h1 class="login-title">약쟁이</h1>
+                <h1 class="login-title">OTTERCARE</h1>
                 <p class="login-subtitle">당신의 건강을 챙기는 영양제 습관</p>
             </div>
 
