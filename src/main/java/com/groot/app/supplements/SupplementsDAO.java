@@ -288,119 +288,120 @@ public class SupplementsDAO {
             }
         }
 
-    // ==========================================================
-    // 페이징 처리 로직
-    // ==========================================================
-    public void paging(int pageNum, HttpServletRequest request, List<SupplementsDTO> allList) {
+        // ==========================================================
+        // 페이징 처리 로직
+        // ==========================================================
+        public void paging(int pageNum, HttpServletRequest request, List<SupplementsDTO> allList) {
 
-        request.setAttribute("currentPage", pageNum);
+            request.setAttribute("currentPage", pageNum);
 
-        int total = allList.size(); // DB에서 가져온 전체 영양성분 개수
-        int cnt = 6; // 💡 한 페이지당 보여줄 영양성분 개수 (원하는 대로 수정하세요! 예: 6개, 8개 등)
+            int total = allList.size(); // DB에서 가져온 전체 영양성분 개수
+            int cnt = 6; // 💡 한 페이지당 보여줄 영양성분 개수 (원하는 대로 수정하세요! 예: 6개, 8개 등)
 
-        // 1. 총 페이지 수 계산
-        int totalPage = (int) Math.ceil((double) total / cnt);
-        request.setAttribute("totalPage", totalPage);
+            // 1. 총 페이지 수 계산
+            int totalPage = (int) Math.ceil((double) total / cnt);
+            request.setAttribute("totalPage", totalPage);
 
-        // 2. 역순 출력을 위한 인덱스 계산 (최신 등록된 것이 먼저 나오도록)
-        int start = total - (cnt * (pageNum - 1));
-        int end = (pageNum == totalPage) ? -1 : start - (cnt + 1);
+            // 2. 역순 출력을 위한 인덱스 계산 (최신 등록된 것이 먼저 나오도록)
+            int start = total - (cnt * (pageNum - 1));
+            int end = (pageNum == totalPage) ? -1 : start - (cnt + 1);
 
-        // 3. 계산된 인덱스만큼 전체 리스트에서 잘라내어 새 바구니(items)에 담기
-        List<SupplementsDTO> items = new ArrayList<>();
+            // 3. 계산된 인덱스만큼 전체 리스트에서 잘라내어 새 바구니(items)에 담기
+            List<SupplementsDTO> items = new ArrayList<>();
 
-        for (int i = start - 1; i > end; i--) {
-            // IndexOutOfBounds 에러 방지를 위한 안전 장치
-            if (i >= 0 && i < total) {
-                items.add(allList.get(i));
+            for (int i = start - 1; i > end; i--) {
+                // IndexOutOfBounds 에러 방지를 위한 안전 장치
+                if (i >= 0 && i < total) {
+                    items.add(allList.get(i));
+                }
             }
+
+            // 4. 잘라낸 리스트를 화면에 보내기 위해 세팅
+            // (원래 Controller에서 하던 request.setAttribute를 덮어씁니다!)
+            request.setAttribute("supplementsList", items);
         }
 
-        // 4. 잘라낸 리스트를 화면에 보내기 위해 세팅
-        // (원래 Controller에서 하던 request.setAttribute를 덮어씁니다!)
-        request.setAttribute("supplementsList", items);
-    }
+        // ==========================================================
+        // 좋아요 추가/취소 및 결과 문자열("liked" or "unliked") 반환
+        // ==========================================================
+        public String supplementLike(String userId, int supplementId) {
+            Connection con = null;
+            PreparedStatement pstmt = null;
+            ResultSet rs = null;
+            String status = "error"; // 기본값은 에러
 
-    // ==========================================================
-    // 좋아요 추가/취소 및 결과 문자열("liked" or "unliked") 반환
-    // ==========================================================
-    public String supplementLike(String userId, int supplementId) {
-        Connection con = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-        String status = "error"; // 기본값은 에러
+            try {
+                con = DBManager_new.connect();
 
-        try {
-            con = DBManager_new.connect();
-
-            // 1. 이 유저가 이미 이 영양제에 좋아요를 눌렀는지 확인
-            String checkSql = "SELECT count(*) FROM supplements_like WHERE user_id = ? AND supplement_id = ?";
-            pstmt = con.prepareStatement(checkSql);
-            pstmt.setString(1, userId);
-            pstmt.setInt(2, supplementId);
-            rs = pstmt.executeQuery();
-
-            rs.next();
-            int isLiked = rs.getInt(1);
-            pstmt.close();
-
-            if (isLiked == 0) {
-                // 2-A. 안 눌렀으면 DB에 추가 (INSERT) 하고 "liked" 반환
-                String insertSql = "INSERT INTO supplements_like (supplement_like_id, user_id, supplement_id) VALUES (seq_supplements_like_id.nextval, ?, ?)";
-                pstmt = con.prepareStatement(insertSql);
+                // 1. 이 유저가 이미 이 영양제에 좋아요를 눌렀는지 확인
+                String checkSql = "SELECT count(*) FROM supplements_like WHERE user_id = ? AND supplement_id = ?";
+                pstmt = con.prepareStatement(checkSql);
                 pstmt.setString(1, userId);
                 pstmt.setInt(2, supplementId);
-                pstmt.executeUpdate();
-                status = "liked";
-            } else {
-                // 2-B. 이미 눌렀으면 DB에서 삭제 (DELETE) 하고 "unliked" 반환
-                String deleteSql = "DELETE FROM supplements_like WHERE user_id = ? AND supplement_id = ?";
-                pstmt = con.prepareStatement(deleteSql);
+                rs = pstmt.executeQuery();
+
+                rs.next();
+                int isLiked = rs.getInt(1);
+                pstmt.close();
+
+                if (isLiked == 0) {
+                    // 2-A. 안 눌렀으면 DB에 추가 (INSERT) 하고 "liked" 반환
+                    String insertSql = "INSERT INTO supplements_like (supplement_like_id, user_id, supplement_id) VALUES (seq_supplements_like_id.nextval, ?, ?)";
+                    pstmt = con.prepareStatement(insertSql);
+                    pstmt.setString(1, userId);
+                    pstmt.setInt(2, supplementId);
+                    pstmt.executeUpdate();
+                    status = "liked";
+                } else {
+                    // 2-B. 이미 눌렀으면 DB에서 삭제 (DELETE) 하고 "unliked" 반환
+                    String deleteSql = "DELETE FROM supplements_like WHERE user_id = ? AND supplement_id = ?";
+                    pstmt = con.prepareStatement(deleteSql);
+                    pstmt.setString(1, userId);
+                    pstmt.setInt(2, supplementId);
+                    pstmt.executeUpdate();
+                    status = "unliked";
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                DBManager_new.close(con, pstmt, rs);
+            }
+
+            return status; // "liked" 또는 "unliked" (또는 "error") 가 서블릿으로 전달됨!
+        }
+
+        // ==========================================================
+        // [추가] 로그인한 유저가 좋아요 누른 영양성분 번호(ID) 목록 가져오기
+        // ==========================================================
+        public List<Integer> getLikedIdsByUser(String userId) {
+            List<Integer> likedIds = new ArrayList<>();
+            Connection con = null;
+            PreparedStatement pstmt = null;
+            ResultSet rs = null;
+
+            // 사용자의 ID와 일치하는 영양성분 번호들만 조회
+            String sql = "SELECT supplement_id FROM supplements_like WHERE user_id = ?";
+
+            try {
+                con = DBManager_new.connect();
+                pstmt = con.prepareStatement(sql);
                 pstmt.setString(1, userId);
-                pstmt.setInt(2, supplementId);
-                pstmt.executeUpdate();
-                status = "unliked";
+                rs = pstmt.executeQuery();
+
+                while (rs.next()) {
+                    // 가져온 번호를 리스트에 하나씩 담음
+                    // likedIds는 getLikedIdsByUser 메서드에서 만듦.
+                    likedIds.add(rs.getInt("supplement_id"));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                DBManager_new.close(con, pstmt, rs);
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            DBManager_new.close(con, pstmt, rs);
+            return likedIds; // [1, 3, 5] 같은 형태의 리스트 반환
         }
-
-        return status; // "liked" 또는 "unliked" (또는 "error") 가 서블릿으로 전달됨!
-    }
-
-    // ==========================================================
-    // [추가] 로그인한 유저가 좋아요 누른 영양성분 번호(ID) 목록 가져오기
-    // ==========================================================
-    public List<Integer> getLikedIdsByUser(String userId) {
-        List<Integer> likedIds = new ArrayList<>();
-        Connection con = null;
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
-
-        // 사용자의 ID와 일치하는 영양성분 번호들만 조회
-        String sql = "SELECT supplement_id FROM supplements_like WHERE user_id = ?";
-
-        try {
-            con = DBManager_new.connect();
-            pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, userId);
-            rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                // 가져온 번호를 리스트에 하나씩 담음
-                likedIds.add(rs.getInt("supplement_id"));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            DBManager_new.close(con, pstmt, rs);
-        }
-
-        return likedIds; // [1, 3, 5] 같은 형태의 리스트 반환
-    }
 
     }
 

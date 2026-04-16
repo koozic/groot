@@ -37,20 +37,20 @@
                      data-timing="${supp.supplementTiming}"
                      data-caution="${supp.supplementCaution}"
                      data-imgPath="${supp.supplementImagePath}">
-<%--                 <img src="${supp.supplementImagePath}" alt="${supp.supplementName}">--%>
+                     <%-- <img src="${supp.supplementImagePath}" alt="${supp.supplementName}"> --%>
 
                     <%-- 💡 똑똑한 이미지 출력 로직 --%>
-                        <c:choose>
-                            <%-- 1. DB 값이 'http'로 시작하면? (인터넷 주소면) -> 경로 안 붙이고 그대로 출력! --%>
-                            <c:when test="${fn:startsWith(supp.supplementImagePath, 'http')}">
-                                <img src="${supp.supplementImagePath}" alt="${supp.supplementName}">
-                            </c:when>
+                    <c:choose>
+                        <%-- 1. DB 값이 'http'로 시작하면? (인터넷 주소면) -> 경로 안 붙이고 그대로 출력! --%>
+                        <c:when test="${fn:startsWith(supp.supplementImagePath, 'http')}">
+                            <img src="${supp.supplementImagePath}" alt="${supp.supplementName}">
+                        </c:when>
 
-                            <%-- 2. 그게 아니면? (직접 올린 'test.png' 같은 파일이면) -> 앞에 폴더 경로를 싹 붙여서 출력! --%>
-                            <c:otherwise>
-                                <img src="/supplementImg/supplementImgFile/${supp.supplementImagePath}" alt="${supp.supplementName}">
-                            </c:otherwise>
-                        </c:choose>
+                        <%-- 2. 그게 아니면? (직접 올린 'test.png' 같은 파일이면) -> 앞에 폴더 경로를 싹 붙여서 출력! --%>
+                        <c:otherwise>
+                            <img src="/supplementImg/supplementImgFile/${supp.supplementImagePath}" alt="${supp.supplementName}">
+                        </c:otherwise>
+                    </c:choose>
                 </div>
 
                 <div class="supp-name">${supp.supplementName}</div>
@@ -108,6 +108,7 @@
     </div>
 </div>
 
+        <%-- 모달 --%>
         <dialog id="commonModal">
             <div id="modalContent"></div>
         </dialog>
@@ -141,6 +142,7 @@
         // 주소창에서 ?openId= 번호 가져오기 (예: supplements?openId=3)
         // window.location.search: 현재 우리가 접속해 있는 웹페이지의 전체 주소 중에서, 물음표(?)와 그 뒤에 붙은 모든 글자만 떼어옴
 
+        // URLSearchParams : 복잡한 웹페이지 주소 꼬리표(쿼리 스트링)를 쉽게 다루기 위한 전용 도구
         const urlParams = new URLSearchParams(window.location.search);
         const openId = urlParams.get('openId');
 
@@ -157,6 +159,7 @@
     };
 </script>
 
+<%-- 자바 스크립트 연결 --%>
 <script src="js/supplements.js"></script>
 
 </html>
