@@ -417,7 +417,7 @@ function renderLikedPage() {
     const pageData = likedData.slice(start, start + PAGE_SIZE);
 
     container.innerHTML = pageData.map(s => `
-        <div class="like-card"
+        <div id="liked-card-${s.supplementId}" class="like-card"
              style="border:1px solid #eee; border-radius:10px; padding:15px;
                     text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.05);
                     background:#fff; display:flex; flex-direction:column;
