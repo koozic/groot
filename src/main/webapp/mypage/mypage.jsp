@@ -228,6 +228,7 @@
             </div>
         </div>
 
+
         <div id="confirmModal" class="mp-modal">
             <div class="mp-modal-content" style="max-width: 320px; text-align: center;">
                 <div id="confirmMessage" style="margin-bottom: 20px; font-weight: 700; color: #1a1a1a;"></div>
@@ -244,6 +245,9 @@
             </div>
         </div>
     </div>
+
+    <div id="toast-container"></div>
+
     <%-- ============================================
          탭 3. 복용 캘린더 & 구매 알림
          TODO: 캘린더 데이터 → CalendarServlet에서 JSON으로 받아 JS 렌더링
@@ -427,3 +431,5 @@
 </div>
 
 <script src="js/mypage.js"></script>
+<script src="js/mypage.js?v=<%= System.currentTimeMillis() %>"></script>
+<link rel="stylesheet" href="css/mypage.css?v=<%= System.currentTimeMillis() %>">

@@ -43,6 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
+
 /* ── 기능 로직 ── */
 function updateProgress() {
     const items = document.querySelectorAll('.vit-item');
@@ -107,34 +108,38 @@ function toggleCheck(element, productId) {
         .catch(err => console.error("체크 상태 업데이트 실패", err));
 }
 
-let deleteTimeout = null;
 
 function removeSupplement(productId, btnElement) {
     const item = btnElement.closest('.vit-item');
     if (!item) return;
 
+    // 1. 화면에서 즉시 숨김 처리 (사용자 체감 속도 향상)
     item.style.display = 'none';
     updateProgress();
 
-    showUndoToast("영양제가 삭제되었습니다.", () => {
-        clearTimeout(deleteTimeout);
-        item.style.display = 'flex';
-        updateProgress();
-    });
-
-    deleteTimeout = setTimeout(() => {
+    // 2. 3초(3000ms) 뒤에 실제 백엔드(DB)로 삭제 요청을 보냄
+    // 변수(timeoutId)에 담아두어야 나중에 '실행 취소'를 눌렀을 때 통신을 막을 수 있습니다.
+    const timeoutId = setTimeout(() => {
         fetch('mypage/remove-product', {
             method: 'POST',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             body: 'productId=' + productId
         }).catch(() => {
+            // 서버 오류 시 원상 복구
             item.style.display = 'flex';
             updateProgress();
             showToast("삭제 실패", "error");
         });
     }, 3000);
-}
 
+    // 3. 하단에 '실행 취소' 토스트 팝업 노출
+    showUndoToast("영양제가 삭제되었습니다.", () => {
+        // [실행 취소] 버튼을 눌렀을 때 실행될 동작
+        clearTimeout(timeoutId);     // 백엔드로 가는 통신(fetch)을 강제로 취소!
+        item.style.display = 'flex'; // 화면에 영양제를 다시 나타나게 함
+        updateProgress();            // 진행률 바 다시 계산
+    });
+}
 /* ── UI 유틸리티 ── */
 function showToast(message, type = 'success') {
     const container = document.getElementById('toast-container') || createToastContainer();
@@ -146,19 +151,32 @@ function showToast(message, type = 'success') {
 }
 
 function showUndoToast(message, undoAction) {
+    // 토스트를 담을 컨테이너 찾기 (없으면 생성)
     const container = document.getElementById('toast-container') || createToastContainer();
     const toast = document.createElement('div');
-    toast.className = 'toast success';
-    toast.innerHTML = `<span>${message}</span><button id="undoBtn" style="margin-left:15px; background:none; border:none; color:#93c5fd; font-weight:800; cursor:pointer; text-decoration:underline;">실행 취소</button>`;
+    toast.className = 'toast success'; // CSS에 정의된 스타일 적용
+
+    // 토스트 내부 HTML 구성 (메시지 + 실행 취소 버튼)
+    toast.innerHTML = `
+        <span>✅ ${message}</span>
+        <button class="undo-btn" style="margin-left:15px; background:none; border:none; color:#93c5fd; font-weight:800; cursor:pointer; text-decoration:underline;">
+            실행 취소
+        </button>
+    `;
     container.appendChild(toast);
-    toast.querySelector('#undoBtn').onclick = () => {
-        undoAction();
-        toast.remove();
+
+    // [실행 취소] 버튼 클릭 이벤트 연결
+    toast.querySelector('.undo-btn').onclick = () => {
+        undoAction();   // 위에서 전달받은 원상 복구 로직 실행
+        toast.remove(); // 토스트 창 즉시 닫기
     };
+
+    // 3초 뒤에 토스트 창이 자동으로 사라지도록 설정
     setTimeout(() => {
-        if (toast) toast.remove();
+        if (toast && toast.parentNode) toast.remove();
     }, 3000);
 }
+
 
 function createToastContainer() {
     const c = document.createElement('div');
