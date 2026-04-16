@@ -70,7 +70,7 @@ function addSupplement(productId, element) {
         body: 'productId=' + productId
     }).then(response => {
         if (response.ok) {
-            showToast("리스트에 추가되었습니다.");
+            showMpToast("리스트에 추가되었습니다.");
             element.style.opacity = '0';
             element.style.transition = '0.3s';
             setTimeout(() => {
@@ -84,7 +84,34 @@ function addSupplement(productId, element) {
         }
     });
 }
+// 1. 함수명을 showMpToast로 변경하고 클래스명을 mp-toast로 통일
+function showMpToast(message, type = 'success') {
+    const container = document.getElementById('toast-container') || createToastContainer();
+    const toast = document.createElement('div');
+    toast.className = `mp-toast ${type}`; // 👈 클래스명 mp-toast로 변경
+    toast.innerHTML = `<span>${type === 'success' ? '✅' : '❌'}</span> ${message}`;
+    container.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
 
+// 2. 실행취소 토스트 함수 (버튼 id 중복 방지를 위해 class="undo-btn" 사용)
+function showUndoToast(message, undoAction) {
+    const container = document.getElementById('toast-container') || createToastContainer();
+    const toast = document.createElement('div');
+    toast.className = 'mp-toast success'; // 👈 클래스명 mp-toast로 유지
+
+    toast.innerHTML = `<span>${message}</span><button class="undo-btn" style="margin-left:15px; background:none; border:none; color:#93c5fd; font-weight:800; cursor:pointer; text-decoration:underline;">실행 취소</button>`;
+    container.appendChild(toast);
+
+    toast.querySelector('.undo-btn').onclick = () => {
+        undoAction();
+        toast.remove();
+    };
+
+    setTimeout(() => {
+        if (toast) toast.remove();
+    }, 3000);
+}
 function toggleCheck(element, productId) {
     let isChecked = element.classList.toggle('checked');
     element.querySelector('.vit-check-box').textContent = isChecked ? '✓' : '';
@@ -132,7 +159,7 @@ function removeSupplement(productId, btnElement) {
             // 서버 오류 시 원상 복구
             item.style.display = 'flex';
             updateProgress();
-            showToast("삭제 실패", "error");
+            showMpToast("삭제 실패", "error");
         });
     }, 3000);
 
@@ -154,34 +181,24 @@ function showToast(message, type = 'success') {
     setTimeout(() => toast.remove(), 3000);
 }
 
+// 실행취소 토스트 함수
 function showUndoToast(message, undoAction) {
-    // 토스트를 담을 컨테이너 찾기 (없으면 생성)
     const container = document.getElementById('toast-container') || createToastContainer();
     const toast = document.createElement('div');
-    toast.className = 'toast success'; // CSS에 정의된 스타일 적용
-
-    // 토스트 내부 HTML 구성 (메시지 + 실행 취소 버튼)
-    toast.innerHTML = `
-        <span>✅ ${message}</span>
-        <button class="undo-btn" style="margin-left:15px; background:none; border:none; color:#93c5fd; font-weight:800; cursor:pointer; text-decoration:underline;">
-            실행 취소
-        </button>
-    `;
+    toast.className = 'mp-toast success';
+    toast.innerHTML = `<span>${message}</span><button id="undoBtn" style="margin-left:15px; background:none; border:none; color:#93c5fd; font-weight:800; cursor:pointer; text-decoration:underline;">실행 취소</button>`;
     container.appendChild(toast);
-
-    // [실행 취소] 버튼 클릭 이벤트 연결
-    toast.querySelector('.undo-btn').onclick = () => {
-        undoAction();   // 위에서 전달받은 원상 복구 로직 실행
-        toast.remove(); // 토스트 창 즉시 닫기
+    toast.querySelector('#undoBtn').onclick = () => {
+        undoAction();
+        toast.remove();
     };
-
-    // 3초 뒤에 토스트 창이 자동으로 사라지도록 설정
     setTimeout(() => {
-        if (toast && toast.parentNode) toast.remove();
+        if (toast) toast.remove();
     }, 3000);
 }
 
 
+// 컨테이너 생성 함수
 function createToastContainer() {
     const c = document.createElement('div');
     c.id = 'toast-container';
