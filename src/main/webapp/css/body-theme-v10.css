@@ -1,0 +1,481 @@
+/* ============================================================
+   body-theme-v10.css
+   Pastel Serenity Balanced — 영양추천 페이지 테마 오버라이드
+   
+   ✅ 적용 방법: body.css 뒤에 이 파일을 한 줄만 추가하면 됩니다.
+      <link rel="stylesheet" href="../css/body.css">
+      <link rel="stylesheet" href="../css/body-theme-v10.css">  ← 이것만 추가
+   
+   ✅ SVG 관련 클래스(.svg-wrap, .body-part)는 일절 건드리지 않습니다.
+   ✅ body.css의 레이아웃(.layout, .col-left, .col-right)도 유지됩니다.
+   ============================================================ */
+
+/* ── 색상 변수 ── */
+:root {
+  --ps-pink:    #EFA0AE;
+  --ps-lpink:   #F4C8D4;
+  --ps-blush:   #FAE8EE;
+  --ps-lime:    #DCE9A8;
+  --ps-llime:   #EDF4CC;
+  --ps-yellow:  #F2EDB8;
+  --ps-mint:    #B4D8D0;
+  --ps-lmint:   #D8EEE8;
+  --ps-bg:      #F0F8F0;
+  --ps-card:    #FFFFFF;
+  --ps-text-h:  #334040;
+  --ps-text-b:  #4A5858;
+  --ps-text-m:  #7A9090;
+  --ps-text-s:  #A8C0B8;
+  --ps-border:  rgba(100, 160, 140, 0.15);
+}
+
+
+/* ════════════════════════════════
+   페이지 배경
+════════════════════════════════ */
+
+body {
+  background: var(--ps-bg);
+  color: var(--ps-text-b);
+}
+
+
+/* ════════════════════════════════
+   체크박스 섹션 (.cb-section)
+════════════════════════════════ */
+
+.cb-section {
+  background: var(--ps-llime);
+  border: 1.5px solid var(--ps-lime);
+  border-radius: 12px;
+}
+
+.cb-title {
+  color: var(--ps-text-m);
+}
+
+.cb-item {
+  border-color: var(--ps-lime);
+  color: var(--ps-text-b);
+  font-size: 11px;
+}
+
+.cb-item:hover {
+  background: var(--ps-lmint);
+}
+
+.cb-item.checked {
+  background: var(--ps-lmint);
+  border-color: var(--ps-mint);
+}
+
+.cb-box {
+  border-color: var(--ps-lime);
+}
+
+.cb-box.on {
+  border-color: var(--ps-mint);
+  background: var(--ps-mint);
+}
+
+.cb-check {
+  background: var(--ps-mint);
+}
+
+/* 버튼 */
+.cb-btn {
+  border-color: var(--ps-lime);
+  color: var(--ps-text-m);
+  border-radius: 8px;
+}
+
+.cb-btn:hover {
+  background: var(--ps-lmint);
+}
+
+.cb-btn.on {
+  background: var(--ps-lmint);
+  border-color: var(--ps-mint);
+  color: var(--ps-text-h);
+}
+
+
+/* ════════════════════════════════
+   패널 (.panel)
+════════════════════════════════ */
+
+.panel {
+  background: var(--ps-card);
+  border-color: var(--ps-border);
+  border-radius: 16px;
+}
+
+.panel-title {
+  color: var(--ps-text-h);
+  font-weight: 600;
+}
+
+
+/* ════════════════════════════════
+   정렬 버튼 (.sort-btn)
+════════════════════════════════ */
+
+.sort-btn {
+  border-color: var(--ps-lime);
+  color: var(--ps-text-m);
+  border-radius: 20px;
+}
+
+.sort-btn:hover {
+  background: var(--ps-llime);
+}
+
+.sort-btn.on {
+  background: var(--ps-llime);
+  border-color: var(--ps-mint);
+  color: var(--ps-text-h);
+}
+
+
+/* ════════════════════════════════
+   태그 (.tag)
+   — body 부위별 색상은 JS에서 inline style로 주입되므로
+     여기서는 기본 폰트/패딩만 통일
+════════════════════════════════ */
+
+.tag {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+
+/* ════════════════════════════════
+   카드 (.card)
+════════════════════════════════ */
+
+.card {
+  background: var(--ps-card);
+  border-color: var(--ps-border);
+  border-radius: 14px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.card:hover {
+  border-color: var(--ps-mint);
+  box-shadow: 0 2px 12px rgba(100, 160, 140, 0.12);
+}
+
+.card-name {
+  color: var(--ps-text-h);
+  font-weight: 600;
+}
+
+.card-eff {
+  color: var(--ps-text-m);
+}
+
+.card-stats {
+  color: var(--ps-text-s);
+}
+
+
+/* ════════════════════════════════
+   좋아요 버튼 (.like-btn)
+════════════════════════════════ */
+
+.like-btn {
+  border-color: var(--ps-lpink);
+  color: var(--ps-text-m);
+  border-radius: 20px;
+}
+
+.like-btn:hover {
+  background: var(--ps-blush);
+  border-color: var(--ps-pink);
+}
+
+.like-btn.on {
+  background: var(--ps-blush);
+  border-color: var(--ps-pink);
+  color: #9A5060;
+}
+
+
+/* ════════════════════════════════
+   페이징 (.pg-btn)
+════════════════════════════════ */
+
+.pg-btn {
+  border-color: var(--ps-border);
+  color: var(--ps-text-m);
+  border-radius: 8px;
+}
+
+.pg-btn:hover {
+  background: var(--ps-llime);
+}
+
+.pg-btn.on {
+  background: var(--ps-lmint);
+  border-color: var(--ps-mint);
+  color: var(--ps-text-h);
+  font-weight: 600;
+}
+
+
+/* ════════════════════════════════
+   빈 메시지 (.empty-msg)
+════════════════════════════════ */
+
+.empty-msg {
+  color: var(--ps-text-s);
+}
+
+
+/* ════════════════════════════════
+   상세 모달 (.modal-box)
+════════════════════════════════ */
+
+.modal-box {
+  background: var(--ps-card);
+  border-color: var(--ps-border);
+  border-radius: 16px;
+}
+
+.modal-name {
+  color: var(--ps-text-h);
+  font-weight: 600;
+}
+
+.modal-lbl {
+  color: var(--ps-text-m);
+}
+
+.modal-val {
+  color: var(--ps-text-b);
+}
+
+.modal-warn {
+  background: var(--ps-blush);
+  color: #9A5060;
+  border-radius: 8px;
+}
+
+.modal-stats {
+  color: var(--ps-text-s);
+}
+
+.modal-foot {
+  border-top-color: var(--ps-border);
+}
+
+/* 닫기 / 좋아요 버튼 */
+.close-btn {
+  border-color: var(--ps-border);
+  color: var(--ps-text-m);
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+
+.close-btn:hover {
+  background: var(--ps-llime);
+}
+
+.modal-like {
+  border-color: var(--ps-lpink);
+  color: var(--ps-text-m);
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+
+.modal-like:hover {
+  background: var(--ps-blush);
+}
+
+.modal-like.on {
+  background: var(--ps-blush);
+  border-color: var(--ps-pink);
+  color: #9A5060;
+}
+
+/* 모달 아이콘 배경 — 부위별 색은 JS inline이므로 기본값만 */
+.modal-icon {
+  border-radius: 12px;
+}
+
+
+/* ════════════════════════════════
+   관리자 모달 (.admin-modal-content)
+   — admin.css와 충돌 없이 색상만 덮어씌움
+════════════════════════════════ */
+
+.admin-modal-content {
+  border-radius: 16px;
+}
+
+.modal-title {
+  color: var(--ps-text-h);
+}
+
+.modal-label {
+  color: var(--ps-text-b);
+}
+
+.modal-input,
+.modal-textarea,
+.modal-select {
+  border-color: var(--ps-lime);
+  color: var(--ps-text-b);
+  border-radius: 10px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.modal-input:focus,
+.modal-textarea:focus,
+.modal-select:focus {
+  border-color: var(--ps-mint);
+  box-shadow: 0 0 0 3px rgba(180, 216, 208, 0.25);
+  outline: none;
+}
+
+/* 저장 버튼 → 민트 */
+.modal-submit-btn {
+  background: var(--ps-mint);
+  color: var(--ps-text-h);
+  border-radius: 10px;
+}
+
+.modal-submit-btn:hover {
+  background: #9ECEC6;
+}
+
+/* 취소 버튼 */
+.modal-cancel-btn {
+  background: var(--ps-llime);
+  color: var(--ps-text-b);
+  border-radius: 10px;
+}
+
+.modal-cancel-btn:hover {
+  background: var(--ps-lime);
+}
+
+
+/* ════════════════════════════════
+   관리자 토글 / 추가 버튼
+   (.admin-toggle-btn, .admin-add-btn)
+════════════════════════════════ */
+
+.admin-toggle-btn {
+  background: var(--ps-yellow);
+  color: var(--ps-text-h);
+  border: 1.5px solid #D8C878;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.admin-toggle-btn:hover {
+  background: #E8D890;
+}
+
+.admin-add-btn {
+  background: var(--ps-mint);
+  color: var(--ps-text-h);
+  border: none;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.admin-add-btn:hover {
+  background: #9ECEC6;
+}
+
+
+/* ════════════════════════════════
+   관리자 테이블 (.admin-table)
+   — admin.css 보완, 레이아웃 유지
+════════════════════════════════ */
+
+.admin-table th {
+  background: var(--ps-llime);
+  color: var(--ps-text-h);
+}
+
+.admin-table th.sort-active {
+  background: var(--ps-lmint);
+  color: var(--ps-text-h);
+}
+
+.admin-table td {
+  color: var(--ps-text-b);
+}
+
+.admin-table tr:hover td {
+  background: var(--ps-blush);
+}
+
+.admin-table th,
+.admin-table td {
+  border-color: var(--ps-border);
+}
+
+/* 수정 버튼 → 민트 */
+.btn-edit {
+  background: var(--ps-mint);
+  color: var(--ps-text-h);
+  border-radius: 6px;
+}
+
+.btn-edit:hover {
+  background: #9ECEC6;
+}
+
+/* 삭제 버튼 → 파스텔 핑크 */
+.btn-del {
+  background: var(--ps-pink);
+  color: #fff;
+  border-radius: 6px;
+}
+
+.btn-del:hover {
+  background: #D88090;
+}
+
+/* 뱃지 */
+.count-badge {
+  background: var(--ps-llime);
+  color: #4A7030;
+}
+
+
+/* ════════════════════════════════
+   관리자 등록 버튼 (.btn-add)
+════════════════════════════════ */
+
+.btn-add {
+  background: var(--ps-mint);
+  color: var(--ps-text-h);
+  border-radius: 8px;
+}
+
+.btn-add:hover {
+  background: #9ECEC6;
+}
+
+
+/* ════════════════════════════════
+   정렬 셀렉트 (.sort-select-wrap select)
+════════════════════════════════ */
+
+.sort-select-wrap select {
+  border-color: var(--ps-lime);
+  color: var(--ps-text-b);
+  border-radius: 8px;
+}
+
+.sort-select-wrap select:focus {
+  border-color: var(--ps-mint);
+  outline: none;
+}
