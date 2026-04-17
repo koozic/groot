@@ -48,7 +48,7 @@
 
 /* 상세 & 수정 폼 공통 박스 */
 .supp-detail-box, .supp-update-box {
-    width: 90%;
+    width: 100%;
     max-width: 700px;
     border: 1px solid #ddd;
     padding: 30px;
