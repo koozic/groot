@@ -321,16 +321,330 @@
             <div id="stickerPanel" class="sticker-panel">
                 <div class="sticker-panel-title">🎨 스티커 꾸미기</div>
                 <div class="sticker-tray">
-                    <span class="sticker-item" draggable="true" data-sticker="⭐">⭐</span>
-                    <span class="sticker-item" draggable="true" data-sticker="❤️">❤️</span>
-                    <span class="sticker-item" draggable="true" data-sticker="🌟">🌟</span>
-                    <span class="sticker-item" draggable="true" data-sticker="🎉">🎉</span>
-                    <span class="sticker-item" draggable="true" data-sticker="💊">💊</span>
-                    <span class="sticker-item" draggable="true" data-sticker="🌈">🌈</span>
-                    <span class="sticker-item" draggable="true" data-sticker="🔥">🔥</span>
-                    <span class="sticker-item" draggable="true" data-sticker="💪">💪</span>
-                    <span class="sticker-item" draggable="true" data-sticker="😊">😊</span>
-                    <span class="sticker-item" draggable="true" data-sticker="🌸">🌸</span>
+
+                    <%-- ★ 신체 기관 스티커 ★ --%>
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/bbrain.png" title="뇌">
+    <img src="${pageContext.request.contextPath}/img/stickers/bbrain.png"
+         class="sticker-thumb" alt="뇌">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/bheart.png" title="심장">
+    <img src="${pageContext.request.contextPath}/img/stickers/bheart.png"
+         class="sticker-thumb" alt="심장">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/beye.png" title="눈">
+    <img src="${pageContext.request.contextPath}/img/stickers/beye.png"
+         class="sticker-thumb" alt="눈">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/blung.png" title="폐">
+    <img src="${pageContext.request.contextPath}/img/stickers/blung.png"
+         class="sticker-thumb" alt="폐">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/bliver.png" title="간">
+    <img src="${pageContext.request.contextPath}/img/stickers/bliver.png"
+         class="sticker-thumb" alt="간">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/bstomach.png" title="위">
+    <img src="${pageContext.request.contextPath}/img/stickers/bstomach.png"
+         class="sticker-thumb" alt="위">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/bintestine.png" title="장">
+    <img src="${pageContext.request.contextPath}/img/stickers/bintestine.png"
+         class="sticker-thumb" alt="장">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/bborn.png" title="뼈">
+    <img src="${pageContext.request.contextPath}/img/stickers/bborn.png"
+         class="sticker-thumb" alt="뼈">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/bmuscle.png" title="근육">
+    <img src="${pageContext.request.contextPath}/img/stickers/bmuscle.png"
+         class="sticker-thumb" alt="근육">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/bhair.png" title="머리카락">
+    <img src="${pageContext.request.contextPath}/img/stickers/bhair.png"
+         class="sticker-thumb" alt="머리카락">
+</span>
+
+                    <%-- ★ 건강/음식 스티커 ★ --%>
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/apple.png" title="사과">
+    <img src="${pageContext.request.contextPath}/img/stickers/apple.png"
+         class="sticker-thumb" alt="사과">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/exercise.png" title="운동">
+    <img src="${pageContext.request.contextPath}/img/stickers/exercise.png"
+         class="sticker-thumb" alt="운동">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/drop_blood.png" title="혈액">
+    <img src="${pageContext.request.contextPath}/img/stickers/drop_blood.png"
+         class="sticker-thumb" alt="혈액">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/drop_blue.png" title="수분">
+    <img src="${pageContext.request.contextPath}/img/stickers/drop_blue.png"
+         class="sticker-thumb" alt="수분">
+</span>
+
+                    <%-- ★ 꾸미기 스티커 ★ --%>
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/fixing_pin1.png" title="핀 (초록)">
+    <img src="${pageContext.request.contextPath}/img/stickers/fixing_pin1.png"
+         class="sticker-thumb" alt="핀 초록">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/fixing_pin2.png" title="핀 (핑크)">
+    <img src="${pageContext.request.contextPath}/img/stickers/fixing_pin2.png"
+         class="sticker-thumb" alt="핀 핑크">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/fixing_pin3.png" title="핀 (민트)">
+    <img src="${pageContext.request.contextPath}/img/stickers/fixing_pin3.png"
+         class="sticker-thumb" alt="핀 민트">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/flower1.png" title="꽃 (보라)">
+    <img src="${pageContext.request.contextPath}/img/stickers/flower1.png"
+         class="sticker-thumb" alt="꽃 보라">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/flower2.png" title="꽃 (민트)">
+    <img src="${pageContext.request.contextPath}/img/stickers/flower2.png"
+         class="sticker-thumb" alt="꽃 민트">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/cloud.png" title="구름">
+    <img src="${pageContext.request.contextPath}/img/stickers/cloud.png"
+         class="sticker-thumb" alt="구름">
+</span>
+                    <%-- ★ 꽃 스티커 ★ --%>
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/flower3.png" title="튤립">
+    <img src="${pageContext.request.contextPath}/img/stickers/flower3.png"
+         class="sticker-thumb" alt="튤립">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/flower4.png" title="꽃 (핑크 소용돌이)">
+    <img src="${pageContext.request.contextPath}/img/stickers/flower4.png"
+         class="sticker-thumb" alt="꽃 핑크">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/flower5.png" title="꽃 (블루 소용돌이)">
+    <img src="${pageContext.request.contextPath}/img/stickers/flower5.png"
+         class="sticker-thumb" alt="꽃 블루">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/flower6.png" title="꽃 (핑크 버튼)">
+    <img src="${pageContext.request.contextPath}/img/stickers/flower6.png"
+         class="sticker-thumb" alt="꽃 버튼">
+</span>
+
+                    <%-- ★ 하트 스티커 ★ --%>
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/hearts1.png" title="하트 (블루 글로시)">
+    <img src="${pageContext.request.contextPath}/img/stickers/hearts1.png"
+         class="sticker-thumb" alt="하트 블루">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/hearts2.png" title="하트 (블루 홀로그램)">
+    <img src="${pageContext.request.contextPath}/img/stickers/hearts2.png"
+         class="sticker-thumb" alt="하트 홀로그램">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/hearts3.png" title="하트 (핑크 연한)">
+    <img src="${pageContext.request.contextPath}/img/stickers/hearts3.png"
+         class="sticker-thumb" alt="하트 핑크1">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/hearts4.png" title="하트 (핑크 진한)">
+    <img src="${pageContext.request.contextPath}/img/stickers/hearts4.png"
+         class="sticker-thumb" alt="하트 핑크2">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/hearts5.png" title="하트 (핑크 둥근)">
+    <img src="${pageContext.request.contextPath}/img/stickers/hearts5.png"
+         class="sticker-thumb" alt="하트 핑크3">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/hearts6.png" title="하트 (핑크 납작)">
+    <img src="${pageContext.request.contextPath}/img/stickers/hearts6.png"
+         class="sticker-thumb" alt="하트 핑크4">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/hearts7.png" title="하트 (연핑크 투명)">
+    <img src="${pageContext.request.contextPath}/img/stickers/hearts7.png"
+         class="sticker-thumb" alt="하트 연핑크">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/hearts8.png" title="하트 (레드 글로시)">
+    <img src="${pageContext.request.contextPath}/img/stickers/hearts8.png"
+         class="sticker-thumb" alt="하트 레드">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/hearts9.png" title="하트 (핑크 크리스탈)">
+    <img src="${pageContext.request.contextPath}/img/stickers/hearts9.png"
+         class="sticker-thumb" alt="하트 크리스탈">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/hearts10.png" title="하트 (다이아몬드)">
+    <img src="${pageContext.request.contextPath}/img/stickers/hearts10.png"
+         class="sticker-thumb" alt="하트 다이아">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/hearts12.png" title="하트 버튼 (블루)">
+    <img src="${pageContext.request.contextPath}/img/stickers/hearts12.png"
+         class="sticker-thumb" alt="하트 버튼 블루">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/hearts13.png" title="하트 버튼 (민트)">
+    <img src="${pageContext.request.contextPath}/img/stickers/hearts13.png"
+         class="sticker-thumb" alt="하트 버튼 민트">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/hearts14.png" title="하트 버튼 (핑크)">
+    <img src="${pageContext.request.contextPath}/img/stickers/hearts14.png"
+         class="sticker-thumb" alt="하트 버튼 핑크">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/hearts15.png" title="하트 버튼 (베이지)">
+    <img src="${pageContext.request.contextPath}/img/stickers/hearts15.png"
+         class="sticker-thumb" alt="하트 버튼 베이지">
+</span>
+
+                    <%-- ★ 기타 스티커 ★ --%>
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/pill.png" title="알약">
+    <img src="${pageContext.request.contextPath}/img/stickers/pill.png"
+         class="sticker-thumb" alt="알약">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/rabbit.png" title="토끼 버튼">
+    <img src="${pageContext.request.contextPath}/img/stickers/rabbit.png"
+         class="sticker-thumb" alt="토끼">
+</span>
+                    <%-- ★ 별 스티커 ★ --%>
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/star1.png" title="별 (홀로그램)">
+    <img src="${pageContext.request.contextPath}/img/stickers/star1.png"
+         class="sticker-thumb" alt="별 홀로그램">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/star2.png" title="별 (핑크)">
+    <img src="${pageContext.request.contextPath}/img/stickers/star2.png"
+         class="sticker-thumb" alt="별 핑크">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/star3.png" title="별 (블루)">
+    <img src="${pageContext.request.contextPath}/img/stickers/star3.png"
+         class="sticker-thumb" alt="별 블루">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/star4.png" title="별 (옐로우)">
+    <img src="${pageContext.request.contextPath}/img/stickers/star4.png"
+         class="sticker-thumb" alt="별 옐로우">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/star5.png" title="별 (라벤더)">
+    <img src="${pageContext.request.contextPath}/img/stickers/star5.png"
+         class="sticker-thumb" alt="별 라벤더">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/star6.png" title="별 (민트)">
+    <img src="${pageContext.request.contextPath}/img/stickers/star6.png"
+         class="sticker-thumb" alt="별 민트">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/star7.png" title="별 (민트+핑크 이중)">
+    <img src="${pageContext.request.contextPath}/img/stickers/star7.png"
+         class="sticker-thumb" alt="별 민트핑크">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/star8.png" title="별 (핑크 이중)">
+    <img src="${pageContext.request.contextPath}/img/stickers/star8.png"
+         class="sticker-thumb" alt="별 핑크 이중">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/star9.png" title="별 (연보라 이중)">
+    <img src="${pageContext.request.contextPath}/img/stickers/star9.png"
+         class="sticker-thumb" alt="별 연보라 이중">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/star10.png" title="별 (블루 이중)">
+    <img src="${pageContext.request.contextPath}/img/stickers/star10.png"
+         class="sticker-thumb" alt="별 블루 이중">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/star11.png" title="별 버튼 (핑크)">
+    <img src="${pageContext.request.contextPath}/img/stickers/star11.png"
+         class="sticker-thumb" alt="별 버튼 핑크">
+</span>
+
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/star12.png" title="별 버튼 (옐로우)">
+    <img src="${pageContext.request.contextPath}/img/stickers/star12.png"
+         class="sticker-thumb" alt="별 버튼 옐로우">
+</span>
+
+                    <%-- ★ 자연 스티커 ★ --%>
+                    <span class="sticker-item sticker-img-item" draggable="true"
+                          data-sticker="img:stickers/umbrage.png" title="잎사귀">
+    <img src="${pageContext.request.contextPath}/img/stickers/umbrage.png"
+         class="sticker-thumb" alt="잎사귀">
+</span>
                 </div>
                 <div class="sticker-actions">
                     <button id="stickerEditToggle" class="sticker-edit-btn" onclick="toggleStickerEdit()">
@@ -428,7 +742,9 @@
     <script src="js/supplementDetailModal.js"></script>
 
 </div>
-
+<script>
+    const contextPath = '${pageContext.request.contextPath}';
+</script>
 <script src="js/mypage.js"></script>
 <script src="js/mypage.js?v=<%= System.currentTimeMillis() %>"></script>
 <link rel="stylesheet" href="css/mypage.css?v=<%= System.currentTimeMillis() %>">
