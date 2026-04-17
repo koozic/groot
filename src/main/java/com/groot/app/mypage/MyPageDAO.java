@@ -564,27 +564,36 @@ public class MyPageDAO {
         return list;
     }
 
-    // ── 스티커 삽입 ──
+    // ── 스티커 삽입 (Oracle용) ──
     public int insertSticker(String userId, String type,
                              int year, int month, int day,
                              float posX, float posY) {
         String sql = "INSERT INTO calendar_stickers " +
                 "(user_id, sticker_type, cal_year, cal_month, cal_day, pos_x, pos_y) " +
                 "VALUES (?,?,?,?,?,?,?)";
-        try (Connection con = DBManager_new.connect();
-             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setString(1, userId);
-            ps.setString(2, type);
-            ps.setInt(3, year);
-            ps.setInt(4, month);
-            ps.setInt(5, day);
-            ps.setFloat(6, posX);
-            ps.setFloat(7, posY);
-            ps.executeUpdate();
-            ResultSet keys = ps.getGeneratedKeys();
+
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet keys = null;
+
+        try {
+            con = DBManager_new.connect();
+            // ★ Oracle은 컬럼명 배열로 지정
+            pstmt = con.prepareStatement(sql, new String[]{"STICKER_ID"});
+            pstmt.setString(1, userId);
+            pstmt.setString(2, type);
+            pstmt.setInt(3, year);
+            pstmt.setInt(4, month);
+            pstmt.setInt(5, day);
+            pstmt.setFloat(6, posX);
+            pstmt.setFloat(7, posY);
+            pstmt.executeUpdate();
+            keys = pstmt.getGeneratedKeys();
             if (keys.next()) return keys.getInt(1);
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace(); // Tomcat 콘솔에서 확인
+        } finally {
+            DBManager_new.close(con, pstmt, keys);
         }
         return -1;
     }
