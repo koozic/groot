@@ -120,6 +120,12 @@ async function openDetailModal(div) {
 // 버튼을 클릭했을 때 화면 새로고침 없이 하트를 바꿔주고 서버(컨트롤러)로 데이터를 보내는 자바스크립트
 
 function toggleLike(btn, supplementId) {
+    if (btn.disabled) {
+        return;
+    }
+
+    btn.disabled = true;
+
     fetch('supplementsLike', {
         method: 'POST',
         // 이거 일반 폼(form) 데이터 형식이야!라고 명찰(headers)을 붙임
@@ -131,23 +137,24 @@ function toggleLike(btn, supplementId) {
         .then(data => {
             if (data.status === 'liked') {
                 btn.classList.add('liked'); // 하트 색상 칠하기
-
-                // 만약 버튼 안에 'like-label' 이라는 텍스트 영역이 있다면 글씨도 변경
-                const label = btn.querySelector('.like-label');
-                if(label) label.textContent = '좋아요 취소';
-
+                btn.setAttribute('aria-pressed', 'true');
+                btn.setAttribute('aria-label', '영양성분 찜 취소');
             } else if (data.status === 'unliked') {
                 btn.classList.remove('liked'); // 하트 색상 지우기
-
-                const label = btn.querySelector('.like-label');
-                if(label) label.textContent = '좋아요';
-
+                btn.setAttribute('aria-pressed', 'false');
+                btn.setAttribute('aria-label', '영양성분 찜하기');
             } else {
                 // status가 error일 경우 경고창
                 alert(data.message || '로그인이 필요하거나 오류가 발생했습니다.');
             }
         })
-        .catch(err => console.error('좋아요 비동기 통신 오류:', err));
+        .catch(err => {
+            console.error('좋아요 비동기 통신 오류:', err);
+            alert('찜 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+        })
+        .finally(() => {
+            btn.disabled = false;
+        });
 }
 
 // 리스트 보여주는 효과...
