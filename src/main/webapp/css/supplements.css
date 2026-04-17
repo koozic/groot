@@ -33,7 +33,7 @@ body {
 .main-title {
     text-align: center;
     font-size: 2.2em;
-    color: var(--ps-text-h);
+    color: black;
     margin-top: 20px;
     margin-bottom: 30px;
     font-weight: 800;
