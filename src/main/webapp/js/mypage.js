@@ -334,9 +334,8 @@ function buildCal(mappedAlerts, checkedDates, firstDay, lastDate, today) {
             mappedAlerts[d].forEach(alert => {
                 let badgeClass = alert.status === 'warn' ? 'badge-warn' : 'badge-buy';
                 let icon = alert.status === 'warn' ? '소진임박' : '재구매';
-
-                // '비타민'이라는 고정 텍스트 대신 실제 제품명 변수 사용
-                html += `<div class="alert-item ${badgeClass}">🛒 ${alert.productName} ${icon}</div>`;
+                // alert.productName 변수를 '비타민'이라는 고정 텍스트로 변경
+                html += `<div class="alert-item ${badgeClass}">🛒 비타민 ${icon}</div>`;
             });
             html += `</div>`;
         }
