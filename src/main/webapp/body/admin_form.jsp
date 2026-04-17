@@ -3,86 +3,88 @@
 <link rel="stylesheet" href="css/admin.css">
 <link rel="stylesheet" href="css/site-theme.css">
 
-<%-- supp가 null이면 등록, 있으면 수정 --%>
-<h2>${empty supp ? '➕ 영양소 등록' : '✏️ 영양소 수정'}</h2>
+<div class="admin-form-page">
+    <%-- supp가 null이면 등록, 있으면 수정 --%>
+    <h2>${empty supp ? '➕ 영양소 등록' : '✏️ 영양소 수정'}</h2>
 
-<form action="admin/api" method="post">
-    <%-- action 구분 --%>
-    <input type="hidden" name="action"
-           value="${empty supp ? 'insert' : 'update'}">
+    <form action="admin/api" method="post">
+        <%-- action 구분 --%>
+        <input type="hidden" name="action"
+               value="${empty supp ? 'insert' : 'update'}">
 
-    <%-- 수정 시 suppId 전달 --%>
-    <c:if test="${not empty supp}">
-        <input type="hidden" name="suppId" value="${supp.supplementId}">
-    </c:if>
+        <%-- 수정 시 suppId 전달 --%>
+        <c:if test="${not empty supp}">
+            <input type="hidden" name="suppId" value="${supp.supplementId}">
+        </c:if>
 
-    <div class="form-group">
-        <label>영양소 이름 *</label>
-        <input type="text" name="supplementName"
-               value="${supp.supplementName}" required
-               placeholder="예: 루테인">
-    </div>
-
-    <div class="form-group">
-        <label>효능 *</label>
-        <textarea name="supplementEfficacy"
-                  required
-                  placeholder="예: 눈 건강 보호 및 황반변성 예방">${supp.supplementEfficacy}</textarea>
-    </div>
-
-    <div class="form-group">
-        <label>복용법</label>
-        <input type="text" name="supplementDosage"
-               value="${supp.supplementDosage}"
-               placeholder="예: 하루 1정 (20mg)">
-    </div>
-
-    <div class="form-group">
-        <label>복용 시기</label>
-        <input type="text" name="supplementTiming"
-               value="${supp.supplementTiming}"
-               placeholder="예: 식후 복용">
-    </div>
-
-    <div class="form-group">
-        <label>주의사항</label>
-        <textarea name="supplementCaution"
-                  placeholder="예: 과다복용 시 피부 황변 가능">${supp.supplementCaution}</textarea>
-    </div>
-
-    <div class="form-group">
-        <label>이미지 경로</label>
-        <input type="text" name="supplementImagePath"
-               value="${supp.supplementImagePath}"
-               placeholder="예: images/supp/lutein.png">
-    </div>
-
-    <%-- 등록 시에만 신체 부위 선택 표시 --%>
-    <c:if test="${empty supp}">
         <div class="form-group">
-            <label>연결할 신체 부위</label>
-            <select name="bodyId">
-                <option value="">선택 안함</option>
-                <option value="1">💇 머리카락 (hair)</option>
-                <option value="2">🧴 피부 (skin)</option>
-                <option value="3">👁️ 눈 (eye)</option>
-                <option value="4">🧠 뇌 (brain)</option>
-                <option value="5">🫁 폐 (lung)</option>
-                <option value="6">❤️ 심장 (heart)</option>
-                <option value="7">🫀 간 (liver)</option>
-                <option value="8">🫃 위 (stomach)</option>
-                <option value="9">🌀 장 (intestine)</option>
-                <option value="10">🦴 뼈 (bone)</option>
-                <option value="11">💪 근육 (muscle)</option>
-            </select>
+            <label>영양소 이름 *</label>
+            <input type="text" name="supplementName"
+                   value="${supp.supplementName}" required
+                   placeholder="예: 루테인">
         </div>
-    </c:if>
 
-    <button type="submit" class="btn-submit">
-        ${empty supp ? '등록하기' : '수정하기'}
-    </button>
-    <button type="button" class="btn-cancel"
-            onclick="location.href='admin'">취소
-    </button>
-</form>
+        <div class="form-group">
+            <label>효능 *</label>
+            <textarea name="supplementEfficacy"
+                      required
+                      placeholder="예: 눈 건강 보호 및 황반변성 예방">${supp.supplementEfficacy}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label>복용법</label>
+            <input type="text" name="supplementDosage"
+                   value="${supp.supplementDosage}"
+                   placeholder="예: 하루 1정 (20mg)">
+        </div>
+
+        <div class="form-group">
+            <label>복용 시기</label>
+            <input type="text" name="supplementTiming"
+                   value="${supp.supplementTiming}"
+                   placeholder="예: 식후 복용">
+        </div>
+
+        <div class="form-group">
+            <label>주의사항</label>
+            <textarea name="supplementCaution"
+                      placeholder="예: 과다복용 시 피부 황변 가능">${supp.supplementCaution}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label>이미지 경로</label>
+            <input type="text" name="supplementImagePath"
+                   value="${supp.supplementImagePath}"
+                   placeholder="예: images/supp/lutein.png">
+        </div>
+
+        <%-- 등록 시에만 신체 부위 선택 표시 --%>
+        <c:if test="${empty supp}">
+            <div class="form-group">
+                <label>연결할 신체 부위</label>
+                <select name="bodyId">
+                    <option value="">선택 안함</option>
+                    <option value="1">💇 머리카락 (hair)</option>
+                    <option value="2">🧴 피부 (skin)</option>
+                    <option value="3">👁️ 눈 (eye)</option>
+                    <option value="4">🧠 뇌 (brain)</option>
+                    <option value="5">🫁 폐 (lung)</option>
+                    <option value="6">❤️ 심장 (heart)</option>
+                    <option value="7">🫀 간 (liver)</option>
+                    <option value="8">🫃 위 (stomach)</option>
+                    <option value="9">🌀 장 (intestine)</option>
+                    <option value="10">🦴 뼈 (bone)</option>
+                    <option value="11">💪 근육 (muscle)</option>
+                </select>
+            </div>
+        </c:if>
+
+        <button type="submit" class="btn-submit">
+            ${empty supp ? '등록하기' : '수정하기'}
+        </button>
+        <button type="button" class="btn-cancel"
+                onclick="location.href='admin'">취소
+        </button>
+    </form>
+</div>
 
