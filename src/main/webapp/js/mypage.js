@@ -662,7 +662,6 @@ function activateDropZones() {
 
 // ── View: 스티커를 캘린더 위에 렌더링 ──
 function renderStickersOnCalendar() {
-    // 기존 스티커 DOM 전부 제거
     document.querySelectorAll('.placed-sticker').forEach(el => el.remove());
 
     const currentStickers = StickerModel.stickers.filter(
@@ -670,7 +669,6 @@ function renderStickersOnCalendar() {
     );
 
     currentStickers.forEach(s => {
-        // 해당 날짜 셀 찾기
         const cells = document.querySelectorAll('#calGrid .cal-day:not(.empty)');
         let targetCell = null;
         cells.forEach(cell => {
@@ -679,25 +677,39 @@ function renderStickersOnCalendar() {
         });
         if (!targetCell) return;
 
-        // 스티커 DOM 생성
         const stickerEl = document.createElement('span');
         stickerEl.className = 'placed-sticker';
-        stickerEl.textContent = s.sticker_type;
         stickerEl.style.left = s.pos_x + '%';
         stickerEl.style.top = s.pos_y + '%';
         stickerEl.dataset.tempId = s.tempId || s.sticker_id;
 
-        // 편집 모드일 때만 클릭으로 삭제 가능
+        // ★ 핵심 수정 부분 ★
+        if (s.sticker_type.startsWith('img:')) {
+            const imgPath = s.sticker_type.replace('img:', '');
+
+            // contextPath를 직접 쓰지 않고 window에서 안전하게 가져옴
+            const base = (typeof window.contextPath !== 'undefined' && window.contextPath !== '')
+                ? window.contextPath
+                : '';
+
+            const img = document.createElement('img');
+            img.src = base + '/img/' + imgPath;   // 예: /groot/img/stickers/bbrain.png
+            img.className = 'placed-sticker-img';
+            img.alt = '스티커';
+            img.draggable = false;
+            stickerEl.appendChild(img);
+        } else {
+            stickerEl.textContent = s.sticker_type;
+        }
+
         stickerEl.addEventListener('click', function (e) {
             if (!isStickerEditMode) return;
             e.stopPropagation();
-            const tid = this.dataset.tempId;
-            StickerModel.removeByTempId(parseFloat(tid));
+            StickerModel.removeByTempId(parseFloat(this.dataset.tempId));
             this.remove();
             showMpToast('스티커가 삭제되었습니다.');
         });
 
-        // 셀은 position:relative여야 함 (CSS에서 설정)
         targetCell.style.position = 'relative';
         targetCell.appendChild(stickerEl);
     });
