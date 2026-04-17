@@ -10,7 +10,7 @@
 <body>
 
 <div class="write-box">
-    <h2>  솔직한 리뷰를 작성해주세요!</h2>
+    <h2>✍️ 솔직한 리뷰를 작성해주세요!</h2>
     <hr>
 
     <form action="../review-write" method="post" enctype="multipart/form-data">
@@ -42,7 +42,7 @@
             <input type="file" name="r_img" accept="image/*">
         </div>
 
-        <button type="submit" class="btn-submit"> 리뷰 등록하기</button>
+        <button type="submit" class="btn-submit">🚀 리뷰 등록하기</button>
     </form>
 </div>
 

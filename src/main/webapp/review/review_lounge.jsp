@@ -7,7 +7,7 @@
 
 <div class="lounge-wrap">
     <div class="lounge-header">
-        <h1> OtterCare 명예의 전당</h1>
+        <h1>🏆 약쟁이 명예의 전당</h1>
         <p>유저들이 인정한 가장 도움되는 찐 후기들을 모아봤어요!</p>
     </div>
 
@@ -88,7 +88,7 @@
     </div>
 
     <div id="end-message" style="display: none; text-align: center; padding: 60px 0; margin-top: 20px; color: #bbb; font-weight: bold; border-top: 2px dashed #eee;">
-        더 이상 리뷰가 없어요! 모든 리뷰를 다 보셨습니다
+        더 이상 리뷰가 없어요! 모든 리뷰를 다 보셨습니다 🎉
     </div>
 
 </div>
@@ -106,34 +106,32 @@
     function fetchLoungeData(category) {
         document.getElementById('end-message').style.display = 'none';
 
-        // 🚨 제가 빼먹었던 역슬래시(\) 복구 완료! 이제 서버로 'all'이 정상적으로 날아갑니다.
         fetch(`lounge-api?category=\${category}`)
             .then(res => res.json())
             .then(data => {
                 const grid = document.querySelector('.lounge-grid');
-                grid.innerHTML = '';
+                grid.innerHTML = ''; // 화면 리셋
 
                 if (!data || data.length === 0) {
                     grid.innerHTML = '<div style="column-span: all; padding: 60px; text-align: center; color: #777; font-size: 1.1em; background: #fff; border-radius: 12px; border: 1px dashed #ddd;">조건에 맞는 베스트 리뷰가 없습니다 🥲</div>';
+
+                    // 좀비 데이터 박멸 부적!!!
                     allLoungeData = [];
                     currentRenderIndex = 0;
                     if (scrollObserver) scrollObserver.disconnect();
+
                     return;
                 }
-
+                // 🌟 데이터를 창고에 저장하고 인덱스 초기화!
                 allLoungeData = data;
                 currentRenderIndex = 0;
                 let initialHtml = '';
 
-                // 🏆 [전체보기] 일 때 시상대 처리
+                // 🏆 [전체보기] 일 때 시상대 처리 (맨 처음에만 그림)
                 if (category === 'all' && allLoungeData.length >= 3) {
                     const top3 = allLoungeData.slice(0, 3);
                     const rankClasses = ['rank-1', 'rank-2', 'rank-3'];
-                    const crownsHtml = [
-                        '<img src="../img_review/rank1.png" alt="1등" class="medal-img">',
-                        '<img src="../img_review/rank2.png" alt="2등" class="medal-img">',
-                        '<img src="../img_review/rank3.png" alt="3등" class="medal-img">'
-                    ];
+                    const crowns = ['👑', '🥈', '🥉'];
 
                     initialHtml += '<div class="podium-wrap">';
                     top3.forEach((r, index) => {
@@ -146,10 +144,9 @@
                         let pImgHtml = pImgSrc ? `<img src="\${pImgSrc}" onerror="this.style.display='none';">` : '';
                         let safeUser = r.user_id ? r.user_id.substring(0,3) + '***' : '익명';
 
-                        // 🚨 밑에 있는 변수들도 전부 역슬래시(\) 완벽하게 복구했습니다.
                         initialHtml += `
                         <div class="podium-card \${rankClasses[index]}">
-                            <div class="crown-badge">\${crownsHtml[index]}</div>
+                            <div class="crown-badge">\${crowns[index]}</div>
                             <div class="card-prod-info" onclick="location.href='product-detail?id=\${r.product_id}'" style="border-radius: 13px 13px 0 0;">
                                 \${pImgHtml}
                                 <div class="prod-name">\${r.p_name || '제품명 없음'}</div>
@@ -167,10 +164,14 @@
                         </div>`;
                     });
                     initialHtml += '</div>';
+
+                    // 시상대 3개 그렸으니까, 다음엔 4번째 것부터 그리기 시작!
                     currentRenderIndex = 3;
                 }
 
                 grid.innerHTML = initialHtml;
+
+                // 🌟 센서 켜기 & 첫 번째 8개 카드 장전! (함수명 변경 완료)
                 initScrollObserver();
                 loungeLoadMoreReviews();
             })
@@ -179,6 +180,7 @@
                 document.getElementById('loading-spinner').style.display = 'none';
             });
     }
+
     // 🌟 2. 8개씩 잘라서 화면에 갖다 붙이는 로직 (함수명 loungeLoadMoreReviews로 변경 완료!)
     function loungeLoadMoreReviews() {
         // 이미 창고에 있는 데이터를 다 털어 썼다면?
@@ -233,7 +235,7 @@
                 document.getElementById('end-message').style.display = 'block';
                 if (scrollObserver) scrollObserver.disconnect();
             }
-        }, 350); // 0.3초 딜레이
+        }, 100); // 0.3초 딜레이
     }
 
     // 🌟 3. 바닥 감지 센서 (Intersection Observer API)
