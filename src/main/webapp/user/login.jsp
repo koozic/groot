@@ -4,7 +4,9 @@
 <head>
     <title>OTTERCARE 로그인</title>
 
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/app.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/login.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/site-theme.css">
 
 
 </head>

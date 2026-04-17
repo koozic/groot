@@ -11,6 +11,7 @@
         <meta charset="UTF-8">
         <title>Groot - 상품 리뷰</title>
         <link rel="stylesheet" href="../css/review.css">
+        <link rel="stylesheet" href="../css/site-theme.css">
     </head>
     <body>
 

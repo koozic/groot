@@ -2,6 +2,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <link rel="stylesheet" href="css/product_detail.css">
+<link rel="stylesheet" href="css/site-theme.css">
 
 
 
