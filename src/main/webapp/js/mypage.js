@@ -521,28 +521,47 @@ function escHtml(str) {
 
 // ── Model: 현재 스티커 상태 관리 ──
 const StickerModel = {
-    stickers: [],        // 화면에 보이는 현재 스티커 목록
-    savedStickers: [],   // 마지막으로 저장된 상태 (취소 시 복원용)
+    stickers: [],
+    savedStickers: [],
 
-    // 스티커 추가
     add(stickerData) {
         this.stickers.push(stickerData);
     },
 
-    // 스티커 삭제 (임시 ID 기준)
+    // ★ 수정: 타입 통일해서 비교
     removeByTempId(tempId) {
-        this.stickers = this.stickers.filter(s => s.tempId !== tempId);
+        const id = String(tempId);
+        this.stickers = this.stickers.filter(s => String(s.tempId) !== id);
     },
 
-    // 저장된 상태로 롤백
     rollback() {
         this.stickers = this.savedStickers.map(s => ({...s}));
     },
 
-    // 현재 상태를 '저장 완료' 상태로 확정
-    commit(savedList) {
-        this.savedStickers = savedList.map(s => ({...s}));
-        this.stickers = savedList.map(s => ({...s}));
+    // mypage.js 내 StickerModel 객체 수정
+    commit(savedList, year, month) {
+        // 1. 현재 편집 중인 '해당 년/월'이 아닌 스티커들만 추출 (보존용)
+        const otherMonths = this.stickers.filter(s => {
+            const sYear = Number(s.cal_year || s.calYear);
+            const sMonth = Number(s.cal_month || s.calMonth);
+            return !(sYear === Number(year) && sMonth === Number(month));
+        });
+
+        // 2. 서버에서 받은 새 목록 정규화
+        const normalized = (savedList || []).map(s => ({
+            ...s,
+            tempId: String(s.sticker_id || s.stickerId || s.tempId),
+            cal_year: Number(s.cal_year || s.calYear || year),
+            cal_month: Number(s.cal_month || s.calMonth || month),
+            cal_day: Number(s.cal_day || s.calDay),
+            pos_x: parseFloat(s.pos_x || s.posX),
+            pos_y: parseFloat(s.pos_y || s.posY),
+            sticker_type: s.sticker_type || s.stickerType
+        }));
+
+        // 3. 보존된 데이터 + 서버에서 새로 받은 데이터를 합침
+        this.stickers = [...otherMonths, ...normalized];
+        this.savedStickers = this.stickers.map(s => ({...s}));
     }
 };
 
@@ -617,6 +636,10 @@ function initStickerTray() {
 // ── Controller: 캘린더 셀에 드롭 존 활성화 ──
 function activateDropZones() {
     document.querySelectorAll('#calGrid .cal-day:not(.empty)').forEach(cell => {
+        // ★ 이미 등록된 이벤트 제거 후 재등록 (중복 방지)
+        if (cell.dataset.dropBound === 'true') return;
+        cell.dataset.dropBound = 'true';
+
         cell.classList.add('drop-zone');
 
         cell.addEventListener('dragover', function (e) {
@@ -632,20 +655,17 @@ function activateDropZones() {
         cell.addEventListener('drop', function (e) {
             e.preventDefault();
             this.classList.remove('drag-over');
-
             if (!dragStickerType) return;
 
-            // 셀 안에서의 상대적 위치 계산 (%)
             const rect = this.getBoundingClientRect();
             const posX = ((e.clientX - rect.left) / rect.width * 100).toFixed(1);
             const posY = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
 
-            // 날짜 추출 (셀의 .day-num span에서)
             const dayNum = parseInt(this.querySelector('.day-num')?.textContent || '0');
             if (!dayNum) return;
 
             const newSticker = {
-                tempId: Date.now() + Math.random(),  // 임시 고유 ID
+                tempId: String(Date.now() + Math.random()), // ★ String으로 통일
                 sticker_type: dragStickerType,
                 cal_year: calYear,
                 cal_month: calMonth + 1,
@@ -655,7 +675,7 @@ function activateDropZones() {
             };
 
             StickerModel.add(newSticker);
-            renderStickersOnCalendar();   // 화면 즉시 반영
+            renderStickersOnCalendar();
         });
     });
 }
@@ -664,8 +684,9 @@ function activateDropZones() {
 function renderStickersOnCalendar() {
     document.querySelectorAll('.placed-sticker').forEach(el => el.remove());
 
+    // ★ Number()로 타입 통일해서 필터링
     const currentStickers = StickerModel.stickers.filter(
-        s => s.cal_year === calYear && s.cal_month === calMonth + 1
+        s => Number(s.cal_year) === calYear && Number(s.cal_month) === calMonth + 1
     );
 
     currentStickers.forEach(s => {
@@ -673,7 +694,7 @@ function renderStickersOnCalendar() {
         let targetCell = null;
         cells.forEach(cell => {
             const dayNum = parseInt(cell.querySelector('.day-num')?.textContent || '0');
-            if (dayNum === s.cal_day) targetCell = cell;
+            if (dayNum === Number(s.cal_day)) targetCell = cell;
         });
         if (!targetCell) return;
 
@@ -681,19 +702,15 @@ function renderStickersOnCalendar() {
         stickerEl.className = 'placed-sticker';
         stickerEl.style.left = s.pos_x + '%';
         stickerEl.style.top = s.pos_y + '%';
-        stickerEl.dataset.tempId = s.tempId || s.sticker_id;
+        // ★ tempId를 String으로 통일
+        stickerEl.dataset.tempId = String(s.tempId || s.sticker_id);
 
-        // ★ 핵심 수정 부분 ★
         if (s.sticker_type.startsWith('img:')) {
             const imgPath = s.sticker_type.replace('img:', '');
-
-            // contextPath를 직접 쓰지 않고 window에서 안전하게 가져옴
             const base = (typeof window.contextPath !== 'undefined' && window.contextPath !== '')
-                ? window.contextPath
-                : '';
-
+                ? window.contextPath : '';
             const img = document.createElement('img');
-            img.src = base + '/img/' + imgPath;   // 예: /groot/img/stickers/bbrain.png
+            img.src = base + '/img/' + imgPath;
             img.className = 'placed-sticker-img';
             img.alt = '스티커';
             img.draggable = false;
@@ -705,7 +722,8 @@ function renderStickersOnCalendar() {
         stickerEl.addEventListener('click', function (e) {
             if (!isStickerEditMode) return;
             e.stopPropagation();
-            StickerModel.removeByTempId(parseFloat(this.dataset.tempId));
+            // ★ String으로 통일해서 삭제
+            StickerModel.removeByTempId(String(this.dataset.tempId));
             this.remove();
             showMpToast('스티커가 삭제되었습니다.');
         });
@@ -721,23 +739,39 @@ async function saveStickers() {
     saveBtn.disabled = true;
     saveBtn.textContent = '저장 중...';
 
+    const year = calYear;
+    const month = calMonth + 1;
+
     try {
+        // ★ 불필요한 sticker_id 제거, 꼭 필요한 필드만 깔끔하게 전송
+        const toSave = StickerModel.stickers
+            .filter(s =>
+                Number(s.cal_year) === year &&
+                Number(s.cal_month) === month
+            )
+            .map(s => ({
+                sticker_type: String(s.sticker_type),
+                cal_year: year,
+                cal_month: month,
+                cal_day: Number(s.cal_day),
+                pos_x: parseFloat(s.pos_x),
+                pos_y: parseFloat(s.pos_y)
+            }));
+
+        console.log('📤 전송 데이터:', JSON.stringify(toSave)); // 디버깅
+
         const response = await fetch('mypage/sticker', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                year: calYear,
-                month: calMonth + 1,
-                stickers: StickerModel.stickers.filter(
-                    s => s.cal_year === calYear && s.cal_month === calMonth + 1
-                )
-            })
+            body: JSON.stringify({year, month, stickers: toSave})
         });
 
-        if (!response.ok) throw new Error('서버 오류');
+        if (!response.ok) throw new Error('서버 오류: ' + response.status);
 
-        const saved = await response.json();  // 서버에서 DB ID 포함한 목록 반환
-        StickerModel.commit(saved);           // 저장 완료 → Model 확정
+        const saved = await response.json();
+        console.log('📥 서버 응답:', JSON.stringify(saved)); // 디버깅
+
+        StickerModel.commit(saved, year, month);
         renderStickersOnCalendar();
         exitStickerEditMode();
         showMpToast('🎉 스티커가 저장되었습니다!');
@@ -754,35 +788,28 @@ async function saveStickers() {
 // ── Controller: 불러오기 (비동기 GET) ──
 async function loadStickers() {
     try {
-        const res = await fetch(
-            `mypage/sticker?year=${calYear}&month=${calMonth + 1}`
-        );
+        const res = await fetch(`mypage/sticker?year=${calYear}&month=${calMonth + 1}`);
         if (!res.ok) return;
         const list = await res.json();
 
-        // tempId가 없으면 sticker_id로 대체
-        list.forEach(s => {
-            if (!s.tempId) s.tempId = s.sticker_id;
-        });
-
-        StickerModel.commit(list);
+        // commit 함수에서 정규화를 처리하므로 바로 전달하되, year/month를 명시
+        StickerModel.commit(list, calYear, calMonth + 1);
         renderStickersOnCalendar();
     } catch (err) {
         console.error('스티커 불러오기 실패', err);
     }
 }
 
-// ── renderCalendar 완료 후 스티커 로드 (기존 함수 확장) ──
-// 기존 renderCalendar의 buildCal 호출 직후에 아래를 추가해야 합니다.
-// buildCal 함수 마지막 줄 grid.innerHTML = html; 다음에:
-//   loadStickers();
-//   if (isStickerEditMode) activateDropZones();
-//   initStickerTray();
-// → 아래 패치 함수가 이를 자동 처리합니다.
 
 const _origBuildCal = buildCal;
 window.buildCal = function (...args) {
     _origBuildCal(...args);
+
+    // ★ 월 이동 시 drop 이벤트 중복 방지 플래그 초기화
+    document.querySelectorAll('#calGrid .cal-day').forEach(cell => {
+        delete cell.dataset.dropBound;
+    });
+
     loadStickers();
     if (isStickerEditMode) activateDropZones();
     initStickerTray();

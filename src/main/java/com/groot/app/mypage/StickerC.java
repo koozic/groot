@@ -89,6 +89,8 @@ public class StickerC extends HttpServlet {
 
     static class StickerDTO {
         String sticker_type;
+        int cal_year;    // ← 추가
+        int cal_month;   // ← 추가
         int cal_day;
         float pos_x, pos_y;
     }
