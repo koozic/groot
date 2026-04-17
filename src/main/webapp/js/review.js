@@ -224,7 +224,7 @@ function renderPaginatedReviews(isAppend = false) {
         container.innerHTML += `
             <div class="review-card" style="position: relative;">
                 ${menuHtml}
-                <div class="review-title">제목: ${r.r_title}</div>
+                <div class="review-title"> ${r.r_title}</div>
                 <div class="review-meta">작성자: ${r.user_id} | ${makeStarHtml(r.r_score)} | 작성일: ${formatKoreanDate(r.r_date)}</div>
                 ${imgHtml}
                 <hr style="border:0; border-top:1px solid #eee;">

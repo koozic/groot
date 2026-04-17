@@ -286,12 +286,40 @@ body {
 
 /* 좋아요 버튼 (테마의 Pink/Blush 적용) */
 .like-btn {
-    background: none; border: 1px solid var(--ps-lpink); border-radius: 20px;
-    padding: 4px 14px; cursor: pointer; font-size: 14px;
-    color: var(--ps-text-m); margin-top: 8px; transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 78px;
+    background: none;
+    border: 1px solid var(--ps-lpink);
+    border-radius: 999px;
+    padding: 8px 14px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--ps-text-m);
+    margin-top: 8px;
+    transition: all 0.2s;
 }
 .like-btn.liked { background: var(--ps-blush); border-color: var(--ps-pink); color: #9A5060; }
 .like-btn:hover { background: var(--ps-blush); border-color: var(--ps-pink); }
+
+.like-btn:disabled {
+    opacity: 0.75;
+    cursor: wait;
+}
+
+.like-heart {
+    font-size: 18px;
+    line-height: 1;
+    color: inherit;
+}
+
+.like-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
 
 /* =========================================
    5. 모달 및 페이징 설정

@@ -163,10 +163,14 @@ select:focus {
 .like-btn:hover,
 .like-btn.on,
 .like-btn.active,
+.like-btn.liked,
+.like-btn[aria-pressed="true"],
 .btn-like:hover,
 .btn-like.clicked,
+.btn-like.liked,
 .modal-like:hover,
-.modal-like.on {
+.modal-like.on,
+.modal-like.liked {
   background: var(--ps-blush) !important;
   color: var(--ps-danger) !important;
   border-color: var(--ps-pink) !important;
