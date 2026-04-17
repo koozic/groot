@@ -226,10 +226,11 @@
 
 /* 중앙 좌측: 영양소 & 제품명 */
 .vit-content {
-    flex: 1.5; /* 더 많은 공간 할당 */
+    flex: 1.5;
     display: flex;
     flex-direction: column;
     gap: 4px;
+    min-width: 0; /* (추가) Flexbox 내부 텍스트 팽창 방지 핵심 속성 */
 }
 
 /* 중앙 우측: 시간 정보 (독립) */
@@ -261,6 +262,13 @@
     flex-direction: column;
     gap: 4px; /* 정보 간 세로 간격 */
     margin: 0 16px; /* 아이콘과 체크박스 사이 여백 */
+    min-width: 0;    /* Flexbox 자식 요소의 텍스트 넘침 방지 핵심 속성 */
+}
+
+.vit-name, .vit-dose {
+    white-space: nowrap;      /* 줄바꿈 방지 */
+    overflow: hidden;         /* 영역을 벗어난 텍스트 숨김 */
+    text-overflow: ellipsis;  /* 말줄임표(...) 적용 */
 }
 
 /* 1순위 강조: 영양소 종류 */
@@ -269,6 +277,9 @@
     font-weight: 800;
     color: #2563eb;
     line-height: 1.2;
+    overflow: hidden;         /* (추가) */
+    text-overflow: ellipsis;  /* (추가) */
+    white-space: nowrap;      /* (추가) */
 }
 
 /* 2순위 강조: 복용 시간 */
@@ -285,10 +296,11 @@
 /* 보조 정보(제품명, 브랜드) 및 구분선 색상 수정 */
 .vit-sub-info {
     font-size: 12px;
-    color: #4b5563; /* 짙은 회색으로 변경 (기존보다 훨씬 잘 보임) */
+    color: #4b5563;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    width: 100%; /* (추가) 말줄임이 적용될 영역을 컨테이너 100%로 확실히 제한 */
 }
 
 .vit-sub-info span {
