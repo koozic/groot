@@ -13,3 +13,10 @@ CREATE TABLE calendar_stickers
 
 ALTER TABLE calendar_stickers
     MODIFY sticker_type VARCHAR2(100);
+
+-- 테이블 존재 확인
+SELECT * FROM calendar_stickers WHERE ROWNUM <= 5;
+
+-- 컬럼 구조 확인
+DESC calendar_stickers;
+SELECT * FROM calendar_stickers;
