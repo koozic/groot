@@ -84,6 +84,7 @@
 <script>
   const preselectedSupplements = ${selectedSupplementIdsJson};
   const recoBasePath = '${pageContext.request.contextPath}/reco';
+  const productDetailBasePath = '${pageContext.request.contextPath}/product-detail?id=';
 
   function toggleMoreSupplements() {
     const moreBox = document.getElementById('moreSupplements');
@@ -181,6 +182,74 @@
       .filter(Boolean);
   }
 
+  function getBestReviewImage(review) {
+    if (review && review.r_img) {
+      return review.r_img;
+    }
+
+    if (review && review.p_img) {
+      return review.p_img;
+    }
+
+    return '';
+  }
+
+  function getMaskedUserId(userId) {
+    const safeUserId = (userId || '익명');
+    const visibleLength = Math.min(3, safeUserId.length);
+    return safeUserId.substring(0, visibleLength) + '***';
+  }
+
+  function escapeHtml(value) {
+    return String(value == null ? '' : value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function renderBestReviewCard(review) {
+    const hasProductLink = review && review.product_id;
+    const imageSrc = getBestReviewImage(review);
+    const score = Math.max(0, Math.min(5, Number(review.r_score) || 0));
+    const productNameHtml = review && review.p_name
+      ? '<strong class="rc-product-name">' + escapeHtml(review.p_name) + '</strong>'
+      : '';
+    const productGoHtml = hasProductLink ? '<span class="rc-go">상품 보기</span>' : '';
+    const reviewText = escapeHtml(review && review.r_content ? review.r_content : '');
+    const userText = escapeHtml(getMaskedUserId(review ? review.user_id : ''));
+    const supplementText = escapeHtml(review && review.supp_name ? review.supp_name : '영양제');
+    const openTag = hasProductLink
+      ? '<a class="review-card review-card-link" href="' + productDetailBasePath + encodeURIComponent(review.product_id) + '">'
+      : '<div class="review-card review-card-link is-static">';
+    const closeTag = hasProductLink ? '</a>' : '</div>';
+    const mediaHtml = imageSrc
+      ? '<div class="rc-media"><img src="' + escapeHtml(imageSrc) + '" alt="리뷰 관련 이미지" loading="lazy" onerror="this.parentElement.classList.add(\'is-empty\'); this.style.display=\'none\'; this.parentElement.textContent=\'📷\';"></div>'
+      : '<div class="rc-media is-empty" aria-hidden="true">📷</div>';
+
+    return [
+      openTag,
+      '<div class="rc-main">',
+      mediaHtml,
+      '<div class="rc-body">',
+      '<div class="rc-product">',
+      '<span class="rc-supp">💊 ' + supplementText + '</span>',
+      productNameHtml,
+      productGoHtml,
+      '</div>',
+      '<div class="rc-header">',
+      '<span class="rc-stars">' + '★'.repeat(score) + '☆'.repeat(5 - score) + '</span>',
+      '<span class="rc-like">👍 ' + (Number(review && review.r_like) || 0) + '</span>',
+      '</div>',
+      '<p class="rc-text">"' + reviewText + '"</p>',
+      '<div class="rc-user">- ' + userText + ' 님</div>',
+      '</div>',
+      '</div>',
+      closeTag
+    ].join('');
+  }
+
   function refreshReviewSection() {
     if (!window.analysisCompleted) {
       return;
@@ -248,16 +317,7 @@
           return;
         }
 
-        reviewBox.innerHTML = data.map(r => `
-          <div class="review-card">
-            <div class="rc-header">
-              <span class="rc-supp">💊 \${r.supp_name || '영양제'}</span>
-              <span class="rc-stars">\${'★'.repeat(r.r_score)}\${'☆'.repeat(5 - r.r_score)}</span>
-            </div>
-            <p class="rc-text">"\${r.r_content}"</p>
-            <div class="rc-user">- \${r.user_id.substring(0,3)}*** 님</div>
-          </div>
-        `).join('');
+        reviewBox.innerHTML = data.map(renderBestReviewCard).join('');
       });
   }
 
