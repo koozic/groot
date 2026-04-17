@@ -7,7 +7,7 @@
 
 <div class="lounge-wrap">
     <div class="lounge-header">
-        <h1> OTTER CARE 명예의 전당</h1>
+        <h1> OtterCare 명예의 전당</h1>
         <p>유저들이 인정한 가장 도움되는 찐 후기들을 모아봤어요!</p>
     </div>
 
@@ -88,7 +88,7 @@
     </div>
 
     <div id="end-message" style="display: none; text-align: center; padding: 60px 0; margin-top: 20px; color: #bbb; font-weight: bold; border-top: 2px dashed #eee;">
-        더 이상 리뷰가 없어요! 모든 리뷰를 다 보셨습니다 🎉
+        더 이상 리뷰가 없어요! 모든 리뷰를 다 보셨습니다
     </div>
 
 </div>
