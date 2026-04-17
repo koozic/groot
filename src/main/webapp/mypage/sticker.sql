@@ -10,3 +10,6 @@ CREATE TABLE calendar_stickers
     pos_y        FLOAT        NOT NULL,
     created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+ALTER TABLE calendar_stickers
+    MODIFY sticker_type VARCHAR2(100);

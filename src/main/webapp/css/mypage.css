@@ -900,7 +900,6 @@
 }
 
 .sticker-item {
-    font-size: 24px;
     cursor: grab;
     padding: 4px;
     border-radius: 8px;
@@ -1016,4 +1015,56 @@ body.sticker-editing .placed-sticker {
 /* 캘린더 셀 기본 position 확보 */
 .cal-day {
     position: relative;
+}
+
+/* ====================================================
+   이미지 스티커
+   ==================================================== */
+
+/* 트레이 안의 이미지 스티커 썸네일 */
+.sticker-img-item {
+    padding: 2px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sticker-thumb {
+    width: 32px;
+    height: 32px;
+    object-fit: contain; /* 비율 유지 */
+    border-radius: 4px;
+    pointer-events: none; /* 드래그 시 이미지 ghost 방지 */
+}
+
+.sticker-thumb:hover {
+    transform: scale(1.2);
+    transition: transform 0.15s;
+}
+
+/* 캘린더에 놓인 이미지 스티커 */
+.placed-sticker-img {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    pointer-events: none; /* 클릭은 부모(placed-sticker)가 받음 */
+    display: block;
+    /*filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.2));*/
+}
+
+/* 편집 모드에서 이미지 스티커 hover 시 삭제 표시 */
+.sticker-panel.edit-mode .placed-sticker:hover::after {
+    content: '×';
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 16px;
+    height: 16px;
+    background: #ef4444;
+    color: white;
+    border-radius: 50%;
+    font-size: 11px;
+    line-height: 16px;
+    text-align: center;
+    pointer-events: none;
 }
