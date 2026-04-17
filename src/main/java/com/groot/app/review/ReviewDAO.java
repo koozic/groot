@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -642,6 +643,10 @@ public class ReviewDAO {
 
     // 🌟 [추가 2] 부족한 영양소 분석용 (분배 로직 + 번역 기능 포함)
     public ArrayList<ReviewDTO> getDeficiencyBestReviews(String[] rawSupps, int limitPerSupp) {
+        return getBestReviewsBySupplements(rawSupps, limitPerSupp);
+    }
+
+    public ArrayList<ReviewDTO> getBestReviewsBySupplements(String[] rawSupps, int limitPerSupp) {
         ArrayList<ReviewDTO> list = new ArrayList<>();
         if (rawSupps == null || rawSupps.length == 0) return list;
 
@@ -656,16 +661,27 @@ public class ReviewDAO {
                     "    FROM reviews R " +
                     "    JOIN products P ON R.product_id = P.product_id " +
                     "    JOIN supplements S ON P.product_nutrient = S.supplement_id " +
-                    "    WHERE S.supplement_name = ? " +
-                    "    ORDER BY R.r_like DESC, R.r_date DESC " +
+                    "    WHERE REPLACE(LOWER(S.supplement_name), ' ', '') = REPLACE(LOWER(?), ' ', '') " +
+                    "    ORDER BY R.r_like DESC, R.r_score DESC, R.r_date DESC " +
                     ") WHERE ROWNUM <= ?";
 
             pstmt = con.prepareStatement(sql);
 
-            // 🌟 전달받은 영양제 각각에 대해 쿼리 실행
-            for (String s : rawSupps) {
-                pstmt.setString(1, translateSupp(s)); // 번역기 호출
-                pstmt.setInt(2, limitPerSupp); // 할당된 개수만큼만!
+            int safeLimit = Math.max(1, limitPerSupp);
+            LinkedHashSet<String> normalizedSupps = new LinkedHashSet<>();
+            for (String rawSupp : rawSupps) {
+                String normalized = translateSupp(rawSupp);
+                if (normalized != null) {
+                    normalized = normalized.trim();
+                }
+                if (normalized != null && !normalized.isEmpty()) {
+                    normalizedSupps.add(normalized);
+                }
+            }
+
+            for (String suppName : normalizedSupps) {
+                pstmt.setString(1, suppName);
+                pstmt.setInt(2, safeLimit);
                 rs = pstmt.executeQuery();
 
                 while (rs.next()) {
@@ -676,7 +692,10 @@ public class ReviewDAO {
                     r.setSupp_name(rs.getString("supplement_name"));
                     list.add(r);
                 }
-                rs.close();
+                if (rs != null) {
+                    rs.close();
+                    rs = null;
+                }
             }
         } catch (Exception e) { e.printStackTrace(); }
         finally { DBManager_new.close(con, pstmt, rs); }
