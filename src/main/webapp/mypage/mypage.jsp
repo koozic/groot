@@ -90,7 +90,7 @@
             <form id="deleteUser" action="${pageContext.request.contextPath}/user-delete" method="post"
                   onsubmit="return confirmDelete()">
                 <input type="hidden" name="user_id" value="${sessionScope.loginUser.user_id}">
-                <div style="margin-top:20px; padding-top:16px; border-top:1px solid #f3f4f6; text-align:right;">
+                <div class="mp-withdraw-row" style="margin-top:20px; padding-top:16px; border-top:1px solid #f3f4f6; text-align:right;">
                     <button type="submit" class="mp-withdraw-link">회원 탈퇴</button>
                 </div>
             </form>
@@ -179,7 +179,7 @@
                         </c:forEach>
                     </c:when>
                     <c:otherwise>
-                        <p style="text-align:center; font-size:13px; color:#9ca3af; padding:20px 0;">
+                        <p class="mp-empty-note" style="text-align:center; font-size:13px; color:#9ca3af; padding:20px 0;">
                             등록된 영양제가 없습니다. 추가해주세요!
                         </p>
                     </c:otherwise>
@@ -230,7 +230,7 @@
                 </div>
 
                 <%-- [추가] 모달 하단 완료 버튼 --%>
-                <div style="margin-top: 20px;">
+                <div class="mp-modal-foot" style="margin-top: 20px;">
                     <button type="button" class="mp-save-btn" onclick="closeAndRefresh()">완료</button>
                 </div>
             </div>
@@ -238,14 +238,16 @@
 
 
         <div id="confirmModal" class="mp-modal">
-            <div class="mp-modal-content" style="max-width: 320px; text-align: center;">
+            <div class="mp-modal-content mp-confirm-modal" style="max-width: 320px; text-align: center;">
                 <div id="confirmMessage" style="margin-bottom: 20px; font-weight: 700; color: #1a1a1a;"></div>
-                <div style="display: flex; gap: 8px;">
+                <div class="mp-confirm-actions" style="display: flex; gap: 8px;">
                     <button onclick="closeConfirm()"
+                            class="mp-confirm-cancel"
                             style="flex:1; padding: 10px; border:none; border-radius:8px; background:#f3f4f6; cursor:pointer;">
                         취소
                     </button>
                     <button id="confirmBtn"
+                            class="mp-confirm-ok"
                             style="flex:1; padding: 10px; border:none; border-radius:8px; background:#2563eb; color:#fff; cursor:pointer;">
                         확인
                     </button>
@@ -263,11 +265,11 @@
     <div id="tab-cal" class="mp-tab-content">
 
         <%-- 1. 구매 알림 영역 --%>
-        <div class="mp-card" style="margin-bottom:16px;">
+            <div class="mp-card mp-alert-card-wrap" style="margin-bottom:16px;">
             <div class="mp-sec-title">구매 알림</div>
             <%-- JS(renderAlerts)에서 동적으로 HTML을 삽입할 빈 컨테이너 --%>
             <div id="alertList">
-                <p style="text-align:center; font-size:13px; color:#9ca3af; padding:10px;">데이터를 불러오는 중입니다...</p>
+                <p class="mp-loading-note" style="text-align:center; font-size:13px; color:#9ca3af; padding:10px;">데이터를 불러오는 중입니다...</p>
             </div>
         </div>
 
@@ -668,7 +670,7 @@
             <div class="cal-grid" id="calGrid"></div>
 
             <%-- 범례 (JS 로직에 맞게 스타일 및 텍스트 수정) --%>
-            <div class="cal-legend"
+            <div class="cal-legend mp-cal-legend"
                  style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 10px; font-size: 11px;">
                 <div class="leg">
                     <div class="leg-dot"
@@ -701,10 +703,10 @@
     <c:if test="${empty sessionScope.isAdmin}">
         <div id="tab-like" class="mp-tab-content">
             <div class="mp-card">
-                <div class="mp-sec-title" style="display:flex; justify-content:space-between; align-items:center;">
+                <div class="mp-sec-title mp-liked-head" style="display:flex; justify-content:space-between; align-items:center;">
                     <span>❤️ 내가 찜한 영양성분</span>
                         <%-- 정렬 버튼 --%>
-                    <div style="display:flex; gap:6px;">
+                    <div class="mp-liked-sort" style="display:flex; gap:6px;">
                         <button id="sort-recent" onclick="loadLikedSupplements('recent', this)"
                                 style="font-size:11px; padding:4px 12px; border:1px solid #3b82f6;
                            border-radius:20px; background:#eff6ff; color:#1d4ed8;
@@ -721,7 +723,7 @@
                 </div>
 
                     <%-- JS로 동적 렌더링할 컨테이너 --%>
-                <div id="liked-list"
+                <div id="liked-list" class="mp-liked-list"
                      style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr));
                     gap:20px; margin-top:15px;">
                         <%-- 초기 데이터: JSP에서 서버 데이터로 렌더링 --%>
@@ -731,7 +733,7 @@
 
 
                     <%-- ★ 페이지네이션 영역 추가 ★ --%>
-                <div id="liked-pagination"
+                <div id="liked-pagination" class="mp-liked-pagination"
                      style="display:flex; justify-content:center; align-items:center;
             gap:4px; margin-top:20px; padding-bottom:10px;">
                 </div>

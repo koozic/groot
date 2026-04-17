@@ -1,6 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 
-<div style="background:#fff; width:550px; margin:30px auto; border-radius:15px; padding:25px; position:relative; cursor:default;">
+<div class="review-update-modal-content" style="background:#fff; width:550px; margin:30px auto; border-radius:15px; padding:25px; position:relative; cursor:default;">
     <h2 style="margin-top:0;">📝 리뷰 수정하기</h2>
 
     <form id="updateForm" enctype="multipart/form-data">
