@@ -1,5 +1,5 @@
 /* ==========================================
-   🏆 약쟁이 명예의 전당 전용 CSS (최종 완성본 - 찐따 탈출 패치 완료)
+   🏆 약쟁이 명예의 전당 전용 CSS (최종 완성본)
    ========================================== */
 
 /* 1. 기본 레이아웃 및 헤더 */
@@ -40,7 +40,15 @@ body { background-color: #f9f9fa; }
 .lounge-card:hover { transform: translateY(-5px); box-shadow: 0 12px 24px rgba(0,0,0,0.08); }
 
 /* 5. 카드 내부 요소 디자인 */
-.card-prod-info { display: flex; align-items: center; gap: 12px; padding: 15px; background: #fdfdfd; border-bottom: 1px solid #f0f0f0; cursor: pointer; }
+.card-prod-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px;
+    background: #fdfdfd;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+}
 .card-prod-info img { width: 45px; height: 45px; border-radius: 8px; object-fit: cover; border: 1px solid #eee; }
 .card-prod-info .prod-name { font-weight: 700; font-size: 0.9em; color: #333; line-height: 1.3; }
 .card-body { padding: 20px; }
@@ -61,19 +69,18 @@ body { background-color: #f9f9fa; }
 }
 .pop-anim { animation: jellyPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
 
-/* 7. 🏆 명예의 전당 시상대 (사이드 라인 정렬) */
+/* 7. 🏆 명예의 전당 시상대 전용 디자인 (여백 쫀득하게 조절 완료) */
 .podium-wrap {
     column-span: all;
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
     gap: 20px;
-    margin: 20px 0 60px 0;
-    padding-top: 40px;
+    margin: 0px 0 60px 0; /* 🌟 상단 마진을 0으로 줄여서 위쪽 버튼들과 밀착 */
+    padding-top: 30px;
     width: 100%;
 }
 
-/* 🌟 찐따 방지: 시상대 카드 최소 높이 고정 및 flex 적용 */
 .podium-card {
     flex: 1;
     max-width: 380px;
@@ -83,16 +90,40 @@ body { background-color: #f9f9fa; }
     box-shadow: 0 10px 25px rgba(0,0,0,0.06);
     display: flex;
     flex-direction: column;
-    min-height: 460px; /* 사진 없어도 키 안 줄어들게 꽉 잡아줌! */
+    min-height: 460px;
+    margin-top: 30px; /* 🌟 카드 마진을 줄여서 전체적으로 위로 올림 */
 }
+
+/* 시상대 카드의 상품 정보 영역만 따로 여백 조절 (메달과 글자 사이) */
+.podium-card .card-prod-info {
+    padding: 25px 15px 15px 15px !important; /* 🌟 윗공간을 25px로 줄여서 메달이랑 쫀득하게 붙임 */
+    background: #fdfdfd;
+    border-bottom: 1px solid #f0f0f0;
+}
+
 .podium-card.rank-1 { order: 2; transform: scale(1.08); border: 2px solid #FFD700; z-index: 10; box-shadow: 0 15px 35px rgba(255, 215, 0, 0.18); }
 .podium-card.rank-2 { order: 1; border: 2px solid #C0C0C0; z-index: 5; }
 .podium-card.rank-3 { order: 3; border: 2px solid #CD7F32; z-index: 5; }
 
-.crown-badge { position: absolute; top: -25px; left: 50%; transform: translateX(-50%); font-size: 30px; filter: drop-shadow(0 3px 5px rgba(0,0,0,0.08)); }
-.rank-1 .crown-badge { top: -30px; font-size: 35px; }
+/* 🌟 메달 위치 조절 */
+.crown-badge {
+    background: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    position: absolute;
+    top: -55px; /* 🌟 기존 -65에서 -55로 내려서 글자랑 가깝게 배치 */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+}
 
-/* 내부 빈 공간을 글씨가 쫙 밀어내서 푸터를 바닥에 붙임 */
+.medal-img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
+}
+
 .podium-card .card-body {
     padding: 15px;
     flex-grow: 1;
@@ -100,15 +131,11 @@ body { background-color: #f9f9fa; }
     flex-direction: column;
 }
 .podium-card .review-title { font-size: 1.0em; margin-bottom: 8px; }
-.podium-card .review-content {
-    font-size: 0.9em;
-    -webkit-line-clamp: 3;
-    flex-grow: 1;
-}
+.podium-card .review-content { font-size: 0.9em; -webkit-line-clamp: 3; flex-grow: 1; }
 .podium-card .review-img-box { height: 180px; margin-bottom: 12px; }
 .podium-card .card-footer { padding: 10px 15px; font-size: 0.8em; }
 
-/* 8. ✨ 물결 페이드인 애니메이션 */
+/* 8. ✨ 애니메이션 */
 @keyframes loungeFadeIn {
     0% { opacity: 0; transform: translateY(30px) scale(0.98); }
     100% { opacity: 1; transform: translateY(0) scale(1); }
@@ -118,107 +145,35 @@ body { background-color: #f9f9fa; }
     animation: loungeFadeIn 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
-/* ==========================================
-   🌟 9. 비타민 드롭다운 전용 CSS (충돌 방지 패치)
-   ========================================== */
-.dropdown-container {
-    position: relative;
-    display: inline-block;
-}
-
-/* 앞에 .dropdown-container를 붙여서 '비타민 전용'으로 범위를 좁힙니다 */
+/* 9. 비타민 드롭다운 충돌 방지 */
+.dropdown-container { position: relative; display: inline-block; }
 .dropdown-container .dropdown-menu {
-    display: none; /* 기본 숨김 */
-    position: absolute;
-    top: calc(100% + 10px); /* 버튼 살짝 아래로 */
-    left: 50%;
-    transform: translateX(-50%);
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    padding: 20px;
-    z-index: 100;
-    width: 520px;
-    border: 1px solid #eee;
+    display: none; position: absolute; top: calc(100% + 10px); left: 50%;
+    transform: translateX(-50%); background: white; border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15); padding: 20px; z-index: 100;
+    width: 520px; border: 1px solid #eee;
 }
-
-/* JS에서 .show 클래스를 붙였을 때도 우리 박스 안의 메뉴만 열리도록! */
-.dropdown-container .dropdown-menu.show {
-    display: block;
-    animation: fadeInDown 0.2s ease;
-}
-
-@keyframes fadeInDown {
-    from { opacity: 0; transform: translate(-50%, -10px); }
-    to { opacity: 1; transform: translate(-50%, 0); }
-}
+.dropdown-container .dropdown-menu.show { display: block; animation: fadeInDown 0.2s ease; }
+@keyframes fadeInDown { from { opacity: 0; transform: translate(-50%, -10px); } to { opacity: 1; transform: translate(-50%, 0); } }
 
 .vitamin-grid { display: flex; gap: 20px; }
 .vitamin-column { flex: 1; }
 .vitamin-column h4 { font-size: 0.9em; color: #888; margin-bottom: 12px; border-bottom: 2px solid #f5f5f5; padding-bottom: 8px; }
-
-/* 수용성 비타민 2열 바둑판 */
-.water-soluble-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.water-soluble-grid .sub-pill-btn { margin-bottom: 0; }
-
-/* 지용성 비타민 2열 바둑판 */
-.fat-soluble-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.fat-soluble-grid .sub-pill-btn { margin-bottom: 0; }
-
+.water-soluble-grid, .fat-soluble-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
 .sub-pill-btn {
-    width: 100%;
-    padding: 8px 10px;
-    margin-bottom: 6px;
-    border-radius: 6px;
-    border: 1px solid #eee;
-    background: #fff;
-    color: #555;
-    cursor: pointer;
-    font-size: 0.85em;
-    transition: 0.2s;
-    text-align: center;
+    width: 100%; padding: 8px 10px; margin-bottom: 6px; border-radius: 6px;
+    border: 1px solid #eee; background: #fff; color: #555; cursor: pointer;
+    font-size: 0.85em; transition: 0.2s; text-align: center;
 }
-.sub-pill-btn:hover, .sub-pill-btn.active {
-    background: #6a8d3a;
-    color: white;
-    border-color: #6a8d3a;
-}
+.sub-pill-btn:hover, .sub-pill-btn.active { background: #6a8d3a; color: white; border-color: #6a8d3a; }
 
-/* ==========================================
-   🌟 10. 포토리뷰 버튼 색상 증발 방지
-   ========================================== */
-.btn-photo-only {
-    border-style: dashed !important;
-    border-color: #6a8d3a !important;
-    color: #6a8d3a !important;
-    background-color: #fff !important; /* 기본 배경 흰색 확실하게! */
-}
-/* 클릭되거나 마우스 올리면 무조건 하얀 글씨 + 초록 배경! */
-.btn-photo-only.active, .btn-photo-only:hover {
-    color: #fff !important;
-    background-color: #6a8d3a !important;
-}
+/* 10. 포토리뷰 버튼 스타일 */
+.btn-photo-only { border-style: dashed !important; border-color: #6a8d3a !important; color: #6a8d3a !important; background-color: #fff !important; }
+.btn-photo-only.active, .btn-photo-only:hover { color: #fff !important; background-color: #6a8d3a !important; }
 
-/* ==========================================
-   🌟 11. 무한 스크롤 바운스 로딩 애니메이션
-   ========================================== */
-.bounce-spinner {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-}
-.bounce-spinner div {
-    width: 14px;
-    height: 14px;
-    background-color: #6a8d3a;
-    border-radius: 50%;
-    animation: bounce 1.4s infinite ease-in-out both;
-}
+/* 11. 로딩 애니메이션 */
+.bounce-spinner { display: flex; justify-content: center; align-items: center; gap: 8px; }
+.bounce-spinner div { width: 14px; height: 14px; background-color: #6a8d3a; border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both; }
 .bounce-spinner div:nth-child(1) { animation-delay: -0.32s; }
 .bounce-spinner div:nth-child(2) { animation-delay: -0.16s; }
-
-@keyframes bounce {
-    0%, 80%, 100% { transform: scale(0); }
-    40% { transform: scale(1); }
-}
+@keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }

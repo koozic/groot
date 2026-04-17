@@ -18,7 +18,7 @@
 <%-- 세션에서 isAdmin 값을 꺼내 변수로 저장 --%>
 <c:set var="isAdmin" value="${sessionScope.isAdmin}" />
 
-<h1 class="main-title">영양성분 리스트</h1>
+<h1 style="text-align: center;">영양성분 리스트</h1>
 
 <%-- 관리자만 등록 버튼 보임 --%>
 <c:if test="${isAdmin == true}">
