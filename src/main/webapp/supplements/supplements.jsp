@@ -64,10 +64,15 @@
                 <%-- ★ 좋아요 버튼 부분 수정 --%>
                 <%-- 삼항연산자 --%>
                 <%-- this : 지금 클릭 당한 하트 버튼 바로 나 자신 --%>
-                <button class="like-btn ${likedIds.contains(supp.supplementId) ? 'liked' : ''}"
-                        onclick="toggleLike(this, ${supp.supplementId})">
-                    <%-- 좋아요 하트 --%>
-                    <img src="https://media.discordapp.net/attachments/1487987147876208640/1494256236747690044/Download_premium_png_of_PNG_HEART_SHAPE_heart_shape_pink_about_heart_3d_heart_3d_pink_hearts_and_heart_balloon_12624101-Photoroom.png?ex=69e1f210&is=69e0a090&hm=1b4bcafef82bec2a9b692d2633fd66515bd53051b096421a366f7f0ab3791c2a&=&format=webp&quality=lossless&width=895&height=823" alt="♥" style="width: 20px; height: 20px; object-fit: contain;">
+                <button type="button"
+                        class="like-btn ${likedIds.contains(supp.supplementId) ? 'liked' : ''}"
+                        onclick="toggleLike(this, ${supp.supplementId})"
+                        aria-pressed="${likedIds.contains(supp.supplementId) ? 'true' : 'false'}"
+                        aria-label="영양성분 찜하기">
+                    <img class="like-heart-icon"
+                         src="${pageContext.request.contextPath}/img/icons/like-heart.png"
+                         alt=""
+                         aria-hidden="true">
                 </button>
 
                 <%-- 관리자만 수정/삭제 버튼 보임 --%>
