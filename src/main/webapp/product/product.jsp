@@ -18,7 +18,7 @@
 
         <div class="prd-filter-dropdown">
             <button type="button" class="prd-filter-btn dropdown-toggle" onclick="toggleDropdown(this)">
-                <span class="icon"><img style="width: 20px;" class="icon" src="https://media.discordapp.net/attachments/1487987147876208640/1494235295657361458/Jonathan_Adler_Large_Purple_Acrylic_Pill_248_liked_on_Polyvore_featuring_home_home_decor_misc_drugs_filler_other_purple_purple_home_accessories_pop_art_and_acrylic_sculpture-Photoroom.png?ex=69e1de90&is=69e08d10&hm=77401de240de77414723fe3085eb19b828e97c376252eef6deb2033221471176&=&format=webp&quality=lossless&width=683&height=683" alt=""></span> 비타민 <span class="arrow">▼</span>
+                <span class="icon"><img style="width: 20px;" class="icon" src="img/stickers/pill.png" alt=""></span> 비타민 <span class="arrow">▼</span>
             </button>
 
             <div class="prd-mega-menu">
@@ -53,7 +53,7 @@
         <c:forEach items="${nutrients}" var="n">
             <c:if test="${!fn:contains(n.nutrientName, '비타민') && !fn:contains(n.nutrientName, '엽산') && !fn:contains(n.nutrientName, '비오틴')}">
                 <button type="button" class="prd-filter-btn filter-item" data-id="${n.nutrientId}" onclick="loadProductList('${n.nutrientId}')">
-                    <span class="icon"><img style="width: 20px;" class="icon" src="https://media.discordapp.net/attachments/1487987147876208640/1494235295657361458/Jonathan_Adler_Large_Purple_Acrylic_Pill_248_liked_on_Polyvore_featuring_home_home_decor_misc_drugs_filler_other_purple_purple_home_accessories_pop_art_and_acrylic_sculpture-Photoroom.png?ex=69e1de90&is=69e08d10&hm=77401de240de77414723fe3085eb19b828e97c376252eef6deb2033221471176&=&format=webp&quality=lossless&width=683&height=683" alt="">
+                    <span class="icon"><img style="width: 20px;" class="icon" src="img/stickers/pill.png" alt="">
                     </span> ${n.nutrientName}
                 </button>
             </c:if>
