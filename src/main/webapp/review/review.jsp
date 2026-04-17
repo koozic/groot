@@ -28,7 +28,7 @@
                 <h3 style="color: #495057; font-size: 1.3rem; margin-bottom: 10px;">아직 등록된 리뷰가 없습니다.</h3>
                 <p style="color: #868e96; margin-bottom: 25px;">이 제품의 첫 번째 리뷰어가 되어주세요! 경험을 공유해주시면 큰 도움이 됩니다.</p>
                 <button type="button" onclick="openWriteModal()" style="padding: 12px 24px; background: #6a8d3a; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1.1em; transition: 0.2s;">
-                     첫 리뷰 작성하기
+                    ✍️ 첫 리뷰 작성하기
                 </button>
             </div>
 
@@ -39,7 +39,7 @@
 
                 <%-- 📊 1-1. 리뷰 헤더 및 통계 그래프 구역 --%>
                 <div class="review-header">
-                    <h2> 상품 리뷰</h2>
+                    <h2>💬 상품 리뷰</h2>
                     <div class="star-stats-container">
                         <div class="avg-score-box">
                             <div class="avg-score">${avgScore}</div>
@@ -77,7 +77,7 @@
                     <%-- ✍️ 리뷰 작성하기 버튼 (위치 조정) --%>
                     <div style="text-align: right; margin-bottom: 20px;">
                         <button type="button" onclick="openWriteModal()" style="padding: 10px 20px; background: #6a8d3a; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 1.1em;">
-                            ️ 리뷰 작성하기
+                            ✍️ 리뷰 작성하기
                         </button>
                     </div>
                 </div> <%-- review-header 닫기 --%>
@@ -85,7 +85,7 @@
                     <%-- 📸 1-2. 포토 갤러리 구역 --%>
                     <div class="photo-gallery-container" style="display: ${empty allPhotoImages or allPhotoImages.size() == 0 ? 'none' : 'block'};">
                         <div class="gallery-header">
-                            <h2> 포토 리뷰 <span id="photo-count">(${allPhotoImages.size()})</span></h2>
+                            <h2>📸 포토 리뷰 <span id="photo-count">(${allPhotoImages.size()})</span></h2>
                             <a href="javascript:void(0)" class="view-all-photos" onclick="openPhotoGalleryModal()">포토 리뷰만 모아보기 </a>
                         </div>
 
@@ -125,17 +125,17 @@
                         <div class="sort-options" style="display: flex; align-items: center; gap: 20px;">
                             <%-- 1. 정렬 셀렉트 박스 --%>
                             <select id="sortType" style="padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; outline: none; cursor: pointer;">
-                                <option value="like"> 좋아요순</option>
-                                <option value="date" selected> 최신순</option>
-                                <option value="high_score"> 별점 높은순</option>
-                                <option value="low_score"> 별점 낮은순</option>
+                                <option value="like">👍 베스트순(좋아요순)</option>
+                                <option value="date" selected>🆕 최신순</option>
+                                <option value="high_score">⭐ 별점 높은순</option>
+                                <option value="low_score">📉 별점 낮은순</option>
                             </select>
 
                             <%-- 🌟 [수정 포인트] 로그인이 되어 있을 때만 체크박스 태그를 생성한다! --%>
                             <c:if test="${not empty sessionScope.loginUser}">
                                 <label style="cursor: pointer; display: flex; align-items: center; font-weight: bold; font-size: 0.95em; color: #34495e; user-select: none;">
                                     <input type="checkbox" id="myReviewCheck" style="margin-right: 8px; transform: scale(1.3); cursor: pointer;">
-                                    내가 쓴 글만 보기
+                                    내가 쓴 글만 보기 🙋‍♂️
                                 </label>
                             </c:if>
                         </div>
@@ -188,7 +188,7 @@
         <div onclick="event.stopPropagation()" style="background:#fff; width:800px; max-height:80%; margin:50px auto; border-radius:15px; cursor:default; overflow-y: auto; padding: 25px;">
 
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #34495e; padding-bottom:10px; margin-bottom:15px;">
-                <h2 style="margin:0;"> 포토 리뷰 모아보기</h2>
+                <h2 style="margin:0;">📸 포토 리뷰 모아보기</h2>
                 <span onclick="closePhotoOnlyModal()" style="cursor:pointer; font-size:24px; font-weight:bold;">&times;</span>
             </div>
 
@@ -196,14 +196,14 @@
             <div class="review-control-bar" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #eee;">
                 <div class="sort-options" style="display: flex; align-items: center; gap: 15px;">
                     <select id="modalSortType" onchange="fetchModalPhotoReviews()" style="padding: 6px 10px; border: 1px solid #ddd; border-radius: 4px; outline: none; cursor: pointer;">
-                        <option value="date" selected> 최신순</option>
-                        <option value="like"> 베스트순(좋아요순)</option>
-                        <option value="high_score"> 평점 높은순</option>
-                        <option value="low_score"> 평점 낮은순</option>
+                        <option value="date" selected>🆕 최신순</option>
+                        <option value="like">👍 베스트순(좋아요순)</option>
+                        <option value="high_score">⭐ 평점 높은순</option>
+                        <option value="low_score">📉 평점 낮은순</option>
                     </select>
                     <label style="cursor: pointer; display: flex; align-items: center; font-weight: bold; font-size: 0.9em; color: #34495e; user-select: none;">
                         <input type="checkbox" id="modalMyReviewCheck" onchange="fetchModalPhotoReviews()" style="margin-right: 5px; transform: scale(1.2); cursor: pointer;">
-                        내가 쓴 글만 보기 ️
+                        내가 쓴 글만 보기 🙋‍♂️
                     </label>
                 </div>
                 <div class="filter-options">
@@ -227,7 +227,7 @@
         <%-- 🌟 마진(margin)을 5%에서 15vh(화면 높이의 15%)로 늘려서 파란 헤더 밑으로 쏙 내렸습니다 --%>
         <div class="modal-content" style="background: white; margin: 15vh auto 50px auto; padding: 30px; width: 500px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="margin: 0;"> 리뷰 작성하기</h2>
+                <h2 style="margin: 0;">✍️ 리뷰 작성하기</h2>
                 <span onclick="closeWriteModal()" style="cursor: pointer; font-size: 24px;">&times;</span>
             </div>
 
@@ -282,7 +282,7 @@
     <%-- 🗑️ 5. 커스텀 삭제 확인 모달 추가! --%>
     <div id="custom-delete-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center;">
         <div style="background: #fff; padding: 30px; border-radius: 16px; width: 320px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
-            <h3 style="margin-top: 0; color: #333; font-size: 1.3em;"> 리뷰 삭제</h3>
+            <h3 style="margin-top: 0; color: #333; font-size: 1.3em;">🗑️ 리뷰 삭제</h3>
             <p style="color: #777; margin-bottom: 25px; font-size: 0.95em;">정말로 이 리뷰를 삭제하시겠습니까?<br>삭제 후에는 복구할 수 없습니다.</p>
             <div style="display: flex; gap: 10px; justify-content: center;">
                 <button type="button" onclick="closeDeleteModal()" style="flex: 1; padding: 10px; border: none; border-radius: 8px; background: #f1f3f5; color: #555; font-weight: bold; cursor: pointer;">취소</button>
