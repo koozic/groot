@@ -39,10 +39,6 @@
       </div>
 
       <c:if test="${not empty moreSupplements}">
-        <button type="button" class="more-supp-btn" id="toggleMoreSupps" onclick="toggleMoreSupplements()">
-          영양제 더보기
-        </button>
-
         <div class="supp-grid supp-grid-more" id="moreSupplements">
           <c:forEach var="supp" items="${moreSupplements}">
             <label class="supp-option">
@@ -57,12 +53,21 @@
             </label>
           </c:forEach>
         </div>
+
+        <button type="button" class="more-supp-btn" id="toggleMoreSupps" onclick="toggleMoreSupplements()">
+          전체 영양제 보기
+        </button>
       </c:if>
     </div>
 
-    <button class="btn btn-primary btn-full analyze-btn" id="analyzeBtn" onclick="executeAnalysis()" disabled>
-      🔍 선택한 영양제 <span data-selected-count>0</span>개 분석하기
-    </button>
+    <div class="selection-actions">
+      <button class="btn btn-primary btn-full analyze-btn" id="analyzeBtn" onclick="executeAnalysis()" disabled>
+        🔍 선택한 영양제 <span data-selected-count>0</span>개 분석하기
+      </button>
+      <button type="button" class="reset-selection-btn" onclick="resetSupplementSelection()">
+        선택 초기화
+      </button>
+    </div>
   </div>
 
   <div id="analysisResult" class="analysis-result-wrap" style="display: none;"></div>
@@ -86,7 +91,7 @@
     if (!moreBox || !toggleBtn) return;
 
     const opened = moreBox.classList.toggle('open');
-    toggleBtn.textContent = opened ? '접기' : '영양제 더보기';
+    toggleBtn.textContent = opened ? '전체 영양제 접기' : '전체 영양제 보기';
   }
 
   function updateSelectionState() {
@@ -119,6 +124,45 @@
     if (typeof analyzeSupplements === 'function') {
       analyzeSupplements('my');
     }
+  }
+
+  function resetSupplementSelection() {
+    document.querySelectorAll('input[name="supp"]:checked').forEach(input => {
+      input.checked = false;
+    });
+
+    const moreBox = document.getElementById('moreSupplements');
+    const toggleBtn = document.getElementById('toggleMoreSupps');
+    const resultBox = document.getElementById('analysisResult');
+    const reviewSection = document.getElementById('bestReviewsSection');
+    const reviewBox = document.getElementById('bestReviewList');
+
+    if (moreBox) {
+      moreBox.classList.remove('open');
+    }
+
+    if (toggleBtn) {
+      toggleBtn.textContent = '전체 영양제 보기';
+    }
+
+    if (resultBox) {
+      resultBox.style.display = 'none';
+      resultBox.innerHTML = '';
+    }
+
+    if (reviewSection) {
+      reviewSection.style.display = 'none';
+    }
+
+    if (reviewBox) {
+      reviewBox.innerHTML = '<div class="loading-spinner">리뷰를 불러오는 중입니다...</div>';
+    }
+
+    window.latestAnalysisData = null;
+    window.currentResultTab = 'good';
+    window.analysisCompleted = false;
+
+    updateSelectionState();
   }
 
   function getCheckedReviewKeys() {
