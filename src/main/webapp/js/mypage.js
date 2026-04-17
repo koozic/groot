@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (sortRecentBtn) loadLikedSupplements('recent', sortRecentBtn);
 
 });
-
+    
 
 /* ── 기능 로직 ── */
 function updateProgress() {
