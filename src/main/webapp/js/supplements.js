@@ -135,25 +135,14 @@ function toggleLike(btn, supplementId) {
     })
         .then(res => res.json())
         .then(data => {
-            const heart = btn.querySelector('.like-heart');
-
             if (data.status === 'liked') {
                 btn.classList.add('liked'); // 하트 색상 칠하기
                 btn.setAttribute('aria-pressed', 'true');
-                if (heart) heart.textContent = '♥';
-
-                // 만약 버튼 안에 'like-label' 이라는 텍스트 영역이 있다면 글씨도 변경
-                const label = btn.querySelector('.like-label');
-                if(label) label.textContent = '찜';
-
+                btn.setAttribute('aria-label', '영양성분 찜 취소');
             } else if (data.status === 'unliked') {
                 btn.classList.remove('liked'); // 하트 색상 지우기
                 btn.setAttribute('aria-pressed', 'false');
-                if (heart) heart.textContent = '♡';
-
-                const label = btn.querySelector('.like-label');
-                if(label) label.textContent = '찜';
-
+                btn.setAttribute('aria-label', '영양성분 찜하기');
             } else {
                 // status가 error일 경우 경고창
                 alert(data.message || '로그인이 필요하거나 오류가 발생했습니다.');

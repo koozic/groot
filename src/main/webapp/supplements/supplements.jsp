@@ -67,9 +67,12 @@
                 <button type="button"
                         class="like-btn ${likedIds.contains(supp.supplementId) ? 'liked' : ''}"
                         onclick="toggleLike(this, ${supp.supplementId})"
-                        aria-pressed="${likedIds.contains(supp.supplementId) ? 'true' : 'false'}">
-                    <span class="like-heart" aria-hidden="true">${likedIds.contains(supp.supplementId) ? '♥' : '♡'}</span>
-                    <span class="like-label">찜</span>
+                        aria-pressed="${likedIds.contains(supp.supplementId) ? 'true' : 'false'}"
+                        aria-label="영양성분 찜하기">
+                    <img class="like-heart-icon"
+                         src="${pageContext.request.contextPath}/img/icons/like-heart.png"
+                         alt=""
+                         aria-hidden="true">
                 </button>
 
                 <%-- 관리자만 수정/삭제 버튼 보임 --%>
