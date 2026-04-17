@@ -22,7 +22,9 @@
 
 <%-- 관리자만 등록 버튼 보임 --%>
 <c:if test="${isAdmin == true}">
-    <button class="supp-btn" onclick="openAddModal()">새 영양성분 등록</button>
+    <div style="text-align: center; margin-bottom: 30px;">
+        <button class="supp-btn" onclick="openAddModal()">새 영양성분 등록</button>
+    </div>
 </c:if>
 
 <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
