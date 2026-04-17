@@ -1,10 +1,31 @@
 /* =========================================
+   0. 테마 색상 변수 (Pastel Serenity Balanced)
+   ========================================= */
+:root {
+    --ps-pink:    #EFA0AE;
+    --ps-lpink:   #F4C8D4;
+    --ps-blush:   #FAE8EE;
+    --ps-lime:    #DCE9A8;
+    --ps-llime:   #EDF4CC;
+    --ps-yellow:  #F2EDB8;
+    --ps-mint:    #B4D8D0;
+    --ps-lmint:   #D8EEE8;
+    --ps-bg:      #F0F8F0;
+    --ps-card:    #FFFFFF;
+    --ps-text-h:  #334040;
+    --ps-text-b:  #4A5858;
+    --ps-text-m:  #7A9090;
+    --ps-text-s:  #A8C0B8;
+    --ps-border:  rgba(100, 160, 140, 0.15);
+}
+
+/* =========================================
    영양성분 리스트 메인 제목 스타일
    ========================================= */
 .main-title {
     text-align: center;
     font-size: 2.2em;
-    color: black;
+    color: var(--ps-text-h);
     margin-top: 20px;
     margin-bottom: 30px;
     font-weight: 800;
@@ -21,7 +42,7 @@
     transform: translateX(-50%);
     width: 60px;
     height: 4px;
-    background-color: #4CAF50;
+    background-color: var(--ps-mint);
     border-radius: 2px;
 }
 
@@ -50,11 +71,11 @@
 .supp-detail-box, .supp-update-box {
     width: 100%;
     max-width: 700px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--ps-border);
     padding: 30px;
-    border-radius: 15px;
-    background-color: #ffffff;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border-radius: 16px;
+    background-color: var(--ps-card);
+    box-shadow: 0 4px 15px rgba(100, 160, 140, 0.08);
     margin-bottom: 20px;
 }
 
@@ -62,36 +83,43 @@
 .reg-container {
     margin: 40px auto;
     padding: 20px;
-    border: 2px solid #eee;
-    border-radius: 8px;
+    border: 1px solid var(--ps-border);
+    border-radius: 16px;
     width: 90%;
     max-width: 500px;
-    background-color: #fafafa;
+    background-color: var(--ps-card);
+    box-shadow: 0 4px 15px rgba(100, 160, 140, 0.08);
 }
 
 /* =========================================
    2. 개별 영양성분 카드 (리스트)
    ========================================= */
 .supp-wrap {
-    border: 1px solid #ddd;
+    border: 1px solid var(--ps-border);
     padding: 15px;
-    border-radius: 8px;
+    border-radius: 14px;
     text-align: center;
-    background-color: #fff;
+    background-color: var(--ps-card);
     opacity: 0;
     transform: translateY(15px);
     animation: fadeUp 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.supp-wrap:hover {
+    border-color: var(--ps-mint);
+    box-shadow: 0 2px 12px rgba(100, 160, 140, 0.12);
 }
 
 .supp-name, .supp-title {
     font-size: 1.2em;
-    font-weight: bold;
+    font-weight: 600;
     margin: 10px 0;
-    color: #333;
+    color: var(--ps-text-h);
 }
 
 .supp-efficacy {
-    color: #666;
+    color: var(--ps-text-m);
     font-size: 0.9em;
     height: 40px;
     overflow: hidden;
@@ -99,29 +127,21 @@
 }
 
 /* =========================================
-   이미지 영역 (파스텔 무드 그라디언트 효과)
+   이미지 영역 (파스텔 무드 그라디언트 효과 유지)
    ========================================= */
 .supp-img {
     width: 100%;
     height: 200px;
     position: relative;
     overflow: hidden;
-    border-radius: 8px;
+    border-radius: 12px;
     cursor: pointer;
-
-    /* 💡 1. 아주 옅은 파스텔 톤(거의 흰색)의 4가지 색상 조합 */
     background: linear-gradient(-45deg, #ffffff, #fdfbfb, #f4f8ff, #fff5f8);
-
-    /* 💡 2. 부드러운 이동을 위해 배경을 4배(400%)로 크게 확장 */
     background-size: 400% 400%;
-
-    /* 💡 3. 색상이 천천히 물결치듯 숨쉬는 애니메이션 (12초 주기로 무한반복) */
     animation: pastelMood 12s ease-in-out infinite;
-
-    border: 1px solid #f0f0f0;
+    border: 1px solid var(--ps-border);
 }
 
-/* 배경이 부드럽게 흘러가며 숨쉬는 키프레임 */
 @keyframes pastelMood {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
@@ -132,17 +152,15 @@
     position: absolute;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    object-fit: contain; /* 알약 전체가 예쁘게 다 보이도록 유지 */
+    object-fit: contain;
     z-index: 1;
-
-    /* 사진은 무조건 100% 선명하게! */
     opacity: 1 !important;
     mix-blend-mode: normal !important;
     transition: transform 0.3s ease;
 }
 
 .supp-img:hover img {
-    transform: scale(1.05); /* 마우스 올렸을 때 살짝 다가옴 */
+    transform: scale(1.05);
 }
 
 /* =========================================
@@ -153,33 +171,42 @@
     max-width: 100%;
     height: 350px;
     object-fit: cover;
-    border-radius: 10px;
-    border: 1px solid #eee;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    border: 1px solid var(--ps-border);
+    box-shadow: 0 2px 8px rgba(100, 160, 140, 0.1);
 }
 
 .detail-row, .form-group {
     display: flex;
-    border-bottom: 1px solid #f5f5f5;
+    border-bottom: 1px solid var(--ps-border);
     padding: 15px 0;
     align-items: flex-start;
 }
 .detail-row:last-child, .form-group:last-child { border-bottom: none; }
 
-.col-1 { width: 150px; font-weight: bold; color: #2c3e50; font-size: 1.05em; padding-top: 5px; }
-.col-2 { flex: 1; color: #34495e; line-height: 1.6; font-size: 1.05em; }
+.col-1 { width: 150px; font-weight: bold; color: var(--ps-text-h); font-size: 1.05em; padding-top: 5px; }
+.col-2 { flex: 1; color: var(--ps-text-b); line-height: 1.6; font-size: 1.05em; }
 
 .detail-title {
-    text-align: center; font-size: 2em; color: #333;
-    margin-bottom: 30px; border-bottom: 2px solid #4CAF50;
+    text-align: center; font-size: 2em; color: var(--ps-text-h);
+    margin-bottom: 30px; border-bottom: 2px solid var(--ps-mint);
     display: inline-block; padding-bottom: 10px;
 }
 
-/* 폼 라벨 및 인풋 */
-.form-label { display: block; font-weight: bold; margin-bottom: 5px; }
+/* 폼 라벨 및 인풋 (테마 포커스 효과 적용) */
+.form-label { display: block; font-weight: bold; margin-bottom: 5px; color: var(--ps-text-b); }
 .form-input, .update-input, .update-textarea {
-    width: 100%; padding: 8px; border: 1px solid #ccc;
-    border-radius: 4px; box-sizing: border-box; font-size: 1em; font-family: inherit;
+    width: 100%; padding: 10px;
+    border: 1px solid var(--ps-lime);
+    border-radius: 10px; box-sizing: border-box;
+    font-size: 1em; font-family: inherit;
+    color: var(--ps-text-b);
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+.form-input:focus, .update-input:focus, .update-textarea:focus {
+    border-color: var(--ps-mint);
+    box-shadow: 0 0 0 3px rgba(180, 216, 208, 0.25);
+    outline: none;
 }
 .update-textarea { height: 80px; resize: vertical; }
 
@@ -188,30 +215,22 @@
    ========================================= */
 .btn-group { margin-top: 20px; text-align: center; display: flex; gap: 10px; justify-content: center; }
 
-/* 공통 메인 버튼 스타일 (수정, 리스트 등) */
+/* 긍정/기본 버튼 (테마의 Mint 사용) */
 .supp-btn, .btn-list, .btn-submit, .submit-btn {
     display: inline-block;
     padding: 10px 20px;
-    background-color: #4CAF50;
-    color: white;
+    background-color: var(--ps-mint);
+    color: var(--ps-text-h);
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     font-size: 1em;
-    font-weight: bold;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s;
 }
 
 .supp-btn:hover, .btn-list:hover, .btn-submit:hover, .submit-btn:hover {
-    background-color: #45a049;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-}
-
-.supp-btn:active, .btn-list:active, .btn-submit:active, .submit-btn:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #9ECEC6;
 }
 
 /* 영양성분 등록 모달창 하단 전용 버튼 그룹 */
@@ -231,54 +250,54 @@
     width: 100%;
     padding: 12px;
     border: none;
-    border-radius: 6px;
+    border-radius: 10px;
     font-size: 1.05em;
-    font-weight: bold;
+    font-weight: 600;
     cursor: pointer;
     box-sizing: border-box;
-    transition: background-color 0.3s;
+    transition: background-color 0.2s;
 }
 
-.submit-btn-half { background-color: #4CAF50; color: white; }
-.submit-btn-half:hover { background-color: #45a049; }
+.submit-btn-half { background-color: var(--ps-mint); color: var(--ps-text-h); }
+.submit-btn-half:hover { background-color: #9ECEC6; }
 
-.cancel-btn-half { background-color: #95a5a6; color: white; }
-.cancel-btn-half:hover { background-color: #7f8c8d; }
+/* 취소 버튼 (테마의 Light Lime 사용) */
+.cancel-btn-half, .btn-cancel {
+    background-color: var(--ps-llime);
+    color: var(--ps-text-b);
+    padding: 10px 20px; border-radius: 10px; font-weight: 600;
+}
+.cancel-btn-half:hover, .btn-cancel:hover { background-color: var(--ps-lime); }
 
-/* 카드 내 작은 관리자 버튼 (삭제/수정) */
+/* 카드 내 작은 관리자 버튼 (테마의 Yellow 사용) */
 .supp-wrap .supp-btn {
-    padding: 5px 10px; background-color: #f0f0f0; color: #333;
-    border: 1px solid #ccc; box-shadow: none; font-size: 0.9em;
+    padding: 6px 12px; background-color: var(--ps-yellow); color: var(--ps-text-h);
+    border: 1.5px solid #D8C878; border-radius: 8px; font-size: 0.9em; font-weight: normal;
 }
-.supp-wrap .supp-btn:hover { background-color: #e0e0e0; transform: none; }
+.supp-wrap .supp-btn:hover { background-color: #E8D890; }
 
-/* 취소 계열 버튼 */
-.btn-cancel {
-    padding: 10px 20px; background-color: #95a5a6; color: white;
-    border: none; cursor: pointer; border-radius: 8px; font-weight: bold;
-}
-
-/* 좋아요 버튼 */
+/* 좋아요 버튼 (테마의 Pink/Blush 적용) */
 .like-btn {
-    background: none; border: 1px solid #ccc; border-radius: 20px;
+    background: none; border: 1px solid var(--ps-lpink); border-radius: 20px;
     padding: 4px 14px; cursor: pointer; font-size: 14px;
-    color: #888; margin-top: 8px; transition: all 0.2s;
+    color: var(--ps-text-m); margin-top: 8px; transition: all 0.2s;
 }
-.like-btn.liked { border-color: #e05; color: #e05; background: #fff0f3; }
-.like-btn:hover { border-color: #e05; color: #e05; }
+.like-btn.liked { background: var(--ps-blush); border-color: var(--ps-pink); color: #9A5060; }
+.like-btn:hover { background: var(--ps-blush); border-color: var(--ps-pink); }
 
 /* =========================================
    5. 모달 및 페이징 설정
    ========================================= */
-#commonModal { margin: 25px auto; border: none; border-radius: 15px; padding: 0; }
+#commonModal { margin: 25px auto; border: 1px solid var(--ps-border); border-radius: 16px; padding: 0; background: var(--ps-card); }
 #modalContent { width: 500px; }
-#commonModal::backdrop { background: rgba(0, 0, 0, 0.5); }
+#commonModal::backdrop { background: rgba(51, 64, 64, 0.4); } /* 테마 배경색 기반 반투명 */
 
+/* 페이징 버튼 (테마 스타일 완벽 적용) */
 .page-container { text-align: center; margin: 40px 0 20px 0; }
-.page-btn { padding: 8px 15px; margin: 0 5px; border: 1px solid #ddd; border-radius: 5px; text-decoration: none; color: #333; display: inline-block; transition: background-color 0.2s; }
-.page-btn:hover { background-color: #f5f5f5; }
-.page-btn.active { background-color: #4CAF50; color: white; border: 1px solid #4CAF50; font-weight: bold; }
-.page-btn.disabled { color: #ccc; cursor: not-allowed; }
+.page-btn { padding: 8px 15px; margin: 0 3px; border: 1px solid var(--ps-border); border-radius: 8px; text-decoration: none; color: var(--ps-text-m); display: inline-block; transition: background-color 0.2s; }
+.page-btn:hover { background-color: var(--ps-llime); }
+.page-btn.active { background-color: var(--ps-lmint); color: var(--ps-text-h); border-color: var(--ps-mint); font-weight: 600; }
+.page-btn.disabled { color: var(--ps-text-s); cursor: not-allowed; border-color: transparent; }
 
 @keyframes fadeUp {
     from { opacity: 0; transform: translateY(15px); }
@@ -287,48 +306,38 @@
 
 /* =========================================
    6. 📱 모바일 반응형 (가로 768px 이하)
-   ★ 모든 화면(상세, 수정, 등록, 리스트) 모바일 최적화 통합 적용 ★
    ========================================= */
 @media (max-width: 768px) {
-    /* 메인 리스트 제목 */
     .main-title { font-size: 1.8em; margin-top: 15px; margin-bottom: 25px; }
 
-    /* 리스트 1열 배치 */
     .supplements-container {
         grid-template-columns: repeat(1, 1fr);
         padding: 0 15px; box-sizing: border-box;
     }
 
-    /* 래퍼(Wrapper) 여백 축소 */
     .detail-wrapper, .update-wrapper { margin-top: 20px; padding: 15px; }
 
-    /* 박스 폭 100% 꽉 채우기 (상세, 수정, 등록 모두 포함) */
     .supp-detail-box, .supp-update-box, .reg-container {
         margin: 20px auto;
         padding: 15px !important; width: 100% !important;
         box-sizing: border-box;
     }
 
-    /* 내용 및 폼을 좌우가 아닌 위아래로 세로 쌓기 */
     .detail-row, .form-group { flex-direction: column; padding: 10px 0; }
     .col-1, .col-2 { width: 100%; }
     .col-1 { margin-bottom: 5px; font-size: 0.95em; }
     .col-2 { font-size: 0.9em; }
 
-    /* 모바일 이미지 높이 조정 */
     .detail-img-area img { height: 250px !important; }
 
-    /* 모든 하단 버튼 그룹 세로로 쌓기 */
     .btn-group, .btn-group-reg {
         flex-direction: column !important;
         gap: 10px;
     }
 
-    /* 버튼 크기를 모바일 화면 폭에 맞게 100% 확대 */
     .btn-list, .btn-submit, .btn-cancel, .submit-btn, .submit-btn-half, .cancel-btn-half {
         width: 100%; margin-bottom: 10px; box-sizing: border-box;
     }
 
-    /* 모달창 모바일 크기 최적화 */
     #modalContent { width: 90vw; }
 }
