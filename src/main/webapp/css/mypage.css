@@ -945,17 +945,44 @@
 
 /* 구매 알림 리스트 아이템 디자인 */
 #tab-cal .alert-item {
-    background: #fffbeb;
-    border: 2px solid #fde047;
-    padding: 16px;
+    background: #ffffff;
+    border: 2px solid #dcfce7;
+    padding: 16px 20px;
     border-radius: 16px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     display: flex;
     align-items: center;
     gap: 12px;
     font-weight: 600;
-    color: #854d0e;
+    color: #334155;
+    box-shadow: 0 4px 10px rgba(220, 252, 231, 0.2);
+    transition: all 0.2s ease;
 }
+#tab-cal .alert-item:hover {
+    border-color: #86efac;
+    background: #f0fdf4;
+    transform: translateY(-2px);
+}
+
+#tab-cal .alert-item span {
+    margin-left: auto;        /* 우측 끝으로 밀어내기 */
+    white-space: nowrap;      /* 줄바꿈 방지 */
+
+    /* 뱃지 UI 스타일링 추가 */
+    background: #dcfce7;      /* 파스텔 그린 배경 */
+    color: #15803d;           /* 텍스트 색상 (기존 유지) */
+    font-weight: 800;         /* 폰트 두께 강화 (700 -> 800) */
+    font-size: 13px;          /* 가독성을 위한 폰트 사이즈 조정 */
+    padding: 6px 14px;        /* 내부 여백을 주어 박스 형태 생성 */
+    border-radius: 12px;      /* 둥근 모서리 */
+    border: 1px solid #bbf7d0; /* 옅은 테두리로 영역 구분 명확화 */
+}
+
+/* 캘린더 탭 내부 타이틀 좌측 선 색상 오버라이딩 */
+#tab-cal .mp-sec-title::before {
+    background: #22c55e !important;
+}
+
 
 @keyframes pdFadeIn {
     from {
