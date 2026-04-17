@@ -84,6 +84,7 @@
 <script>
   const preselectedSupplements = ${selectedSupplementIdsJson};
   const recoBasePath = '${pageContext.request.contextPath}/reco';
+  const reviewApiBase = '${pageContext.request.contextPath}/recommend-reviews';
 
   function toggleMoreSupplements() {
     const moreBox = document.getElementById('moreSupplements');
@@ -187,6 +188,7 @@
     }
 
     const reviewSection = document.getElementById('bestReviewsSection');
+    const selectedSupps = getCheckedReviewKeys();
     if (reviewSection) {
       reviewSection.style.display = 'block';
     }
@@ -195,10 +197,9 @@
       const recommendedSupps = getRecommendedReviewKeys();
       const reviewBox = document.getElementById('bestReviewList');
       const titleArea = document.querySelector('.best-reviews-section h3');
-      let limitPerSupp = 1;
 
       if (titleArea) {
-        titleArea.innerHTML = '⭐ 추천 영양제 베스트 리뷰';
+        titleArea.innerHTML = '⭐ 추가 추천 영양제별 베스트 리뷰';
       }
 
       if (recommendedSupps.length === 0) {
@@ -208,59 +209,90 @@
         return;
       }
 
-      if (recommendedSupps.length === 3 || recommendedSupps.length === 2) {
-        limitPerSupp = 2;
-      } else if (recommendedSupps.length === 1) {
-        limitPerSupp = 4;
-      }
-
-      loadBestReviews(recommendedSupps, 'true', limitPerSupp);
+      loadBestReviews(recommendedSupps, 1, 'recommended');
       return;
     }
 
-    loadBestReviews(getCheckedReviewKeys(), 'false', 3);
-  }
-
-  function loadBestReviews(suppsArray, isDeficiency, limitPerSupp) {
-    let fetchUrl = 'recommend-reviews?isDef=' + isDeficiency + '&limit=' + limitPerSupp;
-
-    if (suppsArray && suppsArray.length > 0) {
-      const queryString = suppsArray
-        .map(val => 'supp=' + encodeURIComponent(val))
-        .join('&');
-      fetchUrl += '&' + queryString;
+    if (selectedSupps.length === 0) {
+      const reviewBox = document.getElementById('bestReviewList');
+      const titleArea = document.querySelector('.best-reviews-section h3');
+      if (titleArea) {
+        titleArea.innerHTML = '⭐ 선택한 영양제별 베스트 리뷰';
+      }
+      if (reviewBox) {
+        reviewBox.innerHTML = '<div class="review-empty">선택한 영양제 리뷰는 영양제를 고르면 여기서 보여드릴게요.</div>';
+      }
+      return;
     }
 
+    loadBestReviews(selectedSupps, 1, 'selected');
+  }
+
+  function loadBestReviews(suppsArray, limitPerSupp, reviewMode = 'selected') {
+    const reviewBox = document.getElementById('bestReviewList');
+    const titleArea = document.querySelector('.best-reviews-section h3');
+
+    if (!reviewBox || !titleArea) return;
+
+    titleArea.innerHTML = reviewMode === 'recommended'
+      ? '⭐ 추가 추천 영양제별 베스트 리뷰'
+      : '⭐ 선택한 영양제별 베스트 리뷰';
+
+    const uniqueSupps = [...new Set(
+      (suppsArray || [])
+        .map(val => typeof val === 'string' ? val.trim() : '')
+        .filter(Boolean)
+    )];
+
+    if (uniqueSupps.length === 0) {
+      reviewBox.innerHTML = '<div class="review-empty">관련된 찐 리뷰가 아직 없습니다 🥲</div>';
+      return;
+    }
+
+    const queryString = uniqueSupps
+      .map(val => 'supp=' + encodeURIComponent(val))
+      .join('&');
+    const fetchUrl = reviewApiBase + '?limit=' + limitPerSupp + '&' + queryString;
+
+    reviewBox.innerHTML = '<div class="loading-spinner">리뷰를 불러오는 중입니다...</div>';
+
     fetch(fetchUrl, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          throw new Error('Failed to load reviews');
+        }
+        return res.json();
+      })
       .then(data => {
-        const reviewBox = document.getElementById('bestReviewList');
-        const titleArea = document.querySelector('.best-reviews-section h3');
-
-        if (!reviewBox || !titleArea) return;
-
-        titleArea.innerHTML = (isDeficiency === 'true' && suppsArray.length > 0)
-          ? '⭐ 추천 영양제 베스트 리뷰'
-          : '⭐ 내 영양제 관련 베스트 리뷰';
-
-        if (!data || data.length === 0) {
+        if (!Array.isArray(data) || data.length === 0) {
           reviewBox.innerHTML = '<div class="review-empty">관련된 찐 리뷰가 아직 없습니다 🥲</div>';
           return;
         }
 
-        reviewBox.innerHTML = data.map(r => `
-          <div class="review-card">
-            <div class="rc-header">
-              <span class="rc-supp">💊 \${r.supp_name || '영양제'}</span>
-              <span class="rc-stars">\${'★'.repeat(r.r_score)}\${'☆'.repeat(5 - r.r_score)}</span>
-            </div>
-            <p class="rc-text">"\${r.r_content}"</p>
-            <div class="rc-user">- \${r.user_id.substring(0,3)}*** 님</div>
-          </div>
-        `).join('');
+        reviewBox.innerHTML = data.map(r => {
+          const score = Math.max(0, Math.min(5, Number(r.r_score) || 0));
+          const suppName = r.supp_name || '영양제';
+          const reviewText = r.r_content || '리뷰 내용이 아직 없어요.';
+          const userName = typeof r.user_id === 'string' && r.user_id
+            ? r.user_id.substring(0, 3) + '***'
+            : '익명';
+
+          return '<div class="review-card">' +
+            '<div class="rc-header">' +
+              '<span class="rc-supp">💊 ' + suppName + '</span>' +
+              '<span class="rc-stars">' + '★'.repeat(score) + '☆'.repeat(5 - score) + '</span>' +
+            '</div>' +
+            '<p class="rc-text">"' + reviewText + '"</p>' +
+            '<div class="rc-user">- ' + userName + ' 님</div>' +
+          '</div>';
+        }).join('');
+      })
+      .catch(() => {
+        reviewBox.innerHTML = '<div class="review-empty">리뷰를 불러오지 못했어요. 잠시 후 다시 시도해주세요.</div>';
       });
   }
 
+  window.refreshReviewSection = refreshReviewSection;
   window.onAnalysisRendered = function() {
     refreshReviewSection();
   };
