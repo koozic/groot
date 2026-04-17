@@ -23,12 +23,14 @@
     <link rel="stylesheet" href="css/home.css">
     <c:if test="${content == 'body/body.jsp'}">
         <link rel="stylesheet" href="css/body.css">
+        <link rel="stylesheet" href="css/body-theme-v10.css">
     </c:if>
     <%--    <c:if test="${content == 'body/body.jsp'}">--%>
     <%--        <script src="js/body.js" charset="UTF-8" defer></script>--%>
     <%--    </c:if>--%>
     <link rel="stylesheet" href="css/product.css">
     <link rel="stylesheet" href="css/product_edit.css">
+    <link rel="stylesheet" href="css/site-theme.css">
 </head>
 <body>
 

@@ -6,6 +6,7 @@
     <title>Groot - 리뷰 작성하기</title>
     <%-- 💡 경로 확인! 만약 안 나오면 ../ 빼고 css/review.css 로도 해봐 --%>
     <link rel="stylesheet" href="../css/review.css">
+    <link rel="stylesheet" href="../css/site-theme.css">
 </head>
 <body>
 

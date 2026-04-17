@@ -12,6 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>영양성분 리스트</title>
     <link rel="stylesheet" href="css/supplements.css">
+    <link rel="stylesheet" href="css/site-theme.css">
 </head>
 
 <body>

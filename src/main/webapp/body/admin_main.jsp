@@ -3,6 +3,7 @@
 <%-- <html><head><body> 없음 — index.jsp의 <jsp:include>로 삽입됩니다 --%>
 <link rel="stylesheet" href="css/admin.css">
 <link rel="stylesheet" href="../css/body-theme-v10.css">
+<link rel="stylesheet" href="css/site-theme.css">
 
 <div class="admin-wrap">
 

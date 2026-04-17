@@ -4,6 +4,7 @@
 
 <%-- 🌟 CSS 파일 연결 --%>
 <link rel="stylesheet" href="../css/review_lounge.css?v=2">
+<link rel="stylesheet" href="../css/site-theme.css">
 
 <div class="lounge-wrap">
     <div class="lounge-header">

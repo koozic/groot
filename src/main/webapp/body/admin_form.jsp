@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <link rel="stylesheet" href="css/admin.css">
+<link rel="stylesheet" href="css/site-theme.css">
 
 <%-- supp가 null이면 등록, 있으면 수정 --%>
 <h2>${empty supp ? '➕ 영양소 등록' : '✏️ 영양소 수정'}</h2>

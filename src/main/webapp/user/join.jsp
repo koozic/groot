@@ -7,11 +7,12 @@
     <title>OTTERCARE 회원가입</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/app.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/login.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/site-theme.css">
     <style>
         .id-check-btn {
-            background-color: #2e7d32;
-            color: white;
-            border: none;
+            background: linear-gradient(135deg, #b4d8d0, #9ecec6);
+            color: #334040;
+            border: 1px solid rgba(100, 160, 140, 0.22);
             padding: 10px 14px;
             border-radius: 8px;
             cursor: pointer;
