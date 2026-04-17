@@ -1,4 +1,43 @@
 /* =========================================
+   영양성분 리스트 메인 제목 스타일
+   ========================================= */
+.main-title {
+    text-align: center;
+    font-size: 2.2em;           /* 글씨 크기를 큼직하게 */
+    color: black;
+    margin-top: 20px;
+    margin-bottom: 30px;
+    font-weight: 800;
+    letter-spacing: 1px;        /* 자간을 살짝 넓혀서 시원한 느낌 */
+
+    /* 텍스트 아래에 예쁜 포인트 밑줄 추가 */
+    position: relative;
+    padding-bottom: 15px;
+}
+
+/* 제목 아래의 초록색 포인트 줄 (가상 요소 사용) */
+.main-title::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;                  /* 가운데 정렬을 위한 시작점 */
+    transform: translateX(-50%); /* 정확히 중앙으로 이동 */
+    width: 60px;                /* 밑줄 길이 */
+    height: 4px;                /* 밑줄 두께 */
+    background-color: #4CAF50;  /* 프로젝트 메인 초록색 */
+    border-radius: 2px;
+}
+
+/* 모바일 화면에서 제목 크기 살짝 줄이기 */
+@media (max-width: 768px) {
+    .main-title {
+        font-size: 1.8em;
+        margin-top: 15px;
+        margin-bottom: 25px;
+    }
+}
+
+/* =========================================
    1. 공통 및 레이아웃 컨테이너
    ========================================= */
 .supplements-container {
@@ -192,6 +231,60 @@
 }
 .like-btn.liked { border-color: #e05; color: #e05; background: #fff0f3; }
 .like-btn:hover { border-color: #e05; color: #e05; }
+
+/* =========================================
+   영양성분 등록/수정 모달창 안의 하단 버튼 그룹
+   ========================================= */
+.btn-group-reg {
+    display: flex;         /* 버튼들을 가로로 나란히 배치 */
+    gap: 15px;             /* 버튼 사이의 간격 */
+    justify-content: center; /* 가운데 정렬 */
+    margin-top: 25px;      /* 위쪽 입력칸과의 여백 */
+}
+
+/* 등록, 저장 등 긍정(제출) 버튼 (절반 크기) */
+.submit-btn-half {
+    flex: 1;               /* 남은 공간을 똑같이 나누어 가짐 */
+    padding: 12px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.05em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.submit-btn-half:hover {
+    background-color: #45a049;
+}
+
+/* 취소, 돌아가기 등 부정 버튼 (절반 크기) */
+.cancel-btn-half {
+    flex: 1;               /* 남은 공간을 똑같이 나누어 가짐 */
+    padding: 12px;
+    background-color: #95a5a6; /* 차분한 회색 */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.05em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.cancel-btn-half:hover {
+    background-color: #7f8c8d;
+}
+
+/* 📱 모바일 화면에서는 버튼을 다시 위아래로 쌓이게 */
+@media (max-width: 768px) {
+    .btn-group-reg {
+        flex-direction: column; /* 세로 배치로 변경 */
+        gap: 10px;
+    }
+}
 
 
 /* =========================================

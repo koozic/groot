@@ -41,8 +41,11 @@
             <input type="file" name="supplementFile" accept="image/*" class="form-input" style="border: none; padding: 0;">
         </div>
 
-        <button type="submit" class="submit-btn">등록하기</button>
-        <button class="submit-btn" onclick="location.href='supplements'">목록으로 돌아가기</button>
+        <div class="btn-group-reg">
+            <button type="submit" class="submit-btn-half">등록하기</button>
+            <button type="button" class="cancel-btn-half" onclick="document.getElementById('commonModal').close();">취소</button>
+        </div>
+
     </form>
 </div>
 

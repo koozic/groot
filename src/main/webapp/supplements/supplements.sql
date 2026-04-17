@@ -50,6 +50,15 @@ CREATE SEQUENCE seq_supplements_like_id START WITH 1 INCREMENT BY 1;
 INSERT INTO supplements (supplement_id, supplement_name, supplement_efficacy, supplement_dosage, supplement_timing, supplement_caution, supplement_image_path)
 VALUES (seq_supplements_id.NEXTVAL, '비타민 A', '세포 성장 조절, 눈·피부 건강 유지 및 면역 체계 강화에 필수적임. 망막 색소 구성 성분으로 시력을 유지하며, 결핍 시 야맹증·안구건조증 등이 발생할 수 있음.', '약 5,000IU', '식후', '지용성으로 체내 축적이 쉬워 식후 섭취를 권장함. 과다 섭취 시 구역질, 두통, 간 손상 위험이 있으며 임산부는 복용 전 전문가 상담이 필수적임.', 'https://media.istockphoto.com/id/1388371433/ko/%EB%B2%A1%ED%84%B0/%EB%B9%84%ED%83%80%EB%AF%BC-a-%EA%B3%A8%EB%93%9C-%EB%B9%9B%EB%82%98%EB%8A%94-%EC%95%84%EC%9D%B4%EC%BD%98-%EC%95%84%EC%8A%A4%EC%BD%94%EB%A5%B4%EB%B8%8C-%EC%82%B0-%EB%B9%9B%EB%82%98%EB%8A%94-%ED%99%A9%EA%B8%88-%EB%AC%BC%EC%A7%88-%EB%93%9C%EB%A1%AD-%EC%98%81%EC%96%91-%EC%8A%A4%ED%82%A8-%EC%BC%80%EC%96%B4-%EB%B2%A1%ED%84%B0.jpg?s=612x612&w=0&k=20&c=P3g82tq9nwRt6HduCiSAdSLoieqJyuqxV9ypIXzk4Y0=');
 
+-- 삭제
+DELETE FROM supplements
+WHERE supplement_name = '비타민 A';
+
+-- 수정
+UPDATE supplements
+SET supplement_image_path = 'https://weekly.chosun.com/news/photo/202305/26499_49726_360.gif'
+WHERE supplement_name = '비타민 A';
+
 -- 2. 비타민 B1(티아민)
 INSERT INTO supplements (supplement_id, supplement_name, supplement_efficacy, supplement_dosage, supplement_timing, supplement_caution, supplement_image_path)
 VALUES (seq_supplements_id.NEXTVAL, '비타민 B1(티아민)', '탄수화물 에너지 전환을 돕고 피로 물질을 제거함. 신경 기능을 정상화하며, 부족 시 각기병·말초신경장애 등이 나타남.', '약 1.2mg', '식전', '수용성으로 식전 복용이 흡수에 유리하나, 고함량 복용 시 속 쓰림이 있다면 식후 30분에 복용함. 신진대사 증진으로 수면을 방해할 수 있어 이른 시간에 섭취하는 것이 좋음.', 'https://weekly.chosun.com/news/photo/202305/26499_49726_360.gif');
