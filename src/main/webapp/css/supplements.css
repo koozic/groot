@@ -1,17 +1,76 @@
 /* =========================================
-   1. 영양성분 리스트 컨테이너 (Grid 3x2 배열)
+   영양성분 리스트 메인 제목 스타일
    ========================================= */
-.supplements-container {
-    display: grid; /* 기존 flex 대신 grid 사용! */
-    grid-template-columns: repeat(3, 1fr); /* 1줄을 똑같이 3칸으로 나눔 */
-    gap: 20px;
-    width: 100%;
-    max-width: 900px;
-    margin: 0 auto 30px auto; /* 가운데 정렬 및 하단 여백 */
+.main-title {
+    text-align: center;
+    font-size: 2.2em;
+    color: black;
+    margin-top: 20px;
+    margin-bottom: 30px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.main-title::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background-color: #4CAF50;
+    border-radius: 2px;
 }
 
 /* =========================================
-   2. 개별 영양성분 카드
+   1. 공통 및 레이아웃 컨테이너
+   ========================================= */
+.supplements-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto 30px auto;
+}
+
+/* 상세 & 수정 화면 공통 래퍼 */
+.detail-wrapper, .update-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 40px;
+    padding-bottom: 50px;
+}
+
+/* 상세 & 수정 폼 공통 박스 */
+.supp-detail-box, .supp-update-box {
+    width: 100%;
+    max-width: 700px;
+    border: 1px solid #ddd;
+    padding: 30px;
+    border-radius: 15px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+}
+
+/* 등록 화면 박스 */
+.reg-container {
+    margin: 40px auto;
+    padding: 20px;
+    border: 2px solid #eee;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    background-color: #fafafa;
+}
+
+/* =========================================
+   2. 개별 영양성분 카드 (리스트)
    ========================================= */
 .supp-wrap {
     border: 1px solid #ddd;
@@ -19,21 +78,11 @@
     border-radius: 8px;
     text-align: center;
     background-color: #fff;
-    /* width: 250px; 🚨 Grid가 알아서 맞추므로 고정 넓이는 삭제했습니다! */
     opacity: 0;
     transform: translateY(15px);
     animation: fadeUp 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
-.supp-img img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    cursor: pointer;
-    border-radius: 4px;
-}
-
-/* HTML에서는 supp-name을 쓰셨고 CSS에는 supp-title이 있어서 둘 다 적용되게 묶었습니다. */
 .supp-name, .supp-title {
     font-size: 1.2em;
     font-weight: bold;
@@ -49,221 +98,237 @@
     margin-bottom: 10px;
 }
 
-.supp-btn {
-    padding: 5px 10px;
-    cursor: pointer;
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    transition: background-color 0.2s; /* 마우스 올렸을 때 부드럽게 변하도록 추가 */
-}
-
-.supp-btn:hover {
-    background-color: #e0e0e0;
-}
-
 /* =========================================
-   3. 모달 창 기본 설정
+   이미지 영역 (파스텔 무드 그라디언트 효과)
    ========================================= */
-#commonModal {
-    margin: 25px auto;
-    display: flex;
-    border: none;
-    border-radius: 15px;
-    padding: 0; /* 모달 자체의 기본 패딩 제거 (내부 박스에 패딩이 있으므로) */
-}
-
-#modalContent{
-    width: 500px;
-}
-
-#commonModal::backdrop {
-    background: rgba(0, 0, 0, 0.5); /* 모달 열렸을 때 뒷배경 어둡게 */
-}
-
-@media (max-width: 768px) {
-    #commonModal {
-        margin: 25px auto;
-        display: flex;
-        border: none;
-        border-radius: 15px;
-        padding: 0; /* 모달 자체의 기본 패딩 제거 (내부 박스에 패딩이 있으므로) */
-    }
-
-    #commonModal::backdrop {
-        background: rgba(0, 0, 0, 0.5); /* 모달 열렸을 때 뒷배경 어둡게 */
-    }
-}
-
-/* =========================================
-   4. 페이징 버튼 디자인
-   ========================================= */
-.page-container {
-    text-align: center;
-    margin-top: 40px;
-    margin-bottom: 20px;
-}
-
-.page-btn {
-    padding: 8px 15px;
-    margin: 0 5px;
-    border: 1px solid #ddd;
-    background-color: white;
-    color: #333;
-    cursor: pointer;
-    border-radius: 5px;
-    text-decoration: none;
-    display: inline-block;
-}
-
-.page-btn:hover {
-    background-color: #f5f5f5;
-}
-
-.page-btn.active {
-    background-color: #4CAF50;
-    color: white;
-    border: 1px solid #4CAF50;
-    font-weight: bold;
-}
-
-.page-btn.disabled {
-    color: #ccc;
-    cursor: not-allowed;
-}
-
-/* =========================================
-   5. 📱 모바일 반응형 (가로 768px 이하)
-   ========================================= */
-@media (max-width: 768px) {
-    /* 리스트 화면: 1줄에 1개씩 꽉 차게 변경 */
-    .supplements-container {
-        grid-template-columns: repeat(1, 1fr);
-        padding: 0 15px;
-        box-sizing: border-box;
-    }
-
-    /* 등록/상세 모달 박스 크기 모바일에 맞게 조절 */
-    .reg-container, .supp-detail-box {
-        margin: 20px auto;
-        padding: 15px !important;
-        width: 100% !important;
-        box-sizing: border-box;
-    }
-
-    /* 상세 정보 글씨들 좌우 나열 -> 위아래 쌓이게 변경 */
-    .detail-row, .form-group {
-        flex-direction: column;
-        padding: 10px 0;
-    }
-
-    .col-1, .col-2 {
-        width: 100%;
-    }
-
-    .col-1 {
-        margin-bottom: 5px;
-        font-size: 0.95em;
-    }
-
-    .col-2 {
-        font-size: 0.9em;
-    }
-
-    /* 사진 크기 조절 */
-    .detail-img-area img {
-        height: 250px !important;
-    }
-
-    /* 모바일에서는 버튼을 큼직하게 하나씩 누를 수 있게 세로로 배치 */
-    .btn-group {
-        flex-direction: column;
-    }
-
-    .btn-list, .btn-submit, .btn-cancel, .supp-btn {
-        width: 100%;
-        margin-bottom: 10px;
-        box-sizing: border-box;
-    }
-}
-
-.like-btn {
-    background: none;
-    border: 1px solid #ccc;
-    border-radius: 20px;
-    padding: 4px 14px;
-    cursor: pointer;
-    font-size: 14px;
-    color: #888;
-    margin-top: 8px;
-    transition: all 0.2s;
-}
-
-.like-btn.liked {
-    border-color: #e05;
-    color: #e05;
-    background: #fff0f3;
-}
-
-.like-btn:hover {
-    border-color: #e05;
-    color: #e05;
-}
-
-/* =========================================================
-   영양성분 이미지 영역 (그라디언트 애니메이션 + 블렌드 효과 적용)
-   ========================================================= */
-
-/* 1. 이미지를 감싸는 부모 박스 (여기에 그라디언트를 깝니다) */
 .supp-img {
     width: 100%;
     height: 200px;
-    position: relative; /* 자식인 img를 겹치게 하기 위해 필수 */
-    overflow: hidden; /* 이미지가 박스 밖으로 삐져나가지 않게 */
-    border-radius: 8px; /* 모서리 둥글게 */
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
     cursor: pointer;
 
-    /* 가져오신 환상적인 그라디언트 배경 */
-    background: #000;
-    background: linear-gradient(135deg, #000000 0%, #000000 25%, #1e539e 50%, #ff3083 75%, #7800a8 100%);
-    background-size: 400% 400%; /* 애니메이션을 위해 배경을 4배로 키움 */
-    transition: background-position 0.5s ease-out; /* 부드러운 전환 */
+    /* 💡 1. 아주 옅은 파스텔 톤(거의 흰색)의 4가지 색상 조합 */
+    background: linear-gradient(-45deg, #ffffff, #fdfbfb, #f4f8ff, #fff5f8);
+
+    /* 💡 2. 부드러운 이동을 위해 배경을 4배(400%)로 크게 확장 */
+    background-size: 400% 400%;
+
+    /* 💡 3. 색상이 천천히 물결치듯 숨쉬는 애니메이션 (12초 주기로 무한반복) */
+    animation: pastelMood 12s ease-in-out infinite;
+
+    border: 1px solid #f0f0f0;
 }
 
-/* 2. 마우스를 올렸을 때 그라디언트가 움직이는 애니메이션! */
-.supp-img:hover {
-    background-position: 100% 100%;
+/* 배경이 부드럽게 흘러가며 숨쉬는 키프레임 */
+@keyframes pastelMood {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
-/* 3. 실제 이미지 (그라디언트 위에 반투명하게 얹힙니다) */
 .supp-img img {
-    position: absolute; /* 부모 박스에 꽉 차게 겹칩니다 */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: contain; /* 알약 전체가 예쁘게 다 보이도록 유지 */
     z-index: 1;
 
-    /* 💡 여기가 핵심 마법! 이미지를 반투명하게 만들고 배경과 섞습니다 */
-    opacity: 0.6;
-    mix-blend-mode: screen;
-
-    transition: opacity 0.3s;
+    /* 사진은 무조건 100% 선명하게! */
+    opacity: 1 !important;
+    mix-blend-mode: normal !important;
+    transition: transform 0.3s ease;
 }
 
-/* (보너스) 마우스를 올리면 이미지가 조금 더 선명해지도록 디테일 추가 */
 .supp-img:hover img {
-    opacity: 0.8;
+    transform: scale(1.05); /* 마우스 올렸을 때 살짝 다가옴 */
 }
+
+/* =========================================
+   3. 공통 UI 요소 (Row, 이미지 영역, 제목, 폼)
+   ========================================= */
+.detail-img-area { text-align: center; margin-bottom: 30px; }
+.detail-img-area img {
+    max-width: 100%;
+    height: 350px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid #eee;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.detail-row, .form-group {
+    display: flex;
+    border-bottom: 1px solid #f5f5f5;
+    padding: 15px 0;
+    align-items: flex-start;
+}
+.detail-row:last-child, .form-group:last-child { border-bottom: none; }
+
+.col-1 { width: 150px; font-weight: bold; color: #2c3e50; font-size: 1.05em; padding-top: 5px; }
+.col-2 { flex: 1; color: #34495e; line-height: 1.6; font-size: 1.05em; }
+
+.detail-title {
+    text-align: center; font-size: 2em; color: #333;
+    margin-bottom: 30px; border-bottom: 2px solid #4CAF50;
+    display: inline-block; padding-bottom: 10px;
+}
+
+/* 폼 라벨 및 인풋 */
+.form-label { display: block; font-weight: bold; margin-bottom: 5px; }
+.form-input, .update-input, .update-textarea {
+    width: 100%; padding: 8px; border: 1px solid #ccc;
+    border-radius: 4px; box-sizing: border-box; font-size: 1em; font-family: inherit;
+}
+.update-textarea { height: 80px; resize: vertical; }
+
+/* =========================================
+   4. 버튼 스타일 그룹
+   ========================================= */
+.btn-group { margin-top: 20px; text-align: center; display: flex; gap: 10px; justify-content: center; }
+
+/* 공통 메인 버튼 스타일 (수정, 리스트 등) */
+.supp-btn, .btn-list, .btn-submit, .submit-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.supp-btn:hover, .btn-list:hover, .btn-submit:hover, .submit-btn:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.supp-btn:active, .btn-list:active, .btn-submit:active, .submit-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 영양성분 등록 모달창 하단 전용 버튼 그룹 */
+.btn-group-reg {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 25px;
+    box-sizing: border-box;
+}
+
+.submit-btn-half, .cancel-btn-half {
+    flex: 1;
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1.05em;
+    font-weight: bold;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: background-color 0.3s;
+}
+
+.submit-btn-half { background-color: #4CAF50; color: white; }
+.submit-btn-half:hover { background-color: #45a049; }
+
+.cancel-btn-half { background-color: #95a5a6; color: white; }
+.cancel-btn-half:hover { background-color: #7f8c8d; }
+
+/* 카드 내 작은 관리자 버튼 (삭제/수정) */
+.supp-wrap .supp-btn {
+    padding: 5px 10px; background-color: #f0f0f0; color: #333;
+    border: 1px solid #ccc; box-shadow: none; font-size: 0.9em;
+}
+.supp-wrap .supp-btn:hover { background-color: #e0e0e0; transform: none; }
+
+/* 취소 계열 버튼 */
+.btn-cancel {
+    padding: 10px 20px; background-color: #95a5a6; color: white;
+    border: none; cursor: pointer; border-radius: 8px; font-weight: bold;
+}
+
+/* 좋아요 버튼 */
+.like-btn {
+    background: none; border: 1px solid #ccc; border-radius: 20px;
+    padding: 4px 14px; cursor: pointer; font-size: 14px;
+    color: #888; margin-top: 8px; transition: all 0.2s;
+}
+.like-btn.liked { border-color: #e05; color: #e05; background: #fff0f3; }
+.like-btn:hover { border-color: #e05; color: #e05; }
+
+/* =========================================
+   5. 모달 및 페이징 설정
+   ========================================= */
+#commonModal { margin: 25px auto; border: none; border-radius: 15px; padding: 0; }
+#modalContent { width: 500px; }
+#commonModal::backdrop { background: rgba(0, 0, 0, 0.5); }
+
+.page-container { text-align: center; margin: 40px 0 20px 0; }
+.page-btn { padding: 8px 15px; margin: 0 5px; border: 1px solid #ddd; border-radius: 5px; text-decoration: none; color: #333; display: inline-block; transition: background-color 0.2s; }
+.page-btn:hover { background-color: #f5f5f5; }
+.page-btn.active { background-color: #4CAF50; color: white; border: 1px solid #4CAF50; font-weight: bold; }
+.page-btn.disabled { color: #ccc; cursor: not-allowed; }
 
 @keyframes fadeUp {
-    from {
-        opacity: 0;
-        transform: translateY(15px);
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================
+   6. 📱 모바일 반응형 (가로 768px 이하)
+   ★ 모든 화면(상세, 수정, 등록, 리스트) 모바일 최적화 통합 적용 ★
+   ========================================= */
+@media (max-width: 768px) {
+    /* 메인 리스트 제목 */
+    .main-title { font-size: 1.8em; margin-top: 15px; margin-bottom: 25px; }
+
+    /* 리스트 1열 배치 */
+    .supplements-container {
+        grid-template-columns: repeat(1, 1fr);
+        padding: 0 15px; box-sizing: border-box;
     }
-    to {
-        opacity: 1;
-        transform: translateY(0);
+
+    /* 래퍼(Wrapper) 여백 축소 */
+    .detail-wrapper, .update-wrapper { margin-top: 20px; padding: 15px; }
+
+    /* 박스 폭 100% 꽉 채우기 (상세, 수정, 등록 모두 포함) */
+    .supp-detail-box, .supp-update-box, .reg-container {
+        margin: 20px auto;
+        padding: 15px !important; width: 100% !important;
+        box-sizing: border-box;
     }
+
+    /* 내용 및 폼을 좌우가 아닌 위아래로 세로 쌓기 */
+    .detail-row, .form-group { flex-direction: column; padding: 10px 0; }
+    .col-1, .col-2 { width: 100%; }
+    .col-1 { margin-bottom: 5px; font-size: 0.95em; }
+    .col-2 { font-size: 0.9em; }
+
+    /* 모바일 이미지 높이 조정 */
+    .detail-img-area img { height: 250px !important; }
+
+    /* 모든 하단 버튼 그룹 세로로 쌓기 */
+    .btn-group, .btn-group-reg {
+        flex-direction: column !important;
+        gap: 10px;
+    }
+
+    /* 버튼 크기를 모바일 화면 폭에 맞게 100% 확대 */
+    .btn-list, .btn-submit, .btn-cancel, .submit-btn, .submit-btn-half, .cancel-btn-half {
+        width: 100%; margin-bottom: 10px; box-sizing: border-box;
+    }
+
+    /* 모달창 모바일 크기 최적화 */
+    #modalContent { width: 90vw; }
 }
