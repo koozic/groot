@@ -202,7 +202,14 @@ body {
 }
 
 /* 폼 라벨 및 인풋 (테마 포커스 효과 적용) */
-.form-label { display: block; font-weight: bold; margin-bottom: 5px; color: var(--ps-text-b); }
+.form-label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: var(--ps-text-b);
+    white-space: nowrap; /* 글자가 칸을 넘어가도 절대 줄바꿈하지 않음 */
+    flex-shrink: 0;     /* 옆의 input 태그가 커져도 라벨 영역이 찌그러지지 않도록 방어 */
+}
 .form-input, .update-input, .update-textarea {
     width: 100%; padding: 10px;
     border: 1px solid var(--ps-lime);
