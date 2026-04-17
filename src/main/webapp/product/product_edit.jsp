@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <link rel="stylesheet" href="css/product_edit.css">
+<link rel="stylesheet" href="css/site-theme.css">
 
 <form action="product-edit" method="post" enctype="multipart/form-data">
     <div class="pe-wrap">

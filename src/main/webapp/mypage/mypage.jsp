@@ -748,3 +748,4 @@
 <script src="js/mypage.js"></script>
 <script src="js/mypage.js?v=<%= System.currentTimeMillis() %>"></script>
 <link rel="stylesheet" href="css/mypage.css?v=<%= System.currentTimeMillis() %>">
+<link rel="stylesheet" href="css/site-theme.css?v=<%= System.currentTimeMillis() %>">
