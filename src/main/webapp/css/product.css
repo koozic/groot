@@ -217,32 +217,34 @@ body {
     /* 기존의 margin: 0 auto; 를 삭제하여 flex-end(오른쪽) 정렬을 유지합니다 */
 }
 
+/* 영양제 추가 버튼 (필터 버튼 스타일 동기화) */
 .btn-add-item {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 12px 24px;
-    background: linear-gradient(135deg, #6e8efb, #a777e3);
-    color: #fff;
-    border: none;
-    border-radius: 50px;
-    font-size: 1rem;
+    padding: 8px 16px;
+    background-color: #9cb4a1; /* '전체' 버튼과 동일한 파스텔 그린 */
+    color: #fff !important; /* 텍스트 색상 강제 고정 */
+    border: 1px solid #9cb4a1; /* 기존 검은색 테두리 덮어쓰기 */
+    border-radius: 20px;
+    font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(110, 142, 251, 0.4);
-    transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
+    box-shadow: 0 4px 10px rgba(156, 180, 161, 0.3);
+    transition: all 0.2s ease-in-out;
 }
 
+/* Hover 상태 - 시각적 피드백을 위해 명도만 살짝 낮춤 */
 .btn-add-item:hover {
+    background-color: #8a9f8f;
+    border-color: #8a9f8f;
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(110, 142, 251, 0.6);
-    filter: brightness(1.05);
+    box-shadow: 0 6px 15px rgba(156, 180, 161, 0.4);
 }
 
 .btn-add-item:active {
     transform: scale(0.98);
 }
-
 /* =============================================
    3. Product Grid & Card
    ============================================= */
@@ -752,9 +754,10 @@ textarea {
 }
 
 .prd-filter-btn.active {
-    background-color: #007bff;
+    background-color: #9cb4a1;
     color: #fff;
-    border-color: #007bff;
+    border-color: #9cb4a1;
+    box-shadow: 0 4px 10px rgba(156, 180, 161, 0.3);
 }
 
 /* 드롭다운 기준점 */
