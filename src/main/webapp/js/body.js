@@ -137,57 +137,38 @@ function toggleLike(id) {
 
 // ? 추가: 로그인 유도 모달 함수
 function showLoginModal() {
-    // 1. 기존에 이미 떠 있는 모달이 있으면 제거
     const existing = document.getElementById('login-modal-overlay');
     if (existing) existing.remove();
 
-    // 2. 오버레이 생성 (화면 전체를 덮도록 fixed 설정)
     const overlay = document.createElement('div');
     overlay.id = 'login-modal-overlay';
     overlay.style.cssText = `
         position: fixed;
         inset: 0;
-        background: rgba(0, 0, 0, 0.5);
+        background: rgba(0,0,0,0.45);
         display: flex;
         align-items: center;
         justify-content: center;
-        z-index: 10000; /* 모달보다 높게 설정 */
+        z-index: 10000;
         padding: 16px;
     `;
     overlay.onclick = (e) => {
         if (e.target === overlay) closeLoginModal();
     };
 
-    // 3. 모달 컨텐츠
     overlay.innerHTML = `
-      <div style="background:#fff; border-radius:12px; padding:28px 24px;
-                  width:min(340px,90%); text-align:center;
-                  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-                  border:1px solid #e0e0e0;"
-           onclick="event.stopPropagation()">
-        <div style="font-size:22px; margin-bottom:8px">?</div>
-        <p style="font-size:15px; font-weight:600; margin-bottom:6px; color:#333;">
-          로그인이 필요합니다
-        </p>
-        <p style="font-size:13px; color:#666; margin-bottom:20px;">
-          좋아요 기능은 로그인 후 이용 가능합니다.
-        </p>
+      <div class="login-modal-box" onclick="event.stopPropagation()">
+        <p class="login-modal-title">로그인이 필요합니다</p>
+        <p class="login-modal-desc">좋아요 기능은 로그인 후 이용 가능합니다.</p>
         <div style="display:flex; gap:8px; justify-content:center;">
-          <button onclick="location.href='user-Login?redirect=' + encodeURIComponent(location.pathname + location.search)"
-            style="padding:9px 20px; background:#3B82F6; color:#fff;
-                   border:none; border-radius:8px; cursor:pointer; font-size:13px; font-weight:600;">
+          <button class="login-modal-btn-login"
+            onclick="location.href='user-Login?redirect=' + encodeURIComponent(location.pathname + location.search)">
             로그인하기
           </button>
-          <button onclick="closeLoginModal()"
-            style="padding:9px 16px; background:#fff;
-                   border:1px solid #ccc; border-radius:8px;
-                   cursor:pointer; font-size:13px; color:#666;">
-            닫기
-          </button>
+          <button class="login-modal-btn-close" onclick="closeLoginModal()">닫기</button>
         </div>
       </div>`;
 
-    // 4. 특정 영역이 아닌 body에 직접 붙여서 화면 중앙에 띄움
     document.body.appendChild(overlay);
 }
 
@@ -336,18 +317,11 @@ async function renderList() {
         </button> ` : ''}
       </div>
       ${adminModeOn && isAdmin ? `
-      <div style="display:flex;gap:6px;margin-top:8px;padding-top:8px;border-top:1px solid #f0f0f0;"
-           onclick="event.stopPropagation()">
-        <button onclick="openAdminModal('update',${s.id})"
-                style="flex:1;padding:5px 0;background:#2196F3;color:white;
-                       border:none;border-radius:5px;cursor:pointer;font-size:0.8em;font-weight:600;">
-          ?? 수정
-        </button>
-        <button onclick="deleteSupp(${s.id},'${s.name.replace(/'/g, "\\'")}')"
-                style="flex:1;padding:5px 0;background:#f44336;color:white;
-                       border:none;border-radius:5px;cursor:pointer;font-size:0.8em;font-weight:600;">
-          ?? 삭제
-        </button>
+      <div class="admin-card-btn-wrap" onclick="event.stopPropagation()">
+        <button class="admin-card-btn-edit"
+          onclick="openAdminModal('update',${s.id})">수정</button>
+        <button class="admin-card-btn-del"
+          onclick="deleteSupp(${s.id},'${s.name.replace(/'/g, "\\'")}')">삭제</button>
       </div>` : ''}
     </div>`).join('') + '</div>';
 
@@ -393,93 +367,75 @@ function refreshModal(id) {
         if (s) break;
     }
     if (!s) return;
-//
+
     const on = likedIds.has(id);
     const pt = PARTS[s.part];
 
-    // 기존에 떠 있는 모달이 있다면 중복 방지를 위해 제거
     const existing = document.getElementById('supp-modal-overlay');
     if (existing) existing.remove();
 
-    // 1. 오버레이(배경) 생성
     const overlay = document.createElement('div');
     overlay.id = 'supp-modal-overlay';
     overlay.style.cssText = `
         position: fixed;
         inset: 0;
-        background: rgba(0,0,0,0.5);
+        background: rgba(0,0,0,0.45);
         display: flex;
         align-items: center;
         justify-content: center;
         z-index: 9999;
         padding: 16px;
     `;
-
-    // 배경 클릭 시 닫기
     overlay.onclick = (e) => {
         if (e.target === overlay) closeModal();
     };
 
-    // 2. 모달 컨텐츠 작성 (이미지 경로 처리 추가)
     const imgHtml = s.imgPath
-        ? `<img src="${s.imgPath}" style="width:52px; height:52px; border-radius:10px; object-fit:cover;" onerror="this.onerror=null; this.src='images/default.png';">` // ? 수정: onerror 로직 보강
-        : `<div style="width:52px; height:52px; border-radius:10px; background:${pt.color}22; display:flex; align-items:center; justify-content:center; font-size:22px;">?</div>`;
+        ? `<img src="${s.imgPath}" style="width:52px;height:52px;border-radius:10px;object-fit:cover;"
+               onerror="this.onerror=null;this.src='images/default.png';">`
+        : `<div style="width:52px;height:52px;border-radius:10px;
+               background:${pt.color}22;display:flex;align-items:center;
+               justify-content:center;font-size:22px;">💊</div>`;
 
     overlay.innerHTML = `
-      <div style="background:#fff; border-radius:14px; padding:24px;
-                  width:min(420px,95%); max-height:85vh; overflow-y:auto;
-                  border:1px solid #e0e0e0; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
-        <div style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
+      <div class="supp-modal-box">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
           ${imgHtml}
           <div>
-            <div style="font-size:17px; font-weight:600; color:#333;">${s.name}</div>
-            <span style="font-size:10px; padding:2px 8px; border-radius:20px;
-                         background:${pt.color}22; color:${pt.text};
-                         border:1px solid ${pt.color}55; display:inline-block; margin-top:3px;">
+            <div class="supp-modal-name">${s.name}</div>
+            <span style="font-size:10px;padding:2px 8px;border-radius:20px;
+                         background:${pt.color}22;color:${pt.text};
+                         border:1px solid ${pt.color}55;display:inline-block;margin-top:3px;">
               ${pt.label}
             </span>
           </div>
         </div>
-        <div style="display:flex; gap:8px; margin-bottom:7px;">
-          <span style="font-size:12px; color:#666; min-width:60px; line-height:1.6;">효능</span>
-          <span style="font-size:13px; line-height:1.6; color:#444;">${s.efficacy}</span>
+        <div style="display:flex;gap:8px;margin-bottom:7px;">
+          <span class="supp-modal-lbl">효능</span>
+          <span class="supp-modal-val">${s.efficacy}</span>
         </div>
-        <div style="display:flex; gap:8px; margin-bottom:7px;">
-          <span style="font-size:12px; color:#666; min-width:60px; line-height:1.6;">복용법</span>
-          <span style="font-size:13px; line-height:1.6; color:#444;">${s.dosage || '-'}</span>
+        <div style="display:flex;gap:8px;margin-bottom:7px;">
+          <span class="supp-modal-lbl">복용법</span>
+          <span class="supp-modal-val">${s.dosage || '-'}</span>
         </div>
-        <div style="display:flex; gap:8px; margin-bottom:7px;">
-          <span style="font-size:12px; color:#666; min-width:60px; line-height:1.6;">복용 시기</span>
-          <span style="font-size:13px; line-height:1.6; color:#444;">${s.timing || '-'}</span>
+        <div style="display:flex;gap:8px;margin-bottom:7px;">
+          <span class="supp-modal-lbl">복용 시기</span>
+          <span class="supp-modal-val">${s.timing || '-'}</span>
         </div>
-        <div style="font-size:11px; color:#A32D2D; background:#FCEBEB;
-                    border-radius:8px; padding:8px 10px; margin-top:4px;">
-          ? ${s.caution || '해당 없음'}
-        </div>
-        <div style="display:flex; justify-content:space-between; align-items:center;
-                    margin-top:16px; padding-top:12px; border-top:1px solid #f0f0f0;">
-          <span style="font-size:12px; color:#999;">
-            ? ${s.views} &nbsp; ♥ ${s.likes + (on ? 1 : 0)}
-          </span>
-          <div style="display:flex; gap:8px;">
+        <div class="supp-modal-caution">⚠ ${s.caution || '해당 없음'}</div>
+        <div class="supp-modal-foot">
+          <span class="supp-modal-stats">👁 ${s.views} &nbsp; ♥ ${s.likes + (on ? 1 : 0)}</span>
+          <div style="display:flex;gap:8px;">
             ${!isAdmin ? `
-<button onclick="toggleLike(${id})"
-  style="font-size:12px; padding:5px 14px; border-radius:8px; cursor:pointer;
-         border:1px solid ${on ? '#D4537E' : '#ccc'};
-         background:${on ? '#FFF0F5' : 'transparent'};
-         color:${on ? '#9B2257' : '#666'}; transition: all 0.2s;">
-  ${on ? '♥ 취소' : '♡ 좋아요'}
-</button>` : ''}
-            <button onclick="closeModal()"
-              style="font-size:12px; padding:5px 14px; border:1px solid #ccc;
-                     border-radius:8px; background:transparent; cursor:pointer; color:#666;">
-              닫기
-            </button>
+            <button class="supp-modal-btn-like ${on ? 'on' : ''}"
+              onclick="toggleLike(${id})">
+              ${on ? '♥ 취소' : '♡ 좋아요'}
+            </button>` : ''}
+            <button class="supp-modal-btn-close" onclick="closeModal()">닫기</button>
           </div>
         </div>
       </div>`;
 
-    // body에 직접 붙임 (z-index 9999로 최상단 보장)
     document.body.appendChild(overlay);
 }
 
@@ -533,10 +489,11 @@ function toggleAdminMode() {
     const addBtn = document.getElementById('adminAddBtn');
 
     if (adminModeOn) {
-        toggleBtn.textContent = '?? 관리 모드 ON';
-        toggleBtn.style.background = '#e53935';
+        toggleBtn.textContent = '관리 모드';
+        toggleBtn.style.background = '#f95c8d';
+        toggleBtn.style.color = '#ffffff';
     } else {
-        toggleBtn.textContent = '?? 관리 모드';
+        toggleBtn.textContent = '관리 모드';
         toggleBtn.style.background = '#FF9800';
     }
 
@@ -566,7 +523,7 @@ function openAdminModal(mode, suppId) {
     document.getElementById('adminSuppId').value = suppId || '';
 
     if (mode === 'update') {
-        document.getElementById('adminModalTitle').textContent = '✏️ 영양소 수정';
+        document.getElementById('adminModalTitle').textContent = '영양소 수정';
 
         // 👉 수정 데이터 불러오기
         fetch(`admin?action=getOne&suppId=${suppId}`)
@@ -590,7 +547,7 @@ function openAdminModal(mode, suppId) {
 
         // fetch 데이터 로드 로직...
     } else {
-        document.getElementById('adminModalTitle').textContent = '➕ 새 영양소 등록';
+        document.getElementById('adminModalTitle').textContent = '새 영양소 등록';
 
         // 👉 초기화
         document.getElementById('adminName').value = '';

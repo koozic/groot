@@ -3,43 +3,64 @@
     display: flex;
     justify-content: center;
     align-items: stretch;
-    gap: 32px;
-    margin-top: 80px;
-    padding: 0 24px 40px;
+    gap: 40px;
+    margin-top: 30px;
+    padding: 0 10px 40px;
     flex-wrap: wrap;
 }
 
 /* ── 카드 박스 ── */
 .select-box {
-    width: 280px;
+    overflow: hidden;
+    width: 480px;
     min-width: 200px;
+    min-height: 600px;
     padding: 40px 30px;
-    border: 2px solid #EDF4CC; /* 연 연두 테두리 */
+    border: 2px solid #EDF4CC;
     border-radius: 20px;
     text-align: center;
     cursor: pointer;
     transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
     background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .select-box:hover {
-    border-color: #B4D8D0; /* 파스텔 민트 */
+    border-color: #B4D8D0;
     transform: translateY(-8px);
-    box-shadow: 0 12px 28px rgba(180, 216, 208, 0.3); /* 민트 그림자 */
+    box-shadow: 0 12px 28px rgba(180, 216, 208, 0.3);
 }
 
 .select-box h2 {
-    color: #334040; /* ps-text-h */
-    font-size: 1.25em;
+    color: #334040;
+    font-size: 48px;
     margin-bottom: 12px;
+    margin-top: 22px;
     word-break: keep-all;
 }
 
 .select-box p {
-    color: #7A9090; /* ps-text-m */
-    font-size: 0.92em;
+    color: #7A9090;
+    font-size: 18px;
     line-height: 1.7;
     word-break: keep-all;
+}
+
+/* ── 이미지 ── */
+.recommend-image-wrap {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.recommend-img {
+    width: 220px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
 }
 
 /* ── 700px 이하 ── */
@@ -55,11 +76,16 @@
     .select-box {
         width: 100%;
         max-width: 400px;
+        min-height: auto;
         padding: 28px 24px;
     }
 
     .select-box:hover {
         transform: translateY(-4px);
+    }
+
+    .recommend-img {
+        width: 160px;
     }
 }
 
@@ -82,5 +108,9 @@
 
     .select-box p {
         font-size: 0.88em;
+    }
+
+    .recommend-img {
+        width: 120px;
     }
 }

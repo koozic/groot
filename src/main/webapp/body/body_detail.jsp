@@ -17,7 +17,7 @@
 
     <hr>
     <p>👁️ 조회수: ${d.supplementViewCount} | ❤️ 좋아요: ${d.likeCount}</p>
-    <p>📅 등록일: ${d.supplementRegDate}</p>
+    <p>등록일: ${d.supplementRegDate}</p>
 </div>
 
 <button onclick="history.back()">뒤로가기</button>

@@ -5,7 +5,7 @@
 
 <div class="admin-form-page">
     <%-- supp가 null이면 등록, 있으면 수정 --%>
-    <h2>${empty supp ? '➕ 영양소 등록' : '✏️ 영양소 수정'}</h2>
+    <h2>${empty supp ? '영양소 등록' : '영양소 수정'}</h2>
 
     <form action="admin/api" method="post">
         <%-- action 구분 --%>
@@ -79,12 +79,14 @@
             </div>
         </c:if>
 
-        <button type="submit" class="btn-submit">
-            ${empty supp ? '등록하기' : '수정하기'}
-        </button>
-        <button type="button" class="btn-cancel"
-                onclick="location.href='admin'">취소
-        </button>
+        <div class="form-btn-row">
+            <button type="submit" class="btn-submit">
+                ${empty supp ? '등록하기' : '수정하기'}
+            </button>
+            <button type="button" class="btn-cancel"
+                    onclick="location.href='admin'">취소
+            </button>
+        </div>
     </form>
 </div>
 

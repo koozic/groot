@@ -60,7 +60,7 @@
                 <div class="cb-grid" id="cb-grid"></div>
                 <div class="cb-actions">
                     <button class="cb-btn" onclick="resetAll()">초기화</button>
-                    <button class="cb-btn primary" onclick="collectAll()">ALL</button>
+                    <button class="cb-btn primary" onclick="collectAll()">모두 선택</button>
                 </div>
             </div>
             <br>
@@ -75,12 +75,12 @@
                         <c:if test="${sessionScope.isAdmin == true}">
                             <button id="adminToggleBtn" onclick="toggleAdminMode()"
                                     class="admin-toggle-btn">
-                                🛠️ 관리 모드
+                                관리 모드
                             </button>
                             <%-- display:none → JS가 제어하므로 인라인으로 유지 --%>
                             <button id="adminAddBtn" onclick="openAdminModal('insert')"
                                     class="admin-add-btn" style="display:none;">
-                                + 영양소 추가
+                                영양소 추가
                             </button>
                         </c:if>
                     </div>

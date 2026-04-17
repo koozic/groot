@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/recommend_benr.css">
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -49,7 +50,8 @@
         </button>
         <%-- 드롭다운 메뉴 --%>
         <nav class="dropdown-menu" id="dropdownMenu">
-            <a href="product" class="dropdown-item ${activeTab == 'product'   ? 'active' : ''}"><img style="width: 20px;" src="img/stickers/pill.png" alt=""> 제품</a>
+            <a href="product" class="dropdown-item ${activeTab == 'product'   ? 'active' : ''}"><img
+                    style="width: 20px;" src="img/stickers/pill.png" alt=""> 제품</a>
             <a href="supplements" class="dropdown-item ${activeTab == 'nutrition' ? 'active' : ''}">🧪 영양성분</a>
             <a href="recommend" class="dropdown-item ${activeTab == 'recommend' ? 'active' : ''}">✨ 영양추천</a>
             <c:if test="${sessionScope.isAdmin == true}">

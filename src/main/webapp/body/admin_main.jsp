@@ -48,7 +48,7 @@
 
             <button type="button" class="btn-add"
                     onclick="openAdminModal('insert')">
-                + 새 영양소 등록
+                새 영양소 등록
             </button>
         </div>
 
@@ -247,7 +247,7 @@
                     document.getElementById('adminImgPath').value = d.supplementImagePath || '';
                 });
         } else {
-            document.getElementById('adminModalTitle').textContent = '➕ 새 영양소 등록';
+            document.getElementById('adminModalTitle').textContent = '새 영양소 등록';
             if (bodyIdWrap) bodyIdWrap.style.display = 'block';
             ['adminName', 'adminEfficacy', 'adminDosage', 'adminTiming', 'adminCaution', 'adminImgPath']
                 .forEach(id => document.getElementById(id).value = '');
