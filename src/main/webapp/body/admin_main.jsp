@@ -5,7 +5,7 @@
 <link rel="stylesheet" href="../css/body-theme-v10.css">
 <link rel="stylesheet" href="css/site-theme.css">
 
-<div class="admin-wrap">
+<div class="admin-wrap admin-main-page">
 
     <%-- ── 상단 바 ── --%>
     <div class="admin-top-bar">
