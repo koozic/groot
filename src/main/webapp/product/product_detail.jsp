@@ -48,6 +48,20 @@ function closeImgModal() {
     <div class="pd-container">
         <main class="pd-content">
             <section class="pd-hero">
+                <%-- 추가된 상단 액션 바 (이전 버튼 & 수정 버튼) --%>
+                <div class="pd-action-bar" style="display: flex; justify-content: space-between; padding: 15px 30px; border-bottom: 1px solid #eee; background-color: #fff;">
+                    <%-- 왼쪽: 이전 버튼 --%>
+                    <button type="button" class="btn-back" onclick="location.href='product'" >
+                        ← 이전
+                    </button>
+
+                    <%-- 오른쪽: 관리자 수정 버튼 --%>
+                    <c:if test="${not empty sessionScope.isAdmin}">
+                        <button type="button" class="btn-edit" onclick="location.href='product-edit?id=${product.productId}'" >
+                            상품 수정
+                        </button>
+                    </c:if>
+                </div>
                 <div class="pd-img-box">
                     <img src="${product.productImage}"
                          class="pd-main-img"
@@ -63,6 +77,8 @@ function closeImgModal() {
                     <div class="pd-price-row">
                         <span class="pd-price-val"><strong>${product.productPrice}</strong>원</span>
                     </div>
+
+
                 </div>
             </section>
 

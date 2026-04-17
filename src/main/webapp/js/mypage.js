@@ -84,6 +84,7 @@ function addSupplement(productId, element) {
         }
     });
 }
+
 // 1. 함수명을 showMpToast로 변경하고 클래스명을 mp-toast로 통일
 function showMpToast(message, type = 'success') {
     const container = document.getElementById('toast-container') || createToastContainer();
@@ -112,6 +113,7 @@ function showUndoToast(message, undoAction) {
         if (toast) toast.remove();
     }, 3000);
 }
+
 function toggleCheck(element, productId) {
     let isChecked = element.classList.toggle('checked');
     element.querySelector('.vit-check-box').textContent = isChecked ? '✓' : '';
@@ -171,6 +173,7 @@ function removeSupplement(productId, btnElement) {
         updateProgress();            // 진행률 바 다시 계산
     });
 }
+
 /* ── UI 유틸리티 ── */
 function showToast(message, type = 'success') {
     const container = document.getElementById('toast-container') || createToastContainer();
@@ -331,7 +334,8 @@ function buildCal(mappedAlerts, checkedDates, firstDay, lastDate, today) {
             mappedAlerts[d].forEach(alert => {
                 let badgeClass = alert.status === 'warn' ? 'badge-warn' : 'badge-buy';
                 let icon = alert.status === 'warn' ? '소진임박' : '재구매';
-                html += `<div class="alert-item ${badgeClass}">🛒 ${alert.productName} ${icon}</div>`;
+                // alert.productName 변수를 '비타민'이라는 고정 텍스트로 변경
+                html += `<div class="alert-item ${badgeClass}">🛒 비타민 ${icon}</div>`;
             });
             html += `</div>`;
         }
@@ -416,7 +420,7 @@ function renderLikedPage() {
     const pageData = likedData.slice(start, start + PAGE_SIZE);
 
     container.innerHTML = pageData.map(s => `
-        <div class="like-card"
+        <div id="liked-card-${s.supplementId}" class="like-card"
              style="border:1px solid #eee; border-radius:10px; padding:15px;
                     text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.05);
                     background:#fff; display:flex; flex-direction:column;
@@ -510,3 +514,264 @@ function escHtml(str) {
     if (!str) return '';
     return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
 }
+
+/* ====================================================
+   스티커 꾸미기 모듈 (MVC 패턴 + 비동기 CRUD)
+   ==================================================== */
+
+// ── Model: 현재 스티커 상태 관리 ──
+const StickerModel = {
+    stickers: [],        // 화면에 보이는 현재 스티커 목록
+    savedStickers: [],   // 마지막으로 저장된 상태 (취소 시 복원용)
+
+    // 스티커 추가
+    add(stickerData) {
+        this.stickers.push(stickerData);
+    },
+
+    // 스티커 삭제 (임시 ID 기준)
+    removeByTempId(tempId) {
+        this.stickers = this.stickers.filter(s => s.tempId !== tempId);
+    },
+
+    // 저장된 상태로 롤백
+    rollback() {
+        this.stickers = this.savedStickers.map(s => ({...s}));
+    },
+
+    // 현재 상태를 '저장 완료' 상태로 확정
+    commit(savedList) {
+        this.savedStickers = savedList.map(s => ({...s}));
+        this.stickers = savedList.map(s => ({...s}));
+    }
+};
+
+// ── 전역 상태 ──
+let isStickerEditMode = false;
+let dragStickerType = null;   // 드래그 중인 스티커 종류
+
+// ── Controller: 편집 모드 토글 ──
+function toggleStickerEdit() {
+    isStickerEditMode = !isStickerEditMode;
+
+    const panel = document.getElementById('stickerPanel');
+    const editBtn = document.getElementById('stickerEditToggle');
+    const saveBtn = document.getElementById('stickerSaveBtn');
+    const cancelBtn = document.getElementById('stickerCancelBtn');
+    const hint = document.getElementById('stickerEditHint');
+    const tray = document.querySelector('.sticker-tray');
+
+    if (isStickerEditMode) {
+        // 편집 모드 진입: 현재 상태를 백업
+        StickerModel.savedStickers = StickerModel.stickers.map(s => ({...s}));
+
+        panel.classList.add('edit-mode');
+        tray.style.display = 'flex';
+        editBtn.style.display = 'none';
+        saveBtn.style.display = 'inline-block';
+        cancelBtn.style.display = 'inline-block';
+        hint.style.display = 'block';
+
+        // 캘린더 셀에 드롭 이벤트 활성화
+        activateDropZones();
+    } else {
+        exitStickerEditMode();
+    }
+}
+
+function exitStickerEditMode() {
+    isStickerEditMode = false;
+    const panel = document.getElementById('stickerPanel');
+    const editBtn = document.getElementById('stickerEditToggle');
+    const saveBtn = document.getElementById('stickerSaveBtn');
+    const cancelBtn = document.getElementById('stickerCancelBtn');
+    const hint = document.getElementById('stickerEditHint');
+    const tray = document.querySelector('.sticker-tray');
+
+    panel.classList.remove('edit-mode');
+    tray.style.display = 'none';
+    editBtn.style.display = 'inline-block';
+    saveBtn.style.display = 'none';
+    cancelBtn.style.display = 'none';
+    hint.style.display = 'none';
+}
+
+// ── 편집 취소 ──
+function cancelStickerEdit() {
+    StickerModel.rollback();          // 저장 전 상태로 복원
+    renderStickersOnCalendar();       // 화면 다시 그리기
+    exitStickerEditMode();
+    showMpToast('수정이 취소되었습니다.');
+}
+
+// ── View: 드래그 시작 이벤트 (스티커 트레이) ──
+function initStickerTray() {
+    document.querySelectorAll('.sticker-item').forEach(el => {
+        el.addEventListener('dragstart', function (e) {
+            dragStickerType = this.dataset.sticker;
+            e.dataTransfer.effectAllowed = 'copy';
+        });
+    });
+}
+
+// ── Controller: 캘린더 셀에 드롭 존 활성화 ──
+function activateDropZones() {
+    document.querySelectorAll('#calGrid .cal-day:not(.empty)').forEach(cell => {
+        cell.classList.add('drop-zone');
+
+        cell.addEventListener('dragover', function (e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy';
+            this.classList.add('drag-over');
+        });
+
+        cell.addEventListener('dragleave', function () {
+            this.classList.remove('drag-over');
+        });
+
+        cell.addEventListener('drop', function (e) {
+            e.preventDefault();
+            this.classList.remove('drag-over');
+
+            if (!dragStickerType) return;
+
+            // 셀 안에서의 상대적 위치 계산 (%)
+            const rect = this.getBoundingClientRect();
+            const posX = ((e.clientX - rect.left) / rect.width * 100).toFixed(1);
+            const posY = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
+
+            // 날짜 추출 (셀의 .day-num span에서)
+            const dayNum = parseInt(this.querySelector('.day-num')?.textContent || '0');
+            if (!dayNum) return;
+
+            const newSticker = {
+                tempId: Date.now() + Math.random(),  // 임시 고유 ID
+                sticker_type: dragStickerType,
+                cal_year: calYear,
+                cal_month: calMonth + 1,
+                cal_day: dayNum,
+                pos_x: parseFloat(posX),
+                pos_y: parseFloat(posY)
+            };
+
+            StickerModel.add(newSticker);
+            renderStickersOnCalendar();   // 화면 즉시 반영
+        });
+    });
+}
+
+// ── View: 스티커를 캘린더 위에 렌더링 ──
+function renderStickersOnCalendar() {
+    // 기존 스티커 DOM 전부 제거
+    document.querySelectorAll('.placed-sticker').forEach(el => el.remove());
+
+    const currentStickers = StickerModel.stickers.filter(
+        s => s.cal_year === calYear && s.cal_month === calMonth + 1
+    );
+
+    currentStickers.forEach(s => {
+        // 해당 날짜 셀 찾기
+        const cells = document.querySelectorAll('#calGrid .cal-day:not(.empty)');
+        let targetCell = null;
+        cells.forEach(cell => {
+            const dayNum = parseInt(cell.querySelector('.day-num')?.textContent || '0');
+            if (dayNum === s.cal_day) targetCell = cell;
+        });
+        if (!targetCell) return;
+
+        // 스티커 DOM 생성
+        const stickerEl = document.createElement('span');
+        stickerEl.className = 'placed-sticker';
+        stickerEl.textContent = s.sticker_type;
+        stickerEl.style.left = s.pos_x + '%';
+        stickerEl.style.top = s.pos_y + '%';
+        stickerEl.dataset.tempId = s.tempId || s.sticker_id;
+
+        // 편집 모드일 때만 클릭으로 삭제 가능
+        stickerEl.addEventListener('click', function (e) {
+            if (!isStickerEditMode) return;
+            e.stopPropagation();
+            const tid = this.dataset.tempId;
+            StickerModel.removeByTempId(parseFloat(tid));
+            this.remove();
+            showMpToast('스티커가 삭제되었습니다.');
+        });
+
+        // 셀은 position:relative여야 함 (CSS에서 설정)
+        targetCell.style.position = 'relative';
+        targetCell.appendChild(stickerEl);
+    });
+}
+
+// ── Controller: 저장 (비동기 POST) ──
+async function saveStickers() {
+    const saveBtn = document.getElementById('stickerSaveBtn');
+    saveBtn.disabled = true;
+    saveBtn.textContent = '저장 중...';
+
+    try {
+        const response = await fetch('mypage/sticker', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                year: calYear,
+                month: calMonth + 1,
+                stickers: StickerModel.stickers.filter(
+                    s => s.cal_year === calYear && s.cal_month === calMonth + 1
+                )
+            })
+        });
+
+        if (!response.ok) throw new Error('서버 오류');
+
+        const saved = await response.json();  // 서버에서 DB ID 포함한 목록 반환
+        StickerModel.commit(saved);           // 저장 완료 → Model 확정
+        renderStickersOnCalendar();
+        exitStickerEditMode();
+        showMpToast('🎉 스티커가 저장되었습니다!');
+
+    } catch (err) {
+        console.error('스티커 저장 실패', err);
+        showMpToast('저장에 실패했습니다. 다시 시도해주세요.', 'error');
+    } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = '💾 저장하기';
+    }
+}
+
+// ── Controller: 불러오기 (비동기 GET) ──
+async function loadStickers() {
+    try {
+        const res = await fetch(
+            `mypage/sticker?year=${calYear}&month=${calMonth + 1}`
+        );
+        if (!res.ok) return;
+        const list = await res.json();
+
+        // tempId가 없으면 sticker_id로 대체
+        list.forEach(s => {
+            if (!s.tempId) s.tempId = s.sticker_id;
+        });
+
+        StickerModel.commit(list);
+        renderStickersOnCalendar();
+    } catch (err) {
+        console.error('스티커 불러오기 실패', err);
+    }
+}
+
+// ── renderCalendar 완료 후 스티커 로드 (기존 함수 확장) ──
+// 기존 renderCalendar의 buildCal 호출 직후에 아래를 추가해야 합니다.
+// buildCal 함수 마지막 줄 grid.innerHTML = html; 다음에:
+//   loadStickers();
+//   if (isStickerEditMode) activateDropZones();
+//   initStickerTray();
+// → 아래 패치 함수가 이를 자동 처리합니다.
+
+const _origBuildCal = buildCal;
+window.buildCal = function (...args) {
+    _origBuildCal(...args);
+    loadStickers();
+    if (isStickerEditMode) activateDropZones();
+    initStickerTray();
+};

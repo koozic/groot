@@ -1,6 +1,8 @@
 package com.groot.app.recommendCW1;
 
 import com.google.gson.Gson;
+import com.groot.app.recommendCW1.dto.RecommendSupplementDTO;
+import com.groot.app.recommendCW1.service.RecommendAnalysisService;
 import com.groot.app.user.UserDTO;
 
 
@@ -24,11 +26,19 @@ import java.util.Map;
 public class RecommendServlet extends HttpServlet { 
 
     private final Gson gson = new Gson();
+    private final RecommendAnalysisService analysisService = RecommendAnalysisService.SERVICE;
 
     // ── GET: 추천 페이지 화면 ─────────────────────
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
+        List<RecommendSupplementDTO> allSupplements = analysisService.getAllSupplements();
+        req.setAttribute("featuredSupplements", analysisService.getFeaturedSupplements(allSupplements));
+        req.setAttribute("moreSupplements", analysisService.getMoreSupplements(allSupplements));
+        req.setAttribute(
+                "selectedSupplementIdsJson",
+                gson.toJson(analysisService.resolveSelectedSupplementIds(req.getParameterValues("supp"), allSupplements))
+        );
 
         req.setAttribute("content",   "views/recommend.jsp");
         req.setAttribute("activeTab", "recommend");
@@ -52,7 +62,7 @@ public class RecommendServlet extends HttpServlet {
             }
 
             Map<String, Object> body = gson.fromJson(sb.toString(), Map.class);
-            List<String> supplements = (List<String>) body.get("supplements");
+            List<String> supplements = toStringList(body.get("supplements"));
             String       type        = (String) body.get("type"); // my | deficiency | compatibility
 
             if (supplements == null || supplements.isEmpty()) {
@@ -60,15 +70,8 @@ public class RecommendServlet extends HttpServlet {
                 return;
             }
 
-            // 2. 분석기 선택 (다형성)
-            SupplementAnalyzer analyzer = switch (type != null ? type : "my") {
-                case "deficiency"    -> new DeficiencyAnalyzer();
-                case "compatibility" -> new CompatibilityAnalyzer();
-                default              -> new MySupplementAnalyzer();
-            };
-
-            // 3. 분석 실행 (비회원/회원 동일)
-            AnalysisResult result = analyzer.analyze(supplements);
+            // 2. 분석 실행 (비회원/회원 동일)
+            AnalysisResult result = analysisService.analyze(supplements, type);
 
             // 4. 로그인 여부 확인
             HttpSession session  = req.getSession(false);
@@ -90,5 +93,23 @@ public class RecommendServlet extends HttpServlet {
             out.print(gson.toJson(Map.of("success", false, "message", "서버 오류가 발생했어요")));
             e.printStackTrace();
         }
+    }
+
+    private List<String> toStringList(Object value) {
+        if (!(value instanceof List<?> rawList)) {
+            return List.of();
+        }
+
+        return rawList.stream()
+                .map(String::valueOf)
+                .map(this::normalizeJsonNumber)
+                .toList();
+    }
+
+    private String normalizeJsonNumber(String value) {
+        if (value != null && value.endsWith(".0")) {
+            return value.substring(0, value.length() - 2);
+        }
+        return value;
     }
 }
