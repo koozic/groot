@@ -745,6 +745,6 @@
 <script>
     const contextPath = '${pageContext.request.contextPath}';
 </script>
-<script src="js/mypage.js"></script>
-<script src="js/mypage.js?v=<%= System.currentTimeMillis() %>"></script>
-<link rel="stylesheet" href="css/mypage.css?v=<%= System.currentTimeMillis() %>">
+
+<script src="${pageContext.request.contextPath}/js/mypage.js?v=<%= System.currentTimeMillis() %>"></script>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/mypage.css?v=<%= System.currentTimeMillis() %>">
