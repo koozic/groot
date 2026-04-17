@@ -12,21 +12,21 @@ import java.util.ArrayList;
 public class RecommendReviewC extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json; charset=UTF-8");
-        response.setCharacterEncoding("UTF-8");
 
+        // 프론트에서 넘어온 영어 데이터 그대로 받기
         String[] supps = request.getParameterValues("supp");
+        String isDef = request.getParameter("isDef");
         String limitStr = request.getParameter("limit");
-        int limit = 1;
+        int limit = (limitStr != null) ? Integer.parseInt(limitStr) : 3;
 
-        try {
-            if (limitStr != null && !limitStr.isBlank()) {
-                limit = Math.max(1, Integer.parseInt(limitStr));
-            }
-        } catch (NumberFormatException ignored) {
-            limit = 1;
+        // 모든 복잡한 처리는 DAO에게 위임! (통역 포함)
+        ArrayList<ReviewDTO> list;
+        if ("true".equals(isDef)) {
+            list = ReviewDAO.RDAO.getDeficiencyBestReviews(supps, limit);
+        } else {
+            list = ReviewDAO.RDAO.getCustomBestReviews(supps);
         }
 
-        ArrayList<ReviewDTO> list = ReviewDAO.RDAO.getBestReviewsBySupplements(supps, limit);
         Gson gson = new Gson();
         response.getWriter().write(gson.toJson(list));
     }
