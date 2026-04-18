@@ -1,116 +1,446 @@
-/* ── 전체 컨테이너 ── */
-.select-container {
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Noto+Serif+KR:wght@400;600&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.recommend-scene {
+    background: linear-gradient(160deg, #fce8f0 0%, #f0e0f8 35%, #dceef8 70%, #f8eef0 100%);
+    min-height: 100vh;
+
+    /* 기존 width/margin 방식 제거하고 fixed로 교체 */
+    position: fixed; /* ← relative → fixed */
+    inset: 0; /* top/right/bottom/left 모두 0 */
+    width: 100%; /* ← 100vw 제거 */
+    margin-left: 0; /* ← calc 제거 */
+    overflow-y: auto; /* 내용 넘치면 스크롤 */
+
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 170px 20px 48px; /* 헤더 높이만큼 상단 패딩 */
+    z-index: 1; /* 헤더(200)보다 낮게 */
+}
+
+.recommend-scene::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(255, 200, 220, 0.22) 0%, transparent 65%),
+    radial-gradient(ellipse 70% 50% at 50% 100%, rgba(200, 180, 255, 0.18) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 30% at 15% 50%, rgba(180, 220, 240, 0.15) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 85% 50%, rgba(255, 210, 230, 0.15) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+.star {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(200, 150, 220, 0.55);
+    opacity: 0;
+    animation: twinkle var(--d, 3s) ease-in-out var(--delay, 0s) infinite;
+}
+
+@keyframes twinkle {
+    0%, 100% {
+        opacity: 0;
+        transform: scale(0.6);
+    }
+    50% {
+        opacity: var(--op, 0.6);
+        transform: scale(1);
+    }
+}
+
+.recommend-label {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.35em;
+    color: rgba(160, 110, 190, 0.65);
+    text-transform: uppercase;
+    margin-top: 18px;
+    opacity: 0;
+    animation: fadeDown 0.8s ease 0.2s forwards;
+}
+
+/* 제목 */
+.recommend-heading {
+    font-size: 36px;
+    font-weight: 600;
+    color: #6a3070;
+    letter-spacing: 0.08em;
+    margin-bottom: 45px;
+    text-align: center;
+    opacity: 0;
+    animation: fadeDown 0.8s ease 0.4s forwards;
+}
+
+@keyframes fadeDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.recommend-row {
+    display: flex;
+    gap: 150px; /* 32px → 48px */
     justify-content: center;
-    align-items: stretch;
-    gap: 40px;
-    margin-top: 30px;
-    padding: 0 10px 40px;
     flex-wrap: wrap;
 }
 
-/* ── 카드 박스 ── */
-.select-box {
-    overflow: hidden;
-    width: 480px;
-    min-width: 200px;
-    min-height: 600px;
-    padding: 40px 30px;
-    border: 2px solid #EDF4CC;
-    border-radius: 20px;
-    text-align: center;
+/* ── 카드 전체 래퍼 (perspective 포함) ── */
+/* 카드 크기 */
+.recommend-card {
+    width: 320px; /* 260 → 320 */
+    height: 486px; /* 395 → 486  (비율 유지: 320 × 1.52) */
     cursor: pointer;
-    transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
-    background: #ffffff;
+    position: relative;
+    opacity: 0;
+    perspective: 1000px;
+}
+
+
+.recommend-card:nth-child(1) {
+    animation: riseIn 0.9s cubic-bezier(.22, .68, 0, 1.15) 0.5s forwards;
+}
+
+.recommend-card:nth-child(2) {
+    animation: riseIn 0.9s cubic-bezier(.22, .68, 0, 1.15) 0.72s forwards;
+}
+
+@keyframes riseIn {
+    from {
+        opacity: 0;
+        transform: translateY(80px) rotate(-2deg);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) rotate(0deg);
+    }
+}
+
+/* ── flip 컨테이너 ── */
+.recommend-card-inner {
+    width: 380px;
+    height: 578px;
+    position: relative;
+    border-radius: 24px;
+    transform-style: preserve-3d;
+    transition: transform 0.75s cubic-bezier(.4, 0, .2, 1), box-shadow 0.45s ease;
+    box-shadow: 0 8px 32px rgba(180, 150, 210, 0.2), 0 0 0 1.5px rgba(230, 200, 255, 0.18);
+}
+
+/* hover: 위로 떠오름 (뒤집히지 않은 상태에서만) */
+.recommend-card:not(.flipped):hover .recommend-card-inner {
+    transform: translateY(-22px);
+    box-shadow: 0 32px 64px rgba(0, 0, 0, 0.6),
+    0 0 40px rgba(220, 170, 255, 0.22),
+    0 0 0 1.5px rgba(230, 200, 255, 0.4);
+}
+
+.recommend-card:not(.flipped):hover .shimmer-bar {
+    left: 150%;
+}
+
+/* ── 앞/뒷면 공통 ── */
+.card-face {
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    overflow: hidden;
+}
+
+/* 뒷면 */
+.card-back {
+    background: transparent;
+}
+
+.card-bg {
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+}
+
+.card-bg-1 {
+    background: linear-gradient(160deg, #fde8f0 0%, #e8d5f5 40%, #c8e8f0 100%);
+}
+
+.card-bg-2 {
+    background: linear-gradient(160deg, #e8f0fd 0%, #d5c8f5 40%, #f0e8c8 100%);
+}
+
+.card-border-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.card-content {
+    position: absolute;
+    inset: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    padding: 24px 16px 20px;
 }
 
-.select-box:hover {
-    border-color: #B4D8D0;
-    transform: translateY(-8px);
-    box-shadow: 0 12px 28px rgba(180, 216, 208, 0.3);
-}
-
-.select-box h2 {
-    color: #334040;
-    font-size: 48px;
-    margin-bottom: 12px;
-    margin-top: 22px;
-    word-break: keep-all;
-}
-
-.select-box p {
-    color: #7A9090;
-    font-size: 18px;
-    line-height: 1.7;
-    word-break: keep-all;
-}
-
-/* ── 이미지 ── */
-.recommend-image-wrap {
-    width: 100%;
-    text-align: center;
+/* 원형 orb도 같이 키우기 */
+.card-orb {
+    width: 110px; /* 88px → 110px */
+    height: 110px;
+    border-radius: 50%;
     margin-bottom: 20px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.4s ease;
 }
 
-.recommend-img {
-    width: 220px;
-    height: auto;
+.recommend-card:not(.flipped):hover .card-orb {
+    transform: scale(1.08);
+    filter: drop-shadow(0 4px 14px rgba(200, 160, 255, 0.5));
+}
+
+.card-orb-1 {
+    background: radial-gradient(circle at 38% 38%, #fff8e8 0%, #f5d8e8 45%, #d8b8e8 100%);
+    box-shadow: 0 0 0 3px rgba(230, 190, 255, 0.35), 0 0 20px rgba(210, 170, 255, 0.2);
+}
+
+.card-orb-2 {
+    background: radial-gradient(circle at 38% 38%, #f0f8ff 0%, #d8e8f8 45%, #b8c8f0 100%);
+    box-shadow: 0 0 0 3px rgba(190, 210, 255, 0.35), 0 0 20px rgba(170, 200, 255, 0.2);
+}
+
+.orb-inner-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(200, 160, 255, 0.3);
+}
+
+.card-title {
+    font-size: 26px;
+    font-weight: 600;
+    color: #4a2060;
+    letter-spacing: 0.06em;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+/* 카드 내 설명 */
+.card-subtitle {
+    font-size: 16px;
+    color: #7a5090;
+    line-height: 1.8;
+    text-align: center;
+    word-break: keep-all;
+}
+
+.card-divider {
+    width: 72px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(180, 130, 220, 0.5), transparent);
+    margin: 14px 0;
+}
+
+.card-tag {
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    color: rgba(140, 90, 180, 0.7);
+    text-transform: uppercase;
+    margin-top: 14px;
+}
+
+.shimmer-bar {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.18) 50%, transparent 70%);
+    border-radius: 16px;
+    pointer-events: none;
+    transition: left 0.6s ease;
+    z-index: 10;
+}
+
+/* ── 앞면 (이미지) ── */
+.card-front {
+    transform: rotateY(180deg);
+}
+
+.card-front img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top; /* 위쪽 기준으로 채움 → 캐릭터 얼굴 안 잘림 */
     display: block;
-    margin: 0 auto;
+    border-radius: 16px;
 }
 
-/* ── 700px 이하 ── */
-@media (max-width: 700px) {
-    .select-container {
-        flex-direction: column;
-        align-items: center;
-        gap: 20px;
-        margin-top: 40px;
-        padding: 0 20px 40px;
-    }
+/* ── 오버레이 ── */
+.recommend-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(60, 20, 70, 0.72);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    cursor: pointer;
+}
 
-    .select-box {
-        width: 100%;
-        max-width: 400px;
-        min-height: auto;
-        padding: 28px 24px;
-    }
+.recommend-overlay.active {
+    display: flex;
+}
 
-    .select-box:hover {
-        transform: translateY(-4px);
-    }
+.recommend-overlay.visible {
+    opacity: 1;
+}
 
-    .recommend-img {
-        width: 160px;
+.ov-card {
+    position: relative;
+    border-radius: 22px;
+    overflow: hidden;
+    cursor: default;
+    transform: scale(0.72) translateY(50px);
+    transition: transform 0.65s cubic-bezier(.22, .68, 0, 1.15);
+    box-shadow: 0 40px 100px rgba(0, 0, 0, 0.75),
+    0 0 60px rgba(255, 200, 230, 0.2),
+    0 0 0 1.5px rgba(255, 210, 235, 0.35);
+    max-width: 85vw;
+    max-height: 88vh;
+}
+
+.recommend-overlay.visible .ov-card {
+    transform: scale(1) translateY(0);
+}
+
+.ov-card img {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 85vw;
+    max-height: 82vh;
+    object-fit: contain;
+}
+
+/* 오버레이 하단 라벨 */
+.ov-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(0deg, rgba(15, 5, 30, 0.88) 0%, transparent 100%);
+    padding: 28px 22px 20px;
+    text-align: center;
+}
+
+.ov-title {
+    font-family: 'Cinzel', serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: rgba(255, 235, 245, 0.95);
+    letter-spacing: 0.08em;
+}
+
+.ov-sub {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 11px;
+    color: rgba(220, 190, 255, 0.6);
+    margin-top: 5px;
+    letter-spacing: 0.04em;
+}
+
+/* 닫기 버튼 */
+.ov-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(20, 8, 40, 0.7);
+    border: 1px solid rgba(255, 200, 230, 0.3);
+    color: rgba(255, 215, 235, 0.8);
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    font-family: sans-serif;
+}
+
+.ov-close:hover {
+    background: rgba(255, 180, 210, 0.2);
+    color: #fff;
+}
+
+/* recommend 페이지: 스크롤 없이 뷰포트에 꽉 차게 */
+html:has(.recommend-scene) {
+    overflow: hidden;
+}
+
+/* recommend 페이지: 헤더 항상 표시 */
+html:has(.recommend-scene) .site-header {
+    top: 0 !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+@media (max-width: 768px) {
+    html:has(.recommend-scene) {
+        overflow: auto; /* 모바일에서 스크롤 복구 */
     }
 }
 
-/* ── 480px 이하 ── */
-@media (max-width: 480px) {
-    .select-container {
-        margin-top: 24px;
-        gap: 16px;
-        padding: 0 16px 32px;
-    }
 
-    .select-box {
-        padding: 24px 20px;
-        border-radius: 14px;
-    }
+/* 헤더 여백 제거 */
+html:has(.recommend-scene) body::before {
+    display: none; /* app.css의 헤더 공간 확보용 ::before 제거 */
+}
 
-    .select-box h2 {
-        font-size: 1.1em;
-    }
+html:has(.recommend-scene) .site-body {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+}
 
-    .select-box p {
-        font-size: 0.88em;
-    }
+html:has(.recommend-scene) .recommend-scene {
+    margin-top: 0;
+    padding-top: 170px; /* 헤더 높이(--header-h: 170px)만큼 안쪽 패딩으로 확보 */
+}
 
-    .recommend-img {
-        width: 120px;
-    }
+/* hover: 이미지에도 적용 */
+.recommend-card:not(.flipped):hover .recommend-card-inner {
+    transform: translateY(-22px);
+    box-shadow: 0 32px 64px rgba(180, 150, 210, 0.25),
+    0 0 40px rgba(220, 170, 255, 0.22),
+    0 0 0 1.5px rgba(230, 200, 255, 0.4);
+}
+
+.recommend-card:not(.flipped):hover .card-content img {
+    transform: scale(1.06) translateY(-6px);
+    filter: drop-shadow(0 8px 18px rgba(200, 160, 255, 0.45));
+}
+
+/* 이미지 트랜지션 추가 */
+.card-content img {
+    transition: transform 0.4s ease, filter 0.4s ease;
 }
