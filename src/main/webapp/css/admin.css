@@ -310,6 +310,8 @@
     font-weight: 700;
     font-size: 0.95em;
     transition: background 0.2s;
+    flex-shrink: 0; /* ✅ 추가: 버튼이 찌그러지지 않게 */
+    white-space: nowrap; /* ✅ 추가: 텍스트 줄바꿈 방지 */
 }
 
 .admin-form-page .btn-cancel:hover {

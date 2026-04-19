@@ -108,19 +108,19 @@
 
             <button onclick="closeAdminModal()" class="modal-close-btn">✕</button>
 
-            <h3 id="adminModalTitle" class="modal-title">➕ 영양소 등록</h3>
+            <h3 id="adminModalTitle" class="modal-title">영양소 등록</h3>
 
             <input type="hidden" id="adminAction" value="insert">
             <input type="hidden" id="adminSuppId" value="">
 
             <div class="modal-form">
                 <div class="modal-field">
-                    <label class="modal-label">영양소 이름 *</label>
+                    <label class="modal-label">영양소 이름</label>
                     <input id="adminName" type="text" class="modal-input">
                 </div>
 
                 <div class="modal-field">
-                    <label class="modal-label">효능 *</label>
+                    <label class="modal-label">효능</label>
                     <textarea id="adminEfficacy" class="modal-textarea"></textarea>
                 </div>
 
@@ -139,22 +139,26 @@
                     <label class="modal-label">주의사항</label>
                     <textarea id="adminCaution" class="modal-textarea modal-textarea-sm"></textarea>
                 </div>
-
+                <div class="modal-field">
+                    <label class="modal-label">이미지 경로</label>
+                    <input id="adminImgPath" type="text" class="modal-input"
+                           placeholder="예: images/supp/lutein.png">
+                </div>
                 <div id="adminBodyIdWrap" class="modal-field">
                     <label class="modal-label">연결할 신체 부위</label>
                     <select id="adminBodyId" class="modal-select">
                         <option value="">선택 안함</option>
-                        <option value="1">💇 머리카락 (hair)</option>
-                        <option value="2">🧴 피부 (skin)</option>
-                        <option value="3">👁️ 눈 (eye)</option>
-                        <option value="4">🧠 뇌 (brain)</option>
-                        <option value="5">🫁 폐 (lung)</option>
-                        <option value="6">❤️ 심장 (heart)</option>
-                        <option value="7">🫀 간 (liver)</option>
-                        <option value="8">🫃 위 (stomach)</option>
-                        <option value="9">🌀 장 (intestine)</option>
-                        <option value="10">🦴 뼈 (bone)</option>
-                        <option value="11">💪 근육 (muscle)</option>
+                        <option value="1">머리카락 (hair)</option>
+                        <option value="2">피부 (skin)</option>
+                        <option value="3">눈 (eye)</option>
+                        <option value="4">뇌 (brain)</option>
+                        <option value="5">폐 (lung)</option>
+                        <option value="6">심장 (heart)</option>
+                        <option value="7">간 (liver)</option>
+                        <option value="8">위 (stomach)</option>
+                        <option value="9">장 (intestine)</option>
+                        <option value="10">뼈 (bone)</option>
+                        <option value="11">근육 (muscle)</option>
                     </select>
                 </div>
             </div>

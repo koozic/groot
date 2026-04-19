@@ -224,9 +224,27 @@ function resetAll() {
 function setSort(s, btn) {
     sort = s;
     page = 1;
+    suppCache = {}; // 캐시 초기화
+
     document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('on'));
     btn.classList.add('on');
-    renderList();
+
+    // ✅ allMode 여부에 따라 대상 부위를 다르게 결정
+    const targetParts = allMode
+        ? Object.keys(PARTS).filter(p => PARTS[p].body_id)   // 전체 부위
+        : [...selected].filter(p => PARTS[p].body_id);        // 선택된 부위만
+
+    if (targetParts.length === 0) {
+        renderList();
+        return;
+    }
+
+    // ✅ allMode일 때 로딩 메시지 표시
+    if (allMode) {
+        document.getElementById('list-area').innerHTML = '<p class="empty-msg">불러오는 중...</p>';
+    }
+
+    Promise.all(targetParts.map(p => fetchSupps(p))).then(() => renderList());
 }
 
 function goPage(p) {
@@ -251,7 +269,7 @@ function getSortedList() {
         return true;
     });
     if (sort === 'view') return arr.sort((a, b) => b.views - a.views);
-    if (sort === 'like') return arr.sort((a, b) => (b.likes + (likedIds.has(b.id) ? 1 : 0)) - (a.likes + (likedIds.has(a.id) ? 1 : 0)));
+    if (sort === 'like') return arr.sort((a, b) => b.likes - a.likes); // ✅ 단순 비교
     return arr.sort((a, b) => b.id - a.id);
 }
 
