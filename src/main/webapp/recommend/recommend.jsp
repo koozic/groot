@@ -61,7 +61,7 @@
                     <div class="card-content">
                         <img src="${pageContext.request.contextPath}/img/ottos/real_search.png"
                              alt="신체별 추천"
-                             style="width:360px;height:360px;object-fit:contain;margin-bottom:3px; margin-top: -33px;">
+                             style="width:360px;height:266px;object-fit:contain;margin-bottom:3px; margin-top: -33px;">
                         <p class="card-title">신체별 추천</p>
                         <div class="card-divider"></div>
                         <p class="card-subtitle">눈, 간, 피부 등 아픈 부위에<br>딱 맞는 영양소를 찾아보세요.</p>
@@ -119,7 +119,7 @@
                     <div class="card-content">
                         <img src="${pageContext.request.contextPath}/img/ottos/wink_otter.png"
                              alt="AI 테마 추천"
-                             style="width:390px;height:390px;object-fit:contain;margin-bottom:10px; margin-top: -75px;">
+                             style="width:390px;height:288px;object-fit:contain;margin-bottom:10px; margin-top: -52px;">
                         <p class="card-title" style="color:#20406a;">AI 테마 추천</p>
                         <div class="card-divider"
                              style="background:linear-gradient(90deg,transparent,rgba(130,170,230,0.5),transparent);"></div>
