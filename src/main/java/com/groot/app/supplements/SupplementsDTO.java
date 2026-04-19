@@ -13,7 +13,7 @@ import java.sql.Date;
 // DTO 역할 : 데이터베이스의 supplements 테이블에서 꺼낸 영양성분 한 줄(Row)의 데이터를 자바 객체로 담아두는 역할
 
 public class SupplementsDTO {
-    // 1. 멤버 변수 (테이블 컬럼과 매칭)
+    // 멤버 변수 (테이블 컬럼과 매칭)
     private int supplementId;
     private String supplementName;
     private String supplementEfficacy;
