@@ -739,9 +739,9 @@ public class ReviewDAO {
                 sql += " WHERE S.supplement_name = ? ";
             }
 
-            // 3. 정렬 및 상위 20개 자르기
+            // 3. 정렬 및 상위 100개 자르기
             sql += "    ORDER BY R.r_like DESC, R.r_score DESC, R.r_date DESC " +
-                    ") WHERE ROWNUM <= 20";
+                    ") WHERE ROWNUM <= 100";
 
             pstmt = con.prepareStatement(sql);
 
@@ -749,7 +749,7 @@ public class ReviewDAO {
             if (!"all".equals(category) && !"photo".equals(category)) {
                 pstmt.setString(1, category);
             }
-
+            //
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
