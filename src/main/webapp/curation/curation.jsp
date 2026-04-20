@@ -37,14 +37,24 @@
 <script>
     const CURATION_OTTER_IMG = '${pageContext.request.contextPath}/img/ottos/lying_otter.png';
 
+    // const CURATION_PROMPTS = {
+    //     '임산부': '임산부에게 필요한 영양소와 영양제를 추천해줘. 각 영양소가 필요한 이유와 권장 섭취량도 알려줘.',
+    //     '수험생': '수험생의 집중력·피로 회복에 도움되는 영양소와 영양제를 추천해줘. 이유와 복용 팁도 포함해줘.',
+    //     '직장인': '스트레스 많은 직장인에게 필요한 영양소와 영양제를 추천해줘. 피로 해소와 면역력 위주로.',
+    //     '운동하는 사람': '운동하는 사람의 근육 회복·체력 향상에 도움되는 영양소와 영양제를 추천해줘. 운동 전후 복용법도 알려줘.',
+    //     '다이어트': '다이어트 중인 사람에게 필요한 영양소와 영양제를 추천해줘. 체지방 감소와 근육 유지 위주로.',
+    //     '비건': '비건 식단에서 부족하기 쉬운 영양소와 보충제를 추천해줘. 동물성 원료 없는 제품 기준으로.',
+    //     '노년층': '노년층의 뼈·관절·심혈관 건강에 도움되는 영양소와 영양제를 추천해줘. 주의사항도 함께 알려줘.'
+    // };
+
     const CURATION_PROMPTS = {
-        '임산부': '임산부에게 필요한 영양소와 영양제를 추천해줘. 각 영양소가 필요한 이유와 권장 섭취량도 알려줘.',
-        '수험생': '수험생의 집중력·피로 회복에 도움되는 영양소와 영양제를 추천해줘. 이유와 복용 팁도 포함해줘.',
-        '직장인': '스트레스 많은 직장인에게 필요한 영양소와 영양제를 추천해줘. 피로 해소와 면역력 위주로.',
-        '운동하는 사람': '운동하는 사람의 근육 회복·체력 향상에 도움되는 영양소와 영양제를 추천해줘. 운동 전후 복용법도 알려줘.',
-        '다이어트': '다이어트 중인 사람에게 필요한 영양소와 영양제를 추천해줘. 체지방 감소와 근육 유지 위주로.',
-        '비건': '비건 식단에서 부족하기 쉬운 영양소와 보충제를 추천해줘. 동물성 원료 없는 제품 기준으로.',
-        '노년층': '노년층의 뼈·관절·심혈관 건강에 도움되는 영양소와 영양제를 추천해줘. 주의사항도 함께 알려줘.'
+        '임산부': '임산부에게 필요한 영양소와 영양제를 추천해줘.',
+        '수험생': '수험생의 집중력·피로 회복에 도움되는 영양소와 영양제를 추천해줘.',
+        '직장인': '스트레스 많은 직장인에게 필요한 영양소와 영양제를 추천해줘.',
+        '운동하는 사람': '운동하는 사람의 근육 회복·체력 향상에 도움되는 영양소와 영양제를 추천해줘.',
+        '다이어트': '다이어트 중인 사람에게 필요한 영양소와 영양제를 추천해줘.',
+        '비건': '비건 식단에서 부족하기 쉬운 영양소와 보충제를 추천해줘.',
+        '노년층': '노년층의 뼈·관절·심혈관 건강에 도움되는 영양소와 영양제를 추천해줘.'
     };
 
     let currentCategory = null;
@@ -64,12 +74,16 @@
     }
 
     function fetchCuration(category) {
+        console.log('불러졌니?'
+        )
         const answerEl = document.getElementById('curationAnswer');
-        isLoading = true;
+        answerEl.innerHTML = '';
 
+        isLoading = true;
         answerEl.innerHTML =
             '<div class="curation-bubble-name">오터 Otter</div>' +
             '<div class="curation-loading-row">' +
+            '<img class="curation-otter-img" style="position: absolute; top: 0px" src="' + CURATION_OTTER_IMG + '" alt="오터">' +
             '  <div class="curation-loading-spacer"></div>' +
             '  <div class="curation-loading-bubble">' +
             '    <div class="curation-dot"></div>' +
@@ -77,19 +91,33 @@
             '    <div class="curation-dot"></div>' +
             '    <div class="curation-dot"></div>' +
             '  </div>' +
-            '</div>';
-
-        const prompt = CURATION_PROMPTS[category] || (category + '에게 맞는 영양소와 영양제를 추천해줘.');
+            '</div>' +
+            '<div id="curationAIAnswer" style="margin-top: 5px; padding-left: 95px;"></div>'
+        ;
+        // const prompt = CURATION_PROMPTS[category] || (category + '에게 맞는 영양소와 영양제를 추천해줘.');
+        const prompt = category + '에게 좋은 영양소와 영양제를 추천해줘.';
 
         const eventSource = new EventSource(
             "http://10.1.82.100:80/chat/stream?q=" + encodeURIComponent(prompt)
         );
-
+        const answerAI = document.getElementById('curationAIAnswer');
         eventSource.onmessage = (event) => {
-            console.log(event.data);
+            if (event.data === "[[END]]") {
+                console.log("끝남");
+                eventSource.close();
+                isLoading = false;
+                answerAI.innerHTML = formatText(answerAI.innerText);
+                document.querySelectorAll(".curation-dot").forEach((e) => {
+                        e.style.animationPlayState = 'paused';
+                    }
+                )
+                return;
+            }
+            answerAI.append(event.data);
         };
 
         eventSource.onerror = () => {
+            // isLoading = false;
             eventSource.close();
         };
         // fetch('http://10.1.82.100/chat3', {   // ← 실제 엔드포인트로 수정
@@ -121,6 +149,10 @@
         //     .finally(() => {
         //         isLoading = false;
         //     });
+    }
+
+    function formatText(text) {
+        return text.replace(/(?<!\d)\.(?!\d)/g, '.<br>');
     }
 
     function escapeHtml(str) {

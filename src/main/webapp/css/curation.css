@@ -199,6 +199,7 @@
     align-items: flex-end;
     gap: 12px;
     margin-top: 14px;
+    position: relative;
 }
 
 .curation-loading-spacer {
