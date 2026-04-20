@@ -12,21 +12,21 @@
 
 /* ── 색상 변수 ── */
 :root {
-  --ps-pink:    #EFA0AE;
-  --ps-lpink:   #F4C8D4;
-  --ps-blush:   #FAE8EE;
-  --ps-lime:    #DCE9A8;
-  --ps-llime:   #EDF4CC;
-  --ps-yellow:  #F2EDB8;
-  --ps-mint:    #B4D8D0;
-  --ps-lmint:   #D8EEE8;
-  --ps-bg:      #F0F8F0;
-  --ps-card:    #FFFFFF;
-  --ps-text-h:  #334040;
-  --ps-text-b:  #4A5858;
-  --ps-text-m:  #7A9090;
-  --ps-text-s:  #A8C0B8;
-  --ps-border:  rgba(100, 160, 140, 0.15);
+    --ps-pink: #EFA0AE;
+    --ps-lpink: #F4C8D4;
+    --ps-blush: #FAE8EE;
+    --ps-lime: #DCE9A8;
+    --ps-llime: #EDF4CC;
+    --ps-yellow: #F2EDB8;
+    --ps-mint: #B4D8D0;
+    --ps-lmint: #D8EEE8;
+    --ps-bg: #F0F8F0;
+    --ps-card: #FFFFFF;
+    --ps-text-h: #334040;
+    --ps-text-b: #4A5858;
+    --ps-text-m: #7A9090;
+    --ps-text-s: #A8C0B8;
+    --ps-border: rgba(100, 160, 140, 0.15);
 }
 
 
@@ -35,8 +35,8 @@
 ════════════════════════════════ */
 
 body {
-  background: var(--ps-bg);
-  color: var(--ps-text-b);
+    background: var(--ps-bg);
+    color: var(--ps-text-b);
 }
 
 
@@ -45,58 +45,58 @@ body {
 ════════════════════════════════ */
 
 .cb-section {
-  background: var(--ps-llime);
-  border: 1.5px solid var(--ps-lime);
-  border-radius: 12px;
+    background: var(--ps-llime);
+    border: 1.5px solid var(--ps-lime);
+    border-radius: 12px;
 }
 
 .cb-title {
-  color: var(--ps-text-m);
+    color: var(--ps-text-m);
 }
 
 .cb-item {
-  border-color: var(--ps-lime);
-  color: var(--ps-text-b);
-  font-size: 11px;
+    border-color: var(--ps-lime);
+    color: var(--ps-text-b);
+    font-size: 11px;
 }
 
 .cb-item:hover {
-  background: var(--ps-lmint);
+    background: var(--ps-lmint);
 }
 
 .cb-item.checked {
-  background: var(--ps-lmint);
-  border-color: var(--ps-mint);
+    background: var(--ps-lmint);
+    border-color: var(--ps-mint);
 }
 
 .cb-box {
-  border-color: var(--ps-lime);
+    border-color: var(--ps-lime);
 }
 
 .cb-box.on {
-  border-color: var(--ps-mint);
-  background: var(--ps-mint);
+    border-color: var(--ps-mint);
+    background: var(--ps-mint);
 }
 
 .cb-check {
-  background: var(--ps-mint);
+    background: var(--ps-mint);
 }
 
 /* 버튼 */
 .cb-btn {
-  border-color: var(--ps-lime);
-  color: var(--ps-text-m);
-  border-radius: 8px;
+    border-color: var(--ps-lime);
+    color: var(--ps-text-m);
+    border-radius: 8px;
 }
 
 .cb-btn:hover {
-  background: var(--ps-lmint);
+    background: var(--ps-lmint);
 }
 
 .cb-btn.on {
-  background: var(--ps-lmint);
-  border-color: var(--ps-mint);
-  color: var(--ps-text-h);
+    background: var(--ps-lmint);
+    border-color: var(--ps-mint);
+    color: var(--ps-text-h);
 }
 
 
@@ -105,14 +105,14 @@ body {
 ════════════════════════════════ */
 
 .panel {
-  background: var(--ps-card);
-  border-color: var(--ps-border);
-  border-radius: 16px;
+    background: var(--ps-card);
+    border-color: var(--ps-border);
+    border-radius: 16px;
 }
 
 .panel-title {
-  color: var(--ps-text-h);
-  font-weight: 600;
+    color: var(--ps-text-h);
+    font-weight: 600;
 }
 
 
@@ -121,19 +121,19 @@ body {
 ════════════════════════════════ */
 
 .sort-btn {
-  border-color: var(--ps-lime);
-  color: var(--ps-text-m);
-  border-radius: 20px;
+    border-color: var(--ps-lime);
+    color: var(--ps-text-m);
+    border-radius: 20px;
 }
 
 .sort-btn:hover {
-  background: var(--ps-llime);
+    background: var(--ps-llime);
 }
 
 .sort-btn.on {
-  background: var(--ps-llime);
-  border-color: var(--ps-mint);
-  color: var(--ps-text-h);
+    background: var(--ps-llime);
+    border-color: var(--ps-mint);
+    color: var(--ps-text-h);
 }
 
 
@@ -144,10 +144,10 @@ body {
 ════════════════════════════════ */
 
 .tag {
-  font-size: 10px;
-  padding: 2px 8px;
-  border-radius: 20px;
-  font-weight: 600;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 600;
 }
 
 
@@ -156,28 +156,28 @@ body {
 ════════════════════════════════ */
 
 .card {
-  background: var(--ps-card);
-  border-color: var(--ps-border);
-  border-radius: 14px;
-  transition: border-color 0.15s, box-shadow 0.15s;
+    background: var(--ps-card);
+    border-color: var(--ps-border);
+    border-radius: 14px;
+    transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 .card:hover {
-  border-color: var(--ps-mint);
-  box-shadow: 0 2px 12px rgba(100, 160, 140, 0.12);
+    border-color: var(--ps-mint);
+    box-shadow: 0 2px 12px rgba(100, 160, 140, 0.12);
 }
 
 .card-name {
-  color: var(--ps-text-h);
-  font-weight: 600;
+    color: var(--ps-text-h);
+    font-weight: 600;
 }
 
 .card-eff {
-  color: var(--ps-text-m);
+    color: var(--ps-text-m);
 }
 
 .card-stats {
-  color: var(--ps-text-s);
+    color: var(--ps-text-s);
 }
 
 
@@ -186,20 +186,20 @@ body {
 ════════════════════════════════ */
 
 .like-btn {
-  border-color: var(--ps-lpink);
-  color: var(--ps-text-m);
-  border-radius: 20px;
+    border-color: var(--ps-lpink);
+    color: var(--ps-text-m);
+    border-radius: 20px;
 }
 
 .like-btn:hover {
-  background: var(--ps-blush);
-  border-color: var(--ps-pink);
+    background: var(--ps-blush);
+    border-color: var(--ps-pink);
 }
 
 .like-btn.on {
-  background: var(--ps-blush);
-  border-color: var(--ps-pink);
-  color: #9A5060;
+    background: var(--ps-blush);
+    border-color: var(--ps-pink);
+    color: #9A5060;
 }
 
 
@@ -208,20 +208,20 @@ body {
 ════════════════════════════════ */
 
 .pg-btn {
-  border-color: var(--ps-border);
-  color: var(--ps-text-m);
-  border-radius: 8px;
+    border-color: var(--ps-border);
+    color: var(--ps-text-m);
+    border-radius: 8px;
 }
 
 .pg-btn:hover {
-  background: var(--ps-llime);
+    background: var(--ps-llime);
 }
 
 .pg-btn.on {
-  background: var(--ps-lmint);
-  border-color: var(--ps-mint);
-  color: var(--ps-text-h);
-  font-weight: 600;
+    background: var(--ps-lmint);
+    border-color: var(--ps-mint);
+    color: var(--ps-text-h);
+    font-weight: 600;
 }
 
 
@@ -230,7 +230,7 @@ body {
 ════════════════════════════════ */
 
 .empty-msg {
-  color: var(--ps-text-s);
+    color: var(--ps-text-s);
 }
 
 
@@ -239,70 +239,70 @@ body {
 ════════════════════════════════ */
 
 .modal-box {
-  background: var(--ps-card);
-  border-color: var(--ps-border);
-  border-radius: 16px;
+    background: var(--ps-card);
+    border-color: var(--ps-border);
+    border-radius: 16px;
 }
 
 .modal-name {
-  color: var(--ps-text-h);
-  font-weight: 600;
+    color: var(--ps-text-h);
+    font-weight: 600;
 }
 
 .modal-lbl {
-  color: var(--ps-text-m);
+    color: var(--ps-text-m);
 }
 
 .modal-val {
-  color: var(--ps-text-b);
+    color: var(--ps-text-b);
 }
 
 .modal-warn {
-  background: var(--ps-blush);
-  color: #9A5060;
-  border-radius: 8px;
+    background: var(--ps-blush);
+    color: #9A5060;
+    border-radius: 8px;
 }
 
 .modal-stats {
-  color: var(--ps-text-s);
+    color: var(--ps-text-s);
 }
 
 .modal-foot {
-  border-top-color: var(--ps-border);
+    border-top-color: var(--ps-border);
 }
 
 /* 닫기 / 좋아요 버튼 */
 .close-btn {
-  border-color: var(--ps-border);
-  color: var(--ps-text-m);
-  border-radius: 8px;
-  transition: background 0.15s;
+    border-color: var(--ps-border);
+    color: var(--ps-text-m);
+    border-radius: 8px;
+    transition: background 0.15s;
 }
 
 .close-btn:hover {
-  background: var(--ps-llime);
+    background: var(--ps-llime);
 }
 
 .modal-like {
-  border-color: var(--ps-lpink);
-  color: var(--ps-text-m);
-  border-radius: 8px;
-  transition: background 0.15s;
+    border-color: var(--ps-lpink);
+    color: var(--ps-text-m);
+    border-radius: 8px;
+    transition: background 0.15s;
 }
 
 .modal-like:hover {
-  background: var(--ps-blush);
+    background: var(--ps-blush);
 }
 
 .modal-like.on {
-  background: var(--ps-blush);
-  border-color: var(--ps-pink);
-  color: #9A5060;
+    background: var(--ps-blush);
+    border-color: var(--ps-pink);
+    color: #9A5060;
 }
 
 /* 모달 아이콘 배경 — 부위별 색은 JS inline이므로 기본값만 */
 .modal-icon {
-  border-radius: 12px;
+    border-radius: 12px;
 }
 
 
@@ -312,54 +312,54 @@ body {
 ════════════════════════════════ */
 
 .admin-modal-content {
-  border-radius: 16px;
+    border-radius: 16px;
 }
 
 .modal-title {
-  color: var(--ps-text-h);
+    color: var(--ps-text-h);
 }
 
 .modal-label {
-  color: var(--ps-text-b);
+    color: var(--ps-text-b);
 }
 
 .modal-input,
 .modal-textarea,
 .modal-select {
-  border-color: var(--ps-lime);
-  color: var(--ps-text-b);
-  border-radius: 10px;
-  transition: border-color 0.15s, box-shadow 0.15s;
+    border-color: var(--ps-lime);
+    color: var(--ps-text-b);
+    border-radius: 10px;
+    transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 .modal-input:focus,
 .modal-textarea:focus,
 .modal-select:focus {
-  border-color: var(--ps-mint);
-  box-shadow: 0 0 0 3px rgba(180, 216, 208, 0.25);
-  outline: none;
+    border-color: var(--ps-mint);
+    box-shadow: 0 0 0 3px rgba(180, 216, 208, 0.25);
+    outline: none;
 }
 
 /* 저장 버튼 → 민트 */
 .modal-submit-btn {
-  background: var(--ps-mint);
-  color: var(--ps-text-h);
-  border-radius: 10px;
+    background: var(--ps-mint);
+    color: var(--ps-text-h);
+    border-radius: 10px;
 }
 
 .modal-submit-btn:hover {
-  background: #9ECEC6;
+    background: #9ECEC6;
 }
 
 /* 취소 버튼 */
 .modal-cancel-btn {
-  background: var(--ps-llime);
-  color: var(--ps-text-b);
-  border-radius: 10px;
+    background: var(--ps-llime);
+    color: var(--ps-text-b);
+    border-radius: 10px;
 }
 
 .modal-cancel-btn:hover {
-  background: var(--ps-lime);
+    background: var(--ps-lime);
 }
 
 
@@ -369,27 +369,27 @@ body {
 ════════════════════════════════ */
 
 .admin-toggle-btn {
-  background: var(--ps-yellow);
-  color: var(--ps-text-h);
-  border: 1.5px solid #D8C878;
-  border-radius: 8px;
-  transition: background 0.2s;
+    background: var(--ps-yellow);
+    color: var(--ps-text-h);
+    border: 1.5px solid #D8C878;
+    border-radius: 8px;
+    transition: background 0.2s;
 }
 
 .admin-toggle-btn:hover {
-  background: #E8D890;
+    background: #E8D890;
 }
 
 .admin-add-btn {
-  background: var(--ps-mint);
-  color: var(--ps-text-h);
-  border: none;
-  border-radius: 8px;
-  transition: background 0.2s;
+    background: var(--ps-mint);
+    color: var(--ps-text-h);
+    border: none;
+    border-radius: 8px;
+    transition: background 0.2s;
 }
 
 .admin-add-btn:hover {
-  background: #9ECEC6;
+    background: #9ECEC6;
 }
 
 
@@ -399,54 +399,54 @@ body {
 ════════════════════════════════ */
 
 .admin-table th {
-  background: var(--ps-llime);
-  color: var(--ps-text-h);
+    background: var(--ps-llime);
+    color: var(--ps-text-h);
 }
 
 .admin-table th.sort-active {
-  background: var(--ps-lmint);
-  color: var(--ps-text-h);
+    background: var(--ps-lmint);
+    color: var(--ps-text-h);
 }
 
 .admin-table td {
-  color: var(--ps-text-b);
+    color: var(--ps-text-b);
 }
 
 .admin-table tr:hover td {
-  background: var(--ps-blush);
+    background: var(--ps-blush);
 }
 
 .admin-table th,
 .admin-table td {
-  border-color: var(--ps-border);
+    border-color: var(--ps-border);
 }
 
 /* 수정 버튼 → 민트 */
 .btn-edit {
-  background: var(--ps-mint);
-  color: var(--ps-text-h);
-  border-radius: 6px;
+    background: var(--ps-mint);
+    color: var(--ps-text-h);
+    border-radius: 6px;
 }
 
 .btn-edit:hover {
-  background: #9ECEC6;
+    background: #9ECEC6;
 }
 
 /* 삭제 버튼 → 파스텔 핑크 */
 .btn-del {
-  background: var(--ps-pink);
-  color: #fff;
-  border-radius: 6px;
+    background: var(--ps-pink);
+    color: #fff;
+    border-radius: 6px;
 }
 
 .btn-del:hover {
-  background: #D88090;
+    background: #D88090;
 }
 
 /* 뱃지 */
 .count-badge {
-  background: var(--ps-llime);
-  color: #4A7030;
+    background: var(--ps-llime);
+    color: #4A7030;
 }
 
 
@@ -455,13 +455,13 @@ body {
 ════════════════════════════════ */
 
 .btn-add {
-  background: var(--ps-mint);
-  color: var(--ps-text-h);
-  border-radius: 8px;
+    background: var(--ps-mint);
+    color: var(--ps-text-h);
+    border-radius: 8px;
 }
 
 .btn-add:hover {
-  background: #9ECEC6;
+    background: #9ECEC6;
 }
 
 
@@ -470,12 +470,206 @@ body {
 ════════════════════════════════ */
 
 .sort-select-wrap select {
-  border-color: var(--ps-lime);
-  color: var(--ps-text-b);
-  border-radius: 8px;
+    border-color: var(--ps-lime);
+    color: var(--ps-text-b);
+    border-radius: 8px;
 }
 
 .sort-select-wrap select:focus {
-  border-color: var(--ps-mint);
-  outline: none;
+    border-color: var(--ps-mint);
+    outline: none;
+}
+
+/*body.js*/
+
+/* ════════════════════════════════
+   body.js 인라인 스타일 → CSS 클래스 대체
+════════════════════════════════ */
+
+/* 로그인 유도 모달 */
+.login-modal-box {
+    background: #fff;
+    border-radius: 14px;
+    padding: 28px 24px;
+    width: min(340px, 90%);
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(100, 160, 140, 0.2);
+    border: 1.5px solid var(--ps-lmint);
+}
+
+.login-modal-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--ps-text-h);
+}
+
+.login-modal-desc {
+    font-size: 13px;
+    color: var(--ps-text-m);
+    margin-bottom: 20px;
+}
+
+.login-modal-btn-login {
+    padding: 9px 20px;
+    background: var(--ps-mint);
+    color: var(--ps-text-h);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    transition: background 0.2s;
+}
+
+.login-modal-btn-login:hover {
+    background: #9ECEC6;
+}
+
+.login-modal-btn-close {
+    padding: 9px 16px;
+    background: var(--ps-llime);
+    border: 1.5px solid var(--ps-lime);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--ps-text-b);
+    transition: background 0.2s;
+}
+
+.login-modal-btn-close:hover {
+    background: var(--ps-lime);
+}
+
+/* 상세 모달 */
+.supp-modal-box {
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    width: min(420px, 95%);
+    max-height: 85vh;
+    overflow-y: auto;
+    border: 1.5px solid var(--ps-border);
+    box-shadow: 0 10px 25px rgba(100, 160, 140, 0.15);
+}
+
+.supp-modal-name {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--ps-text-h);
+}
+
+.supp-modal-lbl {
+    font-size: 12px;
+    color: var(--ps-text-m);
+    min-width: 60px;
+    line-height: 1.6;
+}
+
+.supp-modal-val {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ps-text-b);
+}
+
+.supp-modal-caution {
+    font-size: 11px;
+    color: #9A5060;
+    background: var(--ps-blush);
+    border-radius: 8px;
+    padding: 8px 10px;
+    margin-top: 4px;
+}
+
+.supp-modal-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1.5px solid var(--ps-border);
+}
+
+.supp-modal-stats {
+    font-size: 12px;
+    color: var(--ps-text-s);
+}
+
+.supp-modal-btn-like {
+    font-size: 12px;
+    padding: 5px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 1.5px solid var(--ps-lpink);
+    background: transparent;
+    color: var(--ps-text-m);
+    transition: all 0.2s;
+}
+
+.supp-modal-btn-like:hover {
+    background: var(--ps-blush);
+}
+
+.supp-modal-btn-like.on {
+    background: var(--ps-blush);
+    border-color: var(--ps-pink);
+    color: #9A5060;
+}
+
+.supp-modal-btn-close {
+    font-size: 12px;
+    padding: 5px 14px;
+    border: 1.5px solid var(--ps-lime);
+    border-radius: 8px;
+    background: transparent;
+    cursor: pointer;
+    color: var(--ps-text-m);
+    transition: background 0.2s;
+}
+
+.supp-modal-btn-close:hover {
+    background: var(--ps-llime);
+}
+
+/* 관리자 카드 내 수정/삭제 버튼 */
+.admin-card-btn-wrap {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1.5px solid var(--ps-border);
+}
+
+.admin-card-btn-edit {
+    flex: 1;
+    padding: 5px 0;
+    background: var(--ps-mint);
+    color: var(--ps-text-h);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8em;
+    font-weight: 700;
+    transition: background 0.2s;
+}
+
+.admin-card-btn-edit:hover {
+    background: #9ECEC6;
+}
+
+.admin-card-btn-del {
+    flex: 1;
+    padding: 5px 0;
+    background: var(--ps-pink);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8em;
+    font-weight: 700;
+    transition: background 0.2s;
+}
+
+.admin-card-btn-del:hover {
+    background: #D88090;
 }

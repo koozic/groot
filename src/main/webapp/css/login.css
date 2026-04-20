@@ -9,10 +9,9 @@
     justify-content: center;
     align-items: center;
     padding: 40px 20px;
-    background:
-            radial-gradient(circle at top left, rgba(37, 99, 235, 0.10), transparent 30%),
-            radial-gradient(circle at bottom right, rgba(249, 115, 22, 0.10), transparent 28%),
-            linear-gradient(180deg, #f8fbff 0%, var(--bg) 100%);
+    background: radial-gradient(circle at top left, rgba(37, 99, 235, 0.10), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(249, 115, 22, 0.10), transparent 28%),
+    linear-gradient(180deg, #f8fbff 0%, var(--bg) 100%);
 }
 
 .login-wrap {
@@ -29,9 +28,8 @@
 
 .login-left {
     padding: 48px 42px;
-    background:
-            linear-gradient(135deg, rgba(37, 99, 235, 0.08), rgba(249, 115, 22, 0.06)),
-            #fff;
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.08), rgba(249, 115, 22, 0.06)),
+    #fff;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -93,14 +91,14 @@
     max-width: 26%;
     object-fit: contain;
     transform: rotate(-12deg);
-    filter: drop-shadow(0 8px 16px rgba(0,0,0,0.10));
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.10));
 }
 
 .login-bottle-img {
     width: 220px;
     max-width: 48%;
     object-fit: contain;
-    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.12));
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.12));
 }
 
 .login-right {
@@ -331,17 +329,39 @@
         height: 48px;
     }
 }
+
 .login-pill-emoji {
     font-size: 110px;
     max-width: 26%;
     transform: rotate(-12deg);
-    filter: drop-shadow(0 8px 16px rgba(0,0,0,0.10));
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.10));
     display: inline-block;
 }
 
 .login-bottle-emoji {
     font-size: 220px;
     max-width: 48%;
-    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.12));
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.12));
     display: inline-block;
 }
+
+/* ================================================
+   비디오 배경 및 글래스모피즘(Glassmorphism) 효과 추가
+   ================================================ */
+
+/* 1. 비디오 배경 설정 */
+/*.video-background {*/
+/*    position: fixed; !* 화면에 고정 *!*/
+/*    top: 0;*/
+/*    left: 0;*/
+/*    width: 100vw; !* 화면 전체 너비 *!*/
+/*    height: 100vh; !* 화면 전체 높이 *!*/
+/*    z-index: -1; !* 다른 요소들(로그인 폼) 뒤로 보냄 *!*/
+/*    overflow: hidden;*/
+/*}*/
+
+/*#bg-video {*/
+/*    width: 100%;*/
+/*    height: 100%;*/
+/*    object-fit: cover; !* 영상 비율을 유지하면서 화면을 꽉 채움 *!*/
+/*}*/

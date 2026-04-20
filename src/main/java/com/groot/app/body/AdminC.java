@@ -65,6 +65,7 @@ public class AdminC extends HttpServlet {
             List<BodyDTO> list = dao.getAllSupplements(sortBy);
 
             request.setAttribute("suppList", list);
+            request.setAttribute("sortBy", sortBy);
             request.setAttribute("content", "body/admin_main.jsp");
             request.getRequestDispatcher("index.jsp").forward(request, response);
 

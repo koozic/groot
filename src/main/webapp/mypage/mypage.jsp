@@ -90,7 +90,8 @@
             <form id="deleteUser" action="${pageContext.request.contextPath}/user-delete" method="post"
                   onsubmit="return confirmDelete()">
                 <input type="hidden" name="user_id" value="${sessionScope.loginUser.user_id}">
-                <div class="mp-withdraw-row" style="margin-top:20px; padding-top:16px; border-top:1px solid #f3f4f6; text-align:right;">
+                <div class="mp-withdraw-row"
+                     style="margin-top:20px; padding-top:16px; border-top:1px solid #f3f4f6; text-align:right;">
                     <button type="submit" class="mp-withdraw-link">회원 탈퇴</button>
                 </div>
             </form>
@@ -179,7 +180,8 @@
                         </c:forEach>
                     </c:when>
                     <c:otherwise>
-                        <p class="mp-empty-note" style="text-align:center; font-size:13px; color:#9ca3af; padding:20px 0;">
+                        <p class="mp-empty-note"
+                           style="text-align:center; font-size:13px; color:#9ca3af; padding:20px 0;">
                             등록된 영양제가 없습니다. 추가해주세요!
                         </p>
                     </c:otherwise>
@@ -265,11 +267,12 @@
     <div id="tab-cal" class="mp-tab-content">
 
         <%-- 1. 구매 알림 영역 --%>
-            <div class="mp-card mp-alert-card-wrap" style="margin-bottom:16px;">
+        <div class="mp-card mp-alert-card-wrap" style="margin-bottom:16px;">
             <div class="mp-sec-title">구매 알림</div>
             <%-- JS(renderAlerts)에서 동적으로 HTML을 삽입할 빈 컨테이너 --%>
             <div id="alertList">
-                <p class="mp-loading-note" style="text-align:center; font-size:13px; color:#9ca3af; padding:10px;">데이터를 불러오는 중입니다...</p>
+                <p class="mp-loading-note" style="text-align:center; font-size:13px; color:#9ca3af; padding:10px;">데이터를
+                    불러오는 중입니다...</p>
             </div>
         </div>
 
@@ -321,7 +324,7 @@
 
             <%-- ★ 스티커 꾸미기 패널 추가 ★ --%>
             <div id="stickerPanel" class="sticker-panel">
-                <div class="sticker-panel-title">🎨 스티커 꾸미기</div>
+                <div class="sticker-panel-title">캘린더 꾸미기</div>
                 <div class="sticker-tray">
 
                     <%-- ★ 신체 기관 스티커 ★ --%>
@@ -650,11 +653,11 @@
                 </div>
                 <div class="sticker-actions">
                     <button id="stickerEditToggle" class="sticker-edit-btn" onclick="toggleStickerEdit()">
-                        ✏️ 꾸미기 시작
+                        꾸미기 시작
                     </button>
                     <button id="stickerSaveBtn" class="sticker-save-btn"
                             onclick="saveStickers()" style="display:none;">
-                        💾 저장하기
+                        저장
                     </button>
                     <button id="stickerCancelBtn" class="sticker-cancel-btn"
                             onclick="cancelStickerEdit()" style="display:none;">
@@ -662,7 +665,7 @@
                     </button>
                 </div>
                 <p id="stickerEditHint" class="sticker-hint" style="display:none;">
-                    👆 스티커를 날짜 칸으로 드래그하세요! 스티커를 클릭하면 삭제됩니다.
+                    스티커를 날짜 칸으로 드래그하세요! 스티커를 클릭하면 삭제됩니다.
                 </p>
             </div>
 
@@ -703,7 +706,8 @@
     <c:if test="${empty sessionScope.isAdmin}">
         <div id="tab-like" class="mp-tab-content">
             <div class="mp-card">
-                <div class="mp-sec-title mp-liked-head" style="display:flex; justify-content:space-between; align-items:center;">
+                <div class="mp-sec-title mp-liked-head"
+                     style="display:flex; justify-content:space-between; align-items:center;">
                     <span>❤️ 내가 찜한 영양성분</span>
                         <%-- 정렬 버튼 --%>
                     <div class="mp-liked-sort" style="display:flex; gap:6px;">

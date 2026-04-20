@@ -12,7 +12,21 @@
 </head>
 <body>
 
+<!-- 1. 배경 비디오 추가 -->
+<%--<div class="video-background">--%>
+<!--
+   autoplay: 자동 재생
+   muted: 소리 끔 (크롬 등에서 자동 재생을 위해 필수)
+   loop: 무한 반복
+   playsinline: 모바일 환경 대응
+-->
+<%--    <video autoplay muted loop playsinline id="bg-video">--%>
+<%--        <source src="${pageContext.request.contextPath}/video/login_sea.mp4" type="video/mp4">--%>
+<%--    </video>--%>
+<%--</div>--%>
+
 <div class="login-page">
+    <%--    <div class="login-wrap glass-effect"> <!-- glass-effect 클래스 추가 -->--%>
     <div class="login-wrap">
 
         <div class="login-left">
@@ -23,7 +37,8 @@
 
             <div class="login-img-box">
                 <img src="${pageContext.request.contextPath}/img/pill.png" alt="알약 이미지" class="login-pill-img">
-                <img src="${pageContext.request.contextPath}/img/bottle.png" alt="영양제 통 이미지" class="login-bottle-img">
+                <img src="${pageContext.request.contextPath}/img/bottle.png" alt="영양제 통 이미지"
+                     class="login-bottle-img">
             </div>
         </div>
 
@@ -59,6 +74,7 @@
             </div>
         </div>
 
+        <%--        </div>--%>
     </div>
 </div>
 
