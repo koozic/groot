@@ -322,10 +322,10 @@ function buildCal(mappedAlerts, checkedDates, firstDay, lastDate, today) {
 
         // [수정된 부분] 복용/미복용 상태 판단 로직
         if (checkedDates && checkedDates.includes(d)) {
-            html += `<div class="day-status status-ok">✅ 완료</div>`;
+            html += `<div class="day-status status-ok">완료</div>`;
         } else if (currentCellDate < todayMidnight) {
             // 셀의 날짜가 오늘 자정보다 과거일 경우에만 미복용 처리
-            html += `<div class="day-status status-miss">⚠️ 미복용</div>`;
+            html += `<div class="day-status status-miss">미복용</div>`;
         }
 
         // 3. 구매 알림 데이터(배지) 렌더링
