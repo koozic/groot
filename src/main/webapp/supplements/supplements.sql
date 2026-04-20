@@ -176,6 +176,38 @@ VALUES (seq_supplements_id.NEXTVAL, 'NAC', '체내 글루타치온 생성을 돕
 INSERT INTO supplements (supplement_id, supplement_name, supplement_efficacy, supplement_dosage, supplement_timing, supplement_caution, supplement_image_path)
 VALUES (seq_supplements_id.NEXTVAL, '퀘르세틴', '천연 항히스타민제로 알레르기 반응을 억제하고 폐 및 혈관 내 염증을 줄이는 항산화 효과가 큼.', '500~1,000mg', '식후', '특정 약물과의 상호작용이 있을 수 있으므로 복용 전 전문가 상담 권장.', 'https://weekly.chosun.com/news/photo/202305/26499_49726_360.gif');
 
+-- 수정
+update supplements
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494235295657361458/Jonathan_Adler_Large_Purple_Acrylic_Pill_248_liked_on_Polyvore_featuring_home_home_decor_misc_drugs_filler_other_purple_purple_home_accessories_pop_art_and_acrylic_sculpture-Photoroom.png?ex=69e67bd0&is=69e52a50&hm=fdbd95f42d861afbc477942d86a1921017e83219c7ac8a91b1ba20d28c040c1d&=&format=webp&quality=lossless&width=693&height=693'
+where supplement_name like '%비타민%';
+
+update supplements
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225024561713324/Gemini_Generated_Image_8rdcau8rdcau8rdc-Photoroom.png?ex=69e6723f&is=69e520bf&hm=73ffde6fa8969df112ee298abc4c189b99b8438d5a6eb45d60ab881819f23c01&=&format=webp&quality=lossless&width=389&height=693'
+where supplement_name like '%퀘르세틴%';
+
+update supplements
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225026646413382/Liver_Organ_3D_Icon_Glossy_Minimal_Emoji_Style_Isolated_PNG_object_1-Photoroom.png?ex=69e6723f&is=69e520bf&hm=d0f811c803c3a5c87ef8ab34cf04f81d80de3245df444715accd7f26647b32ba&=&format=webp&quality=lossless&width=693&height=693'
+where supplement_name like '%NAC%';
+
+update supplements
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225026646413382/Liver_Organ_3D_Icon_Glossy_Minimal_Emoji_Style_Isolated_PNG_object_1-Photoroom.png?ex=69e6723f&is=69e520bf&hm=d0f811c803c3a5c87ef8ab34cf04f81d80de3245df444715accd7f26647b32ba&=&format=webp&quality=lossless&width=693&height=693'
+where supplement_name like '%밀크씨슬%';
+
+update supplements
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225025828388914/Gemini_Generated_Image_tjxuzhtjxuzhtjxu-Photoroom.png?ex=69e6723f&is=69e520bf&hm=6f7d655a9e785b27c3196a87213152a972a70b1873a6ca6a67114f3b81ff6a84&=&format=webp&quality=lossless&width=389&height=693'
+where supplement_name like '%글루타민%';
+
+update supplements
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225026235502612/Gemini_Generated_Image_x1b2n3x1b2n3x1b2-Photoroom.png?ex=69e6723f&is=69e520bf&hm=e64d3b65cfa1bee80c53c26d6584f6e6023ad5ebbd2fa3f607f3994cbb93e295&=&format=webp&quality=lossless&width=693&height=693'
+where supplement_name like '%식이섬유%';
+
+update supplements
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225026235502612/Gemini_Generated_Image_x1b2n3x1b2n3x1b2-Photoroom.png?ex=69e6723f&is=69e520bf&hm=e64d3b65cfa1bee80c53c26d6584f6e6023ad5ebbd2fa3f607f3994cbb93e295&=&format=webp&quality=lossless&width=693&height=693'
+where supplement_name like '%프리바이오%';
+
+update supplements
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225026235502612/Gemini_Generated_Image_x1b2n3x1b2n3x1b2-Photoroom.png?ex=69e6723f&is=69e520bf&hm=e64d3b65cfa1bee80c53c26d6584f6e6023ad5ebbd2fa3f607f3994cbb93e295&=&format=webp&quality=lossless&width=693&height=693'
+where supplement_name like '%프로바이오%';
 
 -- 데이터베이스에 영구 반영 (필수)
 COMMIT;
