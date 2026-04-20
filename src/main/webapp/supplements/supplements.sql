@@ -210,44 +210,52 @@ set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147
 where supplement_name like '%프로바이오%';
 
 update supplements
-set supplement_image_path = ''
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225025363087440/Gemini_Generated_Image_h3sb1qh3sb1qh3sb-Photoroom.png?ex=69e71aff&is=69e5c97f&hm=5b87a02527c09139ee71fa3297f3cf5960c90d46518887ab787eb7b501f12e5f&=&format=webp&quality=lossless&width=693&height=693'
 where supplement_name like '%칼륨%';
 
 update supplements
-set supplement_image_path = ''
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225025363087440/Gemini_Generated_Image_h3sb1qh3sb1qh3sb-Photoroom.png?ex=69e71aff&is=69e5c97f&hm=5b87a02527c09139ee71fa3297f3cf5960c90d46518887ab787eb7b501f12e5f&=&format=webp&quality=lossless&width=693&height=693'
 where supplement_name like '%크레아틴%';
 
 update supplements
-set supplement_image_path = ''
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225023597281380/Bone_3D_Icon_Glossy_Minimal_Emoji_Style_Isolated_PNG_object-Photoroom.png?ex=69e71afe&is=69e5c97e&hm=1a8ec3bcd906784ed82e5062b5c2bd968429cbc1bdc13620dccfc8c476f3c9ba&=&format=webp&quality=lossless&width=693&height=693'
 where supplement_name like '%글루코사민%';
 
 update supplements
-set supplement_image_path = ''
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225023597281380/Bone_3D_Icon_Glossy_Minimal_Emoji_Style_Isolated_PNG_object-Photoroom.png?ex=69e71afe&is=69e5c97e&hm=1a8ec3bcd906784ed82e5062b5c2bd968429cbc1bdc13620dccfc8c476f3c9ba&=&format=webp&quality=lossless&width=693&height=693'
 where supplement_name like '%MSM%';
 
 update supplements
-set supplement_image_path = ''
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225025363087440/Gemini_Generated_Image_h3sb1qh3sb1qh3sb-Photoroom.png?ex=69e71aff&is=69e5c97f&hm=5b87a02527c09139ee71fa3297f3cf5960c90d46518887ab787eb7b501f12e5f&=&format=webp&quality=lossless&width=693&height=693'
 where supplement_name like '%히알루론산%';
 
 update supplements
-set supplement_image_path = ''
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225027502182591/11-Photoroom.png?ex=69e71aff&is=69e5c97f&hm=d0324e158c9df5c60cc04af66072ee184c8490cba7adcd115e54e88935dd1193&=&format=webp&quality=lossless&width=693&height=693'
 where supplement_name like '%루테인%';
 
 update supplements
-set supplement_image_path = ''
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225024075300864/Download_free_png_of_PNG_Brain_pink_confectionery_outdoors__by_Aum_about_3d_3d_1-Photoroom.png?ex=69e71aff&is=69e5c97f&hm=60083db261225999438ecef1cd6009fad87cb64540e271fcec4b0c67da80ea1f&=&format=webp&quality=lossless&width=838&height=693'
 where supplement_name like '%콜린%';
 
 update supplements
-set supplement_image_path = ''
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225027502182591/11-Photoroom.png?ex=69e71aff&is=69e5c97f&hm=d0324e158c9df5c60cc04af66072ee184c8490cba7adcd115e54e88935dd1193&=&format=webp&quality=lossless&width=693&height=693'
 where supplement_name like '%오메가%';
 
 update supplements
-set supplement_image_path = ''
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225027015508068/1-Photoroom.png?ex=69e71aff&is=69e5c97f&hm=d14aed0a8a5859d1f301476bfb10b04ee39e4e1fbfbbfc30da8777c598b8f219&=&format=webp&quality=lossless&width=390&height=693'
+where supplement_name like '%코엔자임%';
+
+update supplements
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225023597281380/Bone_3D_Icon_Glossy_Minimal_Emoji_Style_Isolated_PNG_object-Photoroom.png?ex=69e71afe&is=69e5c97e&hm=1a8ec3bcd906784ed82e5062b5c2bd968429cbc1bdc13620dccfc8c476f3c9ba&=&format=webp&quality=lossless&width=693&height=693'
 where supplement_name like '%칼슘%';
 
 update supplements
-set supplement_image_path = ''
-where supplement_name like '%칼슘%';
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225025363087440/Gemini_Generated_Image_h3sb1qh3sb1qh3sb-Photoroom.png?ex=69e71aff&is=69e5c97f&hm=5b87a02527c09139ee71fa3297f3cf5960c90d46518887ab787eb7b501f12e5f&=&format=webp&quality=lossless&width=693&height=693'
+where supplement_name like '%마그네슘%';
+
+update supplements
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225025031602317/Gemini_Generated_Image_gzxpvngzxpvngzxp-Photoroom.png?ex=69e71aff&is=69e5c97f&hm=7f2bcf16b08d6a4b604ac052da971ec81dc56a3cd9b2d4956c8162b21782ab3d&=&format=webp&quality=lossless&width=693&height=693'
+where supplement_name like '%아연%';
 
 -- 데이터베이스에 영구 반영 (필수)
 COMMIT;
