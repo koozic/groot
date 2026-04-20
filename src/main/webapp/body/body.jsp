@@ -126,7 +126,7 @@
 
                 <div class="modal-grid2">
                     <div class="modal-field">
-                        <label class="modal-label">복용법</label>
+                        <label class="modal-label">복용량</label>
                         <input id="adminDosage" type="text" class="modal-input">
                     </div>
                     <div class="modal-field">

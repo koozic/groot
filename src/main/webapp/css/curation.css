@@ -22,18 +22,28 @@
     --ps-border: rgba(100, 160, 140, 0.15);
 }
 
-/* ── 전체 레이아웃 ── */
+/* site-body 여백 제거 */
+.site-body {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/*전체 레이아웃*/
 .curation-layout {
     display: flex;
-    height: calc(100vh - var(--header-h, 170px) - 56px);
+    height: calc(100vh - var(--header-h, 170px));
     overflow: hidden;
     background: var(--ps-bg);
+    width: 100%;
     margin: 0;
+    position: absolute; /* ← 추가 */
+    left: 0; /* ← 추가 */
+    right: 0; /* ← 추가 */
 }
 
 /* ── 왼쪽 사이드바 ── */
 .curation-sidebar {
-    width: 156px;
+    width: 313px;
     flex-shrink: 0;
     background: var(--ps-llime);
     border-right: 1.5px solid var(--ps-border);
@@ -44,12 +54,13 @@
 }
 
 .curation-sidebar-title {
-    font-size: 10px;
+    font-size: 24px;
     color: var(--ps-text-m);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     padding: 0 8px;
-    margin-bottom: 8px;
+    margin-bottom: 30px;
+    margin-left: 12px;
 }
 
 .curation-cat-btn {
@@ -59,12 +70,16 @@
     padding: 9px 11px;
     text-align: left;
     cursor: pointer;
-    font-size: 13px;
+    font-size: 20px;
+    /*margin-left: 36px;*/
+    margin-left: 0px;
+    margin-bottom: 20px;
     color: var(--ps-text-b);
     transition: all 0.15s ease;
     line-height: 1.3;
     font-family: inherit;
     width: 100%;
+    text-align: center;
 }
 
 .curation-cat-btn:hover {
@@ -86,6 +101,8 @@
     flex-direction: column;
     overflow: hidden;
     background: var(--ps-bg);
+    min-width: 0; /* ← 추가 */
+    width: 100%; /* ← 추가 */
 }
 
 .curation-content-header {
@@ -95,14 +112,18 @@
 }
 
 .curation-content-header h2 {
-    font-size: 16px;
+    font-size: 38px;
     font-weight: 600;
     color: var(--ps-text-h);
-    margin-bottom: 3px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    margin-left: 20px;
 }
 
 .curation-content-header p {
-    font-size: 12px;
+    font-size: 19px;
+    margin-bottom: 20px;
+    margin-left: 20px;
     color: var(--ps-text-m);
 }
 
@@ -129,13 +150,17 @@
 }
 
 .curation-empty-otter {
-    width: 90px;
+    width: 207px;
     opacity: 0.5;
+}
+
+.curation-empty-text {
+    font-size: 25px;
 }
 
 /* ── 발신자 이름 ── */
 .curation-bubble-name {
-    font-size: 11px;
+    font-size: 23px;
     color: var(--ps-text-s);
     margin-bottom: 5px;
     padding-left: 2px;

@@ -147,7 +147,7 @@
             </div>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
                 <div>
-                    <label style="display:block; font-weight:700; margin-bottom:6px; font-size:0.9em;">복용법</label>
+                    <label style="display:block; font-weight:700; margin-bottom:6px; font-size:0.9em;">복용량</label>
                     <input id="adminDosage" type="text"
                            style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;">
                 </div>
