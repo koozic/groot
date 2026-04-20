@@ -967,6 +967,7 @@
     margin-bottom: 12px;
     display: flex;
     align-items: center;
+    font-size: 11px;
     gap: 12px;
     font-weight: 600;
     color: #334155;
