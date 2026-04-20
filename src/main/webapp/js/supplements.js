@@ -16,15 +16,13 @@ document.addEventListener('keydown', function(event) {
 });
 
 // 1. 등록 모달 열기
-// 일반 사용자가 주소창을 조작해서 억지로 '등록' 버튼을 눌렀을 때,
-// 텅 빈 에러 화면이 뜨는 것을 막아주는 방어 코드
 function openAddModal() {
     fetch('/supplementAdd', {
         // 💡 서버(필터)가 비동기 요청임을 알아챌 수 있도록 디테일 포인트 (headers)를 추가
         headers: {
             'X-Requested-With': 'fetch'
         }
-        }) // 등록용 JSP를 반환하는 서블릿 경로
+        }) // 등록용 JSP를 반환하는 서블릿 경로 supplementAdd
 
         .then(res => {
             // 403 에러 : 서버가 클라이언트의 요청을 이해했지만, 권한 부족 등의 이유로 접근을 거부할 때 발생하는 HTTP 상태 코드
@@ -43,10 +41,10 @@ function openAddModal() {
             modal.showModal();
         })
 
+        // 위에서 throw한 에러(권한 없음)를 여기서 조용히 처리합니다.
+        // 에러가 났으므로 모달 창은 열리지 않습니다!
         .catch(error => {
-            // 위에서 throw한 에러(권한 없음)를 여기서 조용히 처리합니다.
             console.log(error.message);
-            // 에러가 났으므로 모달 창은 열리지 않습니다!
         });
 }
 
