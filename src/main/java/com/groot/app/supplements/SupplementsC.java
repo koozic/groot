@@ -94,6 +94,9 @@ public class SupplementsC extends HttpServlet {
         String imageUrl = null;
         if (filePart != null && filePart.getSize() > 0) {
             imageUrl = com.groot.app.common.CloudinaryUtil.uploadFile(filePart, "supplements");
+        } else {
+            // 사용자가 사진을 첨부하지 않았을 때: 기본 이미지 주소 넣기
+            imageUrl = "default.png";
         }
 
         // 4. 받아온 링크를 주방(DAO)에 전달하기 위해 request 상자에 담기
