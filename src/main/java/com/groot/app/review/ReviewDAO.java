@@ -599,7 +599,8 @@ public class ReviewDAO {
             con = DBManager_new.connect();
             StringBuilder sql = new StringBuilder(
                     "SELECT * FROM (" +
-                            "    SELECT R.*, P.product_name, S.supplement_name " +
+                            "    SELECT R.review_id, R.user_id, R.product_id, R.r_content, R.r_score, R.r_img, R.r_like, " +
+                            "           P.product_name, P.product_image, S.supplement_name " +
                             "    FROM reviews R " +
                             "    JOIN products P ON R.product_id = P.product_id " +
                             "    JOIN supplements S ON P.product_nutrient = S.supplement_id "
@@ -629,10 +630,16 @@ public class ReviewDAO {
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 ReviewDTO r = new ReviewDTO();
+                r.setReview_id(rs.getInt("review_id"));
+                r.setProduct_id(rs.getInt("product_id"));
                 r.setR_score(rs.getInt("r_score"));
                 r.setR_content(rs.getString("r_content"));
+                r.setR_img(rs.getString("r_img"));
+                r.setR_like(rs.getInt("r_like"));
                 r.setUser_id(rs.getString("user_id"));
                 r.setSupp_name(rs.getString("supplement_name"));
+                r.setP_name(rs.getString("product_name"));
+                r.setP_img(rs.getString("product_image"));
                 list.add(r);
             }
         } catch (Exception e) { e.printStackTrace(); }
@@ -652,7 +659,8 @@ public class ReviewDAO {
         try {
             con = DBManager_new.connect();
             String sql = "SELECT * FROM (" +
-                    "    SELECT R.*, P.product_name, S.supplement_name " +
+                    "    SELECT R.review_id, R.user_id, R.product_id, R.r_content, R.r_score, R.r_img, R.r_like, " +
+                    "           P.product_name, P.product_image, S.supplement_name " +
                     "    FROM reviews R " +
                     "    JOIN products P ON R.product_id = P.product_id " +
                     "    JOIN supplements S ON P.product_nutrient = S.supplement_id " +
@@ -670,10 +678,16 @@ public class ReviewDAO {
 
                 while (rs.next()) {
                     ReviewDTO r = new ReviewDTO();
+                    r.setReview_id(rs.getInt("review_id"));
+                    r.setProduct_id(rs.getInt("product_id"));
                     r.setR_score(rs.getInt("r_score"));
                     r.setR_content(rs.getString("r_content"));
+                    r.setR_img(rs.getString("r_img"));
+                    r.setR_like(rs.getInt("r_like"));
                     r.setUser_id(rs.getString("user_id"));
                     r.setSupp_name(rs.getString("supplement_name"));
+                    r.setP_name(rs.getString("product_name"));
+                    r.setP_img(rs.getString("product_image"));
                     list.add(r);
                 }
                 rs.close();

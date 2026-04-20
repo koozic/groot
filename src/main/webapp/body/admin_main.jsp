@@ -12,7 +12,7 @@
 
         <%-- 제목 + 총 개수 --%>
         <div style="display:flex; align-items:center;">
-            <h2>🛠️ 영양소 관리</h2>
+            <h2>영양소 관리</h2>
             <span class="count-badge">총 ${suppList.size()}개</span>
         </div>
 
@@ -23,21 +23,13 @@
                 <span>정렬</span>
                 <%-- 셀렉트 변경 시 바로 해당 정렬로 페이지 이동 --%>
                 <select onchange="location.href='admin?sortBy=' + this.value">
-                    <option value="id_desc"
-                    ${sortBy == 'id_desc' || empty sortBy ? 'selected' : ''}>
-                        ID 최신순 (기본)
+                    <option value="date_desc"
+                    ${sortBy == 'date_desc' || empty sortBy ? 'selected' : ''}>
+                        최신순
                     </option>
                     <option value="id_asc"
                     ${sortBy == 'id_asc' ? 'selected' : ''}>
-                        ID 오래된순
-                    </option>
-                    <option value="date_desc"
-                    ${sortBy == 'date_desc' ? 'selected' : ''}>
-                        등록일 최신순
-                    </option>
-                    <option value="date_asc"
-                    ${sortBy == 'date_asc' ? 'selected' : ''}>
-                        등록일 오래된순
+                        오래된순
                     </option>
                     <option value="name_asc"
                     ${sortBy == 'name_asc' ? 'selected' : ''}>
@@ -48,26 +40,18 @@
 
             <button type="button" class="btn-add"
                     onclick="openAdminModal('insert')">
-                + 새 영양소 등록
+                새 영양소 등록
             </button>
         </div>
 
     </div>
-    <%-- /admin-top-bar --%>
 
     <%-- ── 테이블 ── --%>
     <div class="admin-table-wrap">
         <table class="admin-table">
             <thead>
             <tr>
-                <%-- 현재 정렬 기준 컬럼에 sort-active 클래스 + 화살표 표시 --%>
-                <th class="${(sortBy == 'id_desc' || sortBy == 'id_asc' || empty sortBy) ? 'sort-active' : ''}">
-                    ID
-                    <c:choose>
-                        <c:when test="${sortBy == 'id_asc'}">▲</c:when>
-                        <c:otherwise>▼</c:otherwise><%-- 기본 id_desc --%>
-                    </c:choose>
-                </th>
+                <th>ID</th>
                 <th class="${sortBy == 'name_asc' ? 'sort-active' : ''}">
                     이름
                     <c:if test="${sortBy == 'name_asc'}">▲</c:if>
@@ -75,11 +59,11 @@
                 <th>효능</th>
                 <th>이미지</th>
                 <th>조회수</th>
-                <th class="${(sortBy == 'date_desc' || sortBy == 'date_asc') ? 'sort-active' : ''}">
+                <th class="${(sortBy == 'date_desc' || empty sortBy || sortBy == 'id_asc') ? 'sort-active' : ''}">
                     등록일
                     <c:choose>
-                        <c:when test="${sortBy == 'date_asc'}">▲</c:when>
-                        <c:when test="${sortBy == 'date_desc'}">▼</c:when>
+                        <c:when test="${sortBy == 'id_asc'}">▲</c:when>
+                        <c:otherwise>▼</c:otherwise>
                     </c:choose>
                 </th>
                 <th>관리</th>
@@ -137,27 +121,27 @@
             z-index:99999; justify-content:center; align-items:center; padding:20px;"
      onclick="if(event.target===this) closeAdminModal()">
     <div style="background:#fff; border-radius:14px; padding:30px; width:100%;
-                max-width:550px; max-height:90vh; overflow-y:auto; position:relative;
-                box-shadow:0 15px 35px rgba(0,0,0,0.3);">
+            max-width:550px; max-height:90vh; overflow-y:auto; position:relative;
+            box-shadow:0 15px 35px rgba(0,0,0,0.3); box-sizing:border-box;">
 
         <button onclick="closeAdminModal()"
                 style="position:absolute; top:16px; right:16px; background:none;
                        border:none; font-size:1.5em; cursor:pointer; color:#bbb;">✕
         </button>
 
-        <h3 id="adminModalTitle" style="margin-top:0; margin-bottom:25px;">➕ 영양소 등록</h3>
+        <h3 id="adminModalTitle" style="margin-top:0; margin-bottom:25px;">영양소 등록</h3>
 
         <input type="hidden" id="adminAction" value="insert">
         <input type="hidden" id="adminSuppId" value="">
 
         <div style="display:flex; flex-direction:column; gap:16px;">
             <div>
-                <label style="display:block; font-weight:700; margin-bottom:6px; font-size:0.9em;">영양소 이름 *</label>
+                <label style="display:block; font-weight:700; margin-bottom:6px; font-size:0.9em;">영양소 이름</label>
                 <input id="adminName" type="text"
                        style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;">
             </div>
             <div>
-                <label style="display:block; font-weight:700; margin-bottom:6px; font-size:0.9em;">효능 *</label>
+                <label style="display:block; font-weight:700; margin-bottom:6px; font-size:0.9em;">효능</label>
                 <textarea id="adminEfficacy"
                           style="width:100%; height:80px; padding:10px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box; resize:none;"></textarea>
             </div>
@@ -188,29 +172,32 @@
                 <select id="adminBodyId"
                         style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px;">
                     <option value="">선택 안함</option>
-                    <option value="1">💇 머리카락</option>
-                    <option value="2">🧴 피부</option>
-                    <option value="3">👁️ 눈</option>
-                    <option value="4">🧠 뇌</option>
-                    <option value="5">🫁 폐</option>
-                    <option value="6">❤️ 심장</option>
-                    <option value="7">🫀 간</option>
-                    <option value="8">🫃 위</option>
-                    <option value="9">🌀 장</option>
-                    <option value="10">🦴 뼈</option>
-                    <option value="11">💪 근육</option>
+                    <option value="1">머리카락</option>
+                    <option value="2">피부</option>
+                    <option value="3">눈</option>
+                    <option value="4">뇌</option>
+                    <option value="5">폐</option>
+                    <option value="6">심장</option>
+                    <option value="7">간</option>
+                    <option value="8">위</option>
+                    <option value="9">장</option>
+                    <option value="10">뼈</option>
+                    <option value="11">근육</option>
                 </select>
             </div>
         </div>
 
-        <div style="display:flex; gap:12px; margin-top:30px;">
+        <div style="display:flex; gap:12px; margin-top:30px; align-items:center; width:100%;">
             <button onclick="submitAdminModal()"
                     style="flex:1; padding:13px; background:#4CAF50; color:white;
-                           border:none; border-radius:8px; font-weight:700; cursor:pointer;">저장하기
+                   border:none; border-radius:8px; font-weight:700; cursor:pointer;
+                   font-size:0.95em; min-width:0;">저장하기
             </button>
             <button onclick="closeAdminModal()"
-                    style="padding:13px 25px; background:#eee; border:none;
-                           border-radius:8px; cursor:pointer;">취소
+                    style="padding:13px 20px; background:#eee; border:none;
+                   border-radius:8px; cursor:pointer; font-size:0.95em;
+                   flex-shrink:0; white-space:nowrap; font-weight:700; width:auto !important; height:52px !important; border-radius: 20px !important;
+    border:none !important; color:inherit !important; white-space: nowrap !important;">취소
             </button>
         </div>
     </div>
@@ -228,7 +215,7 @@
         const bodyIdWrap = document.getElementById('adminBodyIdWrap');
 
         if (mode === 'update') {
-            document.getElementById('adminModalTitle').textContent = '✏️ 영양소 수정';
+            document.getElementById('adminModalTitle').textContent = '영양소 수정';
             if (bodyIdWrap) bodyIdWrap.style.display = 'none'; // 수정 시 부위 선택 숨김
 
             fetch('admin?action=getOne&suppId=' + suppId)
@@ -247,7 +234,7 @@
                     document.getElementById('adminImgPath').value = d.supplementImagePath || '';
                 });
         } else {
-            document.getElementById('adminModalTitle').textContent = '➕ 새 영양소 등록';
+            document.getElementById('adminModalTitle').textContent = '새 영양소 등록';
             if (bodyIdWrap) bodyIdWrap.style.display = 'block';
             ['adminName', 'adminEfficacy', 'adminDosage', 'adminTiming', 'adminCaution', 'adminImgPath']
                 .forEach(id => document.getElementById(id).value = '');
