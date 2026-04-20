@@ -209,6 +209,46 @@ update supplements
 set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225026235502612/Gemini_Generated_Image_x1b2n3x1b2n3x1b2-Photoroom.png?ex=69e6723f&is=69e520bf&hm=e64d3b65cfa1bee80c53c26d6584f6e6023ad5ebbd2fa3f607f3994cbb93e295&=&format=webp&quality=lossless&width=693&height=693'
 where supplement_name like '%프로바이오%';
 
+update supplements
+set supplement_image_path = ''
+where supplement_name like '%칼륨%';
+
+update supplements
+set supplement_image_path = ''
+where supplement_name like '%크레아틴%';
+
+update supplements
+set supplement_image_path = ''
+where supplement_name like '%글루코사민%';
+
+update supplements
+set supplement_image_path = ''
+where supplement_name like '%MSM%';
+
+update supplements
+set supplement_image_path = ''
+where supplement_name like '%히알루론산%';
+
+update supplements
+set supplement_image_path = ''
+where supplement_name like '%루테인%';
+
+update supplements
+set supplement_image_path = ''
+where supplement_name like '%콜린%';
+
+update supplements
+set supplement_image_path = ''
+where supplement_name like '%오메가%';
+
+update supplements
+set supplement_image_path = ''
+where supplement_name like '%칼슘%';
+
+update supplements
+set supplement_image_path = ''
+where supplement_name like '%칼슘%';
+
 -- 데이터베이스에 영구 반영 (필수)
 COMMIT;
 
