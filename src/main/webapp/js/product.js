@@ -151,7 +151,7 @@ function renderProducts(products, page) {
         htmlString += `
             <div class="product-card" style="animation-delay: ${delay}s" onclick="location.href='product-detail?id=${p.productId}'">
                 <div class="product-image">
-                    <img src="${p.productImage}" alt="상품 이미지" onerror="this.src='default-image.png'">
+                    <img src="${p.productImage}" alt="상품 이미지" onerror="this.src='img/pill.png'">
                     ${deleteBtnHtml}
                 </div>
                 <div class="product-info">
