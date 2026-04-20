@@ -9,11 +9,14 @@
         overflow: hidden;
         padding-bottom: 10px; /* 그림자 잘림 방지 */
     }
+    .best-review-swiper .swiper-wrapper {
+        align-items: flex-start;
+    }
     .best-review-swiper .swiper-slide {
         height: auto; /* 카드 4개 높이 균일하게 맞춤 */
     }
     .best-review-swiper .card {
-        height: 100%;
+        height: auto;
         margin: 0; /* Swiper가 간격을 알아서 주므로 기존 마진 제거 */
     }
 </style>
