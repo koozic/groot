@@ -53,6 +53,7 @@
 
     </style>
 </head>
+
 <body>
 <div class="reg-container">
     <h2 style="text-align: center; margin-top: 0;">새 영양성분 등록</h2>
@@ -94,6 +95,5 @@
         <button class="submit-btn" onclick="location.href='supplements'">목록으로 돌아가기</button>
     </form>
 </div>
-
 </body>
 </html>

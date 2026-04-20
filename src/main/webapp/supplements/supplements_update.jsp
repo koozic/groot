@@ -115,13 +115,13 @@
     무조건 제출(Submit) 버튼으로 작동합니다.
     그래서 "목록으로 돌아가기" 버튼에 type="button"을 안 적어주면,
     목록으로 안 가고 냅다 수정을 진행해 버릴 수 있습니다.--%>
-    <div class="btn-group">
-        <button type="button" class="btn-list" onclick="location.href='supplements'">목록으로 돌아가기</button>
-    </div>
+<%--    <div class="btn-group">--%>
+<%--        <button type="button" class="btn-list" onclick="location.href='supplements'">목록으로 돌아가기</button>--%>
+<%--    </div>--%>
 
     <div class="btn-group">
         <button type="submit" class="btn-submit">수정 완료</button>
-        <button type="button" class="btn-cancel" onclick="history.back()">취소</button>
+        <button type="button" class="btn-submit" onclick="history.back()">취소</button>
     </div>
     </form>
 </div>

@@ -1,15 +1,14 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<%--(글자 검사 기능)--%>
+<%--글자 검사 기능 : 이미지 주소를 똑똑하게 구분해서 화면에 띄워주는 부분에 활용--%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <%--    모바일 환경--%>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <%--모바일 환경--%>
     <title>영양성분 리스트</title>
     <link rel="stylesheet" href="css/supplements.css">
     <link rel="stylesheet" href="css/site-theme.css">
@@ -30,6 +29,7 @@
     </div>
 </c:if>
 
+<%-- 영양성분 카드 리스트 영역 --%>
 <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
     <div class="supplements-container">
         <c:forEach var="supp" items="${supplementsList}">
