@@ -749,7 +749,7 @@ public class ReviewDAO {
             if (!"all".equals(category) && !"photo".equals(category)) {
                 pstmt.setString(1, category);
             }
-
+            //
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
