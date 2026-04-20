@@ -55,7 +55,7 @@
             <a href="supplements" class="dropdown-item ${activeTab == 'nutrition' ? 'active' : ''}">🧪 영양성분</a>
             <a href="recommend" class="dropdown-item ${activeTab == 'recommend' ? 'active' : ''}">✨ 영양추천</a>
             <c:if test="${sessionScope.isAdmin == true}">
-                <a href="admin" class="dropdown-item ${activeTab == 'admin'     ? 'active' : ''}">🛠️ 영양제 관리</a>
+                <a href="admin" class="dropdown-item ${activeTab == 'admin'     ? 'active' : ''}">🛠️ 영양소 관리</a>
             </c:if>
             <div class="dropdown-divider"></div>
             <a href="cart" class="dropdown-item">🛒 장바구니</a>
