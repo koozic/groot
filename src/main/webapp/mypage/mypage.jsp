@@ -26,7 +26,7 @@
     <div class="mp-tabs">
         <button class="mp-tab active" onclick="switchTab('info',   this)">👤 회원정보</button>
         <button class="mp-tab" onclick="switchTab('check',  this)"><img style="width: 20px;" class="icon"
-                                                                        src="https://media.discordapp.net/attachments/1487987147876208640/1494235295657361458/Jonathan_Adler_Large_Purple_Acrylic_Pill_248_liked_on_Polyvore_featuring_home_home_decor_misc_drugs_filler_other_purple_purple_home_accessories_pop_art_and_acrylic_sculpture-Photoroom.png?ex=69e1de90&is=69e08d10&hm=77401de240de77414723fe3085eb19b828e97c376252eef6deb2033221471176&=&format=webp&quality=lossless&width=683&height=683"
+                                                                        src="img/stickers/pill.png"
                                                                         alt=""> 오늘의 영양제
         </button>
         <button class="mp-tab" onclick="switchTab('cal',    this)">📅 복용 캘린더</button>
@@ -148,7 +148,7 @@
                                  onclick="toggleCheck(this, '${p.productId}')">
                                     <%-- 1. 좌측: 아이콘 --%>
                                 <div class="vit-icon"><img style="width: 20px;" class="icon"
-                                                           src="https://media.discordapp.net/attachments/1487987147876208640/1494235295657361458/Jonathan_Adler_Large_Purple_Acrylic_Pill_248_liked_on_Polyvore_featuring_home_home_decor_misc_drugs_filler_other_purple_purple_home_accessories_pop_art_and_acrylic_sculpture-Photoroom.png?ex=69e1de90&is=69e08d10&hm=77401de240de77414723fe3085eb19b828e97c376252eef6deb2033221471176&=&format=webp&quality=lossless&width=683&height=683"
+                                                           src="img/stickers/pill.png"
                                                            alt="">
                                 </div>
 
