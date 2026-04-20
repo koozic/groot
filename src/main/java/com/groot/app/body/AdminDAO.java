@@ -22,7 +22,7 @@ public class AdminDAO {
         }
         return false;
     }
-    
+
 
     /**
      * 정렬 조건을 받아 전체 영양소 목록을 반환합니다.
@@ -36,23 +36,18 @@ public class AdminDAO {
     public List<BodyDTO> getAllSupplements(String sortBy) throws Exception {
 
         // ── 허용된 정렬 값만 사용 (SQL Injection 방지) ──
+        // ── 현재 코드 (37~52번째 줄) → 아래로 전부 교체 ──
         String orderBy;
         switch (sortBy == null ? "" : sortBy) {
-            case "id_asc":
-                orderBy = "supplement_id ASC";
-                break;
-            case "date_desc":
-                orderBy = "supplement_reg_date DESC";
-                break;
-            case "date_asc":
+            case "id_asc":                              // "오래된순" — 등록일 오름차순으로 재정의
                 orderBy = "supplement_reg_date ASC";
                 break;
-            case "name_asc":
+            case "name_asc":                            // 이름 가나다순
                 orderBy = "supplement_name ASC";
                 break;
-            default:
-                orderBy = "supplement_id DESC";
-                break; // id_desc
+            default:                                    // "최신순" (date_desc 또는 빈값)
+                orderBy = "supplement_reg_date DESC";
+                break;
         }
 
         String sql = "SELECT supplement_id, supplement_name, supplement_efficacy, " +
@@ -86,7 +81,7 @@ public class AdminDAO {
 
     // 기존 파라미터 없는 메서드는 내부에서 위 메서드를 호출하도록 수정 (하위 호환)
     public List<BodyDTO> getAllSupplements() throws Exception {
-        return getAllSupplements("id_desc");
+        return getAllSupplements("date_desc");  // ✅
     }
 
     // ── 단일 영양소 조회 (수정 폼용) ──
