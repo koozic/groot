@@ -904,21 +904,36 @@
 }
 
 /* 복용 상태 표시 점(Dot) 디자인 변경 */
-#tab-cal .cal-dot-wrap {
-    margin-top: 8px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-    justify-content: center;
+#tab-cal .day-status {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 8px;
+    margin-top: 6px;
+    display: inline-block;
+    letter-spacing: -0.3px;
+    transition: all 0.2s ease;
 }
 
-#tab-cal .cal-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+/* 복용 완료: 아주 연한 파스텔 그린 */
+#tab-cal .status-ok {
+    background-color: #f0fdf4;
+    color: #4ade80;
 }
 
+/* 미복용: 아주 연한 파스텔 핑크/레드 */
+#tab-cal .status-miss {
+    background-color: #fef2f2;
+    color: #f87171;
+}
+
+/* 셀 호버 시 텍스트 가독성을 위해 채도 살짝 증가 */
+#tab-cal .cal-day:hover .status-ok {
+    color: #22c55e;
+}
+#tab-cal .cal-day:hover .status-miss {
+    color: #ef4444;
+}
 /* 5. 범례(Legend) 대형화 및 가독성 개선 */
 #tab-cal .cal-legend {
     margin-top: 30px;
@@ -952,6 +967,7 @@
     margin-bottom: 12px;
     display: flex;
     align-items: center;
+    font-size: 11px;
     gap: 12px;
     font-weight: 600;
     color: #334155;
