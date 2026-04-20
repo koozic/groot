@@ -64,12 +64,9 @@
             }
         }
     </style>
-
-
 </head>
 
 <body>
-
 <div class="detail-wrapper">
     <h1 class="detail-title">- Supplement Detail -</h1>
 
@@ -116,11 +113,8 @@
         <button class="btn-list" onclick="updateSupplement('${detailSupp.supplementId}')">수정</button>
     </div>
 </div>
-
 </body>
 </html>
-
-</body>
 
 <script>
     function updateSupplement(id) {
@@ -131,5 +125,3 @@
         }
     }
 </script>
-
-</html>
