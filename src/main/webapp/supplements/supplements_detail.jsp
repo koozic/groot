@@ -1,11 +1,4 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
-<head>
-    <title>Title</title>
-</head>
-<body>
-
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html>
@@ -58,8 +51,10 @@
 
         /* 🪄 모바일 화면(768px 이하)일 때 여백 살짝 줄여주기 */
         @media (max-width: 768px) {
-            .reg-container {
-                margin: 20px auto; /* 위아래 여백을 살짝 줄여서 화면을 넓게 씁니다 */
+            .detail-wrapper {
+                margin-top: 20px;
+            }
+            .supp-detail-box {
                 padding: 15px;
             }
         }
@@ -73,7 +68,8 @@
     <div class="supp-detail-box">
 
         <div class="detail-img-area">
-            <img src="/supplementImg/supplementImgFile/${detailSupp.supplementImagePath}" alt="${detailSupp.supplementName}">
+<%--            <img src="/supplementImg/supplementImgFile/${detailSupp.supplementImagePath}" alt="${detailSupp.supplementName}">--%>
+            <img src="${detailSupp.supplementImagePath}" alt="${detailSupp.supplementName}">
         </div>
 
         <div class="detail-row">
@@ -109,12 +105,12 @@
     </div>
 
     <div class="btn-group">
-        <button class="btn-list" onclick="location.href='supplements'">목록으로 돌아가기</button>
-        <button class="btn-list" onclick="updateSupplement('${detailSupp.supplementId}')">수정</button>
+            <button class="btn-list" onclick="location.href='supplements'">목록으로 돌아가기</button>
+        <c:if test="${isAdmin == true}">
+            <button class="btn-list" onclick="updateSupplement('${detailSupp.supplementId}')">수정</button>
+        </c:if>
     </div>
 </div>
-</body>
-</html>
 
 <script>
     function updateSupplement(id) {
@@ -125,3 +121,7 @@
         }
     }
 </script>
+<%-- <script> 태그는 반드시 </body>안쪽으로!! --%>
+</body>
+</html>
+
