@@ -7,6 +7,7 @@
     <meta charset="UTF-8">
     <title>영양성분 상세정보</title>
     <link rel="stylesheet" href="css/supplements.css">
+    <link rel="stylesheet" href="css/site-theme.css">
 </head>
 
 <body>

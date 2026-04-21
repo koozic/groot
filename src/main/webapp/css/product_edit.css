@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
-
 /* ================================================
    제품 편집 (Web Layout) 전용 스타일
    ================================================ */
@@ -12,7 +10,7 @@
     border-radius: var(--radius, 10px);
     margin: 20px auto;
     max-width: 1200px;
-    font-family: 'Jua', 'Noto Sans KR', sans-serif;
+    font-family: 'ImHyeMin', 'Noto Sans KR', sans-serif;
 }
 
 .pe-container {
