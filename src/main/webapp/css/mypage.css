@@ -562,24 +562,74 @@
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 8px;
 }
 
 /* 개별 아이템 스타일 */
 .modal-item {
+    background: #ffffff; /* 🌟 핵심 1: 겹쳐 보임 방지를 위해 기본 흰색 배경 필수 추가 */
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px;
+    gap: 12px;           /* 🌟 핵심 2: 아이콘, 텍스트, +버튼 사이 간격 복구 */
+    padding: 34px 20px;
+    margin-bottom: 8px;  /* gap 속성 대신 margin으로 리스트 간 간격 생성 */
     border: 1px solid #f3f4f6;
     border-radius: 10px;
     cursor: pointer;
-    transition: background 0.2s;
+
+    /* 🌟 핵심 3: 안전하고 부드러운 애니메이션 설정 */
+    max-height: 120px;   /* 요소가 담길 수 있는 넉넉한 최대 높이 */
+    opacity: 1;
+    overflow: hidden;    /* 크기가 줄어들 때 내부 내용물이 삐져나오지 않도록 차단 */
+    transition: all 0.3s ease-in-out; /* 찌그러짐 없는 부드러운 전환 효과 */
 }
 
 .modal-item:hover {
     background: #f8faff;
     border-color: #2563eb;
+}
+/* ✨ 검색 결과에서 제외될 때 (부드럽게 접히며 숨김 처리) ✨ */
+.modal-item.filtered-out {
+    opacity: 0;
+    max-height: 0;       /* 높이를 0으로 수축 */
+    padding-top: 0;      /* 위 여백 0 */
+    padding-bottom: 0;   /* 아래 여백 0 */
+    margin-bottom: 0;    /* 외부 여백 0 */
+    border-width: 0;     /* 테두리 두께 0 */
+    pointer-events: none;/* 보이지 않을 때 마우스 클릭/호버 완전 차단 */
+
+    /* 기존에 있던 transform: scaleY(0); 은 찌그러짐의 원인이므로 절대 넣지 마세요! */
+}
+
+.modal-item .vit-name {
+    font-size: 15px;            /* 텍스트 크기 상향 */
+    font-weight: 800;           /* 볼드 처리로 강조 */
+    color: #1e293b;             /* 깊이감 있는 다크 블루 그레이 */
+    line-height: 1.4;           /* 줄 간격 확보 */
+    letter-spacing: -0.3px;     /* 자간 조절로 가독성 향상 */
+    white-space: nowrap;        /* 줄바꿈 방지 */
+    overflow: hidden;           /* 영역 이탈 제어 */
+    text-overflow: ellipsis;    /* 말줄임표 적용 */
+}
+
+/* 성분/용량 정보 스타일 - 8px 적용 및 서브 텍스트 최적화 */
+.modal-item .vit-dose {
+    font-size: 10px;             /* 요청하신 8px 크기 적용 */
+    font-weight: 500;           /* 중간 두께로 설정 */
+    color: #64748b;             /* 부드러운 그레이 톤 */
+    margin-top: 2px;            /* 제품명과의 간격 확보 */
+    opacity: 0.85;              /* 시각적 계층 구조 형성 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 텍스트 컨테이너 정렬 보정 */
+.modal-item .vit-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;    /* 상하 중앙 정렬 */
+    min-width: 0;               /* 텍스트 넘침 방지 레이아웃 */
 }
 
 .add-select-btn {

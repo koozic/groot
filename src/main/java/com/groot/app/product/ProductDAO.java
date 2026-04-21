@@ -33,8 +33,7 @@ public class ProductDAO {
         Connection con = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String sql = "SELECT * FROM products";
-
+        String sql = "SELECT * FROM products ORDER BY product_id DESC";
         ProductDTO dto = null;
         ArrayList<ProductDTO> products = new ArrayList<>();
         try {
