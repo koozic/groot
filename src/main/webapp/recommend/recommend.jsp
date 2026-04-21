@@ -16,7 +16,7 @@
     <div class="star" style="width:1px;height:1px;top:22%;left:35%;--d:2.5s;--delay:0.8s;--op:0.8;"></div>
 
     <p class="recommend-label">choose your path</p>
-    <p class="recommend-heading">어떤 추천이 필요하신가요?</p>
+    <p class="recommend-heading" style="font-family: 'GeekbleMalrangiche', 'Noto Sans KR', cursive;">어떤 추천이 필요하신가요?</p>
 
     <div class="recommend-row">
 
