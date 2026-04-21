@@ -51,7 +51,7 @@
 
         <div style="display:flex; gap:10px;">
 <%--            폼상태로 택배상자를 만듬 그 안에는 내가 수정했던 사진이든 내용이든 전부 다들어가있음 --%>
-            <button type="button" onclick="submitUpdate()" style="flex:1; background:#6a8d3a; color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;">수정 완료</button>
+            <button type="button" onclick="submitUpdate(this)" style="flex:1; background:#6a8d3a; color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer;">수정 완료</button>
             <button type="button" onclick="closeUpdateModal()" style="flex:1; background:#eee; border:none; padding:12px; border-radius:8px; cursor:pointer;">취소</button>
         </div>
     </form>

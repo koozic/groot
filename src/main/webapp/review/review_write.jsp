@@ -49,8 +49,25 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
+        const reviewForm = document.querySelector('.write-box form');
+        const submitBtn = reviewForm ? reviewForm.querySelector('button[type="submit"]') : null;
         const stars = document.querySelectorAll('.star');
         const scoreInput = document.getElementById('r_score');
+
+        if (reviewForm && submitBtn) {
+            reviewForm.addEventListener('submit', function(event) {
+                if (reviewForm.dataset.submitting === 'true') {
+                    event.preventDefault();
+                    return;
+                }
+
+                if (event.defaultPrevented) return;
+
+                reviewForm.dataset.submitting = 'true';
+                submitBtn.disabled = true;
+                submitBtn.textContent = '등록 중...';
+            });
+        }
 
         stars.forEach(star => {
             star.addEventListener('mouseover', function() {

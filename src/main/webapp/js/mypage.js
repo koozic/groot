@@ -64,7 +64,7 @@ function updateProgress() {
 }
 
 function addSupplement(productId, element) {
-    fetch('mypage/add-product', {
+    const request = () => fetch('mypage/add-product', {
         method: 'POST',
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: 'productId=' + productId
@@ -73,16 +73,28 @@ function addSupplement(productId, element) {
             showMpToast("리스트에 추가되었습니다.");
             element.style.opacity = '0';
             element.style.transition = '0.3s';
-            setTimeout(() => {
-                element.remove();
-                const list = document.getElementById('modalProductList');
-                if (list && list.children.length === 0) {
-                    list.innerHTML = '<p style="text-align:center; padding:20px; color:#9ca3af;">모든 제품을 추가했습니다.</p>';
-                }
-            }, 300);
             window.isDataChanged = true;
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    element.remove();
+                    const list = document.getElementById('modalProductList');
+                    if (list && list.children.length === 0) {
+                        list.innerHTML = '<p style="text-align:center; padding:20px; color:#9ca3af;">모든 제품을 추가했습니다.</p>';
+                    }
+                    resolve();
+                }, 300);
+            });
+        } else {
+            showMpToast("추가에 실패했습니다.", "error");
         }
+    }).catch(() => {
+        showMpToast("추가 중 오류가 발생했습니다.", "error");
     });
+
+    if (window.GrootSubmitGuard?.runWithActionLock) {
+        return window.GrootSubmitGuard.runWithActionLock(element, request, {pendingText: '추가 중...'});
+    }
+    return request();
 }
 
 // 1. 함수명을 showMpToast로 변경하고 클래스명을 mp-toast로 통일
@@ -804,53 +816,53 @@ function renderStickersOnCalendar() {
 // ── Controller: 저장 (비동기 POST) ──
 async function saveStickers() {
     const saveBtn = document.getElementById('stickerSaveBtn');
-    saveBtn.disabled = true;
-    saveBtn.textContent = '저장 중...';
+    const request = async () => {
+        const year = calYear;
+        const month = calMonth + 1;
 
-    const year = calYear;
-    const month = calMonth + 1;
+        try {
+            // ★ 불필요한 sticker_id 제거, 꼭 필요한 필드만 깔끔하게 전송
+            const toSave = StickerModel.stickers
+                .filter(s =>
+                    Number(s.cal_year) === year &&
+                    Number(s.cal_month) === month
+                )
+                .map(s => ({
+                    sticker_type: String(s.sticker_type),
+                    cal_year: year,
+                    cal_month: month,
+                    cal_day: Number(s.cal_day),
+                    pos_x: parseFloat(s.pos_x),
+                    pos_y: parseFloat(s.pos_y)
+                }));
 
-    try {
-        // ★ 불필요한 sticker_id 제거, 꼭 필요한 필드만 깔끔하게 전송
-        const toSave = StickerModel.stickers
-            .filter(s =>
-                Number(s.cal_year) === year &&
-                Number(s.cal_month) === month
-            )
-            .map(s => ({
-                sticker_type: String(s.sticker_type),
-                cal_year: year,
-                cal_month: month,
-                cal_day: Number(s.cal_day),
-                pos_x: parseFloat(s.pos_x),
-                pos_y: parseFloat(s.pos_y)
-            }));
+            console.log('📤 전송 데이터:', JSON.stringify(toSave)); // 디버깅
 
-        console.log('📤 전송 데이터:', JSON.stringify(toSave)); // 디버깅
+            const response = await fetch('mypage/sticker', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({year, month, stickers: toSave})
+            });
 
-        const response = await fetch('mypage/sticker', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({year, month, stickers: toSave})
-        });
+            if (!response.ok) throw new Error('서버 오류: ' + response.status);
 
-        if (!response.ok) throw new Error('서버 오류: ' + response.status);
+            const saved = await response.json();
+            console.log('📥 서버 응답:', JSON.stringify(saved)); // 디버깅
 
-        const saved = await response.json();
-        console.log('📥 서버 응답:', JSON.stringify(saved)); // 디버깅
+            StickerModel.commit(saved, year, month);
+            renderStickersOnCalendar();
+            exitStickerEditMode();
+            showMpToast('🎉 스티커가 저장되었습니다!');
+        } catch (err) {
+            console.error('스티커 저장 실패', err);
+            showMpToast('저장에 실패했습니다. 다시 시도해주세요.', 'error');
+        }
+    };
 
-        StickerModel.commit(saved, year, month);
-        renderStickersOnCalendar();
-        exitStickerEditMode();
-        showMpToast('🎉 스티커가 저장되었습니다!');
-
-    } catch (err) {
-        console.error('스티커 저장 실패', err);
-        showMpToast('저장에 실패했습니다. 다시 시도해주세요.', 'error');
-    } finally {
-        saveBtn.disabled = false;
-        saveBtn.textContent = '💾 저장하기';
+    if (window.GrootSubmitGuard?.runWithActionLock) {
+        return window.GrootSubmitGuard.runWithActionLock(saveBtn, request, {pendingText: '저장 중...'});
     }
+    return request();
 }
 
 // ── Controller: 불러오기 (비동기 GET) ──

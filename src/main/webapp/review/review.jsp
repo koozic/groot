@@ -264,7 +264,7 @@
                 </div>
 
                 <div style="text-align: center;">
-                    <button type="button" onclick="submitReview()" style="width: 100%; padding: 12px; background: #6a8d3a; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1.1em;">리뷰 등록하기</button>
+                    <button type="button" onclick="submitReview(this)" style="width: 100%; padding: 12px; background: #6a8d3a; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1.1em;">리뷰 등록하기</button>
                 </div>
             </form>
         </div>

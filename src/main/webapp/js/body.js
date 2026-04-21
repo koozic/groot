@@ -590,7 +590,7 @@ function closeAdminModal() {
 // ── 저장 버튼 (insert / update AJAX) ──
 // [수정 전] fetch('/api/admin', { ... body: JSON.stringify(...) })
 // [수정 후]
-function submitAdminModal() {
+function submitAdminModal(button) {
     const action = document.getElementById('adminAction').value;
     const suppId = document.getElementById('adminSuppId').value;
 
@@ -607,7 +607,7 @@ function submitAdminModal() {
         bodyId: document.getElementById('adminBodyId') ? document.getElementById('adminBodyId').value : ''
     };
 
-    fetch('/admin', { // URL 확인 필요 (AdminC 매핑 경로)
+    const request = () => fetch('/admin', { // URL 확인 필요 (AdminC 매핑 경로)
         method: 'POST',
         headers: {
             'Content-Type': 'application/json; charset=UTF-8'
@@ -624,6 +624,15 @@ function submitAdminModal() {
             }
         })
         .catch(err => alert("오류 발생: " + err));
+
+    if (window.GrootSubmitGuard?.runWithActionLock) {
+        return window.GrootSubmitGuard.runWithActionLock(
+            button || document.querySelector('#adminModalOverlay button[onclick^="submitAdminModal"]'),
+            request,
+            {pendingText: action === 'update' ? '수정 중...' : '저장 중...'}
+        );
+    }
+    return request();
 }
 
 // ── 삭제 AJAX ──

@@ -164,7 +164,7 @@
             </div>
 
             <div class="modal-btn-row">
-                <button onclick="submitAdminModal()" class="modal-submit-btn">저장하기</button>
+                <button onclick="submitAdminModal(this)" class="modal-submit-btn">저장하기</button>
                 <button onclick="closeAdminModal()" class="modal-cancel-btn">취소</button>
             </div>
 
