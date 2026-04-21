@@ -486,6 +486,32 @@ public class UserDAO {
         return false; // 에러 발생 시 중복 아님으로 처리
     }
 
+    public static boolean checkUserEmailDuplicate(String userEmail) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        String sql = "SELECT COUNT(*) FROM users WHERE user_email = ?";
+
+        try {
+            con = DBManager_new.connect();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, userEmail);
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBManager_new.close(con, pstmt, rs);
+        }
+
+        return false;
+    }
+
     public static boolean isAdmin(HttpServletRequest request) {
         // 1. 세션 가져오기 (없으면 null 반환)
         HttpSession session = request.getSession(false);

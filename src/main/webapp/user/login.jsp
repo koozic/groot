@@ -72,6 +72,8 @@
                             <input type="text" id="user_id" name="user_id" placeholder="아이디를 입력하세요" required>
                         </div>
 
+
+
                         <div class="login-input-group">
                             <label for="user_pw">비밀번호</label>
                             <input type="password" id="user_pw" name="user_pw" placeholder="비밀번호를 입력하세요" required>
