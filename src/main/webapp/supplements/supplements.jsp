@@ -8,7 +8,8 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <%--모바일 환경--%>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%--모바일 환경--%>
     <title>영양성분 리스트</title>
     <link rel="stylesheet" href="css/supplements.css">
     <link rel="stylesheet" href="css/site-theme.css">
@@ -16,10 +17,10 @@
 
 <body>
 <%-- 세션에서 isAdmin 값을 꺼내 변수로 저장 --%>
-<c:set var="isAdmin" value="${sessionScope.isAdmin}" />
+<c:set var="isAdmin" value="${sessionScope.isAdmin}"/>
 
 <div style="margin-bottom: 30px;">
-<h1 style="text-align: center;">영양성분 리스트</h1>
+    <h1 style="text-align: center;">영양성분 리스트</h1>
 </div>
 
 <%-- 관리자만 등록 버튼 보임 --%>
@@ -42,9 +43,9 @@
                      data-timing="${supp.supplementTiming}"
                      data-caution="${supp.supplementCaution}"
                      data-imgPath="${supp.supplementImagePath}">
-                     <%-- <img src="${supp.supplementImagePath}" alt="${supp.supplementName}"> --%>
+                        <%-- <img src="${supp.supplementImagePath}" alt="${supp.supplementName}"> --%>
 
-                    <%-- 💡 똑똑한 이미지 출력 로직 --%>
+                        <%-- 💡 똑똑한 이미지 출력 로직 --%>
                     <c:choose>
                         <%-- 1. DB 값이 'http'로 시작하면? (인터넷 주소면) -> 경로 안 붙이고 그대로 출력! --%>
                         <c:when test="${fn:startsWith(supp.supplementImagePath, 'http')}">
@@ -53,17 +54,19 @@
 
                         <%-- 2. 그게 아니면? (직접 올린 'test.png' 같은 파일이면) -> 앞에 폴더 경로를 싹 붙여서 출력! --%>
                         <c:otherwise>
-                            <img src="/supplementImg/supplementImgFile/${supp.supplementImagePath}" alt="${supp.supplementName}">
+                            <img src="/supplementImg/supplementImgFile/${supp.supplementImagePath}"
+                                 alt="${supp.supplementName}">
                         </c:otherwise>
                     </c:choose>
                 </div>
+                <div class="content">
+                    <div class="supp-name">${supp.supplementName}</div>
+                    <div class="supp-efficacy">${supp.supplementEfficacy}</div>
+                </div>
 
-                <div class="supp-name">${supp.supplementName}</div>
-                <div class="supp-efficacy">${supp.supplementEfficacy}</div>
-
-                <%-- ★ 좋아요 버튼 부분 수정 --%>
-                <%-- 삼항연산자 --%>
-                <%-- this : 지금 클릭 당한 하트 버튼 바로 나 자신 --%>
+                    <%-- ★ 좋아요 버튼 부분 수정 --%>
+                    <%-- 삼항연산자 --%>
+                    <%-- this : 지금 클릭 당한 하트 버튼 바로 나 자신 --%>
                 <button type="button"
                         class="like-btn ${likedIds.contains(supp.supplementId) ? 'liked' : ''}"
                         onclick="toggleLike(this, ${supp.supplementId})"
@@ -75,7 +78,7 @@
                          aria-hidden="true">
                 </button>
 
-                <%-- 관리자만 수정/삭제 버튼 보임 --%>
+                    <%-- 관리자만 수정/삭제 버튼 보임 --%>
                 <c:if test="${isAdmin == true}">
                     <div style="margin-top: 10px;">
                         <button class="supp-btn" onclick="delSupplement('${supp.supplementId}')">삭제</button>
@@ -119,10 +122,10 @@
     </div>
 </div>
 
-        <%-- 모달 --%>
-        <dialog id="commonModal">
-            <div id="modalContent"></div>
-        </dialog>
+<%-- 모달 --%>
+<dialog id="commonModal">
+    <div id="modalContent"></div>
+</dialog>
 
 <script>
     // 삭제 전 확인 창을 띄우는 함수
@@ -147,7 +150,7 @@
     // 마이페이지에서 넘어왔을 때 자동으로 모달 열기
     // =========================================================
     // window.onload = function() {} 웹페이지의 모든 요소(HTML, 이미지 등)가 화면에 완전히 로드된 후에 이 안의 코드를 실행하라
-    window.onload = function() {
+    window.onload = function () {
         // 주소창에서 ?openId= 번호 가져오기 (예: supplements?openId=3)
         // window.location.search: 현재 우리가 접속해 있는 웹페이지의 전체 주소 중에서, 물음표(?)와 그 뒤에 붙은 모든 글자만 떼어옴
 

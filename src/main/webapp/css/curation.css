@@ -28,6 +28,28 @@
     margin: 0 !important;
 }
 
+/* ===== 갈무리 폰트 등록 ===== */
+@font-face {
+    font-family: 'Galmuri';
+    src: url('../fonts/Galmuri11.woff2') format('woff2');
+    font-weight: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Galmuri';
+    src: url('../fonts/Galmuri11.woff2') format('woff2');
+    font-weight: bold;
+    font-display: swap;
+}
+
+/* curation 페이지 h2는 긱블 말고 갈무리 적용 */
+.curation-layout h1,
+.curation-layout h2,
+.curation-layout h3 {
+    font-family: 'Galmuri', sans-serif !important;
+}
+
 /*전체 레이아웃*/
 .curation-layout {
     display: flex;
@@ -39,6 +61,7 @@
     position: absolute; /* ← 추가 */
     left: 0; /* ← 추가 */
     right: 0; /* ← 추가 */
+    font-family: 'Galmuri', sans-serif !important; /* ← 이 줄만 추가 */
 }
 
 /* ── 왼쪽 사이드바 ── */
@@ -257,7 +280,14 @@
 
 /*worried otto*/
 .curation-otter {
-    margin-top: -28px;
-    margin-left: 7px;
-    width: 272px;
+    margin-top: 9px;
+    margin-bottom: 6px;
+    margin-left: 27px;
+    width: 237px;
+}
+
+.curation-answer {
+    font-size: 25px;
+    /*margin-top: 43px;*/
+    /*padding-left: 95px;*/
 }
