@@ -136,5 +136,26 @@
     </form>
 </div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.querySelector('form[action="updateSupplement"]');
+        const submitBtn = form ? form.querySelector('button[type="submit"]') : null;
+        if (!form || !submitBtn) return;
+
+        form.addEventListener('submit', function (event) {
+            if (form.dataset.submitting === 'true') {
+                event.preventDefault();
+                return;
+            }
+
+            if (event.defaultPrevented) return;
+
+            form.dataset.submitting = 'true';
+            submitBtn.disabled = true;
+            submitBtn.textContent = '수정 중...';
+        });
+    });
+</script>
+
 </body>
 </html>

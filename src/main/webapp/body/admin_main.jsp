@@ -188,10 +188,10 @@
         </div>
 
         <div style="display:flex; gap:12px; margin-top:30px; align-items:center; width:100%;">
-            <button onclick="submitAdminModal()"
+            <button onclick="submitAdminModal(this)"
                     style="flex:1; padding:13px; background:#4CAF50; color:white;
                    border:none; border-radius:8px; font-weight:700; cursor:pointer;
-                   font-size:0.95em; min-width:0;">저장하기
+                    font-size:0.95em; min-width:0;">저장하기
             </button>
             <button onclick="closeAdminModal()"
                     style="padding:13px 20px; background:#eee; border:none;
@@ -246,7 +246,7 @@
         document.body.style.overflow = '';
     }
 
-    function submitAdminModal() {
+    function submitAdminModal(button) {
         const action = document.getElementById('adminAction').value;
         const suppId = document.getElementById('adminSuppId').value;
         const bodyIdEl = document.getElementById('adminBodyId');
@@ -263,7 +263,7 @@
             bodyId: bodyIdEl ? bodyIdEl.value : ''
         };
 
-        fetch('admin', {
+        const request = () => fetch('admin', {
             method: 'POST',
             headers: {'Content-Type': 'application/json; charset=UTF-8'},
             body: JSON.stringify(payload)
@@ -274,6 +274,15 @@
                 if (data.success) location.reload();
             })
             .catch(err => alert('오류: ' + err));
+
+        if (window.GrootSubmitGuard?.runWithActionLock) {
+            return window.GrootSubmitGuard.runWithActionLock(
+                button || document.querySelector('#adminModalOverlay button[onclick^="submitAdminModal"]'),
+                request,
+                {pendingText: action === 'update' ? '수정 중...' : '저장 중...'}
+            );
+        }
+        return request();
     }
 
     function deleteSupp(suppId, suppName, btn) {

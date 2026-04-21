@@ -257,6 +257,10 @@ update supplements
 set supplement_image_path = 'eye.webp'
 where supplement_name like '%아연%';
 
+update supplements
+set supplement_image_path = 'blood.webp'
+where supplement_name like '%철분%';
+
 -- 데이터베이스에 영구 반영 (필수)
 COMMIT;
 

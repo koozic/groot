@@ -297,9 +297,8 @@ function previewImage(input) {
 
         reader.readAsDataURL(input.files[0]); // 파일을 Data URL로 읽기
     } else {
-        // 파일 선택 취소 시 초기화
-        preview.src = "";
-        preview.classList.add('hidden');
+        // ✨ 선택 취소 시 기본 이미지로 복구
+        preview.src = "img/ottos/pill_smile_otter.png";
         if (placeholder) {
             placeholder.style.display = 'block';
         }
@@ -317,8 +316,7 @@ function closeModal() {
     const fileInput = document.getElementById('product_image_file');
 
     if(preview) {
-        preview.src = "";
-        preview.classList.add('hidden');
+        preview.src = "img/ottos/pill_smile_otter.png"; // ✨ 닫을 때도 기본 이미지로 세팅
     }
     if(placeholder) placeholder.style.display = 'block';
     if(fileInput) fileInput.value = ""; // 파일 선택 값 비우기
