@@ -6,16 +6,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Black+Han+Sans&display=swap');
 
 /* ===== 폰트 등록 ===== */
-
-/* 긱블 말랑이체 */
 @font-face {
     font-family: 'GeekbleMalang';
     src: url('../fonts/GeekbleMalang2WOFF2.woff2') format('woff2');
-    font-weight: normal;
     font-display: swap;
 }
 
-/* IM혜민체 굵게 */
 @font-face {
     font-family: 'IMHyemin';
     src: url('../fonts/IM_Hyemin-Bold.ttf') format('truetype');
@@ -23,29 +19,30 @@
     font-display: swap;
 }
 
-/* 갈무리 */
 @font-face {
     font-family: 'Galmuri';
     src: url('../fonts/Galmuri11.woff2') format('woff2');
-    font-weight: normal;
     font-display: swap;
 }
 
-/* ===== 폰트 적용 ===== */
-
-/* 모든 페이지 큰 제목 */
+/* ===== 큰 제목 → 긱블 말랑이체 ===== */
 h1, h2, h3 {
-    font-family: 'GeekbleMalang', sans-serif;
+    font-family: 'GeekbleMalang', sans-serif !important;
 }
 
-/* content 안 내용 */
+/* ===== content 내용 → IM혜민체 ===== */
 .content, .content p, .content li, .content span {
-    font-family: 'IMHyemin', sans-serif;
+    font-family: 'IMHyemin', sans-serif !important;
 }
 
-/* AI 추천 화면 전체 */
+/* ===== AI 추천 화면 전체 → 갈무리 ===== */
 .ai-page, .ai-page * {
-    font-family: 'Galmuri', sans-serif;
+    font-family: 'Galmuri', sans-serif !important;
+}
+
+/* 로그인 제목은 기존 폰트 유지 */
+.login-title {
+    font-family: 'Black Han Sans', cursive !important;
 }
 
 /* ── 변수 ── */

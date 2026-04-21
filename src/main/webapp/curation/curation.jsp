@@ -7,7 +7,9 @@
 
     <%-- 왼쪽 카테고리 사이드바 --%>
     <div class="curation-sidebar">
-        <div class="curation-sidebar-title">큐레이션</div>
+        <img class="curation-otter"
+             src="${pageContext.request.contextPath}/img/ottos/worried_otter.png"
+             alt="오터">
         <button class="curation-cat-btn" onclick="selectCategory(this, '임산부')">임산부 맞춤 영양 케어</button>
         <button class="curation-cat-btn" onclick="selectCategory(this, '노년층')">시니어 건강 관리</button>
         <button class="curation-cat-btn" onclick="selectCategory(this, '수험생')">수험생 집중력 영양</button>
