@@ -20,14 +20,9 @@ public class BodyViewC extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // index.jsp가 content 속성으로 이 JSP를 include 하므로
-        // 서블릿은 단순히 포워딩만 합니다.
         request.setAttribute("activeTab", "recommend"); // 네비 활성화용
         request.setAttribute("content", "body/body.jsp"); // ← 추가
         request.getRequestDispatcher("index.jsp").forward(request, response);
-        // ↑ index.jsp 에서 <jsp:include page="${content}"/> 로 body.jsp를 포함시키려면
-        //   아래처럼 content 속성을 세팅한 뒤 index.jsp로 포워딩해야 합니다.
-        // request.setAttribute("content", "body/body.jsp");
-        // request.getRequestDispatcher("index.jsp").forward(request, response);
+
     }
 }
