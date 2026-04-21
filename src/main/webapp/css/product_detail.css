@@ -366,3 +366,29 @@
     transform: translateY(1px); /* 클릭 시 눌리는 효과 */
     box-shadow: 0 1px 2px rgba(37, 99, 235, 0.2);
 }
+/* product_detail.css 에 추가 */
+#productEdit-toast {
+    visibility: hidden;
+    min-width: 280px;
+    background-color: #2563eb; /* 수정완료 파란색 */
+    color: #fff;
+    text-align: center;
+    border-radius: 10px;
+    padding: 16px;
+    position: fixed;
+    z-index: 9999;
+    left: 50%;
+    bottom: 30px;
+    transform: translateX(-50%);
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* 🌟 이게 있어야 화면에 나타납니다! */
+#productEdit-toast.show {
+    visibility: visible;
+    animation: peFadeIn 0.5s, peFadeOut 0.5s 2.5s;
+}
+
+@keyframes peFadeIn { from { bottom: 0; opacity: 0; } to { bottom: 30px; opacity: 1; } }
+@keyframes peFadeOut { from { bottom: 30px; opacity: 1; } to { bottom: 0; opacity: 0; } }

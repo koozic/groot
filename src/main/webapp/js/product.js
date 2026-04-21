@@ -13,17 +13,17 @@ const delModal = document.getElementById("deleteConfirmModal");
 
 
 document.addEventListener("DOMContentLoaded", function () {
-    // 1. 초기 로드 시 전체 리스트 비동기 호출
-    loadProductList('');
+    // 1. 상세 페이지 에러 방지 (컨테이너가 있을 때만 목록 로드)
+    if (document.getElementById("product-list-container")) {
+        loadProductList('');
+        setupScrollObserver();
+    }
 
-    // 스크롤 감지 옵저버 설정
-    setupScrollObserver();
-
-    // 2. 동기식 처리에 따른 토스트 알림 로직 (기존 코드 유지)
+    // 2. 주소창 파라미터 분석
     const urlParams = new URLSearchParams(window.location.search);
-    // new URLSearchParams(window.location.searc 웹 페이지가 이동할 때 주소 뒤에 ?key=value 형태로 붙는 데이터를 읽을 때 사용합니다.
 
-    const toast = document.getElementById("toast");
+    // 🌟 이 부분을 아래와 같이 정확히 한 줄로 수정해야 합니다! 🌟
+    const toast = document.getElementById("toast") || document.getElementById("productEdit-toast");
 
     if (toast) {
         let message = "";
@@ -46,13 +46,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (message) {
             toast.innerText = message;
-            toast.className = "toast";
+            // 4. 클래스 초기화 대신 추가 방식으로 변경 (디자인 충돌 방지)
             toast.classList.add("show", toastType);
 
             setTimeout(() => {
                 toast.classList.remove("show", toastType);
             }, 3000);
 
+            // 주소창 정리
             urlParams.delete(paramToClear);
             const newSearch = urlParams.toString();
             const newUrl = window.location.pathname + (newSearch ? "?" + newSearch : "");

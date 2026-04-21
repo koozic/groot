@@ -31,11 +31,16 @@ public class CalendarDataC extends HttpServlet {
         ArrayList<Integer> checkedDates = MyPageDAO.MDAO.getCompletedIntakeDays(userId, year, month);
         ArrayList<Map<String, Object>> alerts = MyPageDAO.MDAO.getAlertData(userId);
 
+        // ★ [추가 1] MyPageDAO에서 이번 달 통계 데이터 가져오기
+        ArrayList<Map<String, Object>> monthlyStats = MyPageDAO.MDAO.getMonthlyIntakeStatistics(userId, year, month);
+
         // 3. View(프론트엔드) 전달을 위한 데이터 패키징
         Map<String, Object> responseData = new HashMap<>();
         responseData.put("checkedDates", checkedDates);
         responseData.put("alerts", alerts);
 
+        // ★ [추가 2] 프론트엔드(JS)로 보낼 JSON 데이터에 "statistics"라는 이름으로 통계 데이터 담기
+        responseData.put("statistics", monthlyStats);
         // 4. JSON 직렬화 및 응답
         response.setContentType("application/json; charset=UTF-8");
         response.getWriter().write(new Gson().toJson(responseData));
