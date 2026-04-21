@@ -1,4 +1,19 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
+<%
+    if (request.getAttribute("content") == null) {
+        String target = request.getContextPath() + "/user-Login";
+        String redirect = request.getParameter("redirect");
+        if (redirect != null && !redirect.trim().isEmpty()) {
+            target += "?redirect=" + java.net.URLEncoder.encode(redirect, java.nio.charset.StandardCharsets.UTF_8);
+        }
+        response.sendRedirect(target);
+        return;
+    }
+%>
+
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -32,6 +47,7 @@
                 <div class="login-title-box">
                     <h1 class="login-title">OtterCare</h1>
                     <p class="login-subtitle">당신의 건강을 챙기는 영양제 습관</p>
+
                 </div>
 
                 <div class="login-img-box">
