@@ -268,7 +268,10 @@ function renderCalendar() {
     fetch(`mypage/calData?year=${calYear}&month=${calMonth + 1}`)
         .then(response => response.json())
         .then(data => {
-            // renderStatistics(data.statistics);
+            // ▼ 이 부분의 주석을 해제합니다.
+            if (data.statistics) {
+                renderStatistics(data.statistics);
+            }
             renderAlerts(data.alerts);
 
             let mappedAlerts = {};
@@ -330,14 +333,19 @@ function buildCal(mappedAlerts, checkedDates, firstDay, lastDate, today) {
 
         // 3. 구매 알림 데이터(배지) 렌더링
         if (mappedAlerts && mappedAlerts[d]) {
-            html += `<div class="day-alerts">`;
+            let alertHtml = '';
+
             mappedAlerts[d].forEach(alert => {
-                let badgeClass = alert.status === 'warn' ? 'badge-warn' : 'badge-buy';
-                let icon = alert.status === 'warn' ? '소진임박' : '재구매';
-                // alert.productName 변수를 '비타민'이라는 고정 텍스트로 변경
-                html += `<div class="alert-item ${badgeClass}">🛒 ${alert.productName} ${icon}</div>`;
+                // 상태(warn/buy)를 따지지 않고, 넘어온 알람은 무조건 '재구매'로 렌더링
+                alertHtml += `<div class="alert-item badge-buy">🛒 ${alert.productName} 재구매</div>`;
             });
-            html += `</div>`;
+
+            // 알림 영역 추가
+            if (alertHtml !== '') {
+                html += `<div class="day-alerts">`;
+                html += alertHtml;
+                html += `</div>`;
+            }
         }
 
         html += `</div>`;
@@ -368,6 +376,66 @@ function renderAlerts(alerts) {
         `;
     });
 }
+
+/* ── 영양제 모달 검색 필터링 ── */
+function filterProducts() {
+    // 1. 입력된 검색어 가져오기 (대소문자 구분 없이 검색하기 위해 소문자로 변환)
+    const keyword = document.getElementById('modalSearchInput').value.toLowerCase();
+
+    // 2. 모달 리스트 안의 모든 제품 아이템 선택
+    const productItems = document.querySelectorAll('#modalProductList .modal-item');
+
+    // 3. 각 아이템을 순회하며 검색어 포함 여부 확인
+    productItems.forEach(item => {
+        // 제품명 텍스트 추출 (앞서 공유해주신 코드의 클래스명 기준)
+        const nameElement = item.querySelector('.vit-name');
+
+        // 추가로 브랜드명도 같이 검색되게 하려면 아래 주석 해제
+        // const brandElement = item.querySelector('.vit-dose');
+
+        if (nameElement) {
+            const productName = nameElement.textContent.toLowerCase();
+            // const brandName = brandElement ? brandElement.textContent.toLowerCase() : '';
+
+            // ✨ 인라인 스타일(display) 조작 대신 CSS 클래스 제어로 부드러운 전환 ✨
+            if (productName.includes(keyword)) {
+                item.classList.remove('filtered-out');
+            } else {
+                item.classList.add('filtered-out');
+            }
+        }
+    });
+}
+
+/* ── 이번 달 복용 통계 렌더링 ── */
+function renderStatistics(stats) {
+    const container = document.getElementById('statsContainer');
+    if (!container) return;
+
+    // 통계 데이터가 없을 경우
+    if (!stats || stats.length === 0) {
+        container.innerHTML = '<p class="mp-stat-empty">이번 달 복용 기록이 없습니다.</p>';
+        return;
+    }
+
+    // 통계 데이터가 있을 경우 HTML 동적 생성
+    let html = '<ul class="mp-stat-list">';
+    stats.forEach(stat => {
+        html += `
+            <li class="mp-stat-item">
+                <span class="mp-stat-name">
+                    <img style="width: 20px;" class="icon" src="img/stickers/pill.png" alt=""> 
+                    ${stat.productName}
+                </span>
+                <span class="mp-stat-count">${stat.intakeCount}회 복용</span>
+            </li>
+        `;
+    });
+    html += '</ul>';
+
+    container.innerHTML = html;
+}
+
 
 // ── 찜한 영양성분 정렬 로드 ──
 // ── 찜한 영양성분 전역 상태 ──

@@ -220,7 +220,9 @@
                         <c:if test="${not isAlreadyAdded}">
                             <%-- [수정] onclick 시 event와 this 전달 --%>
                             <div class="modal-item" onclick="addSupplement('${p.productId}', this)">
-                                <div class="vit-icon">💊</div>
+                                <div class="vit-icon"><img style="width: 20px;" class="icon"
+                                                           src="img/stickers/pill.png"
+                                                           alt=""></div>
                                 <div class="vit-info">
                                     <div class="vit-name">${p.productName}</div>
                                     <div class="vit-dose">${p.productBrand}</div>
