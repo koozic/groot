@@ -178,23 +178,23 @@ VALUES (seq_supplements_id.NEXTVAL, '퀘르세틴', '천연 항히스타민제�
 
 -- 수정
 update supplements
-set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494235295657361458/Jonathan_Adler_Large_Purple_Acrylic_Pill_248_liked_on_Polyvore_featuring_home_home_decor_misc_drugs_filler_other_purple_purple_home_accessories_pop_art_and_acrylic_sculpture-Photoroom.png?ex=69e67bd0&is=69e52a50&hm=fdbd95f42d861afbc477942d86a1921017e83219c7ac8a91b1ba20d28c040c1d&=&format=webp&quality=lossless&width=693&height=693'
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494235295657361458/Jonathan_Adler_Large_Purple_Acrylic_Pill_248_liked_on_Polyvore_featuring_home_home_decor_misc_drugs_filler_other_purple_purple_home_accessories_pop_art_and_acrylic_sculpture-Photoroom.png?ex=69e7cd50&is=69e67bd0&hm=89b655565ef98cd754c56c7a14135166c7bac5f99fdc28fa1901cba8b80a745f&=&format=webp&quality=lossless&width=693&height=693'
 where supplement_name like '%비타민%';
 
 update supplements
-set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225024561713324/Gemini_Generated_Image_8rdcau8rdcau8rdc-Photoroom.png?ex=69e6723f&is=69e520bf&hm=73ffde6fa8969df112ee298abc4c189b99b8438d5a6eb45d60ab881819f23c01&=&format=webp&quality=lossless&width=389&height=693'
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225024561713324/Gemini_Generated_Image_8rdcau8rdcau8rdc-Photoroom.png?ex=69e7c3bf&is=69e6723f&hm=3c45870cc6fc57aea4220f50e1e61db2c2351345c3c8ef1eaaee24cfde112fc2&=&format=webp&quality=lossless&width=389&height=693'
 where supplement_name like '%퀘르세틴%';
 
 update supplements
-set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225026646413382/Liver_Organ_3D_Icon_Glossy_Minimal_Emoji_Style_Isolated_PNG_object_1-Photoroom.png?ex=69e6723f&is=69e520bf&hm=d0f811c803c3a5c87ef8ab34cf04f81d80de3245df444715accd7f26647b32ba&=&format=webp&quality=lossless&width=693&height=693'
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225024561713324/Gemini_Generated_Image_8rdcau8rdcau8rdc-Photoroom.png?ex=69e7c3bf&is=69e6723f&hm=3c45870cc6fc57aea4220f50e1e61db2c2351345c3c8ef1eaaee24cfde112fc2&=&format=webp&quality=lossless&width=389&height=693'
 where supplement_name like '%NAC%';
 
 update supplements
-set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225026646413382/Liver_Organ_3D_Icon_Glossy_Minimal_Emoji_Style_Isolated_PNG_object_1-Photoroom.png?ex=69e6723f&is=69e520bf&hm=d0f811c803c3a5c87ef8ab34cf04f81d80de3245df444715accd7f26647b32ba&=&format=webp&quality=lossless&width=693&height=693'
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225026646413382/Liver_Organ_3D_Icon_Glossy_Minimal_Emoji_Style_Isolated_PNG_object_1-Photoroom.png?ex=69e7c3bf&is=69e6723f&hm=56b95e6acb8488055af7a4cf51710d9f50484e101ddd3ae062aac7ffef381f48&=&format=webp&quality=lossless&width=693&height=693'
 where supplement_name like '%밀크씨슬%';
 
 update supplements
-set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225025828388914/Gemini_Generated_Image_tjxuzhtjxuzhtjxu-Photoroom.png?ex=69e6723f&is=69e520bf&hm=6f7d655a9e785b27c3196a87213152a972a70b1873a6ca6a67114f3b81ff6a84&=&format=webp&quality=lossless&width=389&height=693'
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225025828388914/Gemini_Generated_Image_tjxuzhtjxuzhtjxu-Photoroom.png?ex=69e7c3bf&is=69e6723f&hm=863a932bad59eabfa50a8e041ebc5fdf971aa5787b635bfffbdfd47aea30a44f&=&format=webp&quality=lossless&width=389&height=693'
 where supplement_name like '%글루타민%';
 
 update supplements
@@ -208,6 +208,54 @@ where supplement_name like '%프리바이오%';
 update supplements
 set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225026235502612/Gemini_Generated_Image_x1b2n3x1b2n3x1b2-Photoroom.png?ex=69e6723f&is=69e520bf&hm=e64d3b65cfa1bee80c53c26d6584f6e6023ad5ebbd2fa3f607f3994cbb93e295&=&format=webp&quality=lossless&width=693&height=693'
 where supplement_name like '%프로바이오%';
+
+update supplements
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225025363087440/Gemini_Generated_Image_h3sb1qh3sb1qh3sb-Photoroom.png?ex=69e71aff&is=69e5c97f&hm=5b87a02527c09139ee71fa3297f3cf5960c90d46518887ab787eb7b501f12e5f&=&format=webp&quality=lossless&width=693&height=693'
+where supplement_name like '%칼륨%';
+
+update supplements
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225025363087440/Gemini_Generated_Image_h3sb1qh3sb1qh3sb-Photoroom.png?ex=69e71aff&is=69e5c97f&hm=5b87a02527c09139ee71fa3297f3cf5960c90d46518887ab787eb7b501f12e5f&=&format=webp&quality=lossless&width=693&height=693'
+where supplement_name like '%크레아틴%';
+
+update supplements
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225023597281380/Bone_3D_Icon_Glossy_Minimal_Emoji_Style_Isolated_PNG_object-Photoroom.png?ex=69e71afe&is=69e5c97e&hm=1a8ec3bcd906784ed82e5062b5c2bd968429cbc1bdc13620dccfc8c476f3c9ba&=&format=webp&quality=lossless&width=693&height=693'
+where supplement_name like '%글루코사민%';
+
+update supplements
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225023597281380/Bone_3D_Icon_Glossy_Minimal_Emoji_Style_Isolated_PNG_object-Photoroom.png?ex=69e71afe&is=69e5c97e&hm=1a8ec3bcd906784ed82e5062b5c2bd968429cbc1bdc13620dccfc8c476f3c9ba&=&format=webp&quality=lossless&width=693&height=693'
+where supplement_name like '%MSM%';
+
+update supplements
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225025363087440/Gemini_Generated_Image_h3sb1qh3sb1qh3sb-Photoroom.png?ex=69e71aff&is=69e5c97f&hm=5b87a02527c09139ee71fa3297f3cf5960c90d46518887ab787eb7b501f12e5f&=&format=webp&quality=lossless&width=693&height=693'
+where supplement_name like '%히알루론산%';
+
+update supplements
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225027502182591/11-Photoroom.png?ex=69e71aff&is=69e5c97f&hm=d0324e158c9df5c60cc04af66072ee184c8490cba7adcd115e54e88935dd1193&=&format=webp&quality=lossless&width=693&height=693'
+where supplement_name like '%루테인%';
+
+update supplements
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225024075300864/Download_free_png_of_PNG_Brain_pink_confectionery_outdoors__by_Aum_about_3d_3d_1-Photoroom.png?ex=69e71aff&is=69e5c97f&hm=60083db261225999438ecef1cd6009fad87cb64540e271fcec4b0c67da80ea1f&=&format=webp&quality=lossless&width=838&height=693'
+where supplement_name like '%콜린%';
+
+update supplements
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225027502182591/11-Photoroom.png?ex=69e71aff&is=69e5c97f&hm=d0324e158c9df5c60cc04af66072ee184c8490cba7adcd115e54e88935dd1193&=&format=webp&quality=lossless&width=693&height=693'
+where supplement_name like '%오메가%';
+
+update supplements
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225027015508068/1-Photoroom.png?ex=69e71aff&is=69e5c97f&hm=d14aed0a8a5859d1f301476bfb10b04ee39e4e1fbfbbfc30da8777c598b8f219&=&format=webp&quality=lossless&width=390&height=693'
+where supplement_name like '%코엔자임%';
+
+update supplements
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225023597281380/Bone_3D_Icon_Glossy_Minimal_Emoji_Style_Isolated_PNG_object-Photoroom.png?ex=69e71afe&is=69e5c97e&hm=1a8ec3bcd906784ed82e5062b5c2bd968429cbc1bdc13620dccfc8c476f3c9ba&=&format=webp&quality=lossless&width=693&height=693'
+where supplement_name like '%칼슘%';
+
+update supplements
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225025363087440/Gemini_Generated_Image_h3sb1qh3sb1qh3sb-Photoroom.png?ex=69e71aff&is=69e5c97f&hm=5b87a02527c09139ee71fa3297f3cf5960c90d46518887ab787eb7b501f12e5f&=&format=webp&quality=lossless&width=693&height=693'
+where supplement_name like '%마그네슘%';
+
+update supplements
+set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494225025031602317/Gemini_Generated_Image_gzxpvngzxpvngzxp-Photoroom.png?ex=69e71aff&is=69e5c97f&hm=7f2bcf16b08d6a4b604ac052da971ec81dc56a3cd9b2d4956c8162b21782ab3d&=&format=webp&quality=lossless&width=693&height=693'
+where supplement_name like '%아연%';
 
 -- 데이터베이스에 영구 반영 (필수)
 COMMIT;

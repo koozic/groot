@@ -13,11 +13,10 @@
 %>
 
 
-
 <!DOCTYPE html>
 <html>
 <head>
-    <title>OtterCare 로그인</title>
+    <title>OttoCare 로그인</title>
 
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/app.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/login.css">
@@ -52,7 +51,7 @@
 
                 <div class="login-img-box">
                     <img src="${pageContext.request.contextPath}/img/ottos/haribo_otter.png" alt="알약 이미지"
-                         class="login-haribo_otto-img">
+                         class="login-haribo_otto-img" style="width: 235px; margin-bottom: 83px">
                 </div>
             </div>
 

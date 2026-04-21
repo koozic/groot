@@ -65,7 +65,6 @@
 }
 
 .login-title::after {
-    content: ' 💊';
     font-size: 34px;
     vertical-align: middle;
 }

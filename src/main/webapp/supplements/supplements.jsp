@@ -124,8 +124,6 @@
             <div id="modalContent"></div>
         </dialog>
 
-</body>
-
 <script>
     // 삭제 전 확인 창을 띄우는 함수
     function delSupplement(id) {
@@ -169,8 +167,7 @@
         }
     };
 </script>
-
 <%-- 자바 스크립트 연결 --%>
 <script src="js/supplements.js"></script>
-
+</body>
 </html>
