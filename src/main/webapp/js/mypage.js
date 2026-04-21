@@ -175,7 +175,7 @@ function removeSupplement(productId, btnElement) {
             updateProgress();
             showMpToast("삭제 실패", "error");
         });
-    }, 3000);
+    }, 10000);
 
     // 3. 하단에 '실행 취소' 토스트 팝업 노출
     showUndoToast("영양제가 삭제되었습니다.", () => {

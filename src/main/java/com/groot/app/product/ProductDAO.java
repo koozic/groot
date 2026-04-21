@@ -468,11 +468,10 @@ public class ProductDAO {
 
             String finalProductPath = (String) request.getAttribute("productImage");
 
-            // 이미지가 업로드되지 않아 null일 경우, 빈 문자열 처리 (DB 제약조건에 따라 선택적 적용)
-            if (finalProductPath == null) {
-                finalProductPath = "";
+            // ✨ [수정] 이미지가 없으면 기본 이미지 경로 저장
+            if (finalProductPath == null || finalProductPath.trim().isEmpty()) {
+                finalProductPath = "img/ottos/pill_smile_otter.png"; // 프로젝트 내 기본 이미지 경로
             }
-
 
             pstmt.setString(7, finalProductPath);
             pstmt.setInt(8, Integer.parseInt(request.getParameter("productTotal")));

@@ -90,15 +90,13 @@
                 <div class="image-preview-container">
                     <label for="product_image_file" class="image-preview-frame" style="cursor: pointer;">
                         <img id="modal-img-preview" src="" alt="제품 이미지 미리보기" class="hidden">
+
                         <div class="image-placeholder">
                             <span class="icon">🖼️</span>
                             <p>클릭하여 사진을 첨부하세요</p>
                         </div>
                     </label>
-
-                    <input type="file" id="product_image_file" name="productImage"
-                           accept="image/*" onchange="previewImage(this)"
-                           style="display: none;">
+                    <input type="file" id="product_image_file" name="productImage" accept="image/*" onchange="previewImage(this)" style="display: none;">
                 </div>
 
                 <div class="form-inputs-container">
