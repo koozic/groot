@@ -433,7 +433,7 @@ function refreshModal(id) {
           <span class="supp-modal-val">${s.efficacy}</span>
         </div>
         <div style="display:flex;gap:8px;margin-bottom:7px;">
-          <span class="supp-modal-lbl">복용법</span>
+          <span class="supp-modal-lbl">복용량</span>
           <span class="supp-modal-val">${s.dosage || '-'}</span>
         </div>
         <div style="display:flex;gap:8px;margin-bottom:7px;">

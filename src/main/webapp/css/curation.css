@@ -1,0 +1,255 @@
+/* ============================================================
+   curation.css
+   body-theme-v10.css (Pastel Serenity Balanced) 톤 적용
+   ============================================================ */
+
+/* ── 색상 변수 (body-theme-v10과 동일) ── */
+:root {
+    --ps-pink: #EFA0AE;
+    --ps-lpink: #F4C8D4;
+    --ps-blush: #FAE8EE;
+    --ps-lime: #DCE9A8;
+    --ps-llime: #EDF4CC;
+    --ps-yellow: #F2EDB8;
+    --ps-mint: #B4D8D0;
+    --ps-lmint: #D8EEE8;
+    --ps-bg: #F0F8F0;
+    --ps-card: #FFFFFF;
+    --ps-text-h: #334040;
+    --ps-text-b: #4A5858;
+    --ps-text-m: #7A9090;
+    --ps-text-s: #A8C0B8;
+    --ps-border: rgba(100, 160, 140, 0.15);
+}
+
+/* site-body 여백 제거 */
+.site-body {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/*전체 레이아웃*/
+.curation-layout {
+    display: flex;
+    height: calc(100vh - var(--header-h, 170px));
+    overflow: hidden;
+    background: var(--ps-bg);
+    width: 100%;
+    margin: 0;
+    position: absolute; /* ← 추가 */
+    left: 0; /* ← 추가 */
+    right: 0; /* ← 추가 */
+}
+
+/* ── 왼쪽 사이드바 ── */
+.curation-sidebar {
+    width: 313px;
+    flex-shrink: 0;
+    background: var(--ps-llime);
+    border-right: 1.5px solid var(--ps-border);
+    padding: 24px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.curation-sidebar-title {
+    font-size: 24px;
+    color: var(--ps-text-m);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0 8px;
+    margin-bottom: 30px;
+    margin-left: 12px;
+}
+
+.curation-cat-btn {
+    background: transparent;
+    border: 1.5px solid transparent;
+    border-radius: 10px;
+    padding: 9px 11px;
+    text-align: left;
+    cursor: pointer;
+    font-size: 20px;
+    /*margin-left: 36px;*/
+    margin-left: 0px;
+    margin-bottom: 20px;
+    color: var(--ps-text-b);
+    transition: all 0.15s ease;
+    line-height: 1.3;
+    font-family: inherit;
+    width: 100%;
+    text-align: center;
+}
+
+.curation-cat-btn:hover {
+    background: var(--ps-lmint);
+    color: var(--ps-text-h);
+}
+
+.curation-cat-btn.active {
+    background: var(--ps-lmint);
+    border-color: var(--ps-mint);
+    color: var(--ps-text-h);
+    font-weight: 600;
+}
+
+/* ── 오른쪽 콘텐츠 영역 ── */
+.curation-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--ps-bg);
+    min-width: 0; /* ← 추가 */
+    width: 100%; /* ← 추가 */
+}
+
+.curation-content-header {
+    padding: 18px 24px 14px;
+    border-bottom: 1.5px solid var(--ps-border);
+    background: var(--ps-bg);
+}
+
+.curation-content-header h2 {
+    font-size: 38px;
+    font-weight: 600;
+    color: var(--ps-text-h);
+    margin-top: 30px;
+    margin-bottom: 20px;
+    margin-left: 20px;
+}
+
+.curation-content-header p {
+    font-size: 19px;
+    margin-bottom: 20px;
+    margin-left: 20px;
+    color: var(--ps-text-m);
+}
+
+/* ── 답변 스크롤 영역 ── */
+.curation-answer {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── 빈 상태 ── */
+.curation-empty {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--ps-text-s);
+    font-size: 13px;
+    gap: 12px;
+    padding-bottom: 30px;
+}
+
+.curation-empty-otter {
+    width: 207px;
+    opacity: 0.5;
+}
+
+.curation-empty-text {
+    font-size: 25px;
+}
+
+/* ── 발신자 이름 ── */
+.curation-bubble-name {
+    font-size: 23px;
+    color: var(--ps-text-s);
+    margin-bottom: 5px;
+    padding-left: 2px;
+}
+
+/* ── 오터 + 말풍선 행 ── */
+.curation-otter-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+}
+
+.curation-otter-img {
+    width: 72px;
+    height: 72px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+/* ── AI 말풍선 ── */
+.curation-bubble {
+    background: var(--ps-card);
+    border: 1.5px solid var(--ps-border);
+    border-radius: 16px 16px 16px 4px;
+    padding: 16px 18px;
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--ps-text-b);
+    white-space: pre-wrap;
+    flex: 1;
+}
+
+/* ── 로딩 행 ── */
+.curation-loading-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    margin-top: 14px;
+    position: relative;
+}
+
+.curation-loading-spacer {
+    width: 72px;
+    flex-shrink: 0;
+}
+
+.curation-loading-bubble {
+    background: var(--ps-card);
+    border: 1.5px solid var(--ps-border);
+    border-radius: 16px 16px 16px 4px;
+    padding: 13px 16px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.curation-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ps-mint);
+    animation: curationDot 1.2s infinite;
+}
+
+.curation-dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.curation-dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes curationDot {
+    0%, 80%, 100% {
+        opacity: 0.25;
+        transform: scale(0.8);
+    }
+    40% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ── 에러 메시지 ── */
+.curation-error {
+    font-size: 13px;
+    color: #9A5060;
+    background: var(--ps-blush);
+    border-radius: 8px;
+    padding: 10px 14px;
+    flex: 1;
+}
