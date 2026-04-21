@@ -1,41 +1,32 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OTTERCARE 회원가입</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/app.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/login.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/site-theme.css">
-    <style>
-        .id-check-btn {
-            background: linear-gradient(135deg, #b4d8d0, #9ecec6);
-            color: #334040;
-            border: 1px solid rgba(100, 160, 140, 0.22);
-            padding: 10px 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            white-space: nowrap;
-        }
+<%
+    if (request.getAttribute("content") == null) {
+        response.sendRedirect(request.getContextPath() + "/join");
+        return;
+    }
+%>
+<style>
+    .id-check-btn {
+        background: linear-gradient(135deg, #b4d8d0, #9ecec6);
+        color: #334040;
+        border: 1px solid rgba(100, 160, 140, 0.22);
+        padding: 10px 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        white-space: nowrap;
+    }
 
-        .id-check-btn:hover {
-            background-color: #256628;
-        }
+    .id-check-btn:hover {
+        background-color: #256628;
+    }
 
-        #idCheckMsg {
-            display: block;
-            margin-top: 8px;
-            font-size: 13px;
-        }
-
-
-    </style>
-
-
-</head>
-<body>
+    #idCheckMsg {
+        display: block;
+        margin-top: 8px;
+        font-size: 13px;
+    }
+</style>
 
 <div class="login-page">
     <div class="login-wrap">
@@ -47,8 +38,8 @@
             </div>
 
             <div class="login-img-box">
-                <img src="${pageContext.request.contextPath}/userImg/pill.jfif" alt="알약 이미지" class="login-pill-img">
-                <img src="${pageContext.request.contextPath}/userImg/bottle.jfif" alt="영양제 통 이미지"
+                <img src="${pageContext.request.contextPath}/img/pill.png" alt="알약 이미지" class="login-pill-img">
+                <img src="${pageContext.request.contextPath}/img/bottle.png" alt="영양제 통 이미지"
                      class="login-bottle-img">
             </div>
         </div>
@@ -409,7 +400,3 @@
         return true;
     }
 </script>
-
-
-</body>
-</html>

@@ -1,34 +1,18 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<!DOCTYPE html>
-<html>
-<head>
-    <title>OTTERCARE 로그인</title>
-
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/app.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/login.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/site-theme.css">
-
-
-</head>
-<body>
-
-<!-- 1. 배경 비디오 추가 -->
-<%--<div class="video-background">--%>
-<!--
-   autoplay: 자동 재생
-   muted: 소리 끔 (크롬 등에서 자동 재생을 위해 필수)
-   loop: 무한 반복
-   playsinline: 모바일 환경 대응
--->
-<%--    <video autoplay muted loop playsinline id="bg-video">--%>
-<%--        <source src="${pageContext.request.contextPath}/video/login_sea.mp4" type="video/mp4">--%>
-<%--    </video>--%>
-<%--</div>--%>
+<%
+    if (request.getAttribute("content") == null) {
+        String target = request.getContextPath() + "/user-Login";
+        String redirect = request.getParameter("redirect");
+        if (redirect != null && !redirect.trim().isEmpty()) {
+            target += "?redirect=" + java.net.URLEncoder.encode(redirect, java.nio.charset.StandardCharsets.UTF_8);
+        }
+        response.sendRedirect(target);
+        return;
+    }
+%>
 
 <div class="login-page">
-    <%--    <div class="login-wrap glass-effect"> <!-- glass-effect 클래스 추가 -->--%>
     <div class="login-wrap">
-
         <div class="login-left">
             <div class="login-title-box">
                 <h1 class="login-title">OTTERCARE</h1>
@@ -73,10 +57,5 @@
                 </div>
             </div>
         </div>
-
-        <%--        </div>--%>
     </div>
 </div>
-
-</body>
-</html>

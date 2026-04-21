@@ -6,7 +6,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
 import java.io.IOException;
 
 @WebServlet(name = "UserJoinC", value = "/join")
@@ -19,10 +18,16 @@ import java.io.IOException;
 
 public class UserJoinC extends HttpServlet {
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void renderJoinPage(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.setAttribute("content", "user/join.jsp");
+        request.setAttribute("activeTab", "join");
+        request.getRequestDispatcher("index.jsp").forward(request, response);
+    }
 
-
-        response.sendRedirect("user/join.jsp");
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
+        renderJoinPage(request, response);
     }
 
     @Override
@@ -43,15 +48,10 @@ public class UserJoinC extends HttpServlet {
 
         Boolean redirectJoin = (Boolean) req.getAttribute("redirectJoin");
         if (redirectJoin != null && redirectJoin) {
-            resp.sendRedirect("user/join.jsp");//실패하면 그 화면 그대로
+            renderJoinPage(req, resp);
         } else {
-            resp.sendRedirect("index.jsp");//
+            resp.sendRedirect("hello-servlet");
         }
-
-
-
-
-
     }
 
     public void destroy() {
