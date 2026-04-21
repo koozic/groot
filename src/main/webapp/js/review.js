@@ -393,8 +393,12 @@ document.querySelectorAll('.upd-star').forEach(star => {
 function toggleImgDelete() { document.getElementById('isImgDeleted').value = document.getElementById('delete_img_check').checked ? "true" : "false"; }
 function closeUpdateModal() { document.getElementById('updateModal').style.display = 'none'; }
 
-function submitUpdate() {
-    fetch('ReviewUpdateC', { method: 'POST', body: new FormData(document.getElementById('updateForm')) })
+function submitUpdate(button) {
+    const actionButton = button || document.querySelector('#updateModal button[onclick^="submitUpdate"]');
+    const request = () => fetch('ReviewUpdateC', {
+        method: 'POST',
+        body: new FormData(document.getElementById('updateForm'))
+    })
         .then(res => res.text())
         .then(data => {
             if (data.trim() === "1") {
@@ -405,7 +409,15 @@ function submitUpdate() {
             } else {
                 showToast("리뷰 수정에 실패했습니다.", "error");
             }
+        })
+        .catch(() => {
+            showToast("리뷰 수정 중 오류가 발생했습니다.", "error");
         });
+
+    if (window.GrootSubmitGuard?.runWithActionLock) {
+        return window.GrootSubmitGuard.runWithActionLock(actionButton, request, {pendingText: '수정 중...'});
+    }
+    return request();
 }
 
 // ==========================================
@@ -455,8 +467,12 @@ function setWriteStars(score) {
     document.querySelectorAll('.write-star').forEach(s => { s.style.color = (s.getAttribute('data-value') <= score) ? '#ffc107' : '#ddd'; });
 }
 
-function submitReview() {
-    fetch('review-write', { method: 'POST', body: new FormData(document.getElementById('writeForm')) })
+function submitReview(button) {
+    const actionButton = button || document.querySelector('#writeModal button[onclick^="submitReview"]');
+    const request = () => fetch('review-write', {
+        method: 'POST',
+        body: new FormData(document.getElementById('writeForm'))
+    })
         .then(res => res.text())
         .then(data => {
             if (data.trim() === "1") {
@@ -467,7 +483,15 @@ function submitReview() {
             } else {
                 showToast("리뷰 등록에 실패했습니다.", "error");
             }
+        })
+        .catch(() => {
+            showToast("리뷰 등록 중 오류가 발생했습니다.", "error");
         });
+
+    if (window.GrootSubmitGuard?.runWithActionLock) {
+        return window.GrootSubmitGuard.runWithActionLock(actionButton, request, {pendingText: '등록 중...'});
+    }
+    return request();
 }
 
 // ==========================================

@@ -6,6 +6,183 @@
 const isLogin = (typeof IS_LOGIN !== 'undefined' && IS_LOGIN === true);
 console.log("현재 로그인 상태:", isLogin); // 디버깅용: F12 콘솔에서 확인 가능
 
+/* ── 중복 제출 방지 ── */
+const submitLockState = new WeakMap();
+
+function readActionControlText(control) {
+    if (!control) return '';
+    if (control.tagName === 'INPUT') return control.value || '';
+    return control.textContent || '';
+}
+
+function writeActionControlText(control, text) {
+    if (!control) return;
+    if (control.tagName === 'INPUT') {
+        control.value = text;
+        return;
+    }
+    control.textContent = text;
+}
+
+function buildPendingText(control, fallback = '처리 중...') {
+    const customText = control?.dataset?.pendingText?.trim();
+    if (customText) return customText;
+
+    const baseText = readActionControlText(control).trim();
+    if (!baseText) return fallback;
+    if (baseText.endsWith('중...')) return baseText;
+    if (baseText.includes('가입')) return '가입 중...';
+    if (baseText.includes('등록')) return '등록 중...';
+    if (baseText.includes('수정')) return '수정 중...';
+    if (baseText.includes('저장')) return '저장 중...';
+    if (baseText.includes('추가') || baseText.includes('+')) return '추가 중...';
+    if (baseText.includes('삭제')) return '삭제 중...';
+    return fallback;
+}
+
+function lockActionControl(control, options = {}) {
+    if (!control || control.dataset.grootPending === 'true') return false;
+
+    submitLockState.set(control, {
+        disabled: typeof control.disabled === 'boolean' ? control.disabled : null,
+        text: readActionControlText(control),
+        pointerEvents: control.style.pointerEvents,
+        opacity: control.style.opacity,
+        cursor: control.style.cursor,
+        ariaDisabled: control.getAttribute('aria-disabled'),
+        ariaBusy: control.getAttribute('aria-busy')
+    });
+
+    control.dataset.grootPending = 'true';
+    if (typeof control.disabled === 'boolean') {
+        control.disabled = true;
+    }
+    control.style.pointerEvents = 'none';
+    control.style.opacity = '0.7';
+    control.style.cursor = 'wait';
+    control.setAttribute('aria-disabled', 'true');
+    control.setAttribute('aria-busy', 'true');
+
+    if (control.tagName === 'BUTTON' || control.tagName === 'INPUT') {
+        writeActionControlText(control, options.pendingText || buildPendingText(control, options.fallbackText));
+    }
+
+    return true;
+}
+
+function unlockActionControl(control) {
+    if (!control) return;
+
+    const snapshot = submitLockState.get(control);
+    if (!snapshot) {
+        delete control.dataset.grootPending;
+        return;
+    }
+
+    if (snapshot.disabled !== null) {
+        control.disabled = snapshot.disabled;
+    }
+    if (control.tagName === 'BUTTON' || control.tagName === 'INPUT') {
+        writeActionControlText(control, snapshot.text);
+    }
+
+    control.style.pointerEvents = snapshot.pointerEvents;
+    control.style.opacity = snapshot.opacity;
+    control.style.cursor = snapshot.cursor;
+
+    if (snapshot.ariaDisabled === null) control.removeAttribute('aria-disabled');
+    else control.setAttribute('aria-disabled', snapshot.ariaDisabled);
+
+    if (snapshot.ariaBusy === null) control.removeAttribute('aria-busy');
+    else control.setAttribute('aria-busy', snapshot.ariaBusy);
+
+    delete control.dataset.grootPending;
+    submitLockState.delete(control);
+}
+
+function getFormSubmitControls(form, submitter) {
+    const controls = Array.from(form.querySelectorAll('button[type="submit"], input[type="submit"]'));
+    if (submitter && !controls.includes(submitter)) {
+        controls.push(submitter);
+    }
+    return controls;
+}
+
+function lockFormSubmission(form, submitter) {
+    if (!form || form.dataset.grootSubmitting === 'true') return false;
+
+    form.dataset.grootSubmitting = 'true';
+    form.setAttribute('aria-busy', 'true');
+
+    getFormSubmitControls(form, submitter).forEach(control => {
+        lockActionControl(control);
+    });
+
+    return true;
+}
+
+function unlockFormSubmission(form) {
+    if (!form) return;
+
+    getFormSubmitControls(form).forEach(control => unlockActionControl(control));
+    delete form.dataset.grootSubmitting;
+    form.removeAttribute('aria-busy');
+}
+
+function runWithActionLock(control, action, options = {}) {
+    const target = control?.currentTarget || control;
+    if (target?.dataset?.grootPending === 'true') {
+        return Promise.resolve(false);
+    }
+
+    if (target) {
+        lockActionControl(target, {pendingText: options.pendingText, fallbackText: options.fallbackText});
+    }
+
+    let result;
+    try {
+        result = action();
+    } catch (error) {
+        if (target) unlockActionControl(target);
+        throw error;
+    }
+
+    return Promise.resolve(result)
+        .then(value => {
+            if (target && !options.keepLocked) unlockActionControl(target);
+            return value;
+        })
+        .catch(error => {
+            if (target) unlockActionControl(target);
+            throw error;
+        });
+}
+
+window.GrootSubmitGuard = {
+    lockActionControl,
+    unlockActionControl,
+    lockFormSubmission,
+    unlockFormSubmission,
+    runWithActionLock
+};
+
+document.addEventListener('submit', function (event) {
+    const form = event.target;
+    if (!(form instanceof HTMLFormElement)) return;
+    if ((form.method || 'get').toLowerCase() !== 'post') return;
+    if (form.dataset.allowRepeatSubmit === 'true') return;
+
+    if (form.dataset.grootSubmitting === 'true') {
+        event.preventDefault();
+        return;
+    }
+
+    if (event.defaultPrevented) return;
+
+    const submitter = event.submitter || form.querySelector('button[type="submit"], input[type="submit"]');
+    lockFormSubmission(form, submitter);
+});
+
 /* ── 로컬스토리지 장바구니 (비회원) ── */
 const LOCAL_CART_KEY = 'yakjaengi_cart';
 const LOCAL_WISH_KEY = 'yakjaengi_wish';

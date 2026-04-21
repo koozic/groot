@@ -112,8 +112,8 @@ select:focus {
 .modal-submit-btn,
 #confirmBtn,
 #empty-review-ui button,
-#writeModal button[onclick="submitReview()"],
-#updateModal button[onclick="submitUpdate()"],
+#writeModal button[onclick^="submitReview"],
+#updateModal button[onclick^="submitUpdate"],
 .id-check-btn {
     background: linear-gradient(135deg, var(--ps-mint), var(--ps-mint-strong)) !important;
     color: var(--ps-text-h) !important;
@@ -1067,8 +1067,8 @@ body {
 .modal-submit-btn,
 #confirmBtn,
 #empty-review-ui button,
-#writeModal button[onclick="submitReview()"],
-#updateModal button[onclick="submitUpdate()"],
+#writeModal button[onclick^="submitReview"],
+#updateModal button[onclick^="submitUpdate"],
 .id-check-btn {
     border-radius: 18px !important;
     background: linear-gradient(135deg, rgba(216, 238, 232, 0.96), rgba(180, 216, 208, 0.96)) !important;
@@ -1644,7 +1644,7 @@ body {
     background: rgba(255, 255, 255, 0.9) !important;
 }
 
-#adminModalOverlay button[onclick="submitAdminModal()"] {
+#adminModalOverlay button[onclick^="submitAdminModal"] {
     border-radius: 18px !important;
     background: linear-gradient(135deg, rgba(216, 238, 232, 0.96), rgba(180, 216, 208, 0.96)) !important;
     color: var(--ps-text-h) !important;
