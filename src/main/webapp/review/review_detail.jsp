@@ -9,7 +9,7 @@
 
     <div class="review-detail-meta" style="font-size: 0.9em; color: #7f8c8d; margin-bottom: 20px;">
         작성자: <span id="detail_user" style="font-weight: bold; color: #333;"></span> |
-        별점: <span id="detail_score" style="color: #f1c40f;"></span>점 |
+        별점: <span id="detail_score" style="color: #f1c40f;"></span> |
         날짜: <span id="detail_date"></span>
     </div>
 
