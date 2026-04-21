@@ -106,9 +106,9 @@
 
     <div class="btn-group">
             <button class="btn-list" onclick="location.href='supplements'">목록으로 돌아가기</button>
-        <c:if test="${isAdmin == true}">
+<%--        <c:if test="${isAdmin == true}">--%>
             <button class="btn-list" onclick="updateSupplement('${detailSupp.supplementId}')">수정</button>
-        </c:if>
+<%--        </c:if>--%>
     </div>
 </div>
 

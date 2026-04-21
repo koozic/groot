@@ -60,30 +60,34 @@
 
     <form action="supplements" method="post" enctype="multipart/form-data">
 
-
         <div class="form-group">
             <label class="form-label">영양성분명</label>
-            <input type="text" name="supplementName" class="form-input" required>
+            <input type="text" name="supplementName" class="form-input"
+                   placeholder="예) 비타민C" required>
         </div>
 
         <div class="form-group">
             <label class="form-label">효능 (줄바꿈 가능)</label>
-            <textarea name="supplementEfficacy" rows="3" class="form-input" required></textarea>
+            <textarea name="supplementEfficacy" rows="3" class="form-input"
+                      placeholder="예) 피로 회복에 도움" required></textarea>
         </div>
 
         <div class="form-group">
             <label class="form-label">권장 복용량</label>
-            <input type="text" name="supplementDosage" class="form-input">
+            <input type="text" name="supplementDosage" class="form-input"
+                   placeholder="예) 1일 1회 1정">
         </div>
 
         <div class="form-group">
             <label class="form-label">복용 시간</label>
-            <input type="text" name="supplementTiming" class="form-input">
+            <input type="text" name="supplementTiming" class="form-input"
+                   placeholder="예) 식후 30분">
         </div>
 
         <div class="form-group">
             <label class="form-label">주의사항</label>
-            <textarea name="supplementCaution" rows="2" class="form-input"></textarea>
+            <textarea name="supplementCaution" rows="2" class="form-input"
+                      placeholder="예) 특이체질 알레르기 주의"></textarea>
         </div>
 
         <div class="form-group">
@@ -92,7 +96,8 @@
         </div>
 
         <button type="submit" class="submit-btn">등록하기</button>
-        <button class="submit-btn" onclick="location.href='supplements'">목록으로 돌아가기</button>
+        <%-- 💡 돌아가기 버튼은 시각적으로 덜 튀게 회색으로 처리했습니다 --%>
+        <button type="button" class="submit-btn" onclick="location.href='supplements'" style="background-color: #95a5a6;">목록으로 돌아가기</button>
     </form>
 </div>
 </body>

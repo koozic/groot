@@ -178,7 +178,7 @@ VALUES (seq_supplements_id.NEXTVAL, '퀘르세틴', '천연 항히스타민제�
 
 -- 수정
 update supplements
-set supplement_image_path = 'https://media.discordapp.net/attachments/1487987147876208640/1494235295657361458/Jonathan_Adler_Large_Purple_Acrylic_Pill_248_liked_on_Polyvore_featuring_home_home_decor_misc_drugs_filler_other_purple_purple_home_accessories_pop_art_and_acrylic_sculpture-Photoroom.png?ex=69e7cd50&is=69e67bd0&hm=89b655565ef98cd754c56c7a14135166c7bac5f99fdc28fa1901cba8b80a745f&=&format=webp&quality=lossless&width=693&height=693'
+set supplement_image_path = 'vitamin.webp'
 where supplement_name like '%비타민%';
 
 update supplements
