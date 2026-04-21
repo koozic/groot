@@ -639,21 +639,21 @@
                                 <div class="join-collapsible-body">
                                     <div class="profile-choice-grid">
                                         <label class="profile-choice is-selected">
-                                            <input type="radio" name="default_profile" value="Ayanokoji.jfif" checked>
-                                            <img src="${pageContext.request.contextPath}/user/userImg/Ayanokoji.jfif" alt="기본 프로필 1">
-                                            <span>Ayanokoji</span>
+                                            <input type="radio" name="default_profile" value="lying_otter.png" checked>
+                                            <img src="${pageContext.request.contextPath}/user/userImg/lying_otter.png" alt="기본 프로필 1">
+                                            <span>lying</span>
                                         </label>
 
                                         <label class="profile-choice">
-                                            <input type="radio" name="default_profile" value="Ryuen.jfif">
-                                            <img src="${pageContext.request.contextPath}/user/userImg/Ryuen.jfif" alt="기본 프로필 2">
-                                            <span>Ryuen</span>
+                                            <input type="radio" name="default_profile" value="worried_otter.png">
+                                            <img src="${pageContext.request.contextPath}/user/userImg/worried_otter.png" alt="기본 프로필 2">
+                                            <span>worried</span>
                                         </label>
 
                                         <label class="profile-choice">
-                                            <input type="radio" name="default_profile" value="Horikita.jfif">
-                                            <img src="${pageContext.request.contextPath}/user/userImg/Horikita.jfif" alt="기본 프로필 3">
-                                            <span>Horikita</span>
+                                            <input type="radio" name="default_profile" value="haribo_otter.png">
+                                            <img src="${pageContext.request.contextPath}/user/userImg/haribo_otter.png" alt="기본 프로필 3">
+                                            <span>haribo</span>
                                         </label>
                                     </div>
 
