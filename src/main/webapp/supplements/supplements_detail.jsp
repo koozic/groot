@@ -14,10 +14,10 @@
 <div class="detail-wrapper">
     <h1 class="detail-title">- Supplement Detail -</h1>
 
-    <div class="supp-detail-box content">
+    <div class="supp-detail-box">
 
         <div class="detail-img-area">
-            <%--            <img src="/supplementImg/supplementImgFile/${detailSupp.supplementImagePath}" alt="${detailSupp.supplementName}">--%>
+<%--            <img src="/supplementImg/supplementImgFile/${detailSupp.supplementImagePath}" alt="${detailSupp.supplementName}">--%>
             <img src="${detailSupp.supplementImagePath}" alt="${detailSupp.supplementName}">
         </div>
 
@@ -28,8 +28,7 @@
 
         <div class="detail-row">
             <div class="col-1">🏷️ Name.</div>
-            <div class="col-2"
-                 style="font-size: 1.3em; font-weight: bold; color: #4CAF50;">${detailSupp.supplementName}</div>
+            <div class="col-2" style="font-size: 1.3em; font-weight: bold; color: #4CAF50;">${detailSupp.supplementName}</div>
         </div>
 
         <div class="detail-row">
@@ -55,10 +54,10 @@
     </div>
 
     <div class="btn-group">
-        <button class="btn-list" onclick="location.href='supplements'">목록으로 돌아가기</button>
-        <%--        <c:if test="${isAdmin == true}">--%>
-        <button class="btn-list" onclick="updateSupplement('${detailSupp.supplementId}')">수정</button>
-        <%--        </c:if>--%>
+            <button class="btn-list" onclick="location.href='supplements'">목록으로 돌아가기</button>
+<%--        <c:if test="${isAdmin == true}">--%>
+            <button class="btn-list" onclick="updateSupplement('${detailSupp.supplementId}')">수정</button>
+<%--        </c:if>--%>
     </div>
 </div>
 

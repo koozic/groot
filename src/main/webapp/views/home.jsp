@@ -1,7 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
 <style>
     .best-review-swiper {
@@ -9,15 +9,12 @@
         overflow: hidden;
         padding-bottom: 10px; /* 그림자 잘림 방지 */
     }
-
     .best-review-swiper .swiper-wrapper {
         align-items: flex-start;
     }
-
     .best-review-swiper .swiper-slide {
         height: auto; /* 카드 4개 높이 균일하게 맞춤 */
     }
-
     .best-review-swiper .card {
         height: auto;
         margin: 0; /* Swiper가 간격을 알아서 주므로 기존 마진 제거 */
@@ -126,36 +123,26 @@
                 <c:when test="${not empty bestReviews}">
                     <c:forEach var="best" items="${bestReviews}" varStatus="status">
 
-                        <c:set var="badgeColor"
-                               value="${status.index % 4 == 0 ? 'badge-blue' : (status.index % 4 == 1 ? 'badge-yellow' : (status.index % 4 == 2 ? 'badge-green' : 'badge-orange'))}"/>
+                        <c:set var="badgeColor" value="${status.index % 4 == 0 ? 'badge-blue' : (status.index % 4 == 1 ? 'badge-yellow' : (status.index % 4 == 2 ? 'badge-green' : 'badge-orange'))}" />
 
                         <div class="swiper-slide">
-                            <div class="card review-card home-best-review-card content"
-                                 onclick="location.href='product-detail?id=${best.product_id}'"
-                                 style="cursor: pointer; padding: 20px;">
+                            <div class="card review-card home-best-review-card" onclick="location.href='product-detail?id=${best.product_id}'" style="cursor: pointer; padding: 20px;">
 
                                     <%-- 1. 상단: 은사님의 영양성분 태그 + 평균 평점 --%>
-                                <div class="home-best-review-head"
-                                     style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                                <div class="home-best-review-head" style="display: flex; justify-content: space-between; margin-bottom: 15px;">
                                     <span class="badge ${badgeColor}">${not empty best.supp_name ? best.supp_name : '종합영양제'}</span>
-                                    <span class="home-best-review-score"
-                                          style="font-size: 12px; font-weight: bold; color: #555;">⭐ 상품평점: ${best.p_avg_score}</span>
+                                    <span class="home-best-review-score" style="font-size: 12px; font-weight: bold; color: #555;">⭐ 상품평점: ${best.p_avg_score}</span>
                                 </div>
 
                                     <%-- 2. 제품 정보 영역 (사진 + 이름) --%>
-                                <div class="home-best-review-product"
-                                     style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dashed #eee;">
-                                    <img class="home-best-review-thumb"
-                                         src="${not empty best.p_img ? best.p_img : '../images/default.jpg'}" alt="제품사진"
-                                         style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">
-                                    <div class="home-best-review-product-name"
-                                         style="font-weight: bold; font-size: 14px; color: #333;">${not empty best.p_name ? best.p_name : '제품명 없음'}</div>
+                                <div class="home-best-review-product" style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dashed #eee;">
+                                    <img class="home-best-review-thumb" src="${not empty best.p_img ? best.p_img : '../images/default.jpg'}" alt="제품사진" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">
+                                    <div class="home-best-review-product-name" style="font-weight: bold; font-size: 14px; color: #333;">${not empty best.p_name ? best.p_name : '제품명 없음'}</div>
                                 </div>
 
                                     <%-- 3. 리뷰 제목 및 내용 (2줄 요약 처리) --%>
                                 <div class="review-title" style="margin-bottom: 5px;">${best.r_title}</div>
-                                <div class="review-body"
-                                     style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; margin-bottom: 10px;">
+                                <div class="review-body" style="overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; margin-bottom: 10px;">
                                         ${best.r_content}
                                 </div>
 
@@ -166,21 +153,17 @@
                                 </div>
 
                                     <%-- 5. 하단: 작성자 및 좋아요 --%>
-                                <div class="review-author home-best-review-foot"
-                                     style="display: flex; justify-content: space-between; align-items: center;">
+                                <div class="review-author home-best-review-foot" style="display: flex; justify-content: space-between; align-items: center;">
                                     <span>${best.user_id}</span>
-                                    <span class="home-best-review-like"
-                                          style="font-weight: bold; font-size: 11px;">👍 ${best.r_like}</span>
+                                    <span class="home-best-review-like" style="font-weight: bold; font-size: 11px;">👍 ${best.r_like}</span>
                                 </div>
                             </div>
-                        </div>
-                    </c:forEach>
+                        </div> </c:forEach>
                 </c:when>
 
                 <%-- 데이터가 없을 때 (무영님 확인용) --%>
                 <c:otherwise>
-                    <div class="home-best-review-empty"
-                         style="width: 100%; text-align: center; padding: 40px; color: #777; background: #f8f9fa; border-radius: 12px;">
+                    <div class="home-best-review-empty" style="width: 100%; text-align: center; padding: 40px; color: #777; background: #f8f9fa; border-radius: 12px;">
                         앗! DB에서 데이터를 못 가져왔습니다. 서버 로그를 확인해주세요!
                     </div>
                 </c:otherwise>

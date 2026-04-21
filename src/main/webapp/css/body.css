@@ -11,9 +11,7 @@ body {
 }
 
 .wrap {
-    /*padding: 16px;*/
-    padding: 0px 40px 60px;
-    margin-top: -16px;
+    padding: 16px;
 }
 
 /* ── 웹 레이아웃 (기본: 2컬럼) ── */
