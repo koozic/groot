@@ -22,6 +22,9 @@
     <link rel="stylesheet" href="css/app.css">
     <link rel="stylesheet" href="css/recommend.css">
     <link rel="stylesheet" href="css/home.css">
+    <c:if test="${content == 'user/login.jsp' or content == 'user/join.jsp'}">
+        <link rel="stylesheet" href="css/login.css">
+    </c:if>
     <c:if test="${content == 'body/body.jsp'}">
         <link rel="stylesheet" href="css/body.css">
         <link rel="stylesheet" href="css/body-theme-v10.css">
