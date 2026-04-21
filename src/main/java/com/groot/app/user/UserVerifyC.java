@@ -26,6 +26,11 @@ public class UserVerifyC extends HttpServlet {
             return;
         }
 
+        if (UserDAO.checkUserEmailDuplicate(email.trim())) {
+            response.getWriter().write("{\"result\":\"duplicate\", \"msg\":\"email duplicate\"}");
+            return;
+        }
+
         String authCode = String.valueOf(100000 + new Random().nextInt(900000));
 
         HttpSession session = request.getSession();

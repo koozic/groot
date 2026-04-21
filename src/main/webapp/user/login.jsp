@@ -13,11 +13,10 @@
 %>
 
 
-
 <!DOCTYPE html>
 <html>
 <head>
-    <title>OtterCare 로그인</title>
+    <title>OttoCare 로그인</title>
 
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/app.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/login.css">
@@ -52,7 +51,7 @@
 
                 <div class="login-img-box">
                     <img src="${pageContext.request.contextPath}/img/ottos/haribo_otter.png" alt="알약 이미지"
-                         class="login-haribo_otto-img">
+                         class="login-haribo_otto-img" style="width: 235px; margin-bottom: 83px">
                 </div>
             </div>
 
@@ -72,6 +71,8 @@
                             <label for="user_id">아이디</label>
                             <input type="text" id="user_id" name="user_id" placeholder="아이디를 입력하세요" required>
                         </div>
+
+
 
                         <div class="login-input-group">
                             <label for="user_pw">비밀번호</label>
