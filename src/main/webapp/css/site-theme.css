@@ -1,3 +1,17 @@
+@font-face {
+    font-family: 'GeekbleMalrangiche';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302_01@1.0/GeekbleMalang2WOFF2.woff2') format('woff2');
+    font-weight: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'ImHyeMin';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2106@1.1/IM_Hyemin-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-display: swap;
+}
+
 :root {
     --ps-pink: #efa0ae;
     --ps-lpink: #f4c8d4;
@@ -38,9 +52,13 @@
     --text-sub: var(--ps-text-m);
     --text-light: var(--ps-text-s);
     --shadow: var(--ps-shadow-soft);
+    --font-display: 'GeekbleMalrangiche', 'Noto Sans KR', cursive;
+    --font-body: 'ImHyeMin', 'Noto Sans KR', sans-serif;
 }
 
 body {
+    font-family: var(--font-body);
+    font-weight: 700;
     background: radial-gradient(circle at top left, rgba(180, 216, 208, 0.22), transparent 24%),
     radial-gradient(circle at bottom right, rgba(239, 160, 174, 0.16), transparent 20%),
     var(--ps-bg);
@@ -49,6 +67,47 @@ body {
 
 a {
     color: inherit;
+}
+
+a,
+button,
+input,
+textarea,
+select,
+option {
+    font-family: var(--font-body) !important;
+    font-weight: 700 !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.sec-title,
+.cp-title,
+.cb-title,
+.panel-title,
+.modal-title,
+.login-modal-title,
+.curation-sidebar-title,
+.login-title,
+.login-form-title,
+.join-step-title,
+.join-collapsible-title,
+.mp-sec-title,
+.cal-month-title,
+.sticker-panel-title,
+.card-title,
+.ov-title,
+.review-title,
+.main-title,
+.supp-name,
+.supp-title,
+.detail-title,
+.cart-page-title {
+    font-family: var(--font-display);
 }
 
 .card,

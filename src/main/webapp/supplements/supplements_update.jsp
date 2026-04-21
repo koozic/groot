@@ -8,6 +8,7 @@
 <head>
     <meta charset="UTF-8">
     <title>영양성분 정보 수정</title>
+    <link rel="stylesheet" href="css/site-theme.css">
     <style>
         /* 1. 전체 감싸는 영역 (update-wrapper로 이름 변경) */
         .update-wrapper { display: flex; flex-direction: column; align-items: center; margin-top: 40px; padding-bottom: 50px; }
