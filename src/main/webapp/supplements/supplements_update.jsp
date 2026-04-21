@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -60,7 +61,16 @@
 
     <div class="supp-update-box">
         <div class="detail-img-area">
-            <img src="${detailSupp.supplementImagePath}" alt="${detailSupp.supplementName}">
+            <%-- 💡 똑똑한 이미지 출력 로직 적용 --%>
+            <c:choose>
+                <c:when test="${fn:startsWith(detailSupp.supplementImagePath, 'http')}">
+                    <img src="${detailSupp.supplementImagePath}" alt="${detailSupp.supplementName}">
+                </c:when>
+                <c:otherwise>
+                    <img src="/supplementImg/supplementImgFile/${detailSupp.supplementImagePath}" alt="${detailSupp.supplementName}">
+                </c:otherwise>
+            </c:choose>
+
             <br>
             <span style="font-weight: bold; color: #e74c3c;">사진 변경 (선택): </span>
             <input type="file" name="supplementFile" style="margin-top: 10px;">
