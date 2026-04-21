@@ -720,7 +720,9 @@
     </div>
 </div>
 
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
+    // 전역 변수 및 요소 선택
     const joinSteps = Array.from(document.querySelectorAll("[data-step]"));
     const joinProgressSteps = Array.from(document.querySelectorAll("[data-progress-step]"));
     let currentJoinStep = 1;
@@ -738,118 +740,60 @@
     const emailAuthMsg = document.getElementById("emailAuthMsg");
     const emailAuthPassed = document.getElementById("emailAuthPassed");
 
+    // 공통 메시지 출력 함수
     function setFieldMessage(target, message, color) {
+        if(!target) return;
         target.innerText = message;
         target.style.color = color || "";
         target.style.fontWeight = color === "green" ? "700" : "400";
     }
 
+    // 단계별 화면 전환
     function showJoinStep(step) {
         currentJoinStep = step;
-
-        joinSteps.forEach(function (section) {
+        joinSteps.forEach(section => {
             section.classList.toggle("is-active", Number(section.dataset.step) === step);
         });
-
-        joinProgressSteps.forEach(function (progress) {
+        joinProgressSteps.forEach(progress => {
             const progressStep = Number(progress.dataset.progressStep);
             progress.classList.toggle("is-current", progressStep === step);
             progress.classList.toggle("is-done", progressStep < step);
         });
+        window.scrollTo(0, 0); // 단계 이동 시 상단으로 스크롤
     }
 
+    // 1단계 유효성 검사
     function validateAccountStep() {
-        const requiredFields = [userIdInput, userPwInput, userNameInput, emailInput];
-
-        for (const field of requiredFields) {
-            if (!field.reportValidity()) {
-                return false;
-            }
-        }
-
+        if (!userIdInput.value.trim()) { alert("아이디를 입력해주세요."); userIdInput.focus(); return false; }
+        if (!userPwInput.value.trim()) { alert("비밀번호를 입력해주세요."); userPwInput.focus(); return false; }
+        if (!userNameInput.value.trim()) { alert("닉네임을 입력해주세요."); userNameInput.focus(); return false; }
+        
         if (idCheckResult.value !== "true") {
             alert("아이디 중복확인을 완료해주세요.");
             userIdInput.focus();
             return false;
         }
-
         if (emailCheckResult.value !== "true") {
             alert("이메일 중복확인을 완료해주세요.");
             emailInput.focus();
             return false;
         }
-
         if (emailAuthPassed.value !== "true") {
             alert("이메일 인증을 완료해주세요.");
             emailCodeInput.focus();
             return false;
         }
-
         return true;
     }
 
     function goToJoinStep(step) {
-        if (step === 2 && !validateAccountStep()) {
-            return;
-        }
-
+        if (step === 2 && !validateAccountStep()) return;
         showJoinStep(step);
     }
 
-    function updateProfileSelectionVisuals() {
-        document.querySelectorAll(".profile-choice").forEach(function (choice) {
-            const radio = choice.querySelector("input[type='radio']");
-            choice.classList.toggle("is-selected", !!radio && radio.checked);
-        });
-    }
-
-    document.addEventListener("DOMContentLoaded", function () {
-        const fileInput = document.getElementById("user_profile");
-        const defaultProfiles = document.querySelectorAll("input[name='default_profile']");
-
-        showJoinStep(1);
-        updateProfileSelectionVisuals();
-
-        if (fileInput && defaultProfiles.length > 0) {
-            fileInput.addEventListener("change", function () {
-                if (this.value) {
-                    defaultProfiles.forEach(function (radio) {
-                        radio.checked = false;
-                    });
-                } else if (defaultProfiles[0]) {
-                    defaultProfiles[0].checked = true;
-                }
-
-                updateProfileSelectionVisuals();
-            });
-
-            defaultProfiles.forEach(function (radio) {
-                radio.addEventListener("change", function () {
-                    fileInput.value = "";
-                    updateProfileSelectionVisuals();
-                });
-            });
-        }
-    });
-
-    userIdInput.addEventListener("input", function () {
-        idCheckResult.value = "false";
-        setFieldMessage(idCheckMsg, "", "");
-    });
-
-    emailInput.addEventListener("input", function () {
-        emailCheckResult.value = "false";
-        emailAuthPassed.value = "false";
-        setFieldMessage(emailCheckMsg, "", "");
-        setFieldMessage(emailAuthMsg, "", "");
-        emailCodeInput.value = "";
-        emailInput.readOnly = false;
-        emailCodeInput.readOnly = false;
-    });
-
+    // 아이디 중복 확인 (누락되었던 부분 수정)
     function checkUserId() {
         const userId = userIdInput.value.trim();
-
         if (userId === "") {
             setFieldMessage(idCheckMsg, "아이디를 입력하세요.", "red");
             userIdInput.focus();
@@ -857,32 +801,25 @@
         }
 
         fetch("${pageContext.request.contextPath}/user.id.check?user_id=" + encodeURIComponent(userId))
-            .then(function (response) {
-                return response.text();
-            })
-            .then(function (result) {
+            .then(res => res.text())
+            .then(result => {
                 result = result.trim().toUpperCase();
-
-                if (result === "OK" || result === "AVAILABLE" || result === "FALSE" || result === "0") {
+                if (["OK", "AVAILABLE", "FALSE", "0"].includes(result)) {
                     setFieldMessage(idCheckMsg, "사용 가능한 아이디입니다.", "green");
                     idCheckResult.value = "true";
-                } else if (result === "DUPLICATE" || result === "TAKEN" || result === "TRUE" || result === "1") {
-                    setFieldMessage(idCheckMsg, "이미 사용 중인 아이디입니다.", "red");
-                    idCheckResult.value = "false";
                 } else {
-                    setFieldMessage(idCheckMsg, "중복확인 중 오류가 발생했습니다.", "red");
+                    setFieldMessage(idCheckMsg, "이미 사용 중인 아이디입니다.", "red");
                     idCheckResult.value = "false";
                 }
             })
-            .catch(function () {
-                setFieldMessage(idCheckMsg, "중복확인 중 오류가 발생했습니다.", "red");
-                idCheckResult.value = "false";
+            .catch(() => {
+                setFieldMessage(idCheckMsg, "서버 통신 오류가 발생했습니다.", "red");
             });
     }
 
+    // 이메일 중복 확인
     function checkUserEmail() {
         const email = emailInput.value.trim();
-
         if (email === "") {
             setFieldMessage(emailCheckMsg, "이메일을 입력하세요.", "red");
             emailInput.focus();
@@ -890,40 +827,25 @@
         }
 
         fetch("${pageContext.request.contextPath}/user.email.check?user_email=" + encodeURIComponent(email))
-            .then(function (response) {
-                return response.text();
-            })
-            .then(function (result) {
+            .then(res => res.text())
+            .then(result => {
                 result = result.trim().toUpperCase();
-
-                if (result === "OK" || result === "AVAILABLE" || result === "FALSE" || result === "0") {
+                if (["OK", "AVAILABLE", "FALSE", "0"].includes(result)) {
                     setFieldMessage(emailCheckMsg, "사용 가능한 이메일입니다.", "green");
                     emailCheckResult.value = "true";
-                } else if (result === "DUPLICATE" || result === "TAKEN" || result === "TRUE" || result === "1") {
-                    setFieldMessage(emailCheckMsg, "이미 사용 중인 이메일입니다.", "red");
-                    emailCheckResult.value = "false";
                 } else {
-                    setFieldMessage(emailCheckMsg, "이메일 중복확인 중 오류가 발생했습니다.", "red");
+                    setFieldMessage(emailCheckMsg, "이미 가입된 이메일입니다.", "red");
                     emailCheckResult.value = "false";
                 }
             })
-            .catch(function () {
-                setFieldMessage(emailCheckMsg, "이메일 중복확인 중 오류가 발생했습니다.", "red");
-                emailCheckResult.value = "false";
-            });
+            .catch(() => setFieldMessage(emailCheckMsg, "통신 오류", "red"));
     }
 
+    // 이메일 인증번호 전송
     function sendEmailAuth() {
         const email = emailInput.value.trim();
-
-        if (email === "") {
-            setFieldMessage(emailAuthMsg, "이메일을 먼저 입력하세요.", "red");
-            emailInput.focus();
-            return;
-        }
-
         if (emailCheckResult.value !== "true") {
-            setFieldMessage(emailAuthMsg, "이메일 중복확인을 먼저 완료해주세요.", "red");
+            alert("이메일 중복확인을 먼저 해주세요.");
             return;
         }
 
@@ -932,34 +854,23 @@
             .then(data => {
                 if (data.result === "success") {
                     setFieldMessage(emailAuthMsg, "인증번호가 전송되었습니다.", "green");
-                } else if (data.result === "duplicate") {
-                    emailCheckResult.value = "false";
-                    setFieldMessage(emailCheckMsg, "이미 사용 중인 이메일입니다.", "red");
-                    setFieldMessage(emailAuthMsg, "이미 가입된 이메일은 인증할 수 없습니다.", "red");
                 } else {
-                    setFieldMessage(emailAuthMsg, "인증번호 전송 실패", "red");
+                    setFieldMessage(emailAuthMsg, "전송 실패: " + (data.message || ""), "red");
                 }
-            })
-            .catch(() => {
-                setFieldMessage(emailAuthMsg, "오류가 발생했습니다.", "red");
-                emailAuthPassed.value = "false";
             });
     }
 
+    // 이메일 인증 확인
     function checkEmailAuth() {
         const email = emailInput.value.trim();
         const code = emailCodeInput.value.trim();
-
-        if (code === "") {
-            setFieldMessage(emailAuthMsg, "인증번호를 입력하세요.", "red");
-            return;
-        }
+        if (!code) { alert("인증번호를 입력하세요."); return; }
 
         fetch("${pageContext.request.contextPath}/user/email-auth-verify?user_email=" + encodeURIComponent(email) + "&auth_code=" + encodeURIComponent(code))
             .then(res => res.json())
             .then(data => {
                 if (data.result === "success") {
-                    setFieldMessage(emailAuthMsg, "이메일 인증이 완료되었습니다.", "green");
+                    setFieldMessage(emailAuthMsg, "이메일 인증 완료!", "green");
                     emailAuthPassed.value = "true";
                     emailInput.readOnly = true;
                     emailCodeInput.readOnly = true;
@@ -967,19 +878,68 @@
                     setFieldMessage(emailAuthMsg, "인증번호가 일치하지 않습니다.", "red");
                     emailAuthPassed.value = "false";
                 }
-            })
-            .catch(() => {
-                setFieldMessage(emailAuthMsg, "오류가 발생했습니다.", "red");
-                emailAuthPassed.value = "false";
             });
     }
 
-    function joinCheck() {
-        if (!validateAccountStep()) {
-            showJoinStep(1);
-            return false;
-        }
+    // 카카오 주소 API
+    function execDaumPostcode() {
+        new daum.Postcode({
+            oncomplete: function(data) {
+                let addr = data.userSelectedType === 'R' ? data.roadAddress : data.jibunAddress;
+                document.getElementById('user_zipcode').value = data.zonecode;
+                document.getElementById("user_road_address").value = addr;
+                document.getElementById("user_detail_address").focus();
+            }
+        }).open();
+    }
 
-        return true;
+    // 프로필 선택 시각화 로직
+    function updateProfileSelectionVisuals() {
+        document.querySelectorAll(".profile-choice").forEach(choice => {
+            const radio = choice.querySelector("input[type='radio']");
+            choice.classList.toggle("is-selected", !!radio && radio.checked);
+        });
+    }
+
+    // 초기화 및 이벤트 리스너
+    document.addEventListener("DOMContentLoaded", function () {
+        showJoinStep(1);
+        
+        // 입력 시 중복확인 초기화
+        userIdInput.addEventListener("input", () => {
+            idCheckResult.value = "false";
+            idCheckMsg.innerText = "";
+        });
+
+        emailInput.addEventListener("input", () => {
+            emailCheckResult.value = "false";
+            emailAuthPassed.value = "false";
+            emailCheckMsg.innerText = "";
+            emailAuthMsg.innerText = "";
+        });
+
+        // 프로필 이미지 선택 로직
+        const fileInput = document.getElementById("user_profile");
+        const defaultProfiles = document.querySelectorAll("input[name='default_profile']");
+
+        defaultProfiles.forEach(radio => {
+            radio.addEventListener("change", () => {
+                if(fileInput) fileInput.value = "";
+                updateProfileSelectionVisuals();
+            });
+        });
+
+        if(fileInput) {
+            fileInput.addEventListener("change", function() {
+                if(this.value) {
+                    defaultProfiles.forEach(r => r.checked = false);
+                    updateProfileSelectionVisuals();
+                }
+            });
+        }
+    });
+
+    function joinCheck() {
+        return validateAccountStep();
     }
 </script>

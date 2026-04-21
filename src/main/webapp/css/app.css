@@ -5,6 +5,74 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Black+Han+Sans&display=swap');
 
+/* =====================================================
+   폰트 등록 — app.css 맨 위에 붙여넣기
+   ===================================================== */
+
+@font-face {
+    font-family: 'GeekbleMalang';
+    src: url('fonts/GeekbleMalang2WOFF2.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'IMHyemin';
+    src: url('fonts/IM_Hyemin-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'IMHyemin';
+    src: url('fonts/IM_Hyemin-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Galmuri';
+    src: url('fonts/Galmuri11.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Galmuri';
+    src: url('fonts/Galmuri11-Bold.woff2') format('woff2');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* =====================================================
+   폰트 적용
+   ===================================================== */
+
+/* 1. 모든 페이지 큰 제목 → 긱블 말랑이체 */
+h1, h2, h3 {
+    font-family: 'GeekbleMalang', sans-serif !important;
+}
+
+/* 2. content 내용 → IM혜민체 */
+.content,
+.content p,
+.content li,
+.content span,
+.content div {
+    font-family: 'IMHyemin', sans-serif !important;
+}
+
+/* 3. AI 추천 화면(curation) 전체 → 갈무리 */
+.ai-page,
+.ai-page * {
+    font-family: 'Galmuri', sans-serif !important;
+}
+
 /* ── 변수 ── */
 :root {
     --primary: #2563eb;

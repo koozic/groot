@@ -44,7 +44,7 @@
 
             <div class="login-left">
                 <div class="login-title-box">
-                    <h1 class="login-title">OtterCare</h1>
+                    <h1 class="login-title">OttoCare</h1>
                     <p class="login-subtitle">당신의 건강을 챙기는 영양제 습관</p>
 
                 </div>
