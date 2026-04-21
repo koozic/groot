@@ -6,10 +6,16 @@ import com.cloudinary.utils.ObjectUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CloudinaryUtil {
     private static Cloudinary cloudinary;
+    private static final Pattern CLOUDINARY_UPLOAD_PATH_PATTERN =
+            Pattern.compile("^/[^/]+/(image|video|raw)/upload(?:/[^/]+)*/v\\d+/(.+)$",
+                    Pattern.CASE_INSENSITIVE);
 
     public static void setCloudinary(Cloudinary c) {
         cloudinary = c;
@@ -65,6 +71,97 @@ public class CloudinaryUtil {
             e.printStackTrace();
             return null; // 파일이 없거나 에러나면 null
             //체크용ㄴ
+        }
+    }
+
+    public static boolean isCloudinaryUrl(String fileUrl) {
+        if (fileUrl == null || fileUrl.isBlank()) {
+            return false;
+        }
+
+        try {
+            URI uri = URI.create(fileUrl.trim());
+            String host = uri.getHost();
+            return host != null && host.toLowerCase().endsWith("res.cloudinary.com");
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public static boolean deleteFileByUrl(String fileUrl) {
+        CloudinaryAsset asset = extractAsset(fileUrl);
+        if (asset == null) {
+            return false;
+        }
+
+        Cloudinary cloudinary = getCloudinary();
+        if (cloudinary == null) {
+            System.out.println("[CloudinaryUtil] cloudinary is null - delete skipped");
+            return false;
+        }
+
+        try {
+            Map destroyResult = cloudinary.uploader().destroy(asset.publicId, ObjectUtils.asMap(
+                    "resource_type", asset.resourceType,
+                    "invalidate", true
+            ));
+            String result = (String) destroyResult.get("result");
+            boolean success = "ok".equalsIgnoreCase(result) || "not found".equalsIgnoreCase(result);
+
+            System.out.println("[CloudinaryUtil] delete " + (success ? "success" : "failed")
+                    + ": " + asset.publicId + " (" + result + ")");
+            return success;
+        } catch (Exception e) {
+            System.out.println("[CloudinaryUtil] delete error: " + fileUrl);
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private static CloudinaryAsset extractAsset(String fileUrl) {
+        if (!isCloudinaryUrl(fileUrl)) {
+            return null;
+        }
+
+        try {
+            URI uri = URI.create(fileUrl.trim());
+            Matcher matcher = CLOUDINARY_UPLOAD_PATH_PATTERN.matcher(uri.getPath());
+            if (!matcher.matches()) {
+                System.out.println("[CloudinaryUtil] unsupported Cloudinary URL: " + fileUrl);
+                return null;
+            }
+
+            String resourceType = matcher.group(1).toLowerCase();
+            String publicId = stripExtension(matcher.group(2));
+            if (publicId.isBlank()) {
+                return null;
+            }
+
+            return new CloudinaryAsset(publicId, resourceType);
+        } catch (Exception e) {
+            System.out.println("[CloudinaryUtil] public_id parse error: " + fileUrl);
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private static String stripExtension(String value) {
+        int lastSlash = value.lastIndexOf('/');
+        int lastDot = value.lastIndexOf('.');
+
+        if (lastDot > lastSlash) {
+            return value.substring(0, lastDot);
+        }
+        return value;
+    }
+
+    private static class CloudinaryAsset {
+        private final String publicId;
+        private final String resourceType;
+
+        private CloudinaryAsset(String publicId, String resourceType) {
+            this.publicId = publicId;
+            this.resourceType = resourceType;
         }
     }
 }

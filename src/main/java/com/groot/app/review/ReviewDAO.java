@@ -424,6 +424,7 @@ public class ReviewDAO {
         Connection con = null;
         PreparedStatement pstmt = null;
         boolean success = false;
+        String oldImage = getReviewImageById(reviewId);
 
         try {
             con = DBManager_new.connect();
@@ -444,6 +445,7 @@ public class ReviewDAO {
             if (pstmt.executeUpdate() == 1) {
                 success = true;
                 con.commit(); // 🌟 둘 다 문제없이 지워졌으면 DB에 확정(도장 쾅)!
+                com.groot.app.common.CloudinaryUtil.deleteFileByUrl(oldImage);
             }
         } catch (Exception e) {
             try { if (con != null) con.rollback(); } catch (Exception ex) {} // 에러 나면 롤백!
@@ -462,6 +464,8 @@ public class ReviewDAO {
     public boolean updateReview(HttpServletRequest request) {
         Connection con = null;
         PreparedStatement pstmt = null;
+        String newImgUrl = null;
+        boolean hasNewUpload = false;
 
         try {
             // ❌ 골치 아픈 MultipartRequest(mr) 완전 삭제!
@@ -471,11 +475,15 @@ public class ReviewDAO {
             String content = request.getParameter("upd_content");
             int score = Integer.parseInt(request.getParameter("upd_score"));
 
-            String oldImg = request.getParameter("old_img_name");       // 기존 사진 (URL 혹은 파일명)
+            String oldImg = getReviewImageById(r_id);
+            if (oldImg == null || oldImg.isBlank()) {
+                oldImg = request.getParameter("old_img_name");
+            }
             String isImgDeleted = request.getParameter("isImgDeleted"); // 삭제 여부(true/false)
 
             // 🌟 [핵심] 클라우드 업로드 유틸리티 호출! (사진이 없으면 알아서 null 반환)
-            String newImgUrl = com.groot.app.common.CloudinaryUtil.uploadFromRequest(request, "upd_file", "review");
+            newImgUrl = com.groot.app.common.CloudinaryUtil.uploadFromRequest(request, "upd_file", "review");
+            hasNewUpload = newImgUrl != null && !newImgUrl.isBlank();
 
             // ------------------------------------------
             // 🧼 [보안 및 필터링 구간] - 꿍디 세탁기 가동!
@@ -494,7 +502,7 @@ public class ReviewDAO {
             // 🖼️ 3. [이미지 로직] 클라우드에 맞게 3지 선다 재설정!
             String finalImg = oldImg; // 기본은 기존 사진 유지
 
-            if (newImgUrl != null && !newImgUrl.isEmpty()) {
+            if (hasNewUpload) {
                 // 🅰️ 상황 1: 새 사진을 클라우드에 성공적으로 올린 경우
                 finalImg = newImgUrl; // DB에 새 클라우드 주소 넣기!
                 // (참고: 클라우드에 있는 옛날 사진을 지우는 API가 없다면, 그냥 덮어씌우기만 해도 무방합니다!)
@@ -515,17 +523,54 @@ public class ReviewDAO {
             pstmt.setInt(5, r_id);
 
             // 5. 컨트롤러용 상품 ID 담기
-            request.setAttribute("PRODUCT_ID", request.getParameter("upd_p_id"));
+            request.setAttribute("PRODUCT_ID", request.getParameter("PRODUCT_ID"));
 
-            return pstmt.executeUpdate() == 1;
+            boolean updated = pstmt.executeUpdate() == 1;
+            if (updated) {
+                if (hasNewUpload && oldImg != null && !oldImg.equals(newImgUrl)) {
+                    com.groot.app.common.CloudinaryUtil.deleteFileByUrl(oldImg);
+                } else if ("true".equals(isImgDeleted)) {
+                    com.groot.app.common.CloudinaryUtil.deleteFileByUrl(oldImg);
+                }
+            } else if (hasNewUpload) {
+                com.groot.app.common.CloudinaryUtil.deleteFileByUrl(newImgUrl);
+            }
+
+            return updated;
 
         } catch (Exception e) {
+            if (hasNewUpload) {
+                com.groot.app.common.CloudinaryUtil.deleteFileByUrl(newImgUrl);
+            }
             e.printStackTrace();
             System.out.println("❌ 리뷰 수정 중 에러 발생!");
             return false;
         } finally {
             DBManager_new.close(con, pstmt, null);
         }
+    }
+
+    private String getReviewImageById(int reviewId) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "SELECT r_img FROM reviews WHERE review_id = ?";
+
+        try {
+            con = DBManager_new.connect();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, reviewId);
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getString("r_img");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBManager_new.close(con, pstmt, rs);
+        }
+        return null;
     }
     // =========================================================
     // 🏆 메인 페이지용 베스트 리뷰 4개 가져오기 (3단 조인 풀버전)

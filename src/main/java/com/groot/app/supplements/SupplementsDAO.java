@@ -3,6 +3,7 @@ package com.groot.app.supplements;
 // DAO 역할 : DB에 접속해서 전체 영양성분 리스트를 조회(SELECT)한 뒤,
 // 여러 개의 SupplementDTO를 리스트(List)에 담아 반환하는 역할
 
+import com.groot.app.common.CloudinaryUtil;
 import com.groot.app.main.DBManager_new;
 import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
@@ -142,6 +143,8 @@ public class SupplementsDAO {
         public void delSupplement (HttpServletRequest request){
             Connection con = null;
             PreparedStatement pstmt = null;
+            int supplementId = Integer.parseInt(request.getParameter("id"));
+            String oldImage = getSupplementImagePathById(supplementId);
 
             try {
                 con = DBManager_new.connect();
@@ -152,11 +155,11 @@ public class SupplementsDAO {
 
                 // 값 세팅: JSP의 자바스크립트가 보낸 'id' 값을 가져옵니다.
                 // deleteSupp.do?id=123 이므로 getParameter("id")라고 적어야 합니다!
-                String id = request.getParameter("id");
-                pstmt.setString(1, id);
+                pstmt.setInt(1, supplementId);
 
                 if (pstmt.executeUpdate() == 1) {
-                    System.out.println("delete success (ID: " + id + ")");
+                    System.out.println("delete success (ID: " + supplementId + ")");
+                    CloudinaryUtil.deleteFileByUrl(oldImage);
                 }
 
             } catch (Exception e) {
@@ -229,8 +232,16 @@ public class SupplementsDAO {
             String sql = "update supplements set supplement_name = ?, supplement_efficacy = ?, " +
                          "supplement_dosage = ?, supplement_timing = ?, supplement_caution = ?, " +
                          "supplement_image_path = ? WHERE supplement_id = ?";
+            String supplementId = request.getParameter("supplementId");
+            String newImageUrl = (String) request.getAttribute("newImageUrl");
+            boolean hasNewUpload = newImageUrl != null && !newImageUrl.isBlank();
+            String oldImage = null;
 
             try {
+                oldImage = getSupplementImagePathById(Integer.parseInt(supplementId));
+                if (oldImage == null || oldImage.isBlank()) {
+                    oldImage = request.getParameter("oldSupplementFile");
+                }
                 con = DBManager_new.connect();
                 pstmt = con.prepareStatement(sql);
 
@@ -241,7 +252,6 @@ public class SupplementsDAO {
 
                 // JSP에서 보낸 텍스트 데이터들 낚아채기
                 // dinary쓰기 때문에 mr쓸 필요가 없다.
-                String supplementId = request.getParameter("supplementId"); // 🚨 hidden으로 숨겨왔던 고유번호!
                 String supplementName = request.getParameter("supplementName");
                 String supplementEfficacy =request.getParameter("supplementEfficacy");
                 String supplementDosage = request.getParameter("supplementDosage");
@@ -254,17 +264,17 @@ public class SupplementsDAO {
                 }
 
                 // 4. [핵심] 사진 처리 로직
-                String oldFile = request.getParameter("oldSupplementFile");   // 🚨 hidden으로 숨겨왔던 기존 사진
-                String newImageUrl = (String) request.getAttribute("newImageUrl"); // 이번에 새로 선택한 사진
-
                 String updateFile; // 최종적으로 DB에 업데이트될 사진 이름
 
-                if (newImageUrl == null) {
+                if (!hasNewUpload) {
                     // 사용자가 [파일 선택]을 안 누르고 그냥 글씨만 고쳤다면? -> 기존 사진 유지!
-                    updateFile = oldFile;
+                    updateFile = oldImage;
                 } else {
                     // 새로운 사진을 올렸다면? -> 새로 올린 사진 이름으로 덮어쓰기!
                     updateFile = newImageUrl;
+                }
+                if (updateFile == null || updateFile.isBlank()) {
+                    updateFile = "default.png";
                 }
 
                 // 쿼리 준비 및 물음표(?) 세팅
@@ -279,13 +289,44 @@ public class SupplementsDAO {
                 // 진짜 실행
                 if(pstmt.executeUpdate() == 1) {
                     System.out.println("update success");
+                    if (hasNewUpload && oldImage != null && !oldImage.equals(newImageUrl)) {
+                        CloudinaryUtil.deleteFileByUrl(oldImage);
+                    }
+                } else if (hasNewUpload) {
+                    CloudinaryUtil.deleteFileByUrl(newImageUrl);
                 }
 
             } catch (Exception e) {
-
+                if (hasNewUpload) {
+                    CloudinaryUtil.deleteFileByUrl(newImageUrl);
+                }
+                e.printStackTrace();
             } finally {
                 DBManager_new.close(con, pstmt, null);
             }
+        }
+
+        private String getSupplementImagePathById(int supplementId) {
+            Connection con = null;
+            PreparedStatement pstmt = null;
+            ResultSet rs = null;
+            String sql = "SELECT supplement_image_path FROM supplements WHERE supplement_id = ?";
+
+            try {
+                con = DBManager_new.connect();
+                pstmt = con.prepareStatement(sql);
+                pstmt.setInt(1, supplementId);
+                rs = pstmt.executeQuery();
+
+                if (rs.next()) {
+                    return rs.getString("supplement_image_path");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                DBManager_new.close(con, pstmt, rs);
+            }
+            return null;
         }
 
         // ==========================================================
