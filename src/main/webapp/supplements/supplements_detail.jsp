@@ -6,59 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <title>영양성분 상세정보</title>
-    <style>
-        /* 전체 컨테이너: 화면 중앙 정렬 */
-        .detail-wrapper { display: flex; flex-direction: column; align-items: center; margin-top: 40px; padding-bottom: 50px; }
-
-        /* 상세 박스: Movie 스타일의 테두리와 그림자 */
-        .supp-detail-box {
-            /*width: 700px;*/
-            width: 90%;          /* 기본적으로 부모 넓이의 90%만 차지하게 (양옆 여백) */
-            max-width: 700px;    /* 하지만 아무리 화면이 커져도 700px 이상은 안 커지게! */
-
-            border: 1px solid #ddd;
-            padding: 30px;
-            border-radius: 15px;
-            background-color: #ffffff;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-
-        /* 이미지 영역: Movie의 포스터 이미지 스타일 */
-        .detail-img-area { text-align: center; margin-bottom: 30px; }
-        .detail-img-area img {
-            max-width: 100%;
-            height: 350px;
-            object-fit: cover;
-            border-radius: 10px;
-            border: 1px solid #eee;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        /* 행(Row) 구조: Movie의 col-1, col-2 스타일 계승 */
-        .detail-row { display: flex; border-bottom: 1px solid #f5f5f5; padding: 15px 0; align-items: flex-start; }
-        .detail-row:last-child { border-bottom: none; }
-
-        .col-1 { width: 150px; font-weight: bold; color: #2c3e50; font-size: 1.05em; } /* 아이콘과 라벨 */
-        .col-2 { flex: 1; color: #34495e; line-height: 1.6; font-size: 1.05em; } /* 실제 내용 */
-
-        /* 제목 스타일 */
-        .detail-title { text-align: center; font-size: 2em; color: #333; margin-bottom: 30px; border-bottom: 2px solid #4CAF50; display: inline-block; padding-bottom: 10px; }
-
-        /* 버튼 스타일 */
-        .btn-group { margin-top: 30px; text-align: center; }
-        .btn-list { padding: 12px 30px; background-color: #4CAF50; color: white; border: none; cursor: pointer; border-radius: 5px; font-weight: bold; font-size: 1em; transition: background 0.3s; }
-        .btn-list:hover { background-color: #45a049; }
-
-        /* 🪄 모바일 화면(768px 이하)일 때 여백 살짝 줄여주기 */
-        @media (max-width: 768px) {
-            .detail-wrapper {
-                margin-top: 20px;
-            }
-            .supp-detail-box {
-                padding: 15px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="css/supplements.css">
 </head>
 
 <body>
