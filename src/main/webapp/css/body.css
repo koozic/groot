@@ -27,7 +27,6 @@ body {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    margin-top: -44px;
 }
 
 .col-right {
@@ -77,6 +76,14 @@ body {
 
 .body-part.active {
     opacity: 1;
+}
+
+.body-detail-caution {
+    color: red;
+}
+
+.body-hidden {
+    display: none;
 }
 
 /* 체크박스 섹션 */
@@ -710,8 +717,6 @@ body.modal-open {
     display: flex;
     gap: 12px;
     margin-top: 30px;
-    align-items: center; /* ← 추가: 버튼 높이 맞춤 */
-    width: 100%; /* ← 추가 */
 }
 
 /* 저장 버튼 */
@@ -726,7 +731,6 @@ body.modal-open {
     cursor: pointer;
     font-size: 0.95em;
     transition: background 0.2s;
-    min-width: 0; /* ← 추가: flex 안에서 찌그러짐 방지 */
 }
 
 .modal-submit-btn:hover {
@@ -735,31 +739,15 @@ body.modal-open {
 
 /* 취소 버튼 */
 .modal-cancel-btn {
-    padding: 13px 20px; /* ← 저장하기와 동일한 상하 padding */
+    padding: 13px 25px;
     background: #eee;
     border: none;
-    border-radius: 2px;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 0.95em;
     transition: background 0.2s;
-    flex-shrink: 0; /* ← 추가: 취소 버튼 크기 고정 */
-    white-space: nowrap; /* ← 추가: 글자 줄바꿈 방지 */
-    display: flex; /* ← 추가 */
-    align-items: center; /* ← 추가: 글자 세로 중앙 */
-    justify-content: center; /* ← 추가: 글자 가로 중앙 */
 }
 
 .modal-cancel-btn:hover {
     background: #e0e0e0;
-}
-
-#adminModalOverlay button[onclick="closeAdminModal()"] {
-    width: auto !important;
-    height: 52px !important;
-    border-radius: 20px !important;
-    background: #eee !important;
-    border: none !important;
-    color: inherit !important;
-    padding: 13px 20px !important;
-    white-space: nowrap !important;
 }

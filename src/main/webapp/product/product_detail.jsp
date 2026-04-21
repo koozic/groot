@@ -44,7 +44,6 @@ function closeImgModal() {
 }
 </script>
 
-
 <div class="product-detail-page">
     <div class="pd-container">
         <main class="pd-content">
@@ -141,5 +140,6 @@ function closeImgModal() {
     </jsp:include>
 </div>
 
-
-<script src="js/product.js?v=3"></script>
+<%-- product_detail.jsp 파일 하단 --%>
+<div id="productEdit-toast"></div> <script src="${pageContext.request.contextPath}/js/product.js?v=<%=System.currentTimeMillis()%>"></script>
+<script src="${pageContext.request.contextPath}/js/product.js?v=<%=System.currentTimeMillis()%>"></script>

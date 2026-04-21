@@ -236,7 +236,18 @@ public class UserDAO {
     public static void ProfileUpdate(@NonNull HttpServletRequest request) {
 
         UserDTO loginUser = (UserDTO) request.getSession().getAttribute("loginUser");
-        String newProfile = request.getParameter("user_profile");
+        String uploadedProfile = (String) request.getAttribute("user_profile");
+        String newProfile = (uploadedProfile != null && !uploadedProfile.isBlank())
+                ? uploadedProfile
+                : request.getParameter("user_profile");
+        String oldProfile = getUserProfileById(loginUser.getUser_id());
+        if (oldProfile == null || oldProfile.isBlank()) {
+            oldProfile = loginUser.getUser_profile();
+        }
+
+        if (newProfile == null || newProfile.isBlank()) {
+            newProfile = loginUser.getUser_profile();
+        }
 
         Connection con = null;
         PreparedStatement pstmt = null;
@@ -246,7 +257,7 @@ public class UserDAO {
         try {
             con = DBManager_new.connect();
             pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, loginUser.getUser_profile());
+            pstmt.setString(1, newProfile);
             pstmt.setString(2, loginUser.getUser_id());
 
             int result = pstmt.executeUpdate();
@@ -255,15 +266,20 @@ public class UserDAO {
                 loginUser.setUser_profile(newProfile);
                 request.getSession().setAttribute("loginUser", loginUser);
                 request.setAttribute("msg", "프로필 이미지가 수정되었습니다.");
+                if (oldProfile != null && !oldProfile.equals(newProfile)) {
+                    CloudinaryUtil.deleteFileByUrl(oldProfile);
+                }
             } else {
                 request.setAttribute("msg", "프로필 이미지 수정 실패");
+                if (uploadedProfile != null && !uploadedProfile.isBlank()) {
+                    CloudinaryUtil.deleteFileByUrl(uploadedProfile);
+                }
             }
 
-            loginUser.setUser_profile(newProfile);
-            request.getSession().setAttribute("loginUser", loginUser);
-
-
         } catch (Exception e) {
+            if (uploadedProfile != null && !uploadedProfile.isBlank()) {
+                CloudinaryUtil.deleteFileByUrl(uploadedProfile);
+            }
             e.printStackTrace();
             request.setAttribute("msg", "프로필 이미지 수정 중 오류가 발생했습니다.");
         } finally {
@@ -435,15 +451,17 @@ public class UserDAO {
     public static void UserDelete(HttpServletRequest req) {
         Connection con = null;
         PreparedStatement pstmt = null;
-        ResultSet rs = null;
         String sql = "delete users where user_id=?";
+        String userId = req.getParameter("user_id");
+        String profilePath = getUserProfileById(userId);
         try {
             con = DBManager_new.connect();
             pstmt = con.prepareStatement(sql);
-            pstmt.setString(1, req.getParameter("user_id"));
+            pstmt.setString(1, userId);
             if (pstmt.executeUpdate() == 1) {
                 req.setAttribute("msg", "회원 탈퇴가 완료되었습니다.");
                 System.out.println("회원 탈퇴 완료");
+                CloudinaryUtil.deleteFileByUrl(profilePath);
             } else {
                 req.setAttribute("msg", "회원 탈퇴에 실패했습니다.");
             }
@@ -456,6 +474,29 @@ public class UserDAO {
         }
 
 
+    }
+
+    private static String getUserProfileById(String userId) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "SELECT user_profile FROM users WHERE user_id = ?";
+
+        try {
+            con = DBManager_new.connect();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, userId);
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getString("user_profile");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBManager_new.close(con, pstmt, rs);
+        }
+        return null;
     }
 
 

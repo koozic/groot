@@ -33,8 +33,7 @@ public class ProductDAO {
         Connection con = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
-        String sql = "SELECT * FROM products";
-
+        String sql = "SELECT * FROM products ORDER BY product_id DESC";
         ProductDTO dto = null;
         ArrayList<ProductDTO> products = new ArrayList<>();
         try {
@@ -311,14 +310,17 @@ public class ProductDAO {
         Connection con = null;
         PreparedStatement pstmt = null;
         String sql = "delete from products where product_id = ?";
+        int productId = Integer.parseInt(request.getParameter("id"));
+        String oldImage = getProductImageById(productId);
 
         try {
             con = DBManager_new.connect();
             pstmt = con.prepareStatement(sql);
-            pstmt.setInt(1, Integer.parseInt(request.getParameter("id")));
+            pstmt.setInt(1, productId);
 
             if (pstmt.executeUpdate() == 1) {
                 System.out.println("delete success");
+                CloudinaryUtil.deleteFileByUrl(oldImage);
             }
 
 
@@ -334,17 +336,24 @@ public class ProductDAO {
     public String productEdit(HttpServletRequest request) throws IOException {
         Connection con = null;
         PreparedStatement pstmt = null;
-        String id = null;
+        String id = request.getParameter("productId");
         String sql = "update products set product_name = ?, product_brand = ?, product_price = ?, " +
                 "product_nutrient = ?, product_description = ?, product_image = ?, product_total = ?," +
                 "product_serve = ?, product_per_day = ?, product_time_info = ? where product_id = ?";
+        String newProductImage = (String) request.getAttribute("productImage");
+        boolean hasNewUpload = newProductImage != null && !newProductImage.isBlank();
+        String oldImage = null;
 
 
         try {
-            id = request.getParameter("productId");
+            int productId = Integer.parseInt(id);
+            oldImage = getProductImageById(productId);
+            if (oldImage == null || oldImage.isBlank()) {
+                oldImage = request.getParameter("oldProductImage");
+            }
             con = DBManager_new.connect();
             pstmt = con.prepareStatement(sql);
-            pstmt.setInt(11, Integer.parseInt(request.getParameter("productId")));
+            pstmt.setInt(11, productId);
             pstmt.setString(1, request.getParameter("productName"));
             pstmt.setString(2, request.getParameter("productBrand"));
             pstmt.setInt(3, Integer.parseInt(request.getParameter("productPrice")));
@@ -352,12 +361,10 @@ public class ProductDAO {
             pstmt.setString(5, request.getParameter("productDescription"));
 
 
-            String finalProductPath = (String) request.getAttribute("productImage");
-
-            if (finalProductPath == null || finalProductPath.isEmpty()) {
-                finalProductPath = request.getParameter("oldProductImage");
+            String finalProductPath = newProductImage;
+            if (!hasNewUpload) {
+                finalProductPath = oldImage;
             }
-            // 3. 기존/신규 이미지 모두 부재 시 DB 제약 조건 예외 처리를 위한 빈 문자열 할당
             if (finalProductPath == null) {
                 finalProductPath = "";
             }
@@ -374,16 +381,47 @@ public class ProductDAO {
 
             if (pstmt.executeUpdate() == 1) {
                 System.out.println("update success");
+                if (hasNewUpload && oldImage != null && !oldImage.equals(newProductImage)) {
+                    CloudinaryUtil.deleteFileByUrl(oldImage);
+                }
+            } else if (hasNewUpload) {
+                CloudinaryUtil.deleteFileByUrl(newProductImage);
             }
 
 
         } catch (Exception e) {
+            if (hasNewUpload) {
+                CloudinaryUtil.deleteFileByUrl(newProductImage);
+            }
             e.printStackTrace();
         } finally {
             DBManager_new.close(con, pstmt, null);
         }
         return id;
 
+    }
+
+    private String getProductImageById(int productId) {
+        Connection con = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql = "select product_image from products where product_id = ?";
+
+        try {
+            con = DBManager_new.connect();
+            pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, productId);
+            rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getString("product_image");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBManager_new.close(con, pstmt, rs);
+        }
+        return null;
     }
 
     public ArrayList<NutrientDTO> getAllNutrients(HttpServletRequest request) {

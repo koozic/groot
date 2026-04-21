@@ -7,11 +7,23 @@
 %>
 <style>
     .join-wrap .login-right {
-        align-items: center;
+        align-items: stretch;
     }
 
     .join-form-box {
         max-width: 460px;
+        width: 100%;
+        min-height: 560px;
+        max-height: min(700px, calc(100vh - 190px));
+        display: flex;
+        flex-direction: column;
+    }
+
+    .join-form {
+        flex: 1 1 auto;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
     }
 
     .join-progress {
@@ -65,8 +77,32 @@
     }
 
     .join-step.is-active {
-        display: block;
+        display: flex;
+        flex: 1 1 auto;
+        min-height: 0;
+        flex-direction: column;
         animation: joinFadeIn .22s ease;
+    }
+
+    .join-step-scroll {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+        padding-right: 8px;
+        margin-right: -8px;
+    }
+
+    .join-step-scroll::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .join-step-scroll::-webkit-scrollbar-thumb {
+        border-radius: 999px;
+        background: rgba(148, 163, 184, 0.65);
+    }
+
+    .join-step-scroll::-webkit-scrollbar-track {
+        background: transparent;
     }
 
     .join-step-head {
@@ -318,7 +354,10 @@
     .step-actions {
         display: flex;
         gap: 10px;
-        margin-top: 26px;
+        margin-top: 18px;
+        padding-top: 14px;
+        border-top: 1px solid rgba(229, 231, 235, 0.9);
+        flex-shrink: 0;
     }
 
     .step-actions .login-btn,
@@ -338,6 +377,15 @@
         background: #fff;
         color: var(--text);
         box-shadow: none;
+    }
+
+    .join-form-box .login-msg,
+    .join-form-box .login-bottom {
+        flex-shrink: 0;
+    }
+
+    .join-form-box .login-bottom {
+        margin-top: 18px;
     }
 
     .join-agree {
@@ -370,12 +418,36 @@
     }
 
     @media (max-width: 768px) {
+        .join-wrap .login-right {
+            align-items: center;
+        }
+
+        .join-form-box {
+            min-height: 0;
+            max-height: none;
+        }
+
+        .join-form {
+            display: block;
+        }
+
         .join-progress {
             margin-bottom: 18px;
         }
 
         .join-step-title {
             font-size: 23px;
+        }
+
+        .join-step.is-active {
+            display: block;
+            min-height: auto;
+        }
+
+        .join-step-scroll {
+            overflow: visible;
+            padding-right: 0;
+            margin-right: 0;
         }
 
         .join-step-grid {
@@ -408,18 +480,31 @@
 
         .step-actions {
             flex-direction: column;
+            border-top: 0;
+            padding-top: 0;
         }
     }
 </style>
 
-<div class="login-page">
-    <div class="login-wrap join-wrap">
+<div class="video-background">
+    <video autoplay muted loop playsinline id="bg-video">
+        <source src="${pageContext.request.contextPath}/video/login_sea.mp4" type="video/mp4">
+    </video>
+</div>
+
+<div class="login-wrapper">
+    <div class="login-page2">
+        <div class="login-wrap join-wrap glass-effect">
         <div class="login-left">
             <div class="login-title-box">
-                <h1 class="login-title">OTTERCARE</h1>
-                <p class="login-subtitle">건강한 습관의 시작, 회원가입 후 다양한 기능을 이용해보세요.</p>
+                <h1 class="login-title">OtterCare</h1>
+                <p class="login-subtitle">당신의 건강을 챙기는 영양제 습관</p>
             </div>
-            
+
+            <div class="login-img-box">
+                <img src="${pageContext.request.contextPath}/img/ottos/haribo_otter.png" alt="수달 이미지"
+                     class="login-haribo_otto-img" style="width: 235px; margin-bottom: 83px">
+            </div>
         </div>
 
         <div class="login-right">
@@ -432,64 +517,67 @@
                 </div>
 
                 <form action="${pageContext.request.contextPath}/join" method="post" enctype="multipart/form-data"
+                      class="join-form"
                       onsubmit="return joinCheck()">
 
                     <section class="join-step is-active" data-step="1">
+                        <div class="join-step-scroll">
 
-                        <div class="login-input-group">
-                            <label for="user_id">아이디</label>
-                            <div class="field-action-row">
-                                <input type="text" id="user_id" name="user_id" class="field-input"
-                                       placeholder="아이디를 입력하세요" required>
-                                <button type="button" class="login-btn" onclick="checkUserId()">아이디 중복확인</button>
-                            </div>
-                            <small id="idCheckMsg" class="field-msg"></small>
-                            <input type="hidden" id="idCheckResult" value="false">
-                        </div>
-
-                        <div class="login-input-group">
-                            <label for="user_pw">비밀번호</label>
-                            <input type="password" id="user_pw" name="user_pw" placeholder="비밀번호를 입력하세요" required>
-                        </div>
-
-                        <div class="login-input-group">
-                            <label for="user_name">닉네임</label>
-                            <input type="text" id="user_name" name="user_name" placeholder="닉네임을 입력하세요" required>
-                        </div>
-
-                        <div class="login-input-group">
-                            <label for="user_email">이메일</label>
-                            <div class="field-action-row">
-                                <input type="email" id="user_email" name="user_email" class="field-input"
-                                       placeholder="이메일을 입력하세요" required>
-                                <button type="button" class="login-btn" onclick="checkUserEmail()">이메일 중복확인</button>
-                            </div>
-                            <small id="emailCheckMsg" class="field-msg"></small>
-                            <input type="hidden" id="emailCheckResult" value="false">
-                        </div>
-
-                        <div class="login-input-group">
-                            <label for="email_auth_btn">이메일 본인인증</label>
-                            <div class="field-action-row">
-                                <input type="button"
-                                       id="email_auth_btn"
-                                       value="인증번호 전송"
-                                       class="login-btn"
-                                       onclick="sendEmailAuth()">
-
-                                <input type="text"
-                                       id="email_code"
-                                       name="email_code"
-                                       class="field-input"
-                                       placeholder="인증번호 입력">
+                            <div class="login-input-group">
+                                <label for="user_id">아이디</label>
+                                <div class="field-action-row">
+                                    <input type="text" id="user_id" name="user_id" class="field-input"
+                                           placeholder="아이디를 입력하세요" required>
+                                    <button type="button" class="login-btn" onclick="checkUserId()">아이디 중복확인</button>
+                                </div>
+                                <small id="idCheckMsg" class="field-msg"></small>
+                                <input type="hidden" id="idCheckResult" value="false">
                             </div>
 
-                            <button type="button" id="verify_btn" class="login-btn verify-btn" onclick="checkEmailAuth()">
-                                인증완료
-                            </button>
+                            <div class="login-input-group">
+                                <label for="user_pw">비밀번호</label>
+                                <input type="password" id="user_pw" name="user_pw" placeholder="비밀번호를 입력하세요" required>
+                            </div>
 
-                            <div id="emailAuthMsg" class="field-msg"></div>
-                            <input type="hidden" id="emailAuthPassed" value="false">
+                            <div class="login-input-group">
+                                <label for="user_name">닉네임</label>
+                                <input type="text" id="user_name" name="user_name" placeholder="닉네임을 입력하세요" required>
+                            </div>
+
+                            <div class="login-input-group">
+                                <label for="user_email">이메일</label>
+                                <div class="field-action-row">
+                                    <input type="email" id="user_email" name="user_email" class="field-input"
+                                           placeholder="이메일을 입력하세요" required>
+                                    <button type="button" class="login-btn" onclick="checkUserEmail()">이메일 중복확인</button>
+                                </div>
+                                <small id="emailCheckMsg" class="field-msg"></small>
+                                <input type="hidden" id="emailCheckResult" value="false">
+                            </div>
+
+                            <div class="login-input-group">
+                                <label for="email_auth_btn">이메일 본인인증</label>
+                                <div class="field-action-row">
+                                    <input type="button"
+                                           id="email_auth_btn"
+                                           value="인증번호 전송"
+                                           class="login-btn"
+                                           onclick="sendEmailAuth()">
+
+                                    <input type="text"
+                                           id="email_code"
+                                           name="email_code"
+                                           class="field-input"
+                                           placeholder="인증번호 입력">
+                                </div>
+
+                                <button type="button" id="verify_btn" class="login-btn verify-btn" onclick="checkEmailAuth()">
+                                    인증완료
+                                </button>
+
+                                <div id="emailAuthMsg" class="field-msg"></div>
+                                <input type="hidden" id="emailAuthPassed" value="false">
+                            </div>
                         </div>
 
                         <div class="step-actions">
@@ -498,120 +586,122 @@
                     </section>
 
                     <section class="join-step" data-step="2">
-                        <div class="join-step-head">
-                            <div class="join-step-badge">2 / 2</div>
-                            <div class="join-step-title">나머지 프로필을 마무리해요</div>
-                            <p class="join-step-copy">추가 정보는 추천과 마이페이지 경험을 맞추는 데 사용됩니다.</p>
-                        </div>
+                        <div class="join-step-scroll">
+                            <div class="join-step-head">
+                                <div class="join-step-badge">2 / 2</div>
+                                <div class="join-step-title">나머지 프로필을 마무리해요</div>
+                                <p class="join-step-copy">추가 정보는 추천과 마이페이지 경험을 맞추는 데 사용됩니다.</p>
+                            </div>
 
-                        <div class="join-step-grid">
-                            <div class="login-input-group">
-                                <label>성별</label>
-                                <div class="radio-inline">
-                                    <label><input type="radio" name="user_gender" value="남" required> 남</label>
-                                    <label><input type="radio" name="user_gender" value="여"> 여</label>
+                            <div class="join-step-grid">
+                                <div class="login-input-group">
+                                    <label>성별</label>
+                                    <div class="radio-inline">
+                                        <label><input type="radio" name="user_gender" value="남" required> 남</label>
+                                        <label><input type="radio" name="user_gender" value="여"> 여</label>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="login-input-group">
-                                <label for="user_age">나이</label>
-                                <input type="number" id="user_age" name="user_age" placeholder="나이를 입력하세요"
-                                       min="1" max="120" required>
-                            </div>
-
-                            <div class="login-input-group span-2">
-                                <label for="user_join_path">이 사이트를 알게 된 경로</label>
-                                <select id="user_join_path" name="user_join_path" class="join-select">
-                                    <option value="">선택하세요</option>
-                                    <option value="GOOGLE">구글 검색</option>
-                                    <option value="YOUTUBE">유튜브</option>
-                                    <option value="INSTAGRAM">인스타그램</option>
-                                    <option value="FRIEND">지인 추천</option>
-                                    <option value="ETC">기타</option>
-                                </select>
-                            </div>
-
-                            <div class="login-input-group span-2" style="margin-top: 4px;">
-                                <label>개인정보 동의</label>
-                                <label class="join-agree">
-                                    <input type="checkbox" name="user_agree" value="Y" required>
-                                    개인정보 제공에 동의합니다.
-                                </label>
-                            </div>
-                        </div>
-
-                        <details class="join-collapsible">
-                            <summary>
-                                <div class="join-collapsible-title">
-                                    <strong>프로필 설정</strong>
-                                    <span>기본 이미지 선택 또는 직접 업로드</span>
+                                <div class="login-input-group">
+                                    <label for="user_age">나이</label>
+                                    <input type="number" id="user_age" name="user_age" placeholder="나이를 입력하세요"
+                                           min="1" max="120" required>
                                 </div>
-                            </summary>
-                            <div class="join-collapsible-body">
-                                <div class="profile-choice-grid">
-                                    <label class="profile-choice is-selected">
-                                        <input type="radio" name="default_profile" value="Ayanokoji.jfif" checked>
-                                        <img src="${pageContext.request.contextPath}/user/userImg/Ayanokoji.jfif" alt="기본 프로필 1">
-                                        <span>Ayanokoji</span>
-                                    </label>
 
-                                    <label class="profile-choice">
-                                        <input type="radio" name="default_profile" value="Ryuen.jfif">
-                                        <img src="${pageContext.request.contextPath}/user/userImg/Ryuen.jfif" alt="기본 프로필 2">
-                                        <span>Ryuen</span>
-                                    </label>
+                                <div class="login-input-group span-2">
+                                    <label for="user_join_path">이 사이트를 알게 된 경로</label>
+                                    <select id="user_join_path" name="user_join_path" class="join-select">
+                                        <option value="">선택하세요</option>
+                                        <option value="GOOGLE">구글 검색</option>
+                                        <option value="YOUTUBE">유튜브</option>
+                                        <option value="INSTAGRAM">인스타그램</option>
+                                        <option value="FRIEND">지인 추천</option>
+                                        <option value="ETC">기타</option>
+                                    </select>
+                                </div>
 
-                                    <label class="profile-choice">
-                                        <input type="radio" name="default_profile" value="Horikita.jfif">
-                                        <img src="${pageContext.request.contextPath}/user/userImg/Horikita.jfif" alt="기본 프로필 3">
-                                        <span>Horikita</span>
+                                <div class="login-input-group span-2" style="margin-top: 4px;">
+                                    <label>개인정보 동의</label>
+                                    <label class="join-agree">
+                                        <input type="checkbox" name="user_agree" value="Y" required>
+                                        개인정보 제공에 동의합니다.
                                     </label>
                                 </div>
-
-                                <div class="upload-box" style="margin-top: 14px;">
-                                    <p>선택한 기본 프로필 대신 직접 이미지를 올릴 수 있습니다.</p>
-                                    <input type="file" id="user_profile" name="user_profile" accept="image/*">
-                                </div>
                             </div>
-                        </details>
 
-                        <details class="join-collapsible">
-                            <summary>
-                                <div class="join-collapsible-title">
-                                    <strong>주소 정보</strong>
-                                    <span>배송지나 개인화 추천에 쓸 추가 입력 항목</span>
+                            <details class="join-collapsible">
+                                <summary>
+                                    <div class="join-collapsible-title">
+                                        <strong>프로필 설정</strong>
+                                        <span>기본 이미지 선택 또는 직접 업로드</span>
+                                    </div>
+                                </summary>
+                                <div class="join-collapsible-body">
+                                    <div class="profile-choice-grid">
+                                        <label class="profile-choice is-selected">
+                                            <input type="radio" name="default_profile" value="Ayanokoji.jfif" checked>
+                                            <img src="${pageContext.request.contextPath}/user/userImg/Ayanokoji.jfif" alt="기본 프로필 1">
+                                            <span>Ayanokoji</span>
+                                        </label>
+
+                                        <label class="profile-choice">
+                                            <input type="radio" name="default_profile" value="Ryuen.jfif">
+                                            <img src="${pageContext.request.contextPath}/user/userImg/Ryuen.jfif" alt="기본 프로필 2">
+                                            <span>Ryuen</span>
+                                        </label>
+
+                                        <label class="profile-choice">
+                                            <input type="radio" name="default_profile" value="Horikita.jfif">
+                                            <img src="${pageContext.request.contextPath}/user/userImg/Horikita.jfif" alt="기본 프로필 3">
+                                            <span>Horikita</span>
+                                        </label>
+                                    </div>
+
+                                    <div class="upload-box" style="margin-top: 14px;">
+                                        <p>선택한 기본 프로필 대신 직접 이미지를 올릴 수 있습니다.</p>
+                                        <input type="file" id="user_profile" name="user_profile" accept="image/*">
+                                    </div>
                                 </div>
-                            </summary>
-                            <div class="join-collapsible-body">
-                                <div class="join-collapsible-grid">
-                                    <div class="login-input-group span-2">
-                                        <label for="user_zipcode">우편번호</label>
-                                        <div class="field-action-row">
-                                            <input type="text" id="user_zipcode" name="user_zipcode" class="field-input"
-                                                   placeholder="우편번호" readonly>
-                                            <input type="button" value="주소찾기" class="login-btn" onclick="execDaumPostcode()">
+                            </details>
+
+                            <details class="join-collapsible">
+                                <summary>
+                                    <div class="join-collapsible-title">
+                                        <strong>주소 정보</strong>
+                                        <span>배송지나 개인화 추천에 쓸 추가 입력 항목</span>
+                                    </div>
+                                </summary>
+                                <div class="join-collapsible-body">
+                                    <div class="join-collapsible-grid">
+                                        <div class="login-input-group span-2">
+                                            <label for="user_zipcode">우편번호</label>
+                                            <div class="field-action-row">
+                                                <input type="text" id="user_zipcode" name="user_zipcode" class="field-input"
+                                                       placeholder="우편번호" readonly>
+                                                <input type="button" value="주소찾기" class="login-btn" onclick="execDaumPostcode()">
+                                            </div>
+                                        </div>
+
+                                        <div class="login-input-group">
+                                            <label for="user_road_address">도로명주소</label>
+                                            <input type="text" id="user_road_address" name="user_road_address" placeholder="도로명주소" readonly>
+                                        </div>
+
+                                        <div class="login-input-group">
+                                            <label for="user_detail_address">상세주소</label>
+                                            <input type="text" id="user_detail_address" name="user_detail_address"
+                                                   placeholder="상세주소를 입력하세요">
+                                        </div>
+
+                                        <div class="login-input-group span-2">
+                                            <label for="user_extra_address">참고항목</label>
+                                            <input type="text" id="user_extra_address" name="user_extra_address" placeholder="참고항목"
+                                                   readonly>
                                         </div>
                                     </div>
-
-                                    <div class="login-input-group">
-                                        <label for="user_road_address">도로명주소</label>
-                                        <input type="text" id="user_road_address" name="user_road_address" placeholder="도로명주소" readonly>
-                                    </div>
-
-                                    <div class="login-input-group">
-                                        <label for="user_detail_address">상세주소</label>
-                                        <input type="text" id="user_detail_address" name="user_detail_address"
-                                               placeholder="상세주소를 입력하세요">
-                                    </div>
-
-                                    <div class="login-input-group span-2">
-                                        <label for="user_extra_address">참고항목</label>
-                                        <input type="text" id="user_extra_address" name="user_extra_address" placeholder="참고항목"
-                                               readonly>
-                                    </div>
                                 </div>
-                            </div>
-                        </details>
+                            </details>
+                        </div>
 
                         <div class="step-actions">
                             <button type="button" class="ghost-btn" onclick="goToJoinStep(1)">이전 단계</button>
@@ -625,6 +715,7 @@
                     <a href="${pageContext.request.contextPath}/user-Login" class="join-link">로그인</a>
                 </div>
             </div>
+        </div>
         </div>
     </div>
 </div>
