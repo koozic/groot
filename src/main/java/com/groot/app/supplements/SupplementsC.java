@@ -16,9 +16,10 @@ import static com.groot.app.supplements.SupplementsDAO.SDAO;
 @WebServlet(name = "SupplementsC", value = "/supplements")
 
 // 파일 업로드를 위해 반드시 추가해야 하는 설정
+// 용량 충분하게 하기!
 @MultipartConfig(
-        maxFileSize = 1024 * 1024 * 5,       // 5MB
-        maxRequestSize = 1024 * 1024 * 10    // 10MB
+        maxFileSize = 1024 * 1024 * 50,      // 파일 1개당 최대 허용 크기 (50MB)
+        maxRequestSize = 1024 * 1024 * 100   // 전체 요청의 최대 허용 크기 (100MB)
 )
 
 public class SupplementsC extends HttpServlet {
