@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%-- <html><head><body> 없음 — index.jsp의 <jsp:include>로 삽입됩니다 --%>
 <link rel="stylesheet" href="css/admin.css">
 <link rel="stylesheet" href="../css/body-theme-v10.css">
@@ -89,9 +90,33 @@
                                     ${s.supplementEfficacy}
                             </td>
                             <td>
-                                <img src="${s.supplementImagePath}" width="50" height="50"
-                                     style="object-fit:cover; border-radius:6px;"
-                                     onerror="this.style.display='none'">
+                                <c:choose>
+                                    <c:when test="${empty s.supplementImagePath}">
+                                        <img src="/supplementImg/supplementImgFile/default.png" width="50" height="50"
+                                             style="object-fit:cover; border-radius:6px;"
+                                             onerror="this.style.display='none'">
+                                    </c:when>
+                                    <c:when test="${fn:startsWith(s.supplementImagePath, 'http')}">
+                                        <img src="${s.supplementImagePath}" width="50" height="50"
+                                             style="object-fit:cover; border-radius:6px;"
+                                             onerror="this.onerror=null;this.src='/supplementImg/supplementImgFile/default.png';">
+                                    </c:when>
+                                    <c:when test="${fn:startsWith(s.supplementImagePath, '/')}">
+                                        <img src="${s.supplementImagePath}" width="50" height="50"
+                                             style="object-fit:cover; border-radius:6px;"
+                                             onerror="this.onerror=null;this.src='/supplementImg/supplementImgFile/default.png';">
+                                    </c:when>
+                                    <c:when test="${fn:contains(s.supplementImagePath, '/')}">
+                                        <img src="/${s.supplementImagePath}" width="50" height="50"
+                                             style="object-fit:cover; border-radius:6px;"
+                                             onerror="this.onerror=null;this.src='/supplementImg/supplementImgFile/default.png';">
+                                    </c:when>
+                                    <c:otherwise>
+                                        <img src="/supplementImg/supplementImgFile/${s.supplementImagePath}" width="50" height="50"
+                                             style="object-fit:cover; border-radius:6px;"
+                                             onerror="this.onerror=null;this.src='/supplementImg/supplementImgFile/default.png';">
+                                    </c:otherwise>
+                                </c:choose>
                             </td>
                             <td style="color:#777;">${s.supplementViewCount}</td>
                             <td style="color:#777; font-size:0.88em;">${s.supplementRegDate}</td>
@@ -165,6 +190,7 @@
             <div>
                 <label style="display:block; font-weight:700; margin-bottom:6px; font-size:0.9em;">이미지 경로</label>
                 <input id="adminImgPath" type="text"
+                       placeholder="예: brain.webp 또는 https://..."
                        style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;">
             </div>
             <div id="adminBodyIdWrap">
