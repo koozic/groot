@@ -142,7 +142,7 @@
                 <div class="modal-field">
                     <label class="modal-label">이미지 경로</label>
                     <input id="adminImgPath" type="text" class="modal-input"
-                           placeholder="예: images/supp/lutein.png">
+                           placeholder="예: brain.webp 또는 https://...">
                 </div>
                 <div id="adminBodyIdWrap" class="modal-field">
                     <label class="modal-label">연결할 신체 부위</label>

@@ -1,4 +1,6 @@
 let PER_PAGE = 8;
+const SUPPLEMENT_IMAGE_BASE = '/supplementImg/supplementImgFile/';
+const SUPPLEMENT_DEFAULT_IMAGE = SUPPLEMENT_IMAGE_BASE + 'default.png';
 
 const logined = (typeof IS_LOGIN !== 'undefined' && IS_LOGIN === true);
 // const isLogin = (window.IS_LOGIN === true);
@@ -30,6 +32,17 @@ const isAdmin = (window.IS_ADMIN === true);
 let adminModeOn = false;
 console.log("is admin? => " + isAdmin);
 console.log(likedIds)
+
+function getSupplementImageSrc(path) {
+    if (!path) return SUPPLEMENT_DEFAULT_IMAGE;
+
+    const normalized = String(path).trim();
+    if (!normalized) return SUPPLEMENT_DEFAULT_IMAGE;
+    if (/^(https?:)?\/\//i.test(normalized)) return normalized;
+    if (normalized.startsWith('/')) return normalized;
+    if (normalized.includes('/')) return '/' + normalized.replace(/^\/+/, '');
+    return SUPPLEMENT_IMAGE_BASE + normalized;
+}
 
 // 로그인한 id로 좋아요 한것들 likedIds에 setting
 async function setLikedIds() {
@@ -409,8 +422,8 @@ function refreshModal(id) {
     };
 
     const imgHtml = s.imgPath
-        ? `<img src="${s.imgPath}" style="width:52px;height:52px;border-radius:10px;object-fit:cover;"
-               onerror="this.onerror=null;this.src='images/default.png';">`
+        ? `<img src="${getSupplementImageSrc(s.imgPath)}" style="width:52px;height:52px;border-radius:10px;object-fit:cover;"
+               onerror="this.onerror=null;this.src='${SUPPLEMENT_DEFAULT_IMAGE}';">`
         : `<div style="width:52px;height:52px;border-radius:10px;
                background:${pt.color}22;display:flex;align-items:center;
                justify-content:center;font-size:22px;">💊</div>`;

@@ -510,7 +510,7 @@ function renderLikedPage() {
                      overflow:hidden; background:#f8f9fa; margin-bottom:12px;">
                     <img src="${getImgSrc(s.supplementImagePath)}"
                          style="width:100%; height:100%; object-fit:cover;"
-                         onerror="this.src='images/default.png'">
+                         onerror="this.onerror=null;this.src='/supplementImg/supplementImgFile/default.png'">
                 </div>
                 <div style="font-weight:bold; font-size:1.1em; color:#333; margin-bottom:5px;">
                     ${s.supplementName}
@@ -584,8 +584,10 @@ function goLikedPage(page) {
 
 // 이미지 경로 판별 헬퍼
 function getImgSrc(path) {
-    if (!path) return 'images/default.png';
+    if (!path) return '/supplementImg/supplementImgFile/default.png';
     if (path.startsWith('http')) return path;
+    if (path.startsWith('/')) return path;
+    if (path.includes('/')) return '/' + path.replace(/^\/+/, '');
     return '/supplementImg/supplementImgFile/' + path;
 }
 

@@ -521,7 +521,8 @@ public class MyPageDAO {
                 dto.setSupplementDosage(rs.getString("supplement_dosage"));
                 dto.setSupplementTiming(rs.getString("supplement_timing"));
                 dto.setSupplementCaution(rs.getString("supplement_caution"));
-                dto.setSupplementImagePath(rs.getString("supplement_image_path"));
+                String imagePath = rs.getString("supplement_image_path");
+                dto.setSupplementImagePath(imagePath != null ? imagePath : "images/default.png");
                 list.add(dto);
             }
         } catch (Exception e) {

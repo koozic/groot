@@ -86,7 +86,7 @@
                         src="${(fn:startsWith(profilePath, 'http://') or fn:startsWith(profilePath, 'https://')) ? profilePath : pageContext.request.contextPath.concat('/').concat(profilePath)}"
                         alt="프로필"
                         style="width:40px; height:40px; border-radius:50%; object-fit:cover;"
-                        onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/user/userImg/Ayanokoji.jfif';"
+                        onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/user/userImg/worried_otter.png';"
                 >
                 <a href="mypage" class="hdr-link">마이페이지</a>
                 <a href="logout" class="btn-login" style="padding: 5px 12px;">로그아웃</a>
