@@ -79,9 +79,7 @@ function fetchModalPhotoReviews() {
                            작성자: ${r.user_id} | ${makeStarHtml(r.r_score)} | ${formatKoreanDate(r.r_date)}
                         </div>
                         <div style="font-size:0.95em; line-height:1.5; margin-bottom: 15px;">${r.r_content}</div>
-                        <button type="button" class="btn-like" onclick="reviewToggleLike(${r.review_id}, '${currentLoginId}')" style="padding: 6px 12px; font-size: 0.85em;">
-                            👍 도움돼요 <span id="like-count-modal-${r.review_id}">${r.r_like}</span>
-                        </button>
+                      
                     </div>
                 </div>`;
             });
