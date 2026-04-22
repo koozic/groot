@@ -8,7 +8,7 @@
 
 <div class="lounge-wrap">
     <div class="lounge-header">
-        <h1> OtterCare 명예의 전당</h1>
+        <h1> OttoCare 명예의 전당</h1>
         <p>유저들이 인정한 가장 도움되는 찐 후기들을 모아봤어요!</p>
     </div>
 
