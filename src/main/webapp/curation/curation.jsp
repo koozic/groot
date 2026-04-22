@@ -7,7 +7,9 @@
 
     <%-- 왼쪽 카테고리 사이드바 --%>
     <div class="curation-sidebar">
-        <div class="curation-sidebar-title">큐레이션</div>
+        <img class="curation-otto"
+             src="${pageContext.request.contextPath}/img/ottos/worried_otter.png"
+             alt="오터">
         <button class="curation-cat-btn" onclick="selectCategory(this, '임산부')">임산부 맞춤 영양 케어</button>
         <button class="curation-cat-btn" onclick="selectCategory(this, '노년층')">시니어 건강 관리</button>
         <button class="curation-cat-btn" onclick="selectCategory(this, '수험생')">수험생 집중력 영양</button>
@@ -21,7 +23,7 @@
     <div class="curation-content">
         <div class="curation-content-header">
             <h2 id="curationTitle">카테고리를 선택해주세요</h2>
-            <p id="curationSubtitle">왼쪽 항목을 클릭하면 오터가 맞춤 영양소를 추천해드려요</p>
+            <p id="curationSubtitle">왼쪽 항목을 클릭하면 오또 otto가 맞춤 영양소를 추천해드려요</p>
         </div>
         <div class="curation-answer" id="curationAnswer">
             <div class="curation-empty">
@@ -68,7 +70,7 @@
         currentCategory = category;
 
         document.getElementById('curationTitle').textContent = category + ' 맞춤 영양 케어';
-        document.getElementById('curationSubtitle').textContent = 'AI 오터(Otter)가 분석한 ' + category + ' 큐레이션';
+        document.getElementById('curationSubtitle').textContent = 'AI 오또(Otto)가 분석한 ' + category + ' 큐레이션';
 
         fetchCuration(category);
     }
@@ -81,7 +83,7 @@
 
         isLoading = true;
         answerEl.innerHTML =
-            '<div class="curation-bubble-name">오터 Otter</div>' +
+            '<div class="curation-bubble-name">오또 Otto</div>' +
             '<div class="curation-loading-row">' +
             '<img class="curation-otter-img" style="position: absolute; top: 0px" src="' + CURATION_OTTER_IMG + '" alt="오터">' +
             '  <div class="curation-loading-spacer"></div>' +
@@ -92,7 +94,7 @@
             '    <div class="curation-dot"></div>' +
             '  </div>' +
             '</div>' +
-            '<div id="curationAIAnswer" style="margin-top: 5px; padding-left: 95px;"></div>'
+            '<div id="curationAIAnswer" style="margin-top: 49px; padding-left: 95px; font-size: 22px;"></div>'
         ;
         // const prompt = CURATION_PROMPTS[category] || (category + '에게 맞는 영양소와 영양제를 추천해줘.');
         const prompt = category + '에게 좋은 영양소와 영양제를 추천해줘.';

@@ -22,6 +22,28 @@
     --ps-border: rgba(100, 160, 140, 0.15);
 }
 
+/* ===== 갈무리 폰트 등록 ===== */
+@font-face {
+    font-family: 'Galmuri';
+    src: url('../fonts/Galmuri11.woff2') format('woff2');
+    font-weight: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Galmuri';
+    src: url('../fonts/Galmuri11.woff2') format('woff2');
+    font-weight: bold;
+    font-display: swap;
+}
+
+.curation-otto {
+    margin-top: 9px;
+    margin-bottom: 6px;
+    margin-left: 27px;
+    width: 237px;
+}
+
 /* site-body 여백 제거 */
 .site-body {
     padding: 0 !important;
@@ -39,6 +61,7 @@
     position: absolute; /* ← 추가 */
     left: 0; /* ← 추가 */
     right: 0; /* ← 추가 */
+    font-family: 'Galmuri', sans-serif !important;
 }
 
 /* ── 왼쪽 사이드바 ── */
@@ -73,7 +96,7 @@
     font-size: 20px;
     /*margin-left: 36px;*/
     margin-left: 0px;
-    margin-bottom: 20px;
+    margin-bottom: 3px;
     color: var(--ps-text-b);
     transition: all 0.15s ease;
     line-height: 1.3;
