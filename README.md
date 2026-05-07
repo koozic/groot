@@ -40,7 +40,7 @@ I hope to develop life-enhancing services. 🌟
 </p>
 
 ### Contact
-✉️ esfjge@naver.com
+✉️ dudmstk@naver.com
 
 <!--
 **EunaJ99/EunaJ99** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
